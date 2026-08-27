@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Clients\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Platform\Seats\SeatAllowance;
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
@@ -28,6 +29,7 @@ use Inertia\Response;
 class AccountRequestsController extends Controller
 {
     public function __construct(
+        private readonly SeatAllowance $seats,
         private readonly ActivityLogger $activity,
         private readonly Settings $settings,
     ) {}
@@ -66,6 +68,12 @@ class AccountRequestsController extends Controller
     public function approve(User $client): RedirectResponse
     {
         abort_unless($client->isClient() && $client->account_requested, 404);
+
+        // The moment a request becomes a client this installation has taken
+        // on, which is where the seat is spent — provisioning deliberately
+        // does not count a pending one, so that a stranger at the
+        // registration form cannot exhaust a paid limit. See SeatAllowance.
+        $this->seats->guardClient();
 
         $client->forceFill([
             'active' => true,

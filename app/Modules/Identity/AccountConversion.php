@@ -9,6 +9,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Identity\Models\Role;
+use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Identity\Permissions\SystemRole;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -38,6 +39,7 @@ class AccountConversion
         private readonly StaffAccounts $accounts,
         private readonly ActivityLogger $activity,
         private readonly StaffLibraryScope $library,
+        private readonly SeatAllowance $seats,
     ) {}
 
     /**
@@ -45,6 +47,10 @@ class AccountConversion
      */
     public function guardToClient(User $actor, User $target): void
     {
+        // The mirror of the promotion above: a demotion takes a client
+        // seat and frees a staff one.
+        $this->seats->guardClient();
+
         $this->guardSelf($actor, $target);
 
         // Only on this direction. "Could the actor have granted the
@@ -85,6 +91,12 @@ class AccountConversion
     public function guardToStaff(User $actor, User $target): void
     {
         $this->guardSelf($actor, $target);
+
+        // A promotion takes a staff seat. It frees a client one at the same
+        // moment, so the two caps move in opposite directions and only the
+        // one being filled can refuse. Asked in the guard rather than in
+        // toStaff() so a refusal happens before the transaction opens.
+        $this->seats->guardStaff();
 
         // No guardTarget here — see guardToClient(). It asks "could the
         // actor have granted the target's role", which is meaningless of

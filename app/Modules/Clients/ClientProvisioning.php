@@ -14,6 +14,7 @@ use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\UserType;
 use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Support\Facades\Notification;
 
@@ -36,6 +37,7 @@ class ClientProvisioning
     public function __construct(
         private readonly Settings $settings,
         private readonly ActivityLogger $activity,
+        private readonly SeatAllowance $seats,
     ) {}
 
     /**
@@ -69,6 +71,15 @@ class ClientProvisioning
         array $context = [],
     ): User {
         $autoApprove ??= $this->autoApproves();
+
+        // Only when the account arrives already approved. A request that
+        // still needs a decision is not yet a client this installation has
+        // taken on, and counting one would let a stranger exhaust a paid
+        // limit from the registration form — see SeatAllowance. The guard
+        // for those sits on approval instead.
+        if ($autoApprove) {
+            $this->seats->guardClient();
+        }
 
         $client = User::create([
             'type' => UserType::Client,

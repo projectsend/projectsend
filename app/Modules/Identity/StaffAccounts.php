@@ -10,6 +10,7 @@ use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Identity\Erasure\ErasureSchedule;
 use App\Modules\Identity\Models\Role;
+use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Identity\Permissions\SystemRole;
 use Illuminate\Support\Collection;
@@ -37,6 +38,7 @@ class StaffAccounts
         private readonly ActivityLogger $activity,
         private readonly PermissionChecker $permissions,
         private readonly ErasureSchedule $erasure,
+        private readonly SeatAllowance $seats,
         private readonly StaffLibraryScope $library,
     ) {}
 
@@ -233,6 +235,12 @@ class StaffAccounts
      */
     public function create(array $attributes, array $assignedClients = []): User
     {
+        // Before the write, so a refusal creates nothing. Both staff
+        // controllers reach this, web and API; the other two doors into a
+        // staff seat are AccountConversion::toStaff() and the console
+        // command, which asks deliberately not to — see SeatAllowance.
+        $this->seats->guardStaff();
+
         $user = User::create([
             'type' => UserType::Staff,
             'active' => true,

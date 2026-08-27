@@ -11,6 +11,7 @@ use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientCustomFieldType;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Clients\Models\ClientCustomField;
 use App\Modules\Clients\Models\ClientCustomFieldValue;
 use App\Modules\Clients\Notifications\ClientAccountEditedNotification;
@@ -49,6 +50,7 @@ class ClientsController extends Controller
         private readonly DeletedAccountContent $accountContent,
         private readonly AccountContentDeletion $accountDeletion,
         private readonly StaffLibraryScope $scope,
+        private readonly SeatAllowance $seats,
         private readonly ErasureSchedule $erasure,
     ) {}
 
@@ -110,6 +112,10 @@ class ClientsController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        // A client created here is approved by construction, so it counts
+        // immediately — unlike a self-registration awaiting a decision.
+        $this->seats->guardClient();
+
         $validated = $request->validate(array_merge([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', new AvailableEmailRule],

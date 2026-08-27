@@ -32,6 +32,28 @@ return [
     |
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | Platform seats
+    |--------------------------------------------------------------------------
+    |
+    | How many staff accounts and how many clients this installation may
+    | hold. Unset means unlimited, which is every self-hosted install: this
+    | exists for a managed one, where the operator sold a number and the
+    | application is the only process that can actually count against it.
+    |
+    | An operator stating the installation's own limit is not the same as
+    | the application inventing a plan tier — the distinction config/api.php
+    | draws when it declines to key a rate limit off billing. Nothing here
+    | knows what a plan is; it accepts a number and refuses to exceed it.
+    |
+    */
+
+    'platform' => [
+        'max_staff_users' => env('PROJECTSEND_PLATFORM_MAX_STAFF_USERS'),
+        'max_clients' => env('PROJECTSEND_PLATFORM_MAX_CLIENTS'),
+    ],
+
     'uploads' => [
         'parts_path' => env('UPLOAD_PARTS_PATH'),
     ],

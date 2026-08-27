@@ -12,6 +12,7 @@ use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientCustomFieldType;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Clients\Http\Resources\Api\ClientResource;
 use App\Modules\Clients\Models\ClientCustomField;
 use App\Modules\Clients\Models\ClientCustomFieldValue;
@@ -59,6 +60,7 @@ class ClientsController extends Controller
         private readonly DeletedAccountContent $accountContent,
         private readonly AccountContentDeletion $accountDeletion,
         private readonly StaffLibraryScope $scope,
+        private readonly SeatAllowance $seats,
         private readonly ErasureSchedule $erasure,
     ) {}
 
@@ -115,6 +117,8 @@ class ClientsController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $this->seats->guardClient();
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', new AvailableEmailRule],

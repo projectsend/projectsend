@@ -203,6 +203,18 @@ Storage, and a deleted account's email address can be used again.
 
 ### Fixed
 
+- **Accounts migrated from v1 can sign in again.** On some installations brought over from
+  ProjectSend Legacy, every migrated person got an error page instead of a login screen — while
+  anybody whose account was created in v2 signed in perfectly. The cause was the label on the stored
+  password. Older versions of PHP wrote `$2a$` or `$2b$` where newer ones write `$2y$`; all three are
+  the same algorithm, but ProjectSend only recognised the last one and gave up before it had even
+  looked at the password. Upgrading relabels the affected accounts in place. Nothing about anybody's
+  password changes, so there is no reset mail to send and nothing for you to do — the password they
+  already had simply starts working again. The migration tool no longer creates the problem in the
+  first place, from version 1.0.3 onwards.
+  ([#1706](https://github.com/projectsend/projectsend/issues/1706), reported by
+  [@pabloalvarez44](https://github.com/pabloalvarez44))
+
 - **Sessions no longer break behind a reverse proxy.** Signing in, or submitting the first-run setup
   form, could answer with a page-filling error instead — most visibly for anyone running behind
   Traefik, Nginx Proxy Manager or Caddy. `TRUSTED_PROXIES` was being read too early in the boot

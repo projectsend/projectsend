@@ -8,6 +8,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientFieldContext;
 use App\Modules\Clients\ClientPortalCustomFields;
+use App\Modules\Identity\Erasure\ErasureSchedule;
 use App\Modules\Platform\Localization\TimezoneRegistry;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -107,8 +108,7 @@ class ProfileController extends Controller
 
         // Self-deletion: soft delete now, permanent GDPR erasure after
         // the disclosed grace period (Setting::AccountErasureGraceDays).
-        $graceDays = (int) app(Settings::class)->get(Setting::AccountErasureGraceDays);
-        $user->forceFill(['erase_after' => now()->addDays($graceDays)])->save();
+        app(ErasureSchedule::class)->apply($user);
         $user->delete();
 
         app(ActivityLogger::class)->log(Action::UserDeleted, $user, context: ['name' => $user->name]);

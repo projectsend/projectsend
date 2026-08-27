@@ -7,6 +7,7 @@ namespace App\Modules\Identity;
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Identity\Erasure\ErasureSchedule;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Identity\Permissions\SystemRole;
@@ -34,6 +35,7 @@ class StaffAccounts
     public function __construct(
         private readonly ActivityLogger $activity,
         private readonly PermissionChecker $permissions,
+        private readonly ErasureSchedule $erasure,
     ) {}
 
     /**
@@ -294,9 +296,10 @@ class StaffAccounts
     }
 
     /**
-     * Soft-delete the account and record it. Returns the name, which the
-     * caller needs afterwards for the content-reassignment step — by then
-     * the model is trashed and reading it back is needless ceremony.
+     * Soft-delete the account, schedule its permanent erasure and record
+     * it. Returns the name, which the caller needs afterwards for the
+     * content-reassignment step — by then the model is trashed and reading
+     * it back is needless ceremony.
      *
      * **This is only half of deleting somebody.** What happens to the
      * files and folders they own is the other half, and it lives in
@@ -315,6 +318,7 @@ class StaffAccounts
     {
         $name = $user->name;
 
+        $this->erasure->apply($user);
         $user->delete();
 
         $this->activity->log(Action::UserDeleted, context: ['name' => $name]);

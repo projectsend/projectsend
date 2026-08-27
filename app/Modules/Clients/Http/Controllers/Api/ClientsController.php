@@ -19,6 +19,8 @@ use App\Modules\Clients\Notifications\ClientAccountEditedNotification;
 use App\Modules\Clients\Notifications\ClientWelcomeNotification;
 use App\Modules\Files\DeletedAccountContent;
 use App\Modules\Identity\AccountContentDeletion;
+use App\Modules\Identity\Erasure\AvailableEmailRule;
+use App\Modules\Identity\Erasure\ErasureSchedule;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\TwoFactor\TwoFactorAdministration;
@@ -56,6 +58,7 @@ class ClientsController extends Controller
         private readonly DeletedAccountContent $accountContent,
         private readonly AccountContentDeletion $accountDeletion,
         private readonly StaffLibraryScope $scope,
+        private readonly ErasureSchedule $erasure,
     ) {}
 
     public function index(Request $request): AnonymousResourceCollection
@@ -113,7 +116,7 @@ class ClientsController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', new AvailableEmailRule],
             // No `confirmed`: repeating a password is a defence against a
             // human mistyping into a form, and an API caller has no second
             // field to mistype. This installation's password policy still
@@ -261,6 +264,7 @@ class ClientsController extends Controller
         $validated = $this->accountDeletion->validate($request, $client);
 
         $name = $client->name;
+        $this->erasure->apply($client);
         $client->delete();
 
         $this->activity->log(Action::UserDeleted, context: ['name' => $name]);

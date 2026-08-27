@@ -7,6 +7,7 @@ namespace App\Modules\Identity\Console;
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Identity\Erasure\AvailableEmailRule;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\UserType;
@@ -43,7 +44,7 @@ class CreateAdminCommand extends Command
             ['name' => $name, 'email' => $email, 'password' => $password],
             [
                 'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+                'email' => ['required', 'string', 'email', 'max:255', new AvailableEmailRule],
                 'password' => ['required', Password::defaults()],
             ],
         );

@@ -137,9 +137,9 @@ enum Setting: string
     case FailedJobRetentionDays = 'failed_job_retention_days';
     case NotificationRetentionDays = 'notification_retention_days';
 
-    // How many days a self-deleted account is retained (soft-deleted)
-    // before PurgeErasuresCommand permanently erases it. Consumed by
-    // ProfileController.
+    // How many days a deleted account is retained (soft-deleted) before
+    // PurgeErasuresCommand permanently erases it. Consumed by
+    // ErasureSchedule, which every deletion path calls.
     case AccountErasureGraceDays = 'account_erasure_grace_days';
 
     // What the unattended erasure does with the files and folders a purged

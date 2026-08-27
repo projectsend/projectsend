@@ -12,7 +12,7 @@ class PurgeErasuresCommand extends Command
 {
     protected $signature = 'projectsend:purge-erasures';
 
-    protected $description = 'Permanently erase self-deleted accounts whose grace period has passed (runs daily)';
+    protected $description = 'Permanently erase deleted accounts whose grace period has passed (runs daily)';
 
     public function handle(AccountEraser $eraser): int
     {

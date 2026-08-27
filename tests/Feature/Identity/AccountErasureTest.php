@@ -5,7 +5,9 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Files\Models\File;
 use App\Modules\Identity\Erasure\AccountEraser;
+use App\Modules\Identity\Permissions\Permission;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Inertia\Testing\AssertableInertia;
@@ -30,13 +32,16 @@ test('self-deletion schedules permanent erasure after the grace period', functio
 });
 
 test('the purge command erases only accounts past their grace period', function () {
+    app(Settings::class)->set(Setting::AccountErasureGraceDays, 30);
+
     $due = User::factory()->client()->create(['name' => 'Due Person']);
     $this->actingAs($due)->delete('/settings/profile', ['password' => 'password']);
 
     $notDue = User::factory()->client()->create();
     $this->actingAs($notDue)->delete('/settings/profile', ['password' => 'password']);
 
-    // Admin-deleted accounts have no erase_after and are never purged.
+    // Admin-deleted accounts are scheduled the same way (#1648), so this
+    // one comes due alongside the self-deleted one.
     $adminDeleted = User::factory()->client()->create();
     $this->actingAs($this->admin)->delete("/clients/{$adminDeleted->id}");
 
@@ -48,8 +53,37 @@ test('the purge command erases only accounts past their grace period', function 
 
     expect(User::withTrashed()->find($due->id))->toBeNull()
         ->and(User::withTrashed()->find($notDue->id))->not->toBeNull()
-        ->and(User::withTrashed()->find($adminDeleted->id))->not->toBeNull()
-        ->and(ActivityLog::query()->where('action', Action::AccountErased)->count())->toBe(1);
+        ->and(User::withTrashed()->find($adminDeleted->id))->toBeNull()
+        ->and(ActivityLog::query()->where('action', Action::AccountErased)->count())->toBe(2);
+});
+
+test('every administrative deletion path schedules permanent erasure', function () {
+    app(Settings::class)->set(Setting::AccountErasureGraceDays, 30);
+
+    $token = $this->admin->createToken('t', [
+        Permission::ManageUsers->value,
+        Permission::DeleteUsers->value,
+        Permission::ManageClients->value,
+        Permission::DeleteClients->value,
+    ])->plainTextToken;
+
+    $staffUi = User::factory()->create();
+    $this->actingAs($this->admin)->delete("/users/{$staffUi->id}")->assertRedirect('/users');
+
+    $clientUi = User::factory()->client()->create();
+    $this->actingAs($this->admin)->delete("/clients/{$clientUi->id}")->assertRedirect('/clients');
+
+    $staffApi = User::factory()->create();
+    $this->withToken($token)->deleteJson("/api/v1/users/{$staffApi->id}")->assertNoContent();
+
+    $clientApi = User::factory()->client()->create();
+    $this->withToken($token)->deleteJson("/api/v1/clients/{$clientApi->id}")->assertNoContent();
+
+    foreach ([$staffUi, $clientUi, $staffApi, $clientApi] as $account) {
+        $trashed = User::withTrashed()->findOrFail($account->id);
+        expect($trashed->deleted_at)->not->toBeNull()
+            ->and($trashed->erase_after?->isSameDay(now()->addDays(30)))->toBeTrue();
+    }
 });
 
 test('erasure anonymizes every identifying snapshot in the activity log', function () {
@@ -102,11 +136,11 @@ test('erasure deletes the account\'s files by default (cascade)', function () {
     app(Settings::class)->set(Setting::AccountErasureContentAction, 'cascade_delete');
 
     $client = User::factory()->client()->create();
-    $file = App\Modules\Files\Models\File::factory()->create(['uploaded_by' => $client->id]);
+    $file = File::factory()->create(['uploaded_by' => $client->id]);
 
     app(AccountEraser::class)->erase($client);
 
-    expect(App\Modules\Files\Models\File::find($file->id))->toBeNull()
+    expect(File::find($file->id))->toBeNull()
         ->and(ActivityLog::query()->where('action', Action::AccountContentCascadeDeleted->value)->exists())->toBeTrue();
 
     // The content-handling entry the erasure just wrote must not keep the
@@ -122,12 +156,12 @@ test('erasure reassigns the account\'s files to the configured fallback', functi
     app(Settings::class)->set(Setting::AccountErasureReassignTo, $fallback->id);
 
     $client = User::factory()->client()->create();
-    $file = App\Modules\Files\Models\File::factory()->create(['uploaded_by' => $client->id]);
+    $file = File::factory()->create(['uploaded_by' => $client->id]);
 
     app(AccountEraser::class)->erase($client);
 
     $entry = ActivityLog::query()->where('action', Action::AccountContentReassigned->value)->sole();
-    expect(App\Modules\Files\Models\File::find($file->id)?->uploaded_by)->toBe($fallback->id)
+    expect(File::find($file->id)?->uploaded_by)->toBe($fallback->id)
         // The erased person's name is scrubbed, but the inheritor's — a
         // still-active account — is a legitimate audit fact and stays.
         ->and($entry->context['name'] ?? null)->toBeNull()
@@ -142,10 +176,10 @@ test('reassign falls back to cascade when the target is no longer valid', functi
     app(Settings::class)->set(Setting::AccountErasureReassignTo, $gone->id);
 
     $client = User::factory()->client()->create();
-    $file = App\Modules\Files\Models\File::factory()->create(['uploaded_by' => $client->id]);
+    $file = File::factory()->create(['uploaded_by' => $client->id]);
 
     app(AccountEraser::class)->erase($client);
 
-    expect(App\Modules\Files\Models\File::find($file->id))->toBeNull()
+    expect(File::find($file->id))->toBeNull()
         ->and(ActivityLog::query()->where('action', Action::AccountContentCascadeDeleted->value)->exists())->toBeTrue();
 });

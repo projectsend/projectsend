@@ -1883,5 +1883,19 @@
     "The selected mail provider does not use a connected mailbox.": "El proveïdor de correu seleccionat no fa servir cap bústia connectada.",
     "Guide": "Guia",
     "Zapier": "Zapier",
-    "AI assistant": "Assistent d'IA"
+    "AI assistant": "Assistent d'IA",
+    "A zip download is already being prepared. Wait for that one to finish before starting another.": "Ja s’està preparant una descàrrega en zip. Espera que acabi abans de començar-ne una altra.",
+    "Download settings": "Configuració de descàrregues",
+    "Files you uploaded. Your clients’ files are not listed here.": "Fitxers que has pujat. Els fitxers dels teus clients no apareixen aquí.",
+    "Limits that apply when files leave your installation": "Límits que s’apliquen quan els fitxers surten de la teva instal·lació",
+    "Maximum zip download size (MB)": "Mida màxima d’una descàrrega en zip (MB)",
+    "None of your uploads have expired.": "Cap de les teves pujades no ha vençut.",
+    "That folder could not be found.": "No s’ha trobat aquesta carpeta.",
+    "That folder no longer exists. Pick another one and try again.": "Aquesta carpeta ja no existeix. Tria’n una altra i torna-ho a provar.",
+    "That selection is :size. Zip downloads are limited to :limit — select fewer files and try again.": "Aquesta selecció ocupa :size. Les descàrregues en zip estan limitades a :limit — selecciona menys fitxers i torna-ho a provar.",
+    "The largest selection anyone can ask to download as a single zip, measured across every file it would contain. Building an archive takes disk space and holds the background worker while it runs, so this keeps one very large request from delaying everything else. 0 means no limit.": "La selecció més gran que algú pot demanar com un sol zip, sumant tots els fitxers que contindria. Crear un arxiu comprimit ocupa espai de disc i manté ocupat el procés en segon pla mentre s’executa, així una petició molt gran no endarrereix la resta. 0 vol dir sense límit.",
+    "This email address belongs to a deleted account that has no erasure scheduled. Run the projectsend:erase-account console command to erase it and free the address.": "Aquesta adreça de correu pertany a un compte eliminat que no té cap esborrat programat. Executa l’ordre de consola projectsend:erase-account per esborrar-lo i alliberar l’adreça.",
+    "This email address belongs to a deleted account that is scheduled for permanent erasure. The address becomes available on :date. To free it sooner, erase the account with the projectsend:erase-account console command.": "Aquesta adreça de correu pertany a un compte eliminat amb l’esborrat definitiu programat. L’adreça quedarà disponible el :date. Per alliberar-la abans, esborra el compte amb l’ordre de consola projectsend:erase-account.",
+    "Your expired files": "Els teus fitxers vençuts",
+    "Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.": "El teu rol està limitat als clients que tens assignats, així que un rol que creïs o editis no pot treure aquest límit."
 }

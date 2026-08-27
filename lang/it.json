@@ -1883,5 +1883,19 @@
     "The selected mail provider does not use a connected mailbox.": "Il provider di posta selezionato non usa una casella collegata.",
     "Guide": "Guida",
     "Zapier": "Zapier",
-    "AI assistant": "Assistente IA"
+    "AI assistant": "Assistente IA",
+    "A zip download is already being prepared. Wait for that one to finish before starting another.": "È già in preparazione un download ZIP. Aspetta che finisca prima di avviarne un altro.",
+    "Download settings": "Impostazioni di download",
+    "Files you uploaded. Your clients’ files are not listed here.": "I file che hai caricato. I file dei tuoi clienti non sono elencati qui.",
+    "Limits that apply when files leave your installation": "Limiti che si applicano quando i file lasciano la tua installazione",
+    "Maximum zip download size (MB)": "Dimensione massima di un download ZIP (MB)",
+    "None of your uploads have expired.": "Nessuno dei tuoi caricamenti è scaduto.",
+    "That folder could not be found.": "Cartella non trovata.",
+    "That folder no longer exists. Pick another one and try again.": "Quella cartella non esiste più. Scegline un’altra e riprova.",
+    "That selection is :size. Zip downloads are limited to :limit — select fewer files and try again.": "La selezione occupa :size. I download ZIP sono limitati a :limit — seleziona meno file e riprova.",
+    "The largest selection anyone can ask to download as a single zip, measured across every file it would contain. Building an archive takes disk space and holds the background worker while it runs, so this keeps one very large request from delaying everything else. 0 means no limit.": "La selezione più grande che si può chiedere come un unico ZIP, considerando tutti i file che conterrebbe. Creare un archivio occupa spazio su disco e tiene impegnato il processo in background finché non finisce, così una richiesta molto grande non rallenta tutto il resto. 0 significa nessun limite.",
+    "This email address belongs to a deleted account that has no erasure scheduled. Run the projectsend:erase-account console command to erase it and free the address.": "Questo indirizzo email appartiene a un account eliminato per cui non è programmata alcuna cancellazione definitiva. Esegui il comando da console projectsend:erase-account per cancellarlo e liberare l’indirizzo.",
+    "This email address belongs to a deleted account that is scheduled for permanent erasure. The address becomes available on :date. To free it sooner, erase the account with the projectsend:erase-account console command.": "Questo indirizzo email appartiene a un account eliminato la cui cancellazione definitiva è programmata. L’indirizzo sarà disponibile il :date. Per liberarlo prima, cancella l’account con il comando da console projectsend:erase-account.",
+    "Your expired files": "I tuoi file scaduti",
+    "Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.": "Il tuo ruolo è limitato ai clienti che ti sono assegnati, quindi un ruolo che crei o modifichi non può rimuovere quel limite."
 }

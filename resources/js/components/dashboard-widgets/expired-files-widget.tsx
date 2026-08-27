@@ -37,7 +37,7 @@ export function ExpiredFilesWidget({ expiredFiles }: { expiredFiles: ExpiredFile
                 covers. A limited role sees only its own uploads here, and
                 would otherwise read an empty list as "nothing to worry
                 about" on behalf of files it cannot see. */}
-            {expiredFiles.scoped && <p className="text-muted-foreground text-xs">{t('Files you uploaded. Your clients\u2019 files are not listed here.')}</p>}
+            {expiredFiles.scoped && <p className="text-muted-foreground text-xs">{t('Files you uploaded. Your clients’ files are not listed here.')}</p>}
 
             {expiredFiles.count === 0 ? (
                 <p className="text-muted-foreground text-sm">

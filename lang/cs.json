@@ -1883,5 +1883,19 @@
     "The selected mail provider does not use a connected mailbox.": "Vybraný poskytovatel pošty nepoužívá připojenou schránku.",
     "Guide": "Průvodce",
     "Zapier": "Zapier",
-    "AI assistant": "Asistent AI"
+    "AI assistant": "Asistent AI",
+    "A zip download is already being prepared. Wait for that one to finish before starting another.": "Stažení ZIP se už připravuje. Počkej, až skončí, než začneš další.",
+    "Download settings": "Nastavení stahování",
+    "Files you uploaded. Your clients’ files are not listed here.": "Soubory, které jsi nahrál. Soubory tvých klientů tu uvedené nejsou.",
+    "Limits that apply when files leave your installation": "Omezení, která platí, když soubory opouštějí tvou instalaci",
+    "Maximum zip download size (MB)": "Maximální velikost stažení ZIP (MB)",
+    "None of your uploads have expired.": "Žádný z tvých nahraných souborů nevypršel.",
+    "That folder could not be found.": "Tato složka nebyla nalezena.",
+    "That folder no longer exists. Pick another one and try again.": "Tato složka už neexistuje. Vyber jinou a zkus to znovu.",
+    "That selection is :size. Zip downloads are limited to :limit — select fewer files and try again.": "Tento výběr má :size. Stahování ZIP je omezeno na :limit — vyber méně souborů a zkus to znovu.",
+    "The largest selection anyone can ask to download as a single zip, measured across every file it would contain. Building an archive takes disk space and holds the background worker while it runs, so this keeps one very large request from delaying everything else. 0 means no limit.": "Největší výběr, o který lze požádat jako o jediný ZIP, počítáno přes všechny soubory, které by obsahoval. Vytvoření archivu zabírá místo na disku a po dobu běhu drží proces na pozadí, takže jeden velmi velký požadavek nezdrží všechno ostatní. 0 znamená bez omezení.",
+    "This email address belongs to a deleted account that has no erasure scheduled. Run the projectsend:erase-account console command to erase it and free the address.": "Tato e-mailová adresa patří smazanému účtu, u kterého není naplánováno trvalé vymazání. Spusť konzolový příkaz projectsend:erase-account, který jej vymaže a adresu uvolní.",
+    "This email address belongs to a deleted account that is scheduled for permanent erasure. The address becomes available on :date. To free it sooner, erase the account with the projectsend:erase-account console command.": "Tato e-mailová adresa patří smazanému účtu, jehož trvalé vymazání je naplánováno. Adresa bude dostupná :date. Pokud ji chceš uvolnit dřív, vymaž účet konzolovým příkazem projectsend:erase-account.",
+    "Your expired files": "Tvé soubory s vypršenou platností",
+    "Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.": "Tvá vlastní role je omezena na klienty, kteří ti jsou přiřazeni, takže role, kterou vytvoříš nebo upravíš, toto omezení nemůže zrušit."
 }

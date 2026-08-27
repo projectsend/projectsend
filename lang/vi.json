@@ -1883,5 +1883,19 @@
     "The selected mail provider does not use a connected mailbox.": "Nhà cung cấp email đã chọn không dùng hộp thư kết nối.",
     "Guide": "Hướng dẫn",
     "Zapier": "Zapier",
-    "AI assistant": "Trợ lý AI"
+    "AI assistant": "Trợ lý AI",
+    "A zip download is already being prepared. Wait for that one to finish before starting another.": "Đã có một bản tải ZIP đang được chuẩn bị. Hãy đợi bản đó xong rồi mới bắt đầu bản mới.",
+    "Download settings": "Cài đặt tải xuống",
+    "Files you uploaded. Your clients’ files are not listed here.": "Các tệp bạn đã tải lên. Tệp của khách hàng của bạn không được liệt kê ở đây.",
+    "Limits that apply when files leave your installation": "Các giới hạn áp dụng khi tệp rời khỏi bản cài đặt của bạn",
+    "Maximum zip download size (MB)": "Kích thước tối đa của một bản tải ZIP (MB)",
+    "None of your uploads have expired.": "Không có tệp nào bạn tải lên đã hết hạn.",
+    "That folder could not be found.": "Không tìm thấy thư mục đó.",
+    "That folder no longer exists. Pick another one and try again.": "Thư mục đó không còn nữa. Hãy chọn thư mục khác rồi thử lại.",
+    "That selection is :size. Zip downloads are limited to :limit — select fewer files and try again.": "Lựa chọn này là :size. Tải ZIP bị giới hạn ở :limit — hãy chọn ít tệp hơn rồi thử lại.",
+    "The largest selection anyone can ask to download as a single zip, measured across every file it would contain. Building an archive takes disk space and holds the background worker while it runs, so this keeps one very large request from delaying everything else. 0 means no limit.": "Tổng dung lượng lớn nhất có thể yêu cầu trong một tệp ZIP duy nhất, tính trên tất cả các tệp bên trong. Việc tạo tệp nén chiếm dung lượng đĩa và giữ tiến trình nền trong suốt thời gian chạy, nhờ đó một yêu cầu rất lớn không làm chậm mọi thứ khác. 0 nghĩa là không giới hạn.",
+    "This email address belongs to a deleted account that has no erasure scheduled. Run the projectsend:erase-account console command to erase it and free the address.": "Địa chỉ email này thuộc về một tài khoản đã xoá nhưng chưa được lên lịch xoá vĩnh viễn. Hãy chạy lệnh projectsend:erase-account trong console để xoá hẳn và giải phóng địa chỉ.",
+    "This email address belongs to a deleted account that is scheduled for permanent erasure. The address becomes available on :date. To free it sooner, erase the account with the projectsend:erase-account console command.": "Địa chỉ email này thuộc về một tài khoản đã xoá và đã được lên lịch xoá vĩnh viễn. Địa chỉ sẽ dùng lại được vào :date. Muốn giải phóng sớm hơn, hãy xoá tài khoản bằng lệnh projectsend:erase-account trong console.",
+    "Your expired files": "Tệp đã hết hạn của bạn",
+    "Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.": "Vai trò của chính bạn chỉ giới hạn ở những khách hàng được giao cho bạn, nên vai trò bạn tạo hoặc sửa không thể bỏ giới hạn đó."
 }

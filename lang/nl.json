@@ -1883,5 +1883,19 @@
     "The selected mail provider does not use a connected mailbox.": "De gekozen e-mailprovider gebruikt geen verbonden mailbox.",
     "Guide": "Handleiding",
     "Zapier": "Zapier",
-    "AI assistant": "AI-assistent"
+    "AI assistant": "AI-assistent",
+    "A zip download is already being prepared. Wait for that one to finish before starting another.": "Er wordt al een ZIP-download voorbereid. Wacht tot die klaar is voordat je een nieuwe start.",
+    "Download settings": "Downloadinstellingen",
+    "Files you uploaded. Your clients’ files are not listed here.": "Bestanden die je hebt geüpload. Bestanden van je klanten staan hier niet bij.",
+    "Limits that apply when files leave your installation": "Limieten die gelden wanneer bestanden je installatie verlaten",
+    "Maximum zip download size (MB)": "Maximale grootte van een ZIP-download (MB)",
+    "None of your uploads have expired.": "Geen van je uploads is verlopen.",
+    "That folder could not be found.": "Die map is niet gevonden.",
+    "That folder no longer exists. Pick another one and try again.": "Die map bestaat niet meer. Kies een andere en probeer het opnieuw.",
+    "That selection is :size. Zip downloads are limited to :limit — select fewer files and try again.": "Die selectie is :size. ZIP-downloads zijn beperkt tot :limit — selecteer minder bestanden en probeer het opnieuw.",
+    "The largest selection anyone can ask to download as a single zip, measured across every file it would contain. Building an archive takes disk space and holds the background worker while it runs, so this keeps one very large request from delaying everything else. 0 means no limit.": "De grootste selectie die iemand als één ZIP kan opvragen, gemeten over alle bestanden die erin zouden zitten. Een archief maken kost schijfruimte en houdt het achtergrondproces bezet zolang het loopt, zodat één heel groot verzoek de rest niet ophoudt. 0 betekent geen limiet.",
+    "This email address belongs to a deleted account that has no erasure scheduled. Run the projectsend:erase-account console command to erase it and free the address.": "Dit e-mailadres hoort bij een verwijderd account waarvoor geen definitieve wissing gepland staat. Voer het consolecommando projectsend:erase-account uit om het te wissen en het adres vrij te geven.",
+    "This email address belongs to a deleted account that is scheduled for permanent erasure. The address becomes available on :date. To free it sooner, erase the account with the projectsend:erase-account console command.": "Dit e-mailadres hoort bij een verwijderd account waarvan de definitieve wissing gepland staat. Het adres komt vrij op :date. Wil je het eerder vrijgeven, wis het account dan met het consolecommando projectsend:erase-account.",
+    "Your expired files": "Je verlopen bestanden",
+    "Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.": "Je eigen rol is beperkt tot de klanten die aan jou zijn toegewezen, dus een rol die je aanmaakt of bewerkt kan die beperking niet laten vallen."
 }

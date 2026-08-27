@@ -1883,5 +1883,19 @@
     "The selected mail provider does not use a connected mailbox.": "選択したメールプロバイダーは接続済みメールボックスを使用しません。",
     "Guide": "ガイド",
     "Zapier": "Zapier",
-    "AI assistant": "AI アシスタント"
+    "AI assistant": "AI アシスタント",
+    "A zip download is already being prepared. Wait for that one to finish before starting another.": "ZIP ダウンロードはすでに準備中です。次を始める前に、そちらが終わるまでお待ちください。",
+    "Download settings": "ダウンロード設定",
+    "Files you uploaded. Your clients’ files are not listed here.": "あなたがアップロードしたファイルです。取引先のファイルはここには表示されません。",
+    "Limits that apply when files leave your installation": "ファイルがこのインストールから出ていくときに適用される上限",
+    "Maximum zip download size (MB)": "ZIP ダウンロードの最大サイズ (MB)",
+    "None of your uploads have expired.": "あなたのアップロードに期限切れのものはありません。",
+    "That folder could not be found.": "そのフォルダは見つかりませんでした。",
+    "That folder no longer exists. Pick another one and try again.": "そのフォルダはもうありません。別のものを選んでやり直してください。",
+    "That selection is :size. Zip downloads are limited to :limit — select fewer files and try again.": "この選択は :size です。ZIP ダウンロードは :limit までです — ファイルを減らしてやり直してください。",
+    "The largest selection anyone can ask to download as a single zip, measured across every file it would contain. Building an archive takes disk space and holds the background worker while it runs, so this keeps one very large request from delaying everything else. 0 means no limit.": "1 つの ZIP としてまとめて要求できる最大の量で、含まれるすべてのファイルを合計して測ります。書庫の作成はディスク容量を使い、実行中はバックグラウンド処理を占有するため、非常に大きな要求が他のすべてを遅らせないようにします。0 は無制限です。",
+    "This email address belongs to a deleted account that has no erasure scheduled. Run the projectsend:erase-account console command to erase it and free the address.": "このメールアドレスは、完全消去が予定されていない削除済みアカウントのものです。コンソールコマンド projectsend:erase-account を実行すると、消去してアドレスを解放できます。",
+    "This email address belongs to a deleted account that is scheduled for permanent erasure. The address becomes available on :date. To free it sooner, erase the account with the projectsend:erase-account console command.": "このメールアドレスは、完全消去が予定されている削除済みアカウントのものです。:date に利用できるようになります。それより早く解放するには、コンソールコマンド projectsend:erase-account でアカウントを消去してください。",
+    "Your expired files": "あなたの期限切れファイル",
+    "Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.": "あなた自身の役割は担当する取引先に限定されているため、作成または編集する役割からその制限を外すことはできません。"
 }

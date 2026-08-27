@@ -1883,5 +1883,19 @@
     "The selected mail provider does not use a connected mailbox.": "Der ausgewählte E-Mail-Anbieter verwendet kein verbundenes Postfach.",
     "Guide": "Anleitung",
     "Zapier": "Zapier",
-    "AI assistant": "KI-Assistent"
+    "AI assistant": "KI-Assistent",
+    "A zip download is already being prepared. Wait for that one to finish before starting another.": "Ein ZIP-Download wird bereits vorbereitet. Warten Sie, bis dieser fertig ist, bevor Sie einen weiteren starten.",
+    "Download settings": "Download-Einstellungen",
+    "Files you uploaded. Your clients’ files are not listed here.": "Von Ihnen hochgeladene Dateien. Dateien Ihrer Kunden werden hier nicht aufgeführt.",
+    "Limits that apply when files leave your installation": "Grenzen, die gelten, wenn Dateien Ihre Installation verlassen",
+    "Maximum zip download size (MB)": "Maximale Größe eines ZIP-Downloads (MB)",
+    "None of your uploads have expired.": "Keine Ihrer Uploads ist abgelaufen.",
+    "That folder could not be found.": "Dieser Ordner wurde nicht gefunden.",
+    "That folder no longer exists. Pick another one and try again.": "Diesen Ordner gibt es nicht mehr. Wählen Sie einen anderen und versuchen Sie es erneut.",
+    "That selection is :size. Zip downloads are limited to :limit — select fewer files and try again.": "Diese Auswahl umfasst :size. ZIP-Downloads sind auf :limit begrenzt — wählen Sie weniger Dateien und versuchen Sie es erneut.",
+    "The largest selection anyone can ask to download as a single zip, measured across every file it would contain. Building an archive takes disk space and holds the background worker while it runs, so this keeps one very large request from delaying everything else. 0 means no limit.": "Die größte Auswahl, die jemand als ein einzelnes ZIP anfordern kann, gemessen über alle enthaltenen Dateien. Ein Archiv zu erstellen belegt Speicherplatz und bindet den Hintergrundprozess, solange es läuft — so verzögert eine sehr große Anfrage nicht alles andere. 0 bedeutet keine Begrenzung.",
+    "This email address belongs to a deleted account that has no erasure scheduled. Run the projectsend:erase-account console command to erase it and free the address.": "Diese E-Mail-Adresse gehört zu einem gelöschten Konto, für das keine endgültige Löschung geplant ist. Führen Sie den Konsolenbefehl projectsend:erase-account aus, um es zu löschen und die Adresse freizugeben.",
+    "This email address belongs to a deleted account that is scheduled for permanent erasure. The address becomes available on :date. To free it sooner, erase the account with the projectsend:erase-account console command.": "Diese E-Mail-Adresse gehört zu einem gelöschten Konto, dessen endgültige Löschung geplant ist. Die Adresse wird am :date verfügbar. Um sie früher freizugeben, löschen Sie das Konto mit dem Konsolenbefehl projectsend:erase-account.",
+    "Your expired files": "Ihre abgelaufenen Dateien",
+    "Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.": "Ihre eigene Rolle ist auf die Ihnen zugewiesenen Kunden beschränkt, daher kann eine Rolle, die Sie anlegen oder bearbeiten, diese Beschränkung nicht aufheben."
 }

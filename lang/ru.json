@@ -1883,5 +1883,19 @@
     "The selected mail provider does not use a connected mailbox.": "Выбранный почтовый поставщик не использует подключённый ящик.",
     "Guide": "Руководство",
     "Zapier": "Zapier",
-    "AI assistant": "ИИ-ассистент"
+    "AI assistant": "ИИ-ассистент",
+    "A zip download is already being prepared. Wait for that one to finish before starting another.": "ZIP-архив уже готовится. Дождитесь его завершения, прежде чем запускать следующий.",
+    "Download settings": "Настройки загрузки",
+    "Files you uploaded. Your clients’ files are not listed here.": "Файлы, которые загрузили вы. Файлы ваших клиентов здесь не показаны.",
+    "Limits that apply when files leave your installation": "Ограничения, действующие, когда файлы покидают вашу установку",
+    "Maximum zip download size (MB)": "Максимальный размер ZIP-архива (МБ)",
+    "None of your uploads have expired.": "Ни один из ваших файлов не просрочен.",
+    "That folder could not be found.": "Эта папка не найдена.",
+    "That folder no longer exists. Pick another one and try again.": "Этой папки больше нет. Выберите другую и попробуйте снова.",
+    "That selection is :size. Zip downloads are limited to :limit — select fewer files and try again.": "Объём выбранного — :size. Загрузка ZIP ограничена :limit — выберите меньше файлов и попробуйте снова.",
+    "The largest selection anyone can ask to download as a single zip, measured across every file it would contain. Building an archive takes disk space and holds the background worker while it runs, so this keeps one very large request from delaying everything else. 0 means no limit.": "Наибольший объём, который можно запросить одним ZIP-архивом, считая все файлы, которые в него войдут. Сборка архива занимает место на диске и удерживает фоновый обработчик, пока идёт, — так один очень большой запрос не задерживает всё остальное. 0 означает без ограничения.",
+    "This email address belongs to a deleted account that has no erasure scheduled. Run the projectsend:erase-account console command to erase it and free the address.": "Этот адрес принадлежит удалённой учётной записи, для которой не запланировано окончательное стирание. Выполните консольную команду projectsend:erase-account, чтобы стереть её и освободить адрес.",
+    "This email address belongs to a deleted account that is scheduled for permanent erasure. The address becomes available on :date. To free it sooner, erase the account with the projectsend:erase-account console command.": "Этот адрес принадлежит удалённой учётной записи, окончательное стирание которой запланировано. Адрес освободится :date. Чтобы освободить его раньше, сотрите учётную запись командой projectsend:erase-account.",
+    "Your expired files": "Ваши просроченные файлы",
+    "Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.": "Ваша собственная роль ограничена назначенными вам клиентами, поэтому роль, которую вы создаёте или изменяете, не может снять это ограничение."
 }

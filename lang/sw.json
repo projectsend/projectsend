@@ -1883,5 +1883,19 @@
     "The selected mail provider does not use a connected mailbox.": "Mtoa huduma wa barua pepe uliochaguliwa hatumii sanduku la barua lililounganishwa.",
     "Guide": "Mwongozo",
     "Zapier": "Zapier",
-    "AI assistant": "Msaidizi wa AI"
+    "AI assistant": "Msaidizi wa AI",
+    "A zip download is already being prepared. Wait for that one to finish before starting another.": "Upakuaji wa ZIP tayari unaandaliwa. Subiri umalizike kabla ya kuanzisha mwingine.",
+    "Download settings": "Mipangilio ya upakuaji",
+    "Files you uploaded. Your clients’ files are not listed here.": "Mafaili uliyopakia wewe. Mafaili ya wateja wako hayaorodheshwi hapa.",
+    "Limits that apply when files leave your installation": "Mipaka inayotumika mafaili yanapotoka kwenye usakinishaji wako",
+    "Maximum zip download size (MB)": "Ukubwa wa juu wa upakuaji wa ZIP (MB)",
+    "None of your uploads have expired.": "Hakuna kati ya vilivyopakiwa nawe kilichoisha muda.",
+    "That folder could not be found.": "Folda hiyo haikupatikana.",
+    "That folder no longer exists. Pick another one and try again.": "Folda hiyo haipo tena. Chagua nyingine kisha ujaribu tena.",
+    "That selection is :size. Zip downloads are limited to :limit — select fewer files and try again.": "Uteuzi huu ni :size. Upakuaji wa ZIP umewekewa kikomo cha :limit — chagua mafaili machache kisha ujaribu tena.",
+    "The largest selection anyone can ask to download as a single zip, measured across every file it would contain. Building an archive takes disk space and holds the background worker while it runs, so this keeps one very large request from delaying everything else. 0 means no limit.": "Uteuzi mkubwa zaidi ambao mtu anaweza kuomba kama ZIP moja, ukipima mafaili yote yatakayokuwemo. Kutengeneza kumbukumbu hutumia nafasi ya diski na kushikilia mchakato wa nyuma unapoendelea, hivyo ombi moja kubwa sana halicheleweshi kila kitu kingine. 0 maana yake hakuna kikomo.",
+    "This email address belongs to a deleted account that has no erasure scheduled. Run the projectsend:erase-account console command to erase it and free the address.": "Anwani hii ya barua pepe ni ya akaunti iliyofutwa ambayo haijapangiwa kufutwa kabisa. Endesha amri ya konsoli projectsend:erase-account ili kuifuta na kuachia anwani hii.",
+    "This email address belongs to a deleted account that is scheduled for permanent erasure. The address becomes available on :date. To free it sooner, erase the account with the projectsend:erase-account console command.": "Anwani hii ya barua pepe ni ya akaunti iliyofutwa ambayo kufutwa kwake kabisa kumepangwa. Anwani itapatikana tarehe :date. Ili kuiachia mapema zaidi, futa akaunti kwa amri ya konsoli projectsend:erase-account.",
+    "Your expired files": "Mafaili yako yaliyoisha muda",
+    "Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.": "Jukumu lako mwenyewe limewekewa mipaka ya wateja uliopewa, hivyo jukumu unalounda au kuhariri haliwezi kuondoa mpaka huo."
 }

@@ -1883,5 +1883,19 @@
     "The selected mail provider does not use a connected mailbox.": "Seçilen posta sağlayıcısı bağlı bir posta kutusu kullanmıyor.",
     "Guide": "Kılavuz",
     "Zapier": "Zapier",
-    "AI assistant": "Yapay zekâ asistanı"
+    "AI assistant": "Yapay zekâ asistanı",
+    "A zip download is already being prepared. Wait for that one to finish before starting another.": "Bir ZIP indirmesi zaten hazırlanıyor. Yenisini başlatmadan önce bitmesini bekle.",
+    "Download settings": "İndirme ayarları",
+    "Files you uploaded. Your clients’ files are not listed here.": "Senin yüklediğin dosyalar. Müşterilerinin dosyaları burada listelenmez.",
+    "Limits that apply when files leave your installation": "Dosyalar kurulumundan çıkarken geçerli olan sınırlar",
+    "Maximum zip download size (MB)": "En büyük ZIP indirme boyutu (MB)",
+    "None of your uploads have expired.": "Yüklediklerinin hiçbirinin süresi dolmamış.",
+    "That folder could not be found.": "O klasör bulunamadı.",
+    "That folder no longer exists. Pick another one and try again.": "O klasör artık yok. Başka birini seç ve tekrar dene.",
+    "That selection is :size. Zip downloads are limited to :limit — select fewer files and try again.": "Bu seçim :size. ZIP indirmeleri :limit ile sınırlı — daha az dosya seçip tekrar dene.",
+    "The largest selection anyone can ask to download as a single zip, measured across every file it would contain. Building an archive takes disk space and holds the background worker while it runs, so this keeps one very large request from delaying everything else. 0 means no limit.": "Tek bir ZIP olarak istenebilecek en büyük seçim; içindeki bütün dosyalar toplanarak ölçülür. Arşiv oluşturmak disk alanı kaplar ve çalıştığı sürece arka plan işleyicisini meşgul eder, böylece çok büyük bir istek diğer her şeyi geciktirmez. 0 sınır yok demektir.",
+    "This email address belongs to a deleted account that has no erasure scheduled. Run the projectsend:erase-account console command to erase it and free the address.": "Bu e-posta adresi, kalıcı silme işlemi planlanmamış silinmiş bir hesaba ait. Hesabı silip adresi serbest bırakmak için projectsend:erase-account konsol komutunu çalıştır.",
+    "This email address belongs to a deleted account that is scheduled for permanent erasure. The address becomes available on :date. To free it sooner, erase the account with the projectsend:erase-account console command.": "Bu e-posta adresi, kalıcı silinmesi planlanmış silinmiş bir hesaba ait. Adres :date tarihinde kullanılabilir olacak. Daha erken serbest bırakmak için hesabı projectsend:erase-account konsol komutuyla sil.",
+    "Your expired files": "Süresi dolan dosyaların",
+    "Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.": "Kendi rolün sana atanmış müşterilerle sınırlı, bu yüzden oluşturduğun veya düzenlediğin bir rol bu sınırı kaldıramaz."
 }

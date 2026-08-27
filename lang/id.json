@@ -1883,5 +1883,19 @@
     "The selected mail provider does not use a connected mailbox.": "Penyedia email yang dipilih tidak menggunakan kotak surat terhubung.",
     "Guide": "Panduan",
     "Zapier": "Zapier",
-    "AI assistant": "Asisten AI"
+    "AI assistant": "Asisten AI",
+    "A zip download is already being prepared. Wait for that one to finish before starting another.": "Unduhan ZIP sedang disiapkan. Tunggu sampai selesai sebelum memulai yang lain.",
+    "Download settings": "Pengaturan unduhan",
+    "Files you uploaded. Your clients’ files are not listed here.": "Berkas yang kamu unggah. Berkas milik klienmu tidak ditampilkan di sini.",
+    "Limits that apply when files leave your installation": "Batas yang berlaku saat berkas keluar dari instalasimu",
+    "Maximum zip download size (MB)": "Ukuran maksimum unduhan ZIP (MB)",
+    "None of your uploads have expired.": "Tidak ada unggahanmu yang kedaluwarsa.",
+    "That folder could not be found.": "Folder itu tidak ditemukan.",
+    "That folder no longer exists. Pick another one and try again.": "Folder itu sudah tidak ada. Pilih yang lain lalu coba lagi.",
+    "That selection is :size. Zip downloads are limited to :limit — select fewer files and try again.": "Pilihan ini berukuran :size. Unduhan ZIP dibatasi :limit — pilih lebih sedikit berkas lalu coba lagi.",
+    "The largest selection anyone can ask to download as a single zip, measured across every file it would contain. Building an archive takes disk space and holds the background worker while it runs, so this keeps one very large request from delaying everything else. 0 means no limit.": "Pilihan terbesar yang bisa diminta sebagai satu ZIP, dihitung dari seluruh berkas di dalamnya. Membuat arsip memakan ruang disk dan menahan proses latar selama berjalan, sehingga satu permintaan yang sangat besar tidak menunda semua yang lain. 0 berarti tanpa batas.",
+    "This email address belongs to a deleted account that has no erasure scheduled. Run the projectsend:erase-account console command to erase it and free the address.": "Alamat email ini milik akun terhapus yang belum dijadwalkan penghapusan permanennya. Jalankan perintah konsol projectsend:erase-account untuk menghapusnya dan membebaskan alamat ini.",
+    "This email address belongs to a deleted account that is scheduled for permanent erasure. The address becomes available on :date. To free it sooner, erase the account with the projectsend:erase-account console command.": "Alamat email ini milik akun terhapus yang penghapusan permanennya sudah dijadwalkan. Alamat akan tersedia pada :date. Untuk membebaskannya lebih cepat, hapus akun dengan perintah konsol projectsend:erase-account.",
+    "Your expired files": "Berkas kedaluwarsa milikmu",
+    "Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.": "Perananmu sendiri dibatasi pada klien yang ditugaskan kepadamu, jadi peran yang kamu buat atau ubah tidak bisa melepas batas itu."
 }

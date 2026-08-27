@@ -1883,5 +1883,19 @@
     "The selected mail provider does not use a connected mailbox.": "所选的邮件服务商不使用已连接的邮箱。",
     "Guide": "指南",
     "Zapier": "Zapier",
-    "AI assistant": "AI 助手"
+    "AI assistant": "AI 助手",
+    "A zip download is already being prepared. Wait for that one to finish before starting another.": "已经在准备一个 ZIP 下载了。请等它完成后再开始新的。",
+    "Download settings": "下载设置",
+    "Files you uploaded. Your clients’ files are not listed here.": "你上传的文件。你的客户的文件不会列在这里。",
+    "Limits that apply when files leave your installation": "文件离开本站点时适用的限制",
+    "Maximum zip download size (MB)": "ZIP 下载的最大大小（MB）",
+    "None of your uploads have expired.": "你上传的文件都没有过期。",
+    "That folder could not be found.": "找不到该文件夹。",
+    "That folder no longer exists. Pick another one and try again.": "该文件夹已不存在。请另选一个再试。",
+    "That selection is :size. Zip downloads are limited to :limit — select fewer files and try again.": "该选择为 :size。ZIP 下载上限为 :limit —— 请少选一些文件后重试。",
+    "The largest selection anyone can ask to download as a single zip, measured across every file it would contain. Building an archive takes disk space and holds the background worker while it runs, so this keeps one very large request from delaying everything else. 0 means no limit.": "任何人以单个 ZIP 请求下载的最大总量，按其中包含的所有文件合计。打包会占用磁盘空间，并在运行期间占住后台进程，这样一个特别大的请求就不会拖慢其他所有事情。0 表示不限。",
+    "This email address belongs to a deleted account that has no erasure scheduled. Run the projectsend:erase-account console command to erase it and free the address.": "该邮箱地址属于一个已删除、且未安排永久清除的账户。运行控制台命令 projectsend:erase-account 可以清除它并释放该地址。",
+    "This email address belongs to a deleted account that is scheduled for permanent erasure. The address becomes available on :date. To free it sooner, erase the account with the projectsend:erase-account console command.": "该邮箱地址属于一个已删除、且已安排永久清除的账户。该地址将在 :date 可用。若想更早释放，请用控制台命令 projectsend:erase-account 清除该账户。",
+    "Your expired files": "你的过期文件",
+    "Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.": "你自己的角色仅限于分配给你的客户，因此你创建或编辑的角色无法去掉这个限制。"
 }

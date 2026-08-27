@@ -8,6 +8,7 @@ use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use Illuminate\Validation\ValidationException;
 
 /**
  * A cap is only a cap if every door asks.
@@ -233,4 +234,33 @@ test('room under the cap still lets an account through', function () {
     ])->assertSessionHasNoErrors();
 
     expect(User::query()->where('email', 'second@example.test')->exists())->toBeTrue();
+});
+
+it('names the limit without putting a noun after the number', function () {
+    // The refusal used to read "limited to 1 staff accounts" — the number
+    // sat directly in front of a countable noun, so no single wording could
+    // be right for every value. English needs two forms; Polish, Czech and
+    // Russian need three, and inflect the noun by the number in front of
+    // it. Putting the number last means no language has to agree with it.
+    config()->set('projectsend.platform.max_staff_users', 1);
+    config()->set('projectsend.platform.max_clients', 1);
+
+    // Both seats have to be full for either guard to say anything at all.
+    User::factory()->client()->create();
+
+    $allowance = app(SeatAllowance::class);
+
+    foreach (['guardStaff', 'guardClient'] as $guard) {
+        try {
+            $allowance->{$guard}();
+            $this->fail($guard.'() should have refused at a limit of 1.');
+        } catch (ValidationException $e) {
+            $message = $e->validator->errors()->first();
+
+            expect($message)->toContain('limited to 1.')
+                // A trailing noun is exactly what this is here to stop.
+                ->and($message)->not->toContain('1 staff accounts')
+                ->and($message)->not->toContain('1 clients');
+        }
+    }
 });

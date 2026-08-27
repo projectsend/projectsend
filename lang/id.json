@@ -1901,6 +1901,6 @@
     "Nothing is building zip downloads": "Tidak ada yang membuat unduhan ZIP",
     "A zip download has been waiting since :date and no background worker has picked it up. Zip downloads run on their own queue now, so a worker started before this version watches the wrong one — everything else, including email, keeps working.": "Sebuah unduhan ZIP sudah menunggu sejak :date dan tidak ada proses latar yang mengambilnya. Pembuatan ZIP kini berjalan di antrean sendiri, jadi proses yang dijalankan sebelum versi ini mengawasi antrean yang salah — selebihnya, termasuk email, tetap berjalan.",
     "Your worker command needs --queue=default,zips. INSTALL.md has the full service file.": "Perintah proses latarmu perlu --queue=default,zips. Berkas layanan lengkapnya ada di INSTALL.md.",
-    "This installation is limited to :count staff accounts. Remove one, or ask for a larger plan.": "Instalasi ini dibatasi :count akun sistem. Hapus satu, atau minta paket yang lebih besar.",
-    "This installation is limited to :count clients. Remove one, or ask for a larger plan.": "Instalasi ini dibatasi :count klien. Hapus satu, atau minta paket yang lebih besar."
+    "Staff accounts on this installation are limited to :count. Remove one, or ask for a larger plan.": "Akun sistem pada instalasi ini dibatasi hingga :count. Hapus satu, atau minta paket yang lebih besar.",
+    "Clients on this installation are limited to :count. Remove one, or ask for a larger plan.": "Klien pada instalasi ini dibatasi hingga :count. Hapus satu, atau minta paket yang lebih besar."
 }

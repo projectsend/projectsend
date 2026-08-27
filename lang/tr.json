@@ -1901,6 +1901,6 @@
     "Nothing is building zip downloads": "ZIP indirmelerini kimse oluşturmuyor",
     "A zip download has been waiting since :date and no background worker has picked it up. Zip downloads run on their own queue now, so a worker started before this version watches the wrong one — everything else, including email, keeps working.": "Bir ZIP indirmesi :date tarihinden beri bekliyor ve hiçbir arka plan işleyicisi onu almadı. ZIP indirmeleri artık kendi kuyruğunda çalışıyor, bu yüzden bu sürümden önce başlatılan bir işleyici yanlış kuyruğu izliyor — e-posta dahil diğer her şey çalışmaya devam ediyor.",
     "Your worker command needs --queue=default,zips. INSTALL.md has the full service file.": "Arka plan işleyicinin komutunda --queue=default,zips olmalı. Tam servis dosyası INSTALL.md içinde.",
-    "This installation is limited to :count staff accounts. Remove one, or ask for a larger plan.": "Bu kurulum :count sistem hesabıyla sınırlı. Birini kaldır ya da daha büyük bir plan iste.",
-    "This installation is limited to :count clients. Remove one, or ask for a larger plan.": "Bu kurulum :count müşteriyle sınırlı. Birini kaldır ya da daha büyük bir plan iste."
+    "Staff accounts on this installation are limited to :count. Remove one, or ask for a larger plan.": "Bu kurulumdaki sistem hesabı sayısı en fazla :count olabilir. Birini kaldır ya da daha büyük bir plan iste.",
+    "Clients on this installation are limited to :count. Remove one, or ask for a larger plan.": "Bu kurulumdaki müşteri sayısı en fazla :count olabilir. Birini kaldır ya da daha büyük bir plan iste."
 }

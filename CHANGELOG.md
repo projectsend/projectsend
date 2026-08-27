@@ -16,6 +16,8 @@ a version is cut.
 **Fixed**
 
 - The plain-text version of an email no longer shows the link twice, wrapped in brackets.
+- The message you get when an account would exceed your plan no longer reads "limited to 1 staff
+  accounts".
 
 ## 2.2.0 — 27 August 2026
 

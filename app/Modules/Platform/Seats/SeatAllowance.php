@@ -97,7 +97,7 @@ class SeatAllowance
         }
 
         throw ValidationException::withMessages([
-            $field => __('This installation is limited to :count staff accounts. Remove one, or ask for a larger plan.', [
+            $field => __('Staff accounts on this installation are limited to :count. Remove one, or ask for a larger plan.', [
                 'count' => (string) $limit,
             ]),
         ]);
@@ -116,7 +116,7 @@ class SeatAllowance
         }
 
         throw ValidationException::withMessages([
-            $field => __('This installation is limited to :count clients. Remove one, or ask for a larger plan.', [
+            $field => __('Clients on this installation are limited to :count. Remove one, or ask for a larger plan.', [
                 'count' => (string) $limit,
             ]),
         ]);

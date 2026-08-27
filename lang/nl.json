@@ -1901,6 +1901,6 @@
     "Nothing is building zip downloads": "Niemand bouwt de ZIP-downloads",
     "A zip download has been waiting since :date and no background worker has picked it up. Zip downloads run on their own queue now, so a worker started before this version watches the wrong one — everything else, including email, keeps working.": "Een ZIP-download wacht al sinds :date en geen enkel achtergrondproces heeft hem opgepakt. ZIP-downloads gebruiken nu een eigen wachtrij, dus een proces dat vóór deze versie is gestart kijkt naar de verkeerde — al het andere, e-mail inbegrepen, werkt gewoon door.",
     "Your worker command needs --queue=default,zips. INSTALL.md has the full service file.": "Het commando van je achtergrondproces heeft --queue=default,zips nodig. In INSTALL.md staat het volledige servicebestand.",
-    "This installation is limited to :count staff accounts. Remove one, or ask for a larger plan.": "Deze installatie is beperkt tot :count systeemaccounts. Verwijder er een of vraag om een groter abonnement.",
-    "This installation is limited to :count clients. Remove one, or ask for a larger plan.": "Deze installatie is beperkt tot :count klanten. Verwijder er een of vraag om een groter abonnement."
+    "Staff accounts on this installation are limited to :count. Remove one, or ask for a larger plan.": "De systeemaccounts van deze installatie zijn beperkt tot :count. Verwijder er een of vraag om een groter abonnement.",
+    "Clients on this installation are limited to :count. Remove one, or ask for a larger plan.": "De klanten van deze installatie zijn beperkt tot :count. Verwijder er een of vraag om een groter abonnement."
 }

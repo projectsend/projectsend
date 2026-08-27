@@ -1901,6 +1901,6 @@
     "Nothing is building zip downloads": "Ninguém está montando os downloads em ZIP",
     "A zip download has been waiting since :date and no background worker has picked it up. Zip downloads run on their own queue now, so a worker started before this version watches the wrong one — everything else, including email, keeps working.": "Um download em ZIP está esperando desde :date e nenhum processo em segundo plano pegou ele. Downloads em ZIP agora usam uma fila própria, então um processo iniciado antes desta versão está olhando para a fila errada — todo o resto, inclusive e-mail, continua funcionando.",
     "Your worker command needs --queue=default,zips. INSTALL.md has the full service file.": "O comando do seu processo em segundo plano precisa de --queue=default,zips. O INSTALL.md tem o arquivo de serviço completo.",
-    "This installation is limited to :count staff accounts. Remove one, or ask for a larger plan.": "Esta instalação está limitada a :count contas de sistema. Remova uma ou peça um plano maior.",
-    "This installation is limited to :count clients. Remove one, or ask for a larger plan.": "Esta instalação está limitada a :count clientes. Remova um ou peça um plano maior."
+    "Staff accounts on this installation are limited to :count. Remove one, or ask for a larger plan.": "As contas de sistema desta instalação estão limitadas a :count. Remova uma ou peça um plano maior.",
+    "Clients on this installation are limited to :count. Remove one, or ask for a larger plan.": "Os clientes desta instalação estão limitados a :count. Remova um ou peça um plano maior."
 }

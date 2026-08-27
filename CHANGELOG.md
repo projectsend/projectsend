@@ -49,6 +49,23 @@ a version is cut.
   installations need no change. See INSTALL.md for the two-worker setup if you would rather keep the
   two kinds of work apart.
 
+- **A deleted account's email address can be used again.** Deleting an account keeps its record for
+  a grace period before erasing it for good, and the address stays reserved until that happens — but
+  only accounts that deleted *themselves* were ever scheduled for erasure. An account an
+  administrator deleted sat in that state permanently, and its address could never be reused, with
+  nothing on screen to explain why. Every deletion now schedules the erasure the same way, whoever
+  performed it, and the staff screens explain a reserved address rather than saying only that it is
+  taken: which date it frees up, or which command frees it sooner. Public registration deliberately
+  keeps the plain "already taken" message, since telling a stranger the address once had an account
+  here is the disclosure that message exists to avoid.
+
+  Accounts deleted before this change keep their old state on purpose — stamping them during an
+  update would quietly start a countdown to erasure that nobody chose. The console command named in
+  the new message handles those.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1678](https://github.com/projectsend/projectsend/pull/1678), closing
+  [#1648](https://github.com/projectsend/projectsend/issues/1648))
+
 ### Fixed
 
 - **Sessions no longer break behind a reverse proxy.** Signing in, or submitting the first-run setup

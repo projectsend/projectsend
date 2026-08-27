@@ -66,6 +66,85 @@ a version is cut.
   [#1678](https://github.com/projectsend/projectsend/pull/1678), closing
   [#1648](https://github.com/projectsend/projectsend/issues/1648))
 
+- **A staff role limited to its own clients now stays limited.** Several ways around that limit are
+  closed together, because any one of them made the rest decorative. A role holding the "manage
+  users" permission could edit its own role and simply switch the limit off; it could hand itself
+  clients it was never assigned; it could promote any client on the installation to a staff account,
+  which is the most far-reaching thing that can be done to a client record. Uploading into, or
+  moving a file into, a folder belonging to somebody else's clients is refused too, as is browsing
+  the folder pickers past your own tree. None of this was reachable with any role that ships with
+  ProjectSend — each needed a custom role built on the roles screen — but the combinations are ones
+  the screen offers, so anyone who built one should update.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1681](https://github.com/projectsend/projectsend/pull/1681),
+  [#1694](https://github.com/projectsend/projectsend/pull/1694),
+  [#1697](https://github.com/projectsend/projectsend/pull/1697),
+  [#1700](https://github.com/projectsend/projectsend/pull/1700) and
+  [#1702](https://github.com/projectsend/projectsend/pull/1702))
+
+- **A public file's private notes stay private.** The comment thread on a publicly listed file is
+  meant to show what any visitor sees. It was instead answering signed-in visitors as themselves, so
+  simply having an account — any account — showed staff-only notes on that file, or the messages
+  addressed to that file's clients. Being signed in now shows you what a visitor sees, plus your own
+  comments, unless you were entitled to see the file anyway.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1695](https://github.com/projectsend/projectsend/pull/1695))
+
+- **A client is no longer shown the names of folders they cannot open.** Browsing into a folder in
+  the client portal listed every subfolder inside it, including ones shared with somebody else.
+  Opening one was always refused, so what escaped was the name — which can be enough, when folders
+  are named after the people they belong to.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1690](https://github.com/projectsend/projectsend/pull/1690))
+
+- **The maximum file size now applies to large uploads.** Big files are sent in pieces, and the size
+  limit was only checked against the size the sender *claimed* before sending anything. Declaring a
+  tiny upload and then sending gigabytes passed every check. The assembled file is now measured
+  against the limit before it is accepted.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1682](https://github.com/projectsend/projectsend/pull/1682))
+
+- **A download limit now holds when a zip is collected.** Preparing an archive never spent anybody's
+  download allowance, and only collecting one did — so an archive prepared while a file was still
+  available stayed collectable after its limit was spent, and several could be held that way at
+  once. The limit is now checked at the moment the archive is handed over, which is also the moment
+  it is spent. Archives also record exactly which files went into them, so the download history
+  counts what was actually delivered rather than re-guessing it afterwards.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1692](https://github.com/projectsend/projectsend/pull/1692))
+
+- **Public downloads work on installations using external storage.** The public listing's download
+  link always answered as though the file were on the server's own disk, so on an installation
+  keeping files in object storage it pointed at a path that had never been written. Its neighbours
+  on the same page — thumbnails and previews — already handled both. Now it does too.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1693](https://github.com/projectsend/projectsend/pull/1693))
+
+- **A large upload cannot be finished twice at once.** A retry or a double submit arriving while the
+  first was still assembling could interleave with it, storing bytes that no longer matched the
+  file's own checksum, or recording the same upload twice. Finishing an upload now takes a lock for
+  that upload, and a second attempt is turned away rather than joining in.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1686](https://github.com/projectsend/projectsend/pull/1686))
+
+- **Deleting an account either finishes or does nothing.** Removing an account and dealing with the
+  files it owns were two separate steps with nothing holding them together, so a failure in the
+  second left the account gone and its files still pointing at it — most easily when the person
+  chosen to inherit them was deleted in between. Both now happen together or not at all. Relatedly,
+  a file's stored bytes are now removed once the deletion is committed rather than as it happens, so
+  a cancelled bulk deletion no longer restores records whose files are already gone.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1688](https://github.com/projectsend/projectsend/pull/1688) and
+  [#1691](https://github.com/projectsend/projectsend/pull/1691))
+
+- **Creating something with a create-only role no longer ends in an error page.** Roles can grant
+  permission to create clients, staff accounts, groups or categories without permission to edit
+  them. Creating one worked, but the page it sent you to afterwards was the edit page, which such a
+  role may not open — so the record was created and you were shown a permission error, with no way
+  to tell whether it had worked. You now land back on the create form with the confirmation message.
+  (found, diagnosed and fixed by [@denkfabrik-li](https://github.com/denkfabrik-li) in
+  [#1684](https://github.com/projectsend/projectsend/pull/1684))
+
 ### Fixed
 
 - **Sessions no longer break behind a reverse proxy.** Signing in, or submitting the first-run setup

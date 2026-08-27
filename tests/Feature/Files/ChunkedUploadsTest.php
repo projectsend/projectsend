@@ -12,6 +12,7 @@ use App\Modules\Identity\Permissions\Permission;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
 
@@ -395,4 +396,27 @@ test('parts are written under the configured root', function () {
         ->and(is_dir(storage_path('app/uploads-tmp/'.$sessionId)))->toBeFalse();
 
     Illuminate\Support\Facades\File::deleteDirectory($custom);
+});
+
+test('a second complete is refused while one is already finalising the session', function () {
+    $this->actingAs($this->admin);
+    $sessionId = createSession(11, 'locked.txt');
+    putPart($sessionId, 1, 'hello-');
+    putPart($sessionId, 2, 'world');
+
+    // Stand in for a completion already in flight by holding the session's
+    // lock — a concurrent complete must not assemble the same target file a
+    // second time or create a second File row.
+    $lock = Cache::lock('upload-complete:'.$sessionId, 120);
+    expect($lock->get())->toBeTrue();
+
+    $this->postJson("/uploads/{$sessionId}/complete")->assertStatus(422);
+
+    expect(File::query()->count())->toBe(0)
+        ->and(UploadSession::query()->find($sessionId))->not->toBeNull();
+
+    // Once the in-flight completion releases the lock, completing works.
+    $lock->release();
+    $this->postJson("/uploads/{$sessionId}/complete")->assertOk();
+    expect(File::query()->count())->toBe(1);
 });

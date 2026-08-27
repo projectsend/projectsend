@@ -896,6 +896,7 @@
     "This permanently removes every failed job from the list without retrying any of them. This cannot be undone.": "Tímto trvale odstraníte všechny neúspěšné úlohy ze seznamu, aniž byste kteroukoli zopakovali. Tuto akci nelze vrátit zpět.",
     "This role is assigned to accounts and cannot be deleted.": "Tato role je přiřazena účtům a nelze ji smazat.",
     "This role only sees files and folders belonging to these clients, plus its own uploads.": "Tato role vidí pouze soubory a složky těchto klientů a k tomu vlastní nahrané soubory.",
+    "This upload is already being finalised.": "Toto nahrání se již dokončuje.",
     "This upload would exceed your storage quota of :quota MB.": "Toto nahrání by překročilo vaši kvótu úložiště :quota MB.",
     "Tip: drag files and folders onto a folder or a breadcrumb to move them.": "Tip: soubory a složky přesunete přetažením na složku nebo na drobečkovou navigaci.",
     "Title": "Nadpis",

@@ -896,6 +896,7 @@
     "This permanently removes every failed job from the list without retrying any of them. This cannot be undone.": "失敗したジョブをすべて、再実行せずにリストから完全に削除します。この操作は取り消せません。",
     "This role is assigned to accounts and cannot be deleted.": "このロールはアカウントに割り当てられているため削除できません。",
     "This role only sees files and folders belonging to these clients, plus its own uploads.": "このロールには、以下のクライアントのファイルとフォルダ、そして自分がアップロードしたものだけが表示されます。",
+    "This upload is already being finalised.": "このアップロードは既に完了処理中です。",
     "This upload would exceed your storage quota of :quota MB.": "このアップロードは、ストレージ上限 :quota MB を超えてしまいます。",
     "Tip: drag files and folders onto a folder or a breadcrumb to move them.": "ヒント: ファイルやフォルダをフォルダやパンくずリストにドラッグすると移動できます。",
     "Title": "タイトル",

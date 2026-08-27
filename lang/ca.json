@@ -896,6 +896,7 @@
     "This permanently removes every failed job from the list without retrying any of them. This cannot be undone.": "Això elimina permanentment totes les tasques fallides de la llista sense reintentar-ne cap. No es pot desfer.",
     "This role is assigned to accounts and cannot be deleted.": "Aquest rol està assignat a comptes i no es pot eliminar.",
     "This role only sees files and folders belonging to these clients, plus its own uploads.": "Aquest rol només veu els fitxers i les carpetes d'aquests clients, a més de les seves pròpies pujades.",
+    "This upload is already being finalised.": "Aquesta pujada ja s'està finalitzant.",
     "This upload would exceed your storage quota of :quota MB.": "Aquesta pujada superaria la teva quota d'emmagatzematge de :quota MB.",
     "Tip: drag files and folders onto a folder or a breadcrumb to move them.": "Consell: arrossega fitxers i carpetes sobre una carpeta o sobre el rastre de navegació per moure'ls.",
     "Title": "Títol",

@@ -896,6 +896,7 @@
     "This permanently removes every failed job from the list without retrying any of them. This cannot be undone.": "Thao tác này xóa vĩnh viễn mọi tác vụ thất bại khỏi danh sách mà không thử lại bất kỳ tác vụ nào. Không thể hoàn tác.",
     "This role is assigned to accounts and cannot be deleted.": "Vai trò này đang được gán cho một số tài khoản nên không thể xóa.",
     "This role only sees files and folders belonging to these clients, plus its own uploads.": "Vai trò này chỉ thấy tệp và thư mục của những khách hàng dưới đây, cùng những gì chính họ tải lên.",
+    "This upload is already being finalised.": "Lần tải lên này đang được hoàn tất.",
     "This upload would exceed your storage quota of :quota MB.": "Lần tải lên này sẽ vượt quá hạn mức lưu trữ :quota MB của bạn.",
     "Tip: drag files and folders onto a folder or a breadcrumb to move them.": "Mẹo: kéo tệp và thư mục thả vào một thư mục hoặc lên thanh đường dẫn để di chuyển chúng.",
     "Title": "Tiêu đề",

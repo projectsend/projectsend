@@ -896,6 +896,7 @@
     "This permanently removes every failed job from the list without retrying any of them. This cannot be undone.": "Cela supprime définitivement toutes les tâches échouées de la liste sans en réessayer aucune. Cette action est irréversible.",
     "This role is assigned to accounts and cannot be deleted.": "Ce rôle est attribué à des comptes et ne peut pas être supprimé.",
     "This role only sees files and folders belonging to these clients, plus its own uploads.": "Ce rôle ne voit que les fichiers et dossiers de ces clients, ainsi que ses propres téléversements.",
+    "This upload is already being finalised.": "Ce téléversement est déjà en cours de finalisation.",
     "This upload would exceed your storage quota of :quota MB.": "Ce téléversement dépasserait votre quota de stockage de :quota Mo.",
     "Tip: drag files and folders onto a folder or a breadcrumb to move them.": "Astuce : faites glisser fichiers et dossiers sur un dossier ou un fil d'Ariane pour les déplacer.",
     "Title": "Titre",

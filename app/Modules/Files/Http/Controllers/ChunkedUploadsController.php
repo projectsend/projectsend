@@ -250,6 +250,22 @@ class ChunkedUploadsController extends Controller
             throw ValidationException::withMessages(['parts' => $exception->getMessage()]);
         }
 
+        // store()'s size check ran against the client-declared, unverified
+        // size, so a small declared size would otherwise let an upload of any
+        // size through here. Re-check the real assembled byte count against
+        // the same limit store() applies to everyone. No File row exists yet
+        // at this point, so cleanup only needs to undo what assemble() wrote.
+        $maxMb = (int) $this->settings->get(Setting::MaxFileSizeMb);
+
+        if ($maxMb > 0 && $assembled['size'] > $maxMb * 1024 * 1024) {
+            Storage::disk($assembled['disk'])->delete($assembled['path']);
+            $session->delete();
+
+            throw ValidationException::withMessages([
+                'size' => __('This file exceeds the maximum allowed size of :max MB.', ['max' => (string) $maxMb]),
+            ]);
+        }
+
         // store()'s quota check used a client-declared, unverified size —
         // re-check against the real assembled byte count before this
         // becomes a File row. No File row exists yet at this point, so

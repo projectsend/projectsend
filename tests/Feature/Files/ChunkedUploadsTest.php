@@ -163,6 +163,41 @@ test('a staff account without the upload permission cannot create sessions', fun
     $this->postJson('/uploads', ['filename' => 'x.zip', 'size' => 10])->assertForbidden();
 });
 
+test('complete refuses a file whose real assembled size exceeds the limit, even when a tiny size was declared', function () {
+    $this->actingAs($this->admin);
+
+    // A 1 MB cap. The session is declared as a single byte, so it sails
+    // through store()'s check against the client-supplied size.
+    app(Settings::class)->set(Setting::MaxFileSizeMb, 1);
+    $sessionId = createSession(1, 'sneaky.zip');
+
+    // But the real parts stream ~1.5 MB.
+    $chunk = str_repeat('a', 800 * 1024);
+    putPart($sessionId, 1, $chunk)->assertOk();
+    putPart($sessionId, 2, $chunk)->assertOk();
+
+    $this->postJson("/uploads/{$sessionId}/complete")->assertStatus(422);
+
+    // Nothing is kept: no File row, the assembled bytes are removed, and the
+    // session is gone.
+    expect(File::query()->count())->toBe(0)
+        ->and(UploadSession::query()->find($sessionId))->toBeNull()
+        ->and(Storage::disk('files')->allFiles())->toBe([]);
+});
+
+test('complete still accepts a file at exactly the limit', function () {
+    $this->actingAs($this->admin);
+
+    app(Settings::class)->set(Setting::MaxFileSizeMb, 1);
+    $sessionId = createSession(1024 * 1024, 'exact.zip');
+
+    putPart($sessionId, 1, str_repeat('a', 1024 * 1024))->assertOk();
+
+    $response = $this->postJson("/uploads/{$sessionId}/complete")->assertOk();
+
+    expect(File::query()->findOrFail($response->json('file_id'))->size)->toBe(1024 * 1024);
+});
+
 test('a client with the upload permission can create a session and complete an upload', function () {
     $client = User::factory()->client()->create();
     grantChunkedUploadPermission($client);

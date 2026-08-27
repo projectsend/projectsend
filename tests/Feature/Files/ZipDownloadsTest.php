@@ -596,3 +596,88 @@ test('a zip build is queued away from ordinary work', function () {
 
     Queue::assertPushed(BuildZipDownloadJob::class, fn (BuildZipDownloadJob $job): bool => $job->queue === 'zips');
 });
+
+/*
+|--------------------------------------------------------------------------
+| A selection that reaches the same file more than once
+|--------------------------------------------------------------------------
+*/
+
+test('a file reached by both a loose pick and a folder is added once', function () {
+    $folder = Folder::query()->create(['name' => 'Reports']);
+    $file = zipUploadFile($this->admin, 'report.pdf', $folder->id);
+
+    $response = $this->actingAs($this->admin)->postJson('/zip-downloads', [
+        'file_ids' => [$file->id],
+        'folder_ids' => [$folder->id],
+    ])->assertOk();
+
+    $zipDownload = ZipDownload::query()->findOrFail($response->json('id'));
+
+    // The loose pick reaches it first, so that is where the one copy sits.
+    expect(zipEntryNames($zipDownload))->toBe(['report.pdf'])
+        ->and($zipDownload->file_count)->toBe(1)
+        ->and($zipDownload->total_size)->toBe($file->size)
+        ->and($zipDownload->contained_file_ids)->toBe([$file->id]);
+});
+
+test('a folder inside another selected folder does not duplicate its contents', function () {
+    $parent = Folder::query()->create(['name' => 'Reports']);
+    $child = Folder::query()->create(['name' => 'Q1', 'parent_id' => $parent->id, 'path' => "/{$parent->id}/"]);
+    $file = zipUploadFile($this->admin, 'report.pdf', $child->id);
+
+    $response = $this->actingAs($this->admin)->postJson('/zip-downloads', [
+        'folder_ids' => [$parent->id, $child->id],
+    ])->assertOk();
+
+    $zipDownload = ZipDownload::query()->findOrFail($response->json('id'));
+
+    // The outer folder wins, so the entry keeps the fuller path.
+    expect(zipEntryNames($zipDownload))->toBe(['Reports/Q1/report.pdf'])
+        ->and($zipDownload->file_count)->toBe(1)
+        ->and($zipDownload->total_size)->toBe($file->size);
+});
+
+test('the same file selected three ways is handed over once and charged once', function () {
+    $parent = Folder::query()->create(['name' => 'Reports']);
+    $child = Folder::query()->create(['name' => 'Q1', 'parent_id' => $parent->id, 'path' => "/{$parent->id}/"]);
+    $file = zipUploadFile($this->admin, 'report.pdf', $child->id);
+
+    $response = $this->actingAs($this->admin)->postJson('/zip-downloads', [
+        'file_ids' => [$file->id],
+        'folder_ids' => [$parent->id, $child->id],
+    ])->assertOk();
+
+    $zipDownload = ZipDownload::query()->findOrFail($response->json('id'));
+    $this->actingAs($this->admin)->get("/zip-downloads/{$zipDownload->id}/download")->assertOk();
+
+    // Delivery logs one FileDownloaded per contained file, so as many
+    // copies as the archive holds must be as many as the log records —
+    // otherwise a file limited to one download leaves in several.
+    $logged = ActivityLog::query()
+        ->where('action', Action::FileDownloaded)
+        ->where('subject_id', $file->id)
+        ->count();
+
+    expect(count(zipEntryNames($zipDownload)))->toBe(1)
+        ->and($logged)->toBe(1);
+});
+
+test('two selected folders that merely share a name are both zipped', function () {
+    // The pruning above is about containment, not about names: neither of
+    // these is inside the other, so both belong in the archive, and the
+    // usual collision suffix keeps them apart.
+    $first = Folder::query()->create(['name' => 'Reports']);
+    $second = Folder::query()->create(['name' => 'Reports']);
+    zipUploadFile($this->admin, 'a.pdf', $first->id);
+    zipUploadFile($this->admin, 'b.pdf', $second->id);
+
+    $response = $this->actingAs($this->admin)->postJson('/zip-downloads', [
+        'folder_ids' => [$first->id, $second->id],
+    ])->assertOk();
+
+    $zipDownload = ZipDownload::query()->findOrFail($response->json('id'));
+
+    expect($zipDownload->file_count)->toBe(2)
+        ->and(zipEntryNames($zipDownload))->toContain('Reports/a.pdf');
+});

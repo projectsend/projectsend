@@ -326,7 +326,7 @@ class PublicGroupsController extends Controller
         return route('public.preview', [$publicSlug, $file->slug]);
     }
 
-    public function download(string $publicSlug, File $file): Response
+    public function download(string $publicSlug, File $file): Response|RedirectResponse
     {
         $this->guardSlug($publicSlug);
 
@@ -340,11 +340,6 @@ class PublicGroupsController extends Controller
 
         $this->activity->log(Action::PublicFileDownloaded, subject: $file);
 
-        return response('', 200, [
-            'X-Accel-Redirect' => '/protected-files/'.$file->path,
-            'Content-Type' => $file->mime_type,
-            'Content-Disposition' => ContentDisposition::attachment($file->original_name),
-            'Content-Length' => (string) $file->size,
-        ]);
+        return $this->bytes->attachment($file);
     }
 }

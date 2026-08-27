@@ -191,13 +191,49 @@ test('download serves a public file and 404s a non-public one regardless of grou
     $notPublic = publicListingFile(['name' => 'Not Downloadable', 'public' => false]);
     $this->actingAs($staff)->post("/files/{$notPublic->id}/assignments", ['type' => 'group', 'id' => $group->id]);
 
+    // The whole header set, not only the path: local delivery is what this
+    // route used to build by hand, and moving it behind StoredFileResponse
+    // has to leave a local install's response exactly as it was.
     $this->get("/public/files/{$public->slug}/download")
         ->assertOk()
-        ->assertHeader('X-Accel-Redirect', '/protected-files/'.$public->path);
+        ->assertHeader('X-Accel-Redirect', '/protected-files/'.$public->path)
+        ->assertHeader('Content-Type', 'application/pdf')
+        ->assertHeader('Content-Disposition', 'attachment; filename="report.pdf"')
+        ->assertHeader('Content-Length', (string) $public->size);
 
     expect(ActivityLog::query()->where('action', Action::PublicFileDownloaded)->where('subject_name', 'Downloadable')->exists())->toBeTrue();
 
     $this->get("/public/files/{$notPublic->slug}/download")->assertNotFound();
+});
+
+test('a public download of an externally stored file hands out a presigned url, not an nginx path', function () {
+    // The bug this covers: this route answered every download with
+    // X-Accel-Redirect regardless of the file's disk, so a public download
+    // of an externally stored file pointed nginx at a path nothing ever
+    // wrote. Its two neighbours on this same controller, thumbnail() and
+    // preview(), were moved onto the shared delivery object; download()
+    // was left building the response itself.
+    Storage::fake('files_external');
+    Storage::disk('files_external')->buildTemporaryUrlsUsing(
+        fn (string $path, $expiration, array $options) => 'https://storage.example.test/'.$path.'?disposition='.urlencode($options['ResponseContentDisposition'] ?? '')
+    );
+
+    $file = publicListingFile(['name' => 'Externally Stored', 'disk' => 'files_external']);
+
+    $response = $this->get(route('public.download', ['public', $file->slug]));
+
+    $response->assertRedirect();
+    $response->assertHeaderMissing('X-Accel-Redirect');
+
+    $target = $response->headers->get('Location');
+    expect($target)->toStartWith('https://storage.example.test/'.$file->path)
+        // The filename has to survive into the signed URL, or the download
+        // arrives named after the storage key.
+        ->and(urldecode((string) $target))->toContain('attachment; filename="report.pdf"');
+
+    // Delivery moved; the checks in front of it did not. The download is
+    // still logged, which is also what the download limit counts.
+    expect(ActivityLog::query()->where('action', Action::PublicFileDownloaded)->where('subject_name', 'Externally Stored')->exists())->toBeTrue();
 });
 
 test('an expired public file 404s on its detail, thumbnail, and download routes, and drops out of the standalone listing', function () {

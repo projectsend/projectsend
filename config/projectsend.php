@@ -52,6 +52,13 @@ return [
     'platform' => [
         'max_staff_users' => env('PROJECTSEND_PLATFORM_MAX_STAFF_USERS'),
         'max_clients' => env('PROJECTSEND_PLATFORM_MAX_CLIENTS'),
+
+        // Seeded into Setting::TwoFactorEnforcement on first boot and never
+        // afterwards — see SeedSettingsCommand. Here rather than read from
+        // env() at the point of use, because config:cache stops .env being
+        // read at all and that is how TRUSTED_PROXIES came to silently do
+        // nothing.
+        'two_factor_enforcement' => env('PROJECTSEND_TWO_FACTOR_ENFORCEMENT'),
     ],
 
     'uploads' => [

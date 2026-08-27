@@ -19,6 +19,7 @@ use App\Modules\Platform\Mail\MicrosoftGraphTransport;
 use App\Modules\Platform\News\Console\FetchNewsCommand;
 use App\Modules\Platform\Notifications\ThemedMailChannel;
 use App\Modules\Platform\Scheduling\Console\PurgeFailedJobsCommand;
+use App\Modules\Platform\Settings\Console\SeedSettingsCommand;
 use App\Modules\Platform\Scheduling\RecordsScheduledTaskRuns;
 use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
 use App\Modules\Platform\Settings\MailConfigApplier;
@@ -83,6 +84,7 @@ class PlatformServiceProvider extends ServiceProvider
                 DisableCaptchaCommand::class,
                 TestCaptchaCommand::class,
                 PurgeFailedJobsCommand::class,
+                SeedSettingsCommand::class,
                 RefreshMailOAuthTokensCommand::class,
             ]);
         }

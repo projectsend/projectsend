@@ -78,6 +78,14 @@ if [ "$1" = "supervisord" ] || [ "$1" = "/usr/bin/supervisord" ]; then
     # persisted storage volume and outlive the container that wrote it).
     su-exec www-data php artisan projectsend:update
 
+    # Provisioning defaults, before the account they govern exists. A
+    # policy an operator wants on from the start has to be written in this
+    # boot or not at all: the only other writer is whoever administers the
+    # installation, and the line below is what creates them. Seeds only a
+    # setting nobody has ever stored, so it never argues with an
+    # administrator who changed it later.
+    su-exec www-data php artisan projectsend:seed-settings
+
     # Unattended provisioning: create the first administrator from the
     # environment. Without these, the web setup screen prompts instead.
     if [ -n "$ADMIN_EMAIL" ] && [ -n "$ADMIN_PASSWORD" ]; then

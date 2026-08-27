@@ -13,6 +13,10 @@ Anything under **Upgrade notes** is something you have to do, not something we d
 This section collects changes as they land; the release process turns it into a numbered entry when
 a version is cut.
 
+**Fixed**
+
+- The plain-text version of an email no longer shows the link twice, wrapped in brackets.
+
 ## 2.2.0 — 27 August 2026
 
 A big release. Most of it closes holes in who can see what. The rest is a handful of new things.

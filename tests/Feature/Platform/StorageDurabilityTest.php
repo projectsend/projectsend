@@ -136,7 +136,21 @@ test('nothing is reported when uploads go to external storage instead', function
 test('the dashboard carries the verdict to the system widget', function () {
     $admin = User::factory()->create();
 
+    // Substituted rather than read live, for the same reason the rest of
+    // this file substitutes it: the real answer depends on whatever machine
+    // the suite runs on. What is under test here is that the verdict this
+    // class produced reaches the widget whole — the level, and the volume
+    // name the card prints alongside it.
+    app()->instance(
+        StorageDurability::class,
+        durability(mounts('/docker/volumes/projectsend_files/_data', storage_path('app/files'))),
+    );
+
     $this->actingAs($admin)
         ->get('/dashboard')
-        ->assertInertia(fn ($page) => $page->has('system'));
+        ->assertInertia(fn ($page) => $page->where('system.storage_durability', [
+            'level' => StorageDurabilityLevel::DockerVolume->value,
+            'volume' => 'projectsend_files',
+            'source' => null,
+        ]));
 });

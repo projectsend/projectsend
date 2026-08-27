@@ -1900,5 +1900,7 @@
     "Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.": "あなた自身の役割は担当する取引先に限定されているため、作成または編集する役割からその制限を外すことはできません。",
     "Nothing is building zip downloads": "ZIP ダウンロードを作成しているものがありません",
     "A zip download has been waiting since :date and no background worker has picked it up. Zip downloads run on their own queue now, so a worker started before this version watches the wrong one — everything else, including email, keeps working.": ":date から ZIP ダウンロードが待機したままで、どのバックグラウンド処理も取りかかっていません。ZIP の作成は専用のキューで実行されるようになったため、このバージョンより前に起動した処理は別のキューを見ています — メールを含め、ほかはすべて動いています。",
-    "Your worker command needs --queue=default,zips. INSTALL.md has the full service file.": "バックグラウンド処理のコマンドに --queue=default,zips が必要です。完全なサービスファイルは INSTALL.md にあります。"
+    "Your worker command needs --queue=default,zips. INSTALL.md has the full service file.": "バックグラウンド処理のコマンドに --queue=default,zips が必要です。完全なサービスファイルは INSTALL.md にあります。",
+    "This installation is limited to :count staff accounts. Remove one, or ask for a larger plan.": "このインストールはシステムアカウント :count 件までです。1 件削除するか、上位のプランをご依頼ください。",
+    "This installation is limited to :count clients. Remove one, or ask for a larger plan.": "このインストールは取引先 :count 件までです。1 件削除するか、上位のプランをご依頼ください。"
 }

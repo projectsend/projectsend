@@ -1900,5 +1900,7 @@
     "Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.": "Ваша собственная роль ограничена назначенными вам клиентами, поэтому роль, которую вы создаёте или изменяете, не может снять это ограничение.",
     "Nothing is building zip downloads": "Никто не собирает ZIP-архивы",
     "A zip download has been waiting since :date and no background worker has picked it up. Zip downloads run on their own queue now, so a worker started before this version watches the wrong one — everything else, including email, keeps working.": "ZIP-архив ждёт с :date, и ни один фоновый обработчик его не взял. Сборка ZIP теперь идёт в отдельной очереди, поэтому обработчик, запущенный до этой версии, следит не за той — всё остальное, включая почту, работает как прежде.",
-    "Your worker command needs --queue=default,zips. INSTALL.md has the full service file.": "В команде вашего фонового обработчика нужен --queue=default,zips. Полный файл службы есть в INSTALL.md."
+    "Your worker command needs --queue=default,zips. INSTALL.md has the full service file.": "В команде вашего фонового обработчика нужен --queue=default,zips. Полный файл службы есть в INSTALL.md.",
+    "This installation is limited to :count staff accounts. Remove one, or ask for a larger plan.": "Эта установка ограничена :count системными учётными записями. Удалите одну или запросите более крупный тариф.",
+    "This installation is limited to :count clients. Remove one, or ask for a larger plan.": "Эта установка ограничена :count клиентами. Удалите одного или запросите более крупный тариф."
 }

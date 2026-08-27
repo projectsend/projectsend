@@ -17,9 +17,9 @@ a version is cut.
 
 A large release, and most of it is about boundaries holding. A staff role limited to its own
 clients now stays limited on every screen and every endpoint that touches one, and a public file's
-private notes stay private. Alongside that: zip downloads gained a size limit and a queue of their
-own, external storage learned Google Cloud Storage, and a deleted account's email address can be
-used again.
+private notes stay private. Alongside that: managed installations gain their own user management,
+zip downloads gained a size limit and a queue of their own, external storage learned Google Cloud
+Storage, and a deleted account's email address can be used again.
 
 ### Upgrade notes
 
@@ -36,11 +36,34 @@ used again.
   If it is ever missed, ProjectSend now says so on screen: staff who can see system information get
   a banner naming the problem and the fix.
 
+- **Hosting ProjectSend for other people?** Three environment variables are new, and all three are
+  for you rather than for somebody running a single installation of their own.
+  `PROJECTSEND_PLATFORM_MAX_STAFF_USERS` and `PROJECTSEND_PLATFORM_MAX_CLIENTS` cap how many
+  accounts an installation may hold; leave them unset for no limit, which is what every ordinary
+  install wants. `PROJECTSEND_TWO_FACTOR_ENFORCEMENT` seeds the two-factor policy on the very first
+  boot, before the first administrator exists — it is only ever a starting value, and an
+  administrator who changes it afterwards keeps their change. `php artisan projectsend:status
+  --json` reports the version, the edition, the capabilities in force and the seat counts, so you
+  can read all of it without opening a shell inside the application.
+
 - **If you run behind a reverse proxy, check `TRUSTED_PROXIES`.** It is now read correctly, which it
   was not before — see the fix below. Set it in `.env`, and do not run `config:cache`, which stops
   `.env` being read at all.
 
 ### Added
+
+- **Managed installations can manage their own staff accounts.** *(Hosted)* The Users and Roles
+  screens, and their API equivalents, used to be absent on a hosted installation on the assumption
+  that staff accounts would be created for you from outside. They are now there. A host still
+  decides how many accounts your plan includes — creating one past that number is refused, naming
+  the limit — but who fills those seats, and which role each of them holds, is your decision. It
+  always should have been: the people running the platform do not know whether Alice should be an
+  Account Manager, and they certainly do not know where her files go when she leaves.
+
+  Two details worth knowing if you are counting. A deactivated account still occupies its seat,
+  because deactivating is one click from undoing; deleting frees it, and asks what should happen to
+  the files that account owns. A client who has registered but not yet been approved does not occupy
+  one — the seat is taken at the moment you approve them.
 
 - **Google Cloud Storage as a storage backend.** External storage used to mean S3 and nothing else.
   The Storage settings screen now asks which provider you are using first, and offers Google Cloud

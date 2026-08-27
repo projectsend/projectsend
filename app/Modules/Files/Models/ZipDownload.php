@@ -25,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @property list<int>|null $contained_file_ids
  * @property list<array{id: int, name: string}>|null $skipped_files
  * @property Carbon|null $delivered_at
+ * @property Carbon|null $started_at
  */
 class ZipDownload extends Model
 {
@@ -44,6 +45,7 @@ class ZipDownload extends Model
             'contained_file_ids' => 'array',
             'skipped_files' => 'array',
             'delivered_at' => 'datetime',
+            'started_at' => 'datetime',
         ];
     }
 

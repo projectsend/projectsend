@@ -125,6 +125,16 @@ export interface SharedData {
         applied_at: string;
         install_kind: InstallKind;
     } | null;
+    /**
+     * Set when zip builds have been queued and no worker ever picked them
+     * up — see StalledZipBuilds. Almost always a manual install whose
+     * worker command predates the `zips` queue, which is silent in the
+     * same way code_notice above is: everything else keeps working.
+     */
+    worker_notice: {
+        /** When the oldest unstarted build was asked for. */
+        waiting_since: string;
+    } | null;
     locale: string;
     /**
      * The IANA zone this viewer reads dates in — their own preference, or

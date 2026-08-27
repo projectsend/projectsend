@@ -3,6 +3,7 @@ import { AppShell } from '@/components/app-shell';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppSidebarHeader } from '@/components/app-sidebar-header';
 import { CodeNoticeBanner } from '@/components/code-notice-banner';
+import { WorkerNoticeBanner } from '@/components/worker-notice-banner';
 import { Toaster } from '@/components/toaster';
 import { type BreadcrumbItem } from '@/types';
 
@@ -18,6 +19,7 @@ export default function AppSidebarLayout({ children, breadcrumbs = [] }: { child
                     is for has no reason to go looking. */}
                 <div className="px-6 pt-4 empty:hidden md:px-4">
                     <CodeNoticeBanner />
+                    <WorkerNoticeBanner />
                 </div>
                 {children}
             </AppContent>

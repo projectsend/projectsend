@@ -86,6 +86,14 @@ class BuildZipDownloadJob implements ShouldQueue
             return;
         }
 
+        // Stamped before any of the work, because the only thing this is
+        // for is telling "a worker has this in hand" apart from "nobody
+        // is listening to the zips queue". A build that waits and never
+        // starts is the second, which is what a manual install whose
+        // worker command predates that queue looks like from here. See
+        // StalledZipBuilds.
+        $zipDownload->forceFill(['started_at' => now()])->save();
+
         // Authorization is re-derived here, against the requester, rather
         // than trusted from what the controller stored: a folder id only
         // says "this user may open this folder", never "this user may read

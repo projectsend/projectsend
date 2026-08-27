@@ -36,6 +36,12 @@ a version is cut.
   ceiling is, rather than simply refused; each person can have one archive being prepared at a time,
   for the same reason.
 
+- **ProjectSend tells you if nothing is building your zip downloads.** The change below gives zip
+  building its own queue, which a manual install's background worker has to be told about. Miss that
+  and the failure is silent: email keeps going out, zip downloads simply never finish, and nothing
+  in any log says why. Staff who can see system information now get a banner naming the problem and
+  the one-line fix, so nobody has to work it out from a spinner that never stops.
+
 - **Zip downloads no longer hold up your email.** Preparing a large archive can take a while, and it
   used to run on the same queue as everything else — so one big zip could delay every notification
   email behind it. Zip building now has a queue of its own, and the Docker images run a second

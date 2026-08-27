@@ -55,7 +55,12 @@ test('the 2fa setup screen itself and logout stay reachable under enforcement', 
     $this->actingAs(User::factory()->create());
 
     $this->get('/settings/two-factor')->assertOk();
-    $this->post('/settings/two-factor')->assertRedirect();
+    // Named rather than bare: enabling is behind password.confirm, so the
+    // redirect it answers with is the confirm-password screen. A bare
+    // assertRedirect() passes on any target, including this middleware
+    // bouncing the request back to two-factor.show, which is the shape
+    // this file exists to refuse.
+    $this->post('/settings/two-factor')->assertRedirect(route('password.confirm'));
     $this->post('/logout')->assertRedirect('/');
 });
 
@@ -101,4 +106,47 @@ test('clients cannot access security settings', function () {
 
     $this->get('/system/settings/security')->assertRedirect(route('dashboard'));
     $this->patch('/system/settings/security', ['two_factor_enforcement' => 'all'])->assertForbidden();
+});
+
+/**
+ * The exemption list matches on route names, and only the GET half of the
+ * confirm-password screen had one. So the form rendered and its submission
+ * did not: enforcement sent the POST back to two-factor.show, the password
+ * was never confirmed, and enrolment -- the one exit enforcement leaves
+ * open -- could not be started by anybody.
+ */
+test('an enforced user can confirm their password, which is what enrolling needs', function () {
+    app(Settings::class)->set(Setting::TwoFactorEnforcement, 'all');
+
+    $this->actingAs(User::factory()->create());
+
+    $this->post('/settings/two-factor')->assertRedirect(route('password.confirm'));
+    $this->get('/confirm-password')->assertOk();
+
+    $this->post('/confirm-password', ['password' => 'password'])
+        ->assertSessionHasNoErrors();
+
+    expect(session()->has('auth.password_confirmed_at'))->toBeTrue();
+});
+
+test('enrolment can actually be started under enforcement', function () {
+    app(Settings::class)->set(Setting::TwoFactorEnforcement, 'all');
+
+    $user = User::factory()->create();
+    $this->actingAs($user);
+
+    $this->post('/confirm-password', ['password' => 'password']);
+
+    // store() answers back(), so the target is the referer rather than a
+    // fixed route -- what matters is that it ran at all instead of being
+    // bounced to the confirm-password screen it can no longer get past.
+    $this->post('/settings/two-factor')->assertSessionHasNoErrors();
+
+    // The secret is what enabling writes; without it the enrolment screen
+    // has no QR code to show and there is nothing to confirm against.
+    expect($user->refresh()->two_factor_secret)->not->toBeNull();
+
+    $this->get('/settings/two-factor')->assertOk()->assertInertia(
+        fn (AssertableInertia $page) => $page->where('pending', true)
+    );
 });

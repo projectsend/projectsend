@@ -255,10 +255,25 @@ class FilesController extends Controller
             'download_limit_scope' => ['nullable', Rule::enum(DownloadLimitScope::class)],
         ]);
 
+        // The edit form posts folder_id as a string; cast so the strict
+        // change comparison below matches the model's int.
+        $folderId = isset($validated['folder_id']) ? (int) $validated['folder_id'] : null;
+        $user = $request->user();
+
+        // Reparenting through update() is the same privileged write as
+        // move()/bulkUpdate(), so it needs the same guard: the destination
+        // must be a folder this user can actually see. Only checked when the
+        // folder actually changes, so re-saving a file that already sits in
+        // an out-of-scope folder (reachable via a direct client share) still
+        // works.
+        if ($folderId !== null && $folderId !== $file->folder_id && $user !== null) {
+            $this->scope->folders($user)->findOrFail($folderId);
+        }
+
         $attributes = [
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
-            'folder_id' => $validated['folder_id'] ?? null,
+            'folder_id' => $folderId,
         ];
 
         // Only meaningful while the comment scope is `selected`, and only

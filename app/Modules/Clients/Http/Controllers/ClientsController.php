@@ -234,8 +234,13 @@ class ClientsController extends Controller
         ]);
 
         // Activating a pending account through the edit screen counts as
-        // approval and clears the request flag.
+        // approval and clears the request flag — which is the moment a
+        // seat is spent, so the cap is asked here for the same reason
+        // AccountRequestsController::approve() asks it one screen over.
+        // Inside the branch, not above it: an installation at its cap must
+        // still be able to rename a client it already has.
         if ($client->account_requested && $validated['active']) {
+            $this->seats->guardClient('active');
             $client->account_requested = false;
         }
 

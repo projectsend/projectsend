@@ -31,13 +31,23 @@ class CommentPresenter
     ) {}
 
     /**
+     * The whole payload for one file's thread.
+     *
+     * $viewerMaySeeFile is the precondition VisibleCommentScope states at
+     * the top of its class: the caller must already have established that
+     * this viewer may see the file. A caller that has not says so, and the
+     * thread is narrowed to the public reading instead of the
+     * authenticated one.
+     *
      * @return array{comments: list<array<string, mixed>>, can_comment: bool, cannot_comment_reason: string|null, is_guest: bool, guest_moderated: bool, captcha_required: bool, visibilities: list<array<string, mixed>>, default_visibility: string|null, edit_window_minutes: int}
      */
-    public function thread(?User $viewer, File $file): array
+    public function thread(?User $viewer, File $file, bool $viewerMaySeeFile = true): array
     {
         $forStaff = $viewer?->isStaff() === true;
 
-        $comments = $this->scope->for($viewer, $file)
+        $comments = ($viewerMaySeeFile
+            ? $this->scope->for($viewer, $file)
+            : $this->scope->forPublicReader($viewer, $file))
             ->with(['author', 'clientContext'])
             ->orderBy('created_at')
             ->orderBy('id')

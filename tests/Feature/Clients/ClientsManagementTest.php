@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Modules\Audit\Action;
+use App\Modules\Audit\ActivityLog;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\UserType;
 use App\Modules\Platform\Capabilities\Edition;
@@ -107,4 +109,22 @@ test('staff can update client settings and they take effect', function () {
     Auth::logout();
     $this->flushSession();
     $this->get('/register')->assertOk();
+});
+
+test('a failure while disposing of a deleted client\'s content rolls the deletion back', function () {
+    $client = User::factory()->client()->create();
+    $reassignTarget = User::factory()->create();
+
+    failAccountContentDisposal();
+
+    $this->actingAs($this->admin)->delete("/clients/{$client->id}", [
+        'content_action' => 'reassign',
+        'reassign_to_id' => $reassignTarget->id,
+    ])->assertStatus(500);
+
+    // The soft-delete and its log share a transaction with the content step,
+    // so a failure there leaves the client intact rather than
+    // deleted-but-still-owning-files.
+    expect(User::query()->find($client->id))->not->toBeNull()
+        ->and(ActivityLog::query()->where('action', Action::UserDeleted)->exists())->toBeFalse();
 });

@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
@@ -216,9 +217,15 @@ class UsersController extends Controller
 
         $validated = $this->accountDeletion->validate($request, $user);
 
-        $name = $this->accounts->delete($user);
-
-        $this->accountDeletion->apply($validated, $user, $name);
+        // Soft-deleting the account and disposing of its files are two
+        // separate writes; keep them in one transaction so a failure in the
+        // second (e.g. the reassignment target deleted between validation
+        // and apply()'s findOrFail) cannot leave the account deleted with
+        // its content still pointing at it.
+        DB::transaction(function () use ($validated, $user): void {
+            $name = $this->accounts->delete($user);
+            $this->accountDeletion->apply($validated, $user, $name);
+        });
 
         return response()->json(status: 204);
     }

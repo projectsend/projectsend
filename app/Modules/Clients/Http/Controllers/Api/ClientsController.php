@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -263,13 +264,24 @@ class ClientsController extends Controller
 
         $validated = $this->accountDeletion->validate($request, $client);
 
-        $name = $client->name;
-        $this->erasure->apply($client);
-        $client->delete();
+        // Soft-deleting the account and disposing of its files are two
+        // separate writes; keep them in one transaction so a failure in the
+        // second (e.g. the reassignment target deleted between validation
+        // and apply()'s findOrFail) cannot leave the account deleted with
+        // its content still pointing at it.
+        //
+        // The erasure stamp goes inside for the same reason: a deletion
+        // that rolls back must not leave a live account carrying a date
+        // on which it would be erased.
+        DB::transaction(function () use ($validated, $client): void {
+            $name = $client->name;
+            $this->erasure->apply($client);
+            $client->delete();
 
-        $this->activity->log(Action::UserDeleted, context: ['name' => $name]);
+            $this->activity->log(Action::UserDeleted, context: ['name' => $name]);
 
-        $this->accountDeletion->apply($validated, $client, $name);
+            $this->accountDeletion->apply($validated, $client, $name);
+        });
 
         return response()->json(status: 204);
     }

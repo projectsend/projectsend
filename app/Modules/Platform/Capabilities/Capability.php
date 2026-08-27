@@ -66,6 +66,23 @@ enum Capability: string
     // package is installed, not a flag an installation can set. Present
     // in this enum even so, because a package cannot extend a closed one
     // — core has to publish the key before anything can gate on it.
+    // Cloud-only — staff seats on a managed instance belong to the
+    // platform that sold them rather than to the instance, so the tenant's
+    // own /users screens stay closed (see UsersManage above) and a control
+    // plane creates, deactivates and password-resets them from outside.
+    //
+    // The seat *number* deliberately does not live here. There are no
+    // billing or plan tiers in this application to key off — the same
+    // reason config/api.php gives for not inventing an installation-level
+    // rate limit — so the limit arrives from the environment and this
+    // capability only says who is in charge.
+    //
+    // Declared before the module that implements it exists, and that is
+    // the point: a capability added after a release is invisible to every
+    // image built from one, which is exactly how StorageManaged came to
+    // sit unusable for a fleet that had everything else in place.
+    case PlatformManaged = 'platform.managed';
+
     case AiConnector = 'ai.connector';
 
     /**
@@ -84,6 +101,7 @@ enum Capability: string
             self::Branding,
             self::StorageManaged,
             self::CaptchaManagedKeys,
+            self::PlatformManaged,
             self::AiConnector => [Edition::Cloud],
         };
     }

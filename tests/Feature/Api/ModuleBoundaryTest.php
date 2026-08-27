@@ -96,6 +96,61 @@ test('no package route escapes the modules prefix', function () {
     expect($offenders)->toBe([]);
 });
 
+/*
+ * The same boundary, from outside /api/v1.
+ *
+ * The test above only looks at paths beginning `api/v1/`, so a package
+ * claiming `/platform/v1` passed it — not because that was sanctioned,
+ * but because nothing was looking.
+ *
+ * What is policed here is *machine* surfaces: roots a non-browser caller
+ * authenticates to. A package route there is a package extending the
+ * host's trusted perimeter rather than plugging into it. Package web
+ * screens are deliberately not policed — community-modules' Custom
+ * Assets adds `system/settings/custom-assets`, that is the point of a
+ * module, and those go through the host's session and capability
+ * middleware in plain sight. Listing them here would be the hardcoded
+ * URI list the test above explains it is avoiding.
+ *
+ * `platform/v1` is a single documented exception, in the same shape as
+ * the openapi.json allowlist below: a control plane is not an
+ * integration and does not belong under the token-authenticated API.
+ * Adding a second exception has to be a deliberate edit here, with a
+ * reason beside it.
+ */
+test('a package claims no machine surface outside the two it is given', function () {
+    $packageNamespace = 'ProjectSend\\';
+
+    // Roots something other than a browser authenticates to.
+    $machineRoots = ['api/', 'platform/'];
+
+    $sanctioned = [
+        'api/v1/modules/',
+        // The Cloud control plane. Deliberately outside /api/v1: it is
+        // authenticated by a platform secret rather than a staff bearer
+        // token, so putting it under the API's stack would mean either
+        // loosening that stack or pretending the caller is a person.
+        'platform/v1/',
+    ];
+
+    $offenders = collect(Route::getRoutes()->getRoutes())
+        ->filter(function (RouteInstance $route) use ($packageNamespace): bool {
+            $action = $route->getAction('controller') ?? '';
+
+            return is_string($action) && str_starts_with($action, $packageNamespace);
+        })
+        ->filter(fn (RouteInstance $route): bool => collect($machineRoots)
+            ->contains(fn (string $root): bool => str_starts_with($route->uri(), $root)))
+        ->reject(fn (RouteInstance $route): bool => collect($sanctioned)
+            ->contains(fn (string $prefix): bool => str_starts_with($route->uri(), $prefix)))
+        ->map(fn (RouteInstance $route): string => $route->uri())
+        ->unique()
+        ->values()
+        ->all();
+
+    expect($offenders)->toBe([]);
+});
+
 test('core api routes all carry the staff token stack', function () {
     // The other half of the same boundary: whatever core adds under
     // /api/v1, it must not be reachable without a staff token. A new

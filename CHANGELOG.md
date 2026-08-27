@@ -13,6 +13,33 @@ Anything under **Upgrade notes** is something you have to do, not something we d
 This section collects changes as they land; the release process turns it into a numbered entry when
 a version is cut.
 
+## 2.2.0 — 27 August 2026
+
+A large release, and most of it is about boundaries holding. A staff role limited to its own
+clients now stays limited on every screen and every endpoint that touches one, and a public file's
+private notes stay private. Alongside that: zip downloads gained a size limit and a queue of their
+own, external storage learned Google Cloud Storage, and a deleted account's email address can be
+used again.
+
+### Upgrade notes
+
+- **Manual installs: your background worker needs one more queue.** Building a zip download now runs
+  on its own queue, so a worker started before this version watches the wrong one — it will keep
+  sending email perfectly while no zip download ever finishes, and nothing in any log will say why.
+  `update.sh` spots this and offers to fix the service file for you, keeping a copy of the old one,
+  so for most people there is nothing to do but say yes. If you upgrade by hand, change the
+  `ExecStart` line in `/etc/systemd/system/projectsend-worker.service` to read
+  `queue:work --queue=default,zips …`, then `sudo systemctl daemon-reload && sudo systemctl restart
+  projectsend-worker`. INSTALL.md has the full file, and the two-worker setup if you would rather
+  keep the two kinds of work apart. Docker installations need no change.
+
+  If it is ever missed, ProjectSend now says so on screen: staff who can see system information get
+  a banner naming the problem and the fix.
+
+- **If you run behind a reverse proxy, check `TRUSTED_PROXIES`.** It is now read correctly, which it
+  was not before — see the fix below. Set it in `.env`, and do not run `config:cache`, which stops
+  `.env` being read at all.
+
 ### Added
 
 - **Google Cloud Storage as a storage backend.** External storage used to mean S3 and nothing else.

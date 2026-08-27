@@ -93,6 +93,17 @@ class FilesController extends Controller
         $user = $request->user();
         assert($user !== null);
 
+        // The check the other two upload paths make and this one did not:
+        // a folder outside the uploader's library is not a place to put a
+        // file. Without it this route reached any folder on the
+        // installation, and File::scopeVisibleToClient then hands the file
+        // to whoever that folder's subtree is shared with.
+        $folder = isset($validated['folder_id'])
+            ? Folder::query()->whereKey($validated['folder_id'])->first()
+            : null;
+
+        abort_unless(Folder::uploadableBy($user, $folder), 403);
+
         if (! app(UploadExtensionPolicy::class)->isAllowed($user, $upload->getClientOriginalName())) {
             throw ValidationException::withMessages([
                 'file' => __('This file type is not allowed for upload.'),
@@ -197,7 +208,11 @@ class FilesController extends Controller
                     'url' => route('files.edit', $member, false),
                     'is_current' => $member->id === $file->id,
                 ])->values(),
-            'folder_options' => Folder::query()->orderBy('path')->orderBy('name')->get()
+            // Narrowed like every other folder listing: an unscoped staff
+            // member gets the whole tree, a client-scoped one only their
+            // own. Unfiltered this handed a scoped staffer every folder
+            // name and id on the installation.
+            'folder_options' => $this->scope->folders($viewer)->orderBy('path')->orderBy('name')->get()
                 ->map(fn (Folder $folder): array => ['id' => $folder->id, 'name' => $folder->name])->all(),
             'categories' => Category::query()->orderBy('name')->get(['id', 'name', 'color'])
                 ->map(fn (Category $category): array => ['id' => $category->id, 'name' => $category->name, 'color' => $category->color])->all(),

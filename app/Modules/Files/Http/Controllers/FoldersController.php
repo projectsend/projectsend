@@ -186,7 +186,11 @@ class FoldersController extends Controller
             'expired' => $expired,
             'categories' => Category::query()->orderBy('name')->get(['id', 'name', 'color'])
                 ->map(fn (Category $category): array => ['id' => $category->id, 'name' => $category->name, 'color' => $category->color])->all(),
-            'folder_options' => Folder::query()->orderBy('path')->orderBy('name')->get()
+            // Narrowed like every other folder listing on this screen: an
+            // unscoped staff member gets the whole tree, a client-scoped
+            // one only their own. Unfiltered this handed a scoped staffer
+            // every folder name and id on the installation.
+            'folder_options' => $this->scope->folders($user)->orderBy('path')->orderBy('name')->get()
                 ->map(fn (Folder $folder): array => ['id' => $folder->id, 'name' => $folder->name])->all(),
             'can_create_folders' => $user->can('create_own_folders'),
             'can_upload' => $user->can('upload'),

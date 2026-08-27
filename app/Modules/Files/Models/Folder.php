@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Files\Models;
 
 use App\Models\User;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Groups\Models\Group;
 use App\Support\Concerns\HasUniqueSlug;
 use Illuminate\Database\Eloquent\Builder;
@@ -152,11 +153,19 @@ class Folder extends Model
 
     /**
      * Whether $user may upload a new file directly into $folder (null =
-     * loose at the root, always allowed). Staff already validate folder_id
-     * through FilesController's own flow — this is the client-facing
-     * check, used by ChunkedUploadsController: the client owns the
-     * folder, or it's a public folder that opts into client uploads and
-     * the client's role permits uploading into public folders at all.
+     * loose at the root, always allowed).
+     *
+     * Staff are held to the library boundary they are held to everywhere
+     * else: an unscoped staff member may use any folder, a client-scoped
+     * one only the folders StaffLibraryScope already shows them. This is
+     * the only place that decides it: every upload path — the web form,
+     * the API and the chunked flow the browser actually posts to — comes
+     * through here rather than checking folder_id for itself.
+     *
+     * For a client this is unchanged, and is still the whole of the
+     * check: they own the folder, or it is a public folder that opts into
+     * client uploads and their role permits uploading into public folders
+     * at all.
      */
     public static function uploadableBy(User $user, ?self $folder): bool
     {
@@ -165,7 +174,7 @@ class Folder extends Model
         }
 
         if ($user->isStaff()) {
-            return true;
+            return app(StaffLibraryScope::class)->allowsFolder($user, $folder);
         }
 
         return $folder->isOwnedBy($user)

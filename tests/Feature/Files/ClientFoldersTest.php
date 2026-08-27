@@ -223,3 +223,34 @@ test('a loose file inside a client-created folder shows nested, not at root', fu
         fn (AssertableInertia $page) => $page->has('files', 1)->where('files.0.name', 'note'),
     );
 });
+
+test('a subfolder the client cannot enter is not named to them either', function () {
+    $client = User::factory()->client()->create();
+    $this->actingAs($client)->post('/my-folders', ['name' => 'My Uploads'])->assertRedirect();
+    $mine = Folder::query()->where('name', 'My Uploads')->sole();
+
+    // Staff files something of another client's away inside it. The client
+    // may open their own folder, but this subfolder was never shared with
+    // them — and its name alone would say that other client exists.
+    $this->actingAs($this->admin);
+    $hidden = makeStaffFolder('Northwind Traders - contracts', $mine);
+
+    $this->actingAs($client)->get('/my-files?folder='.$mine->id)->assertInertia(
+        fn (AssertableInertia $page) => $page->has('folders', 0),
+    );
+
+    // Entering it was already refused; the name was the whole leak.
+    $this->actingAs($client)->get('/my-files?folder='.$hidden->id)->assertNotFound();
+});
+
+test('a client browsing their own folder still sees the subfolders they may enter', function () {
+    $client = User::factory()->client()->create();
+    $this->actingAs($client)->post('/my-folders', ['name' => 'Parent'])->assertRedirect();
+    $parent = Folder::query()->where('name', 'Parent')->sole();
+    $this->actingAs($client)->post('/my-folders', ['name' => 'Child', 'parent_id' => $parent->id])->assertRedirect();
+
+    // The narrowing must not swallow the client's own nesting.
+    $this->actingAs($client)->get('/my-files?folder='.$parent->id)->assertInertia(
+        fn (AssertableInertia $page) => $page->has('folders', 1)->where('folders.0.name', 'Child'),
+    );
+});

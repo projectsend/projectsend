@@ -68,9 +68,19 @@ test('capability-gated abilities are unavailable in an edition that lacks them',
     asCloud();
     $abilities = app(TokenAbilities::class);
 
-    foreach (['manage_users', 'create_users', 'manage_updates', 'create_assets', 'delete_assets'] as $key) {
+    // manage_users and create_users used to be in this list. They stopped
+    // being edition-gated in 2.2.0 — a platform caps how many seats exist
+    // rather than closing the screen — so they would now assert the
+    // opposite of what this test is about.
+    foreach (['manage_updates', 'create_assets', 'delete_assets'] as $key) {
         expect($abilities->isAvailable($key))->toBeFalse();
     }
+
+    // And the pair that moved: available in both editions now, which is
+    // worth pinning here rather than only in CapabilityRegistryTest,
+    // because this is the surface that would silently stop offering them.
+    expect($abilities->isAvailable('manage_users'))->toBeTrue()
+        ->and($abilities->isAvailable('create_users'))->toBeTrue();
 
     // Ungated abilities are unaffected by the edition.
     expect($abilities->isAvailable('upload'))->toBeTrue()
@@ -100,11 +110,12 @@ test('the rendered checkbox list is never empty of implemented abilities', funct
 test('issuance rejects a capability-unavailable ability even if the role grants it', function () {
     asCloud();
 
-    // The role still grants manage_users — an administrator holds every
-    // permission — so only the capability half can refuse this.
+    // The role still grants manage_updates — an administrator holds every
+    // permission — so only the capability half can refuse this. Was
+    // manage_users until 2.2.0 opened that one on both editions.
     $this->actingAs($this->admin)->post('/settings/api-tokens', [
-        'name' => 'Cloud user management',
-        'abilities' => [Permission::ManageUsers->value],
+        'name' => 'Cloud update management',
+        'abilities' => [Permission::ManageUpdates->value],
         'expires_in_days' => 30,
     ])->assertSessionHasErrors('abilities.0');
 
@@ -112,17 +123,17 @@ test('issuance rejects a capability-unavailable ability even if the role grants 
 });
 
 test('a token minted under one edition stops working under another', function () {
-    Route::middleware(['auth:sanctum', 'api-active', 'staff-token', 'token-can:manage_users'])
-        ->get('api/v1/_test/users', fn () => response()->json(['ok' => true]));
+    Route::middleware(['auth:sanctum', 'api-active', 'staff-token', 'token-can:manage_updates'])
+        ->get('api/v1/_test/updates', fn () => response()->json(['ok' => true]));
 
     // Minted on community, where the capability exists.
-    $token = $this->admin->createToken('t', [Permission::ManageUsers->value])->plainTextToken;
-    $this->withToken($token)->getJson('/api/v1/_test/users')->assertOk();
+    $token = $this->admin->createToken('t', [Permission::ManageUpdates->value])->plainTextToken;
+    $this->withToken($token)->getJson('/api/v1/_test/updates')->assertOk();
 
     asCloud();
     forgetRequestState();
 
-    $this->withToken($token)->getJson('/api/v1/_test/users')->assertForbidden();
+    $this->withToken($token)->getJson('/api/v1/_test/updates')->assertForbidden();
 });
 
 test('me reports only abilities the edition can honour', function () {
@@ -130,7 +141,7 @@ test('me reports only abilities the edition can honour', function () {
 
     $token = $this->admin->createToken('t', [
         Permission::Upload->value,
-        Permission::ManageUsers->value,
+        Permission::ManageUpdates->value,
     ])->plainTextToken;
 
     $this->withToken($token)->getJson('/api/v1/me')

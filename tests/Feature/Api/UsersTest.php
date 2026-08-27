@@ -72,15 +72,27 @@ function userManager(array $permissions = ['manage_users', 'create_users', 'edit
 |
 */
 
-test('every staff endpoint is refused on cloud, with a reason a caller can branch on', function (string $method, string $uri) {
+/*
+ * Staff endpoints used to be refused on cloud — users.manage was
+ * Community-only, on the reasoning that a managed installation's accounts
+ * arrived from outside. That reversed in 2.2.0: a platform provisions how
+ * many seats exist, the tenant decides who fills them, and the cap is an
+ * environment variable rather than a closed screen.
+ *
+ * The capability itself stays in front of these routes even though it is
+ * currently true in both editions — it is the seam an edition difference
+ * has to travel through, and deleting it would mean re-inventing one later.
+ */
+test('every staff endpoint answers on cloud, the same as on community', function (string $method, string $uri) {
     config(['projectsend.edition' => Edition::Cloud]);
 
-    $this->withToken($this->token)->json($method, $uri)
-        ->assertForbidden()
-        ->assertHeader('Content-Type', 'application/problem+json')
-        ->assertJsonPath('type', 'capability_unavailable')
-        ->assertJsonPath('capability', 'users.manage')
-        ->assertJsonPath('edition', 'cloud');
+    // Not asserting the status, which varies by route and payload — only
+    // that none of them is the capability refusal any more. Read as raw
+    // content rather than JSON: a successful delete answers 204 with an
+    // empty body, which json() cannot parse.
+    $response = $this->withToken($this->token)->json($method, $uri);
+
+    expect((string) $response->getContent())->not->toContain('capability_unavailable');
 })->with([
     'list' => ['GET', '/api/v1/users'],
     'roles' => ['GET', '/api/v1/roles'],
@@ -88,18 +100,8 @@ test('every staff endpoint is refused on cloud, with a reason a caller can branc
     'create' => ['POST', '/api/v1/users'],
     'update' => ['PATCH', '/api/v1/users/1'],
     'delete' => ['DELETE', '/api/v1/users/1'],
-    'reset two-factor' => ['DELETE', '/api/v1/users/1/two-factor'],
+    'two-factor' => ['DELETE', '/api/v1/users/1/two-factor'],
 ]);
-
-// The routes exist in every edition so the committed OpenAPI document is
-// identical everywhere — the middleware refuses, the route table does not
-// lie. A 404 here would mean the document described a path that was not
-// registered.
-test('the routes are registered on cloud even though they refuse', function () {
-    config(['projectsend.edition' => Edition::Cloud]);
-
-    $this->withToken($this->token)->getJson('/api/v1/users')->assertStatus(403);
-});
 
 /*
 |--------------------------------------------------------------------------

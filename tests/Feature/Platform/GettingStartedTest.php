@@ -157,16 +157,15 @@ test('it only lists what this person may actually do', function () {
         ->and($keys)->not->toContain('theme');
 });
 
-// The example the brief named: a managed installation has no staff
-// accounts of its own to hand out, no mail server to point anywhere and
-// no scheduler to check.
+// A managed installation has no mail server to point anywhere and no
+// scheduler to check. It does now have staff accounts of its own — that
+// changed in 2.2.0 — so 'team' belongs on its list where it once did not.
 test('a managed installation is not sent to screens it does not have', function () {
     config()->set('projectsend.edition', Edition::Cloud);
 
     $keys = quickStartKeys($this->admin);
 
-    expect($keys)->toContain('client', 'upload', 'theme', 'email-theme')
-        ->and($keys)->not->toContain('team')
+    expect($keys)->toContain('client', 'upload', 'theme', 'email-theme', 'team')
         ->and($keys)->not->toContain('email')
         ->and($keys)->not->toContain('scheduler');
 });

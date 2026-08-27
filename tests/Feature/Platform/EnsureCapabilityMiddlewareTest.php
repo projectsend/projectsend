@@ -6,7 +6,13 @@ use App\Modules\Platform\Capabilities\Edition;
 use Illuminate\Support\Facades\Route;
 
 beforeEach(function () {
-    Route::middleware('capability:users.manage')->get('/test/community-only', fn () => 'ok');
+    // storage.configure rather than users.manage: this test needs a
+    // capability that is genuinely Community-only, and users.manage stopped
+    // being one in 2.2.0 when a platform's seats became a cap rather than a
+    // closed screen. Any Community-only key would do — this one is picked
+    // because a managed installation is given its storage, which is the
+    // clearest example of the edition line the middleware exists to draw.
+    Route::middleware('capability:storage.configure')->get('/test/community-only', fn () => 'ok');
     Route::middleware('capability:branding.customize')->get('/test/cloud-only', fn () => 'ok');
 
     // Under api/, because ProblemDetails is scoped to the API on purpose —

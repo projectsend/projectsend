@@ -11,12 +11,13 @@ use Inertia\Testing\AssertableInertia;
  * The one permission this feature adds, from the screen that grants it to
  * the page it gates.
  *
- * Forced to the community edition because the cloud edition gates the
- * whole roles screen behind Capability::UsersManage — which is exactly why
- * commenting itself is governed by settings rather than permission keys
- * (see App\Modules\Comments\CommentAuthors). Without this, the roles half
- * of the feature would be untestable on a cloud-configured install and
- * unverifiable by hand on one.
+ * Forced to the community edition when the cloud edition gated the whole
+ * roles screen behind Capability::UsersManage, which would have made the
+ * roles half of this feature untestable on a cloud-configured install.
+ * That gate opened on both editions in 2.2.0, so the forcing is no longer
+ * load-bearing — it is kept because pinning the edition keeps this test
+ * about the permission rather than about whichever edition the suite
+ * happens to be configured for.
  */
 beforeEach(function () {
     config()->set('projectsend.edition', Edition::Community);

@@ -90,8 +90,8 @@ list for your account.
 | `manage_groups` | list groups |
 
 | `moderate_comments` | list what is awaiting approval, and approve it |
-| `manage_users` | list staff accounts and the roles you may assign — **Community only** |
-| `create_users` / `edit_users` / `delete_users` | create, read and edit, delete staff accounts; `edit_users` also removes an account's two-factor authentication — **Community only** |
+| `manage_users` | list staff accounts and the roles you may assign |
+| `create_users` / `edit_users` / `delete_users` | create, read and edit, delete staff accounts; `edit_users` also removes an account's two-factor authentication |
 
 There is no ability for *writing* a comment. Who may comment is an installation setting rather than
 a per-role permission, so the file abilities are the gate — the same question the web asks, which is
@@ -334,11 +334,10 @@ two are narrowed to what your token may see: a counterpart outside your reach re
 `/users` manages the people who administer the installation, and the role assigned to each of them.
 Clients are a different population with their own `/clients` endpoints and never appear here.
 
-**Community only.** Every endpoint under `/users` and `/roles` answers `403` with
-`type: capability_unavailable` on a managed installation, where staff accounts are created outside
-the application instead. The paths are still registered there, and still in this document, so that the
-specification is identical on every install — the refusal tells you why, where a missing route would
-not.
+Available on every edition. A managed installation may cap how many staff accounts exist — the
+operator supplies the number, and creating one past it is refused with a validation error naming the
+limit — but who fills those seats, and which role each of them holds, is the installation's own
+decision and always was.
 
 Two abilities are needed for each call: `manage_users` to reach the area at all, then the one for the
 action (`create_users`, `edit_users`, `delete_users`). That mirrors the web UI, where the whole

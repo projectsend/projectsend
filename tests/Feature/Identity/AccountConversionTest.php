@@ -49,10 +49,14 @@ function accountManager(): User
 |--------------------------------------------------------------------------
 */
 
-test('the tool is absent in the cloud edition', function () {
+test('the tool is present in the cloud edition too', function () {
+    // It follows users.manage, which opened on both editions in 2.2.0.
+    // Converting a client to staff takes a staff seat and frees a client
+    // one, which is why SeatAllowance has to see this door as well as the
+    // two creation controllers.
     config()->set('projectsend.edition', Edition::Cloud);
 
-    $this->actingAs($this->admin)->get('/users/convert')->assertNotFound();
+    $this->actingAs($this->admin)->get('/users/convert')->assertOk();
 });
 
 // "convert" must be registered before users/{user} or it binds as a route

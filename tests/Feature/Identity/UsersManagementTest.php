@@ -361,10 +361,14 @@ test('users management requires granular permissions', function () {
     $this->get('/users')->assertForbidden();
 });
 
-test('users management is absent in the cloud edition', function () {
+test('users management is present in the cloud edition too', function () {
+    // It was absent until 2.2.0, on the reasoning that a managed
+    // installation's accounts arrived from outside it. A platform
+    // provisions how many seats exist; who fills them, and which role each
+    // holds, is knowledge the platform does not have.
     config()->set('projectsend.edition', Edition::Cloud);
 
     $this->actingAs(admin());
 
-    $this->get('/users')->assertNotFound();
+    $this->get('/users')->assertOk();
 });

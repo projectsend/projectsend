@@ -217,17 +217,23 @@ Route::middleware(['auth:sanctum', 'api-active', 'staff-token'])->group(function
     | Staff accounts and the roles assigned to them
     |----------------------------------------------------------------------
     |
-    | Community only. Managed installations create staff accounts outside
-    | the application, so an API able to mint them there would be a second,
-    | unmanaged door into the same thing — `capability:users.manage` is the
-    | same gate routes/web.php puts on the /users screens.
+    | Both editions since 2.2.0. This was Community-only while a managed
+    | installation's staff accounts were expected to arrive from outside;
+    | a platform provisions the seat count and the tenant decides who
+    | fills it, so the screen and the endpoints stay open and
+    | PROJECTSEND_PLATFORM_MAX_STAFF_USERS is what a platform actually
+    | owns. `capability:users.manage` is the same gate routes/web.php puts
+    | on the /users screens, and both now pass in both editions.
     |
-    | Registered in every edition even so, and refused by the middleware
-    | rather than by not existing: the OpenAPI document is committed,
-    | served unauthenticated, and must be identical on every install
-    | (OpenApiContractTest compares it against the route table). A cloud
-    | caller gets 403 `capability_unavailable`, which says what is wrong;
-    | an endpoint that silently was not there would not.
+    | The middleware stays rather than being deleted: the capability is
+    | the seam an edition difference has to travel through, and a
+    | capability that is currently true everywhere is still where a future
+    | edition would say otherwise. A caller in an edition without it gets
+    | 403 `capability_unavailable`, which says what is wrong; an endpoint
+    | that silently was not there would not. The OpenAPI document is
+    | committed and served unauthenticated, so it must be identical on
+    | every install either way (OpenApiContractTest compares it against
+    | the route table).
     |
     | Permissions mirror routes/web.php exactly: `manage_users` to reach
     | the area at all, then a key per action on top of it. Two `token-can:`

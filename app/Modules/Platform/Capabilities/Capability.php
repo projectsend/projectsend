@@ -19,7 +19,14 @@ namespace App\Modules\Platform\Capabilities;
  */
 enum Capability: string
 {
-    // Community-only — cut where the installation is managed for you.
+    // Both editions. It was Community-only while a managed installation's
+    // staff accounts were expected to be created from outside — but a
+    // platform does not know whether Alice should be an Account Manager,
+    // any more than it knows where her files go when she leaves, and the
+    // seat count it does own is enforced by PROJECTSEND_PLATFORM_MAX_STAFF_USERS
+    // rather than by closing the screen. Capacity is the platform's; who
+    // fills it is the tenant's. Same division managed storage already uses:
+    // the bucket is provisioned, what goes in it is not.
     case UsersManage = 'users.manage';
     case StorageConfigure = 'storage.configure';
     case EmailTransportConfigure = 'email.transport.configure';
@@ -91,12 +98,13 @@ enum Capability: string
     public function editions(): array
     {
         return match ($this) {
-            self::UsersManage,
             self::StorageConfigure,
             self::EmailTransportConfigure,
             self::SystemUpdates,
             self::SchedulerMonitoring,
             self::CustomAssets => [Edition::Community],
+
+            self::UsersManage => [Edition::Community, Edition::Cloud],
 
             self::Branding,
             self::StorageManaged,

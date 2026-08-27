@@ -161,10 +161,12 @@ test('roles management requires the manage_users permission', function () {
     $this->get('/roles')->assertForbidden();
 });
 
-test('roles management is absent in the cloud edition', function () {
+test('roles management is present in the cloud edition too', function () {
+    // Follows users.manage, which gates both screens — see the capability's
+    // own comment for why that opened in 2.2.0.
     config()->set('projectsend.edition', Edition::Cloud);
 
     $this->actingAs(User::factory()->create());
 
-    $this->get('/roles')->assertNotFound();
+    $this->get('/roles')->assertOk();
 });

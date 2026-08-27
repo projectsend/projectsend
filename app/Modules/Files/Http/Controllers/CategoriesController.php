@@ -81,7 +81,14 @@ class CategoriesController extends Controller
 
         $this->activity->log(Action::CategoryCreated, subject: $category);
 
-        return redirect()->route('categories.edit', $category)->with('success', __('Category created.'));
+        // Same create-without-edit rule as ClientsController::store() — and
+        // the most reachable case of it: the sidebar shows Categories from
+        // create_categories alone, with no manage tier in between.
+        $target = $request->user()?->can('edit_categories')
+            ? redirect()->route('categories.edit', $category)
+            : redirect()->route('categories.create');
+
+        return $target->with('success', __('Category created.'));
     }
 
     public function edit(Category $category): Response

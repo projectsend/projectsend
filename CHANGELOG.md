@@ -19,7 +19,6 @@ A big release. Most of it closes holes in who can see what. The rest is a handfu
 
 **New**
 
-- Hosted installations can manage their own staff accounts and roles.
 - Google Cloud Storage can hold your files, alongside S3.
 - You can set a maximum size for a zip download.
 - Zip downloads no longer hold up your email.
@@ -83,19 +82,6 @@ installed ProjectSend by hand.
   `.env` being read at all.
 
 ### Added
-
-- **Managed installations can manage their own staff accounts.** *(Hosted)* The Users and Roles
-  screens, and their API equivalents, used to be absent on a hosted installation on the assumption
-  that staff accounts would be created for you from outside. They are now there. A host still
-  decides how many accounts your plan includes — creating one past that number is refused, naming
-  the limit — but who fills those seats, and which role each of them holds, is your decision. It
-  always should have been: the people running the platform do not know whether Alice should be an
-  Account Manager, and they certainly do not know where her files go when she leaves.
-
-  Two details worth knowing if you are counting. A deactivated account still occupies its seat,
-  because deactivating is one click from undoing; deleting frees it, and asks what should happen to
-  the files that account owns. A client who has registered but not yet been approved does not occupy
-  one — the seat is taken at the moment you approve them.
 
 - **Google Cloud Storage as a storage backend.** External storage used to mean S3 and nothing else.
   The Storage settings screen now asks which provider you are using first, and offers Google Cloud

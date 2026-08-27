@@ -27,26 +27,35 @@ A big release. Most of it closes holes in who can see what. The rest is a handfu
 
 **Closed holes in who can see what**
 
-- A staff member limited to their own clients now stays limited everywhere.
+- A staff member limited to their own clients now stays limited everywhere: client records, file
+  names, groups, comment moderation, and the dashboard's activity and expired-file lists.
 - Private notes on a publicly shared file stay private.
 - Clients no longer see the names of folders they cannot open.
 - The maximum file size now applies to large uploads too.
 - A download limit now holds when a zip is collected.
 - A large upload cannot be finished twice at once.
+- A two-factor recovery code can only be used once.
+- Your notification settings accept only the switches the screen offers.
 
 **Fixed**
 
 - People whose accounts came from ProjectSend v1 can sign in again.
 - Sessions no longer break behind a reverse proxy.
+- No more 502 Bad Gateway behind a reverse proxy.
 - Saving after your session expires takes you to the login page, not an error.
 - An upload that cannot be stored now fails instead of vanishing.
 - Downloads, thumbnails and share links work when files are kept in cloud storage.
+- A zip download is never offered when the archive was not actually written.
 - Deleting an account either finishes completely or does nothing at all.
+- A file can no longer be put into a folder that has been deleted.
+- Declining a group membership request now happens once, not twice.
 - Creating something with a create-only role no longer ends in an error page.
 - Connecting Google or Microsoft to an account you already have now works.
 - Downloads work on cPanel and Plesk, where the web server is not PHP's user.
 - The dashboard no longer fails on shared hosting.
 - An installation built from source is no longer told to pull an image.
+- `docker logs` now shows the web server's log.
+- The repair tool no longer mistakes cached previews for stray files.
 - One confirmation message instead of two.
 
 **Before you upgrade, read the two notes below.** One of them needs you to do something if you

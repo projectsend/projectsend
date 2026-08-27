@@ -115,8 +115,8 @@ before it migrates the database. That wait is normal, not a failure.
 
 | Tag | Moves |
 | --- | --- |
-| `2.1.0` | Never — an exact release |
-| `2.1` | With each patch on the 2.1 line |
+| `2.2.0` | Never — an exact release |
+| `2.2` | With each patch on the 2.2 line |
 | `2` | With each release on the 2.x line |
 | `latest` | With each release |
 
@@ -129,8 +129,12 @@ Built for **linux/amd64** and **linux/arm64**.
 
 ## What is in the image
 
-One container runs the whole application under supervisord: **nginx**, **php-fpm**, the **queue
-worker** and the **scheduler**. You do not need a separate worker or a cron entry.
+One container runs the whole application under supervisord: **nginx**, **php-fpm**, two **queue
+workers** and the **scheduler**. You do not need a separate worker or a cron entry.
+
+The second worker exists because building a zip download can take a long time, and it runs on its
+own queue so that one large archive cannot hold up every notification email behind it. Both are in
+the image; there is nothing to configure.
 
 nginx is part of the image rather than an option, because protected downloads are served with
 `X-Accel-Redirect` — an fpm-only image would leave every download broken unless you reproduced the
@@ -230,7 +234,7 @@ move forwards, not backwards.
 - 16 languages
 - A REST API with scoped tokens and generated OpenAPI docs
 - Privacy controls, including GDPR-grade account erasure with a grace period
-- Local disk or S3-compatible storage
+- Local disk, S3-compatible storage, or Google Cloud Storage
 
 ---
 

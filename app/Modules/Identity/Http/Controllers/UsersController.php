@@ -118,7 +118,10 @@ class UsersController extends Controller
             'role_id' => ['required', 'integer', Rule::in($this->accounts->assignableRoleIds($this->actor()))],
             'password' => ['required', 'confirmed', Password::defaults()],
             'assigned_clients' => ['array'],
-            'assigned_clients.*' => ['integer', Rule::exists('users', 'id')->where('type', UserType::Client->value)],
+            // Reach, not a label: see StaffAccounts::assignableClientIds.
+            // The list is client-typed already, so this is one rule where
+            // an exists() plus a type filter used to be two.
+            'assigned_clients.*' => ['integer', Rule::in($this->accounts->assignableClientIds($this->actor()))],
         ]);
 
         $user = $this->accounts->create([
@@ -178,7 +181,10 @@ class UsersController extends Controller
             'active' => ['required', 'boolean'],
             'password' => ['nullable', 'confirmed', Password::defaults()],
             'assigned_clients' => ['array'],
-            'assigned_clients.*' => ['integer', Rule::exists('users', 'id')->where('type', UserType::Client->value)],
+            // Reach, not a label: see StaffAccounts::assignableClientIds.
+            // The list is client-typed already, so this is one rule where
+            // an exists() plus a type filter used to be two.
+            'assigned_clients.*' => ['integer', Rule::in($this->accounts->assignableClientIds($this->actor()))],
         ]);
 
         // Deactivating yourself is refused here rather than in StaffAccounts
@@ -272,13 +278,15 @@ class UsersController extends Controller
     }
 
     /**
-     * The client roster, for the assigned-clients picker.
+     * The client roster, for the assigned-clients picker — narrowed to
+     * what this actor may actually hand out, the same way roleOptions()
+     * is narrowed to the roles they may grant.
      *
      * @return array<int, array{id: int, name: string}>
      */
     private function clientOptions(): array
     {
-        return User::query()->where('type', UserType::Client)->orderBy('name')->get()
+        return User::query()->whereIn('id', $this->accounts->assignableClientIds($this->actor()))->orderBy('name')->get()
             ->map(fn (User $client): array => ['id' => $client->id, 'name' => $client->name])
             ->values()->all();
     }

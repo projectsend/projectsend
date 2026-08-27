@@ -3240,7 +3240,8 @@
                                     "assigned_clients": {
                                         "type": "array",
                                         "items": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "description": "Only clients you can reach yourself: an unrestricted account may\nassign any client, a client-scoped one only the clients already\nassigned to it. Assigning a client hands over everything that\nclient can see, so it follows the same rule as role_id above."
                                         }
                                     }
                                 },
@@ -3376,7 +3377,8 @@
                                     "assigned_clients": {
                                         "type": "array",
                                         "items": {
-                                            "type": "integer"
+                                            "type": "integer",
+                                            "description": "Only clients you can reach yourself: an unrestricted account may\nassign any client, a client-scoped one only the clients already\nassigned to it. Assigning a client hands over everything that\nclient can see, so it follows the same rule as role_id above."
                                         }
                                     }
                                 }

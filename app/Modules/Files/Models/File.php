@@ -105,7 +105,20 @@ class File extends Model
             // because it needs the row's own pointers intact.
             app(FileVersions::class)->detachOnDelete($file);
 
-            app(FileDiskCleanup::class)->delete($file);
+            // The bytes go once the transaction holding this row commits,
+            // not alongside the row itself. A cascade — a folder subtree,
+            // an account's content — deletes many rows in one transaction,
+            // and anything that rolls it back afterwards puts every row
+            // back while the bytes are already gone: a loss nothing can
+            // undo. Deferred, the worst case is bytes left on disk with no
+            // row, which OrphanFileScanner already finds and reports.
+            //
+            // Outside a transaction the callback runs immediately, so
+            // deleting one file is unchanged. Nested transactions only fire
+            // it at the outermost commit, which is the case this is for.
+            $file->getConnection()->afterCommit(
+                fn () => app(FileDiskCleanup::class)->delete($file)
+            );
         });
     }
 

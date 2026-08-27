@@ -15,11 +15,43 @@ a version is cut.
 
 ## 2.2.0 — 27 August 2026
 
-A large release, and most of it is about boundaries holding. A staff role limited to its own
-clients now stays limited on every screen and every endpoint that touches one, and a public file's
-private notes stay private. Alongside that: managed installations gain their own user management,
-zip downloads gained a size limit and a queue of their own, external storage learned Google Cloud
-Storage, and a deleted account's email address can be used again.
+A big release. Most of it closes holes in who can see what. The rest is a handful of new things.
+
+**New**
+
+- Hosted installations can manage their own staff accounts and roles.
+- Google Cloud Storage can hold your files, alongside S3.
+- You can set a maximum size for a zip download.
+- Zip downloads no longer hold up your email.
+- ProjectSend warns you if nothing is building your zip downloads.
+- A deleted account's email address can be used again.
+
+**Closed holes in who can see what**
+
+- A staff member limited to their own clients now stays limited everywhere.
+- Private notes on a publicly shared file stay private.
+- Clients no longer see the names of folders they cannot open.
+- The maximum file size now applies to large uploads too.
+- A download limit now holds when a zip is collected.
+- A large upload cannot be finished twice at once.
+
+**Fixed**
+
+- People whose accounts came from ProjectSend v1 can sign in again.
+- Sessions no longer break behind a reverse proxy.
+- Saving after your session expires takes you to the login page, not an error.
+- An upload that cannot be stored now fails instead of vanishing.
+- Downloads, thumbnails and share links work when files are kept in cloud storage.
+- Deleting an account either finishes completely or does nothing at all.
+- Creating something with a create-only role no longer ends in an error page.
+- Connecting Google or Microsoft to an account you already have now works.
+- Downloads work on cPanel and Plesk, where the web server is not PHP's user.
+- The dashboard no longer fails on shared hosting.
+- An installation built from source is no longer told to pull an image.
+- One confirmation message instead of two.
+
+**Before you upgrade, read the three notes below.** One of them needs you to do something if you
+installed ProjectSend by hand.
 
 ### Upgrade notes
 

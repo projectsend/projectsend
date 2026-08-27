@@ -27,10 +27,28 @@ permissions:
 
 jobs:
   cla:
+    # This condition belongs to the job, not to the step below it, and moving
+    # it back down would quietly cost money. A step that is skipped has still
+    # had a runner allocated for it; a job that is skipped never gets one, and
+    # Actions bills per job that runs. `issue_comment` fires on every comment
+    # in the repository, so with the check one level lower every "thanks,
+    # merged" on a pull request — and every comment on a plain issue — spun up
+    # a machine to decide it had nothing to do.
+    #
+    # GitHub cannot filter `issue_comment` by body at the `on:` level, so this
+    # is the only place the decision can be made.
+    #
+    # `issue.pull_request` is present only when the comment is on a pull
+    # request; comments on ordinary issues have nothing for this action to
+    # check.
+    if: >-
+      github.event_name == 'pull_request_target'
+      || (github.event.issue.pull_request
+          && (github.event.comment.body == 'recheck'
+              || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA'))
     runs-on: ubuntu-latest
     steps:
       - name: CLA check
-        if: (github.event.comment.body == 'recheck' || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA') || github.event_name == 'pull_request_target'
         uses: contributor-assistant/github-action@v2.6.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

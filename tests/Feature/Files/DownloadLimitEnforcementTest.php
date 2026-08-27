@@ -236,3 +236,146 @@ test('re-fetching one prepared zip does not count as downloading everything agai
     expect($file->downloads()->count())->toBe(1)
         ->and($zip->fresh()->delivered_at)->not->toBeNull();
 });
+
+test('a prepared zip cannot be collected once its files have been spent elsewhere', function () {
+    $file = limitedFile();
+    shareFileWith($file, $this->client);
+
+    // Two archives of the same file, both ordered and both built before
+    // either is collected. Nothing is spent yet, so every check made
+    // while ordering and building passes for both of them.
+    $first = $this->actingAs($this->client)
+        ->postJson('/zip-downloads', ['file_ids' => [$file->id]])->assertOk();
+    $second = $this->actingAs($this->client)
+        ->postJson('/zip-downloads', ['file_ids' => [$file->id]])->assertOk();
+
+    $firstZip = ZipDownload::query()->findOrFail($first->json('id'));
+    $secondZip = ZipDownload::query()->findOrFail($second->json('id'));
+
+    expect($firstZip->file_count)->toBe(1)
+        ->and($secondZip->file_count)->toBe(1);
+
+    $this->actingAs($this->client)->get("/zip-downloads/{$firstZip->id}/download")->assertOk();
+
+    // The single allowed download is now spent. The second archive was
+    // built while it still was not, and holding it must not be a way to
+    // take a copy that is no longer allowed.
+    $this->actingAs($this->client)->get("/zip-downloads/{$secondZip->id}/download")->assertForbidden();
+
+    expect($file->downloads()->count())->toBe(1)
+        ->and($secondZip->fresh()->delivered_at)->toBeNull();
+});
+
+test('one spent file refuses the whole archive rather than part of it', function () {
+    $folder = makeFolder('Shared');
+
+    $spendable = limitedFile(['name' => 'Spendable', 'original_name' => 'spendable.pdf']);
+    $uncapped = limitedFile(['name' => 'Uncapped', 'original_name' => 'uncapped.pdf', 'download_limit' => null]);
+
+    $spendable->update(['folder_id' => $folder->id]);
+    $uncapped->update(['folder_id' => $folder->id]);
+
+    $staff = staffWithPermissions(['upload', 'edit_files', 'edit_others_files']);
+
+    $response = $this->actingAs($staff)
+        ->postJson('/zip-downloads', ['folder_ids' => [$folder->id]])->assertOk();
+
+    $zip = ZipDownload::query()->findOrFail($response->json('id'));
+    expect($zip->file_count)->toBe(2);
+
+    // Spent after the archive was built, so the copy inside it is one the
+    // limit no longer covers.
+    spend($spendable, $staff);
+
+    $this->actingAs($staff)->get("/zip-downloads/{$zip->id}/download")->assertForbidden();
+
+    // Refused as a whole: the file that was still free is not counted as
+    // downloaded either, since nothing was handed over.
+    expect($uncapped->downloads()->count())->toBe(0);
+});
+
+test('a spent file that is not in the archive does not refuse it', function () {
+    $folder = makeFolder('Shared');
+
+    $bundled = limitedFile(['name' => 'Bundled', 'original_name' => 'bundled.pdf', 'download_limit' => null]);
+    $bundled->update(['folder_id' => $folder->id]);
+
+    $staff = staffWithPermissions(['upload', 'edit_files', 'edit_others_files']);
+
+    $response = $this->actingAs($staff)
+        ->postJson('/zip-downloads', ['folder_ids' => [$folder->id]])->assertOk();
+
+    $zip = ZipDownload::query()->findOrFail($response->json('id'));
+
+    // Lands in the folder after the archive was written, and is already
+    // spent. The selection would resolve to it now; the archive does not
+    // hold it, so it has no say over handing that archive over.
+    $late = limitedFile(['name' => 'Late', 'original_name' => 'late.pdf']);
+    $late->update(['folder_id' => $folder->id]);
+    spend($late, $staff);
+
+    $this->actingAs($staff)->get("/zip-downloads/{$zip->id}/download")->assertOk();
+
+    // Still only the download that spent it — the delivery neither
+    // refused over it nor counted it.
+    expect($bundled->downloads()->count())->toBe(1)
+        ->and($late->downloads()->count())->toBe(1);
+});
+
+test('an archive from before its contents were recorded is handed over as it always was', function () {
+    $folder = makeFolder('Shared');
+
+    $bundled = limitedFile(['name' => 'Bundled', 'original_name' => 'bundled.pdf', 'download_limit' => null]);
+    $bundled->update(['folder_id' => $folder->id]);
+
+    $staff = staffWithPermissions(['upload', 'edit_files', 'edit_others_files']);
+
+    $response = $this->actingAs($staff)
+        ->postJson('/zip-downloads', ['folder_ids' => [$folder->id]])->assertOk();
+
+    $zip = ZipDownload::query()->findOrFail($response->json('id'));
+
+    // Stands in for a row written by an older release, which has no
+    // record of what went into the archive.
+    ZipDownload::query()->whereKey($zip->id)->update(['contained_file_ids' => null]);
+
+    // A spent file joins the folder afterwards. Resolving the selection
+    // again — all such a row can do — would sweep it up and refuse over a
+    // file the archive does not hold, so this path refuses nothing.
+    $late = limitedFile(['name' => 'Late', 'original_name' => 'late.pdf']);
+    $late->update(['folder_id' => $folder->id]);
+    spend($late, $staff);
+
+    $this->actingAs($staff)->get("/zip-downloads/{$zip->id}/download")->assertOk();
+
+    expect($bundled->downloads()->count())->toBe(1)
+        ->and($zip->fresh()->delivered_at)->not->toBeNull();
+});
+
+test('two fetches of one archive arriving together still count as one delivery', function () {
+    $file = limitedFile(['download_limit' => null]);
+    shareFileWith($file, $this->client);
+
+    $response = $this->actingAs($this->client)
+        ->postJson('/zip-downloads', ['file_ids' => [$file->id]])->assertOk();
+
+    $zip = ZipDownload::query()->findOrFail($response->json('id'));
+
+    // Stands in for a second fetch of the same archive that arrives at
+    // the same moment and claims the delivery first. The request below
+    // has already read the row by then, so its own copy still says the
+    // archive has never been handed over — the check-then-set this
+    // replaced would believe it and count everything a second time.
+    ZipDownload::retrieved(function (ZipDownload $retrieved): void {
+        ZipDownload::query()
+            ->whereKey($retrieved->id)
+            ->whereNull('delivered_at')
+            ->update(['delivered_at' => now()]);
+    });
+
+    $this->actingAs($this->client)->get("/zip-downloads/{$zip->id}/download")->assertOk();
+
+    // Losing the claim means not logging: the fetch that won it is the
+    // one that counts, and here that is the stand-in, which logs nothing.
+    expect($file->downloads()->count())->toBe(0);
+});

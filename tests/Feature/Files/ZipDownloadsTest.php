@@ -177,6 +177,44 @@ test('the download endpoint logs a FileDownloaded entry for every bundled file',
         ->assertHeader('Content-Disposition', 'attachment; filename="Reports.zip"');
 
     expect(ActivityLog::query()->where('action', Action::FileDownloaded)->where('subject_id', $file->id)->exists())->toBeTrue();
+
+    expect($zipDownload->fresh()->contained_file_ids)->toBe([$file->id]);
+});
+
+test('a file added to the folder after the build is not counted as downloaded', function () {
+    $folder = Folder::query()->create(['name' => 'Reports']);
+    $bundled = zipUploadFile($this->admin, 'a.pdf', $folder->id);
+
+    $response = $this->actingAs($this->admin)->postJson('/zip-downloads', ['folder_ids' => [$folder->id]])->assertOk();
+    $zipDownload = ZipDownload::query()->findOrFail($response->json('id'));
+
+    // The archive is written by now. Anything that lands in the folder
+    // from here on is not in it.
+    $late = zipUploadFile($this->admin, 'b.pdf');
+    $late->update(['folder_id' => $folder->id]);
+
+    $this->actingAs($this->admin)->get("/zip-downloads/{$zipDownload->id}/download")->assertOk();
+
+    expect(zipEntryNames($zipDownload))->toBe(['Reports/a.pdf'])
+        ->and($bundled->downloads()->count())->toBe(1)
+        ->and($late->downloads()->count())->toBe(0);
+});
+
+test('a file moved out of the folder after the build is still counted', function () {
+    $folder = Folder::query()->create(['name' => 'Reports']);
+    $elsewhere = Folder::query()->create(['name' => 'Elsewhere']);
+    $file = zipUploadFile($this->admin, 'a.pdf', $folder->id);
+
+    $response = $this->actingAs($this->admin)->postJson('/zip-downloads', ['folder_ids' => [$folder->id]])->assertOk();
+    $zipDownload = ZipDownload::query()->findOrFail($response->json('id'));
+
+    // Moving it does not take its bytes back out of the archive, so the
+    // download still hands it over and still has to say so.
+    $file->update(['folder_id' => $elsewhere->id]);
+
+    $this->actingAs($this->admin)->get("/zip-downloads/{$zipDownload->id}/download")->assertOk();
+
+    expect($file->downloads()->count())->toBe(1);
 });
 
 test('a pending zip download 404s until ready', function () {

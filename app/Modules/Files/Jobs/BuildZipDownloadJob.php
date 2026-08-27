@@ -122,9 +122,12 @@ class BuildZipDownloadJob implements ShouldQueue
             $tempFiles = [];
             $skipped = [];
 
-            // Counted rather than derived from $usedNames, which also
-            // holds the folder entry names.
-            $added = 0;
+            // Collected rather than derived from $usedNames, which also
+            // holds the folder entry names. Recording the ids, not just a
+            // count, is what lets the download action log exactly what it
+            // hands over instead of resolving the selection a second time
+            // against a scope that may have moved since.
+            $addedIds = [];
 
             foreach ((clone $visible)->whereIn('id', $zipDownload->file_ids)->get() as $file) {
                 // Re-checked here for the same reason visibility is: the
@@ -139,11 +142,11 @@ class BuildZipDownloadJob implements ShouldQueue
                 $entryName = $this->dedupeName($usedNames, $this->entrySegment($file->original_name));
                 $zip->addFile($this->localPathFor($file, $tempFiles), $entryName);
                 $totalSize += $file->size;
-                $added++;
+                $addedIds[] = $file->id;
             }
 
             foreach (Folder::query()->whereIn('id', $zipDownload->folder_ids)->get() as $folder) {
-                $totalSize += $this->addFolder($zip, $folder, $requester, $usedNames, $tempFiles, $visible, $skipped, $added);
+                $totalSize += $this->addFolder($zip, $folder, $requester, $usedNames, $tempFiles, $visible, $skipped, $addedIds);
             }
 
             // Re-checked here, not only in ZipDownloadsController: the
@@ -186,7 +189,7 @@ class BuildZipDownloadJob implements ShouldQueue
                 @unlink($tempFile);
             }
 
-            if ($written !== true || $added === 0) {
+            if ($written !== true || $addedIds === []) {
                 if ($written !== true) {
                     // What the requester sees stays generic: a libzip
                     // string means nothing to them and can name a server
@@ -218,7 +221,8 @@ class BuildZipDownloadJob implements ShouldQueue
                 'status' => ZipDownload::STATUS_READY,
                 'path' => $relativePath,
                 'total_size' => $totalSize,
-                'file_count' => $added,
+                'file_count' => count($addedIds),
+                'contained_file_ids' => $addedIds,
                 'skipped_files' => $skipped === [] ? null : $skipped,
             ]);
         } catch (Throwable $e) {
@@ -317,8 +321,9 @@ class BuildZipDownloadJob implements ShouldQueue
      * @param  array<int, string>  $tempFiles
      * @param  Builder<File>  $visible  every file the requester may read
      * @param  list<array{id: int, name: string}>  $skipped
+     * @param  list<int>  $addedIds  every file really written into the archive
      */
-    private function addFolder(ZipArchive $zip, Folder $folder, User $requester, array &$usedNames, array &$tempFiles, Builder $visible, array &$skipped, int &$added): int
+    private function addFolder(ZipArchive $zip, Folder $folder, User $requester, array &$usedNames, array &$tempFiles, Builder $visible, array &$skipped, array &$addedIds): int
     {
         $allowance = app(DownloadAllowance::class);
 
@@ -344,7 +349,7 @@ class BuildZipDownloadJob implements ShouldQueue
             $entryPath = $this->dedupeName($usedNames, $entryPath);
             $zip->addFile($this->localPathFor($file, $tempFiles), $entryPath);
             $totalSize += $file->size;
-            $added++;
+            $addedIds[] = $file->id;
         }
 
         return $totalSize;

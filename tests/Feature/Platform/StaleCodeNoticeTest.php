@@ -127,8 +127,13 @@ test('it names the command this kind of installation can actually run', function
 ]);
 
 // The rollback story, asserted end to end: whatever the marker said, the
-// command rewrites it to whatever is actually running.
+// command rewrites it to whatever is actually running. Through the artisan
+// seam, as everything that runs this command has to be — see
+// Tests\Support\RecordingUpdate. The settings write this asserts is the
+// real one.
 test('running the update clears the notice', function () {
+    recordingUpdate();
+
     applied('2.2.0');
     expect(noticeFor($this->admin))->not->toBeNull();
 

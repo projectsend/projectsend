@@ -8,68 +8,18 @@ use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
-use App\Modules\Platform\Updates\UpdateInstallation;
-use Illuminate\Console\OutputStyle;
 
 /**
- * The ordering constraints inside UpdateInstallation are invisible in its
- * result and expensive when wrong — a queue:restart before a cache clear
- * leaves a worker on old code indefinitely, and config:cache breaks
- * TRUSTED_PROXIES silently. An ordered list of the commands it ran is the
- * only thing that can assert them, so the artisan call is a seam.
+ * The command runs through Tests\Support\RecordingUpdate in every test
+ * here, including the ones below that assert the real wiring rather than
+ * the sequence — nothing in this file asserts that an artisan command
+ * actually ran, and running them for real reaches outside this test into
+ * a directory the whole suite shares. See the class, and the test at the
+ * end that pins it.
  */
-class RecordingUpdate extends UpdateInstallation
-{
-    /** @var list<string> */
-    public array $calls = [];
-
-    /** @var array<string, int> */
-    public array $exitCodes = [];
-
-    /** @var array{route: bool, event: bool, config: bool} */
-    public array $warm = ['route' => false, 'event' => false, 'config' => false];
-
-    /** The test database is always migrated, so this cannot be observed for real. */
-    public bool $existingInstall = true;
-
-    protected function artisan(string $command, array $parameters = [], ?OutputStyle $output = null): int
-    {
-        $this->calls[] = $command;
-
-        return $this->exitCodes[$command] ?? 0;
-    }
-
-    protected function warmCaches(): array
-    {
-        return $this->warm;
-    }
-
-    protected function hasRunMigrationsBefore(): bool
-    {
-        return $this->existingInstall;
-    }
-}
-
-/**
- * @param  array{route?: bool, event?: bool, config?: bool}  $warm
- * @param  array<string, int>  $exitCodes
- */
-function recordingUpdate(array $warm = [], array $exitCodes = []): RecordingUpdate
-{
-    $fake = new RecordingUpdate(
-        app(Illuminate\Contracts\Foundation\Application::class),
-        app(App\Modules\Identity\Permissions\EnsureSystemRoles::class),
-        app(Settings::class),
-        app(App\Modules\Audit\ActivityLogger::class),
-    );
-
-    $fake->warm = [...$fake->warm, ...$warm];
-    $fake->exitCodes = $exitCodes;
-
-    app()->instance(UpdateInstallation::class, $fake);
-
-    return $fake;
-}
+beforeEach(function () {
+    recordingUpdate();
+});
 
 test('it migrates, ensures roles, links storage and restarts the queue', function () {
     $fake = recordingUpdate();
@@ -154,8 +104,9 @@ test('it records the version it applied', function () {
         ->and(app(Settings::class)->get(Setting::AppliedVersionAt))->not->toBe('');
 });
 
-// The real thing, not the seam: both entrypoints run this on every boot,
-// so a second run has to be as uneventful as the first.
+// Both entrypoints run this on every boot, so a second run has to be as
+// uneventful as the first. The settings writes it asserts are the real
+// ones; only the artisan calls are recorded.
 test('running it twice is uneventful', function () {
     $this->artisan('projectsend:update')->assertSuccessful();
     $this->artisan('projectsend:update')->assertSuccessful();
@@ -163,10 +114,11 @@ test('running it twice is uneventful', function () {
     expect(app(Settings::class)->get(Setting::AppliedVersion))->toBe(config('projectsend.version'));
 });
 
-// Not through the seam: this is the one assertion that the real wiring
-// runs, and EnsureSystemRoles is the part of an update that a migration
-// cannot do for itself. AccountManager rather than Uploader — the latter
-// is legacy and deliberately never seeded.
+// The one assertion that the real wiring runs: EnsureSystemRoles is the
+// part of an update that a migration cannot do for itself, and the double
+// does not touch it — only the artisan calls are recorded. AccountManager
+// rather than Uploader — the latter is legacy and deliberately never
+// seeded.
 test('it puts back a system role somebody deleted', function () {
     Role::query()->where('name', SystemRole::AccountManager->value)->delete();
 
@@ -285,4 +237,30 @@ test('a rollback raises no welcome', function () {
 
     expect(app(Settings::class)->get(Setting::UpdateWelcomeTo))->toBe('')
         ->and(ActivityLog::query()->where('action', Action::ApplicationUpdated)->count())->toBe(1);
+});
+
+// The seam is not a convenience. bootstrap/cache holds one packages.php and
+// one services.php for the whole checkout, and `pest --parallel` gives eight
+// worker processes the same one: `clear-compiled` deletes both for all of
+// them at once. A worker that boots its application in the window between
+// that delete and its own rebuild reads an empty package manifest —
+// PackageManifest::getManifest() falls back to [] when the file it just
+// wrote is gone again — registers no package service providers, and dies on
+// the next page it renders with "Target [Inertia\Ssr\Gateway] is not
+// instantiable". It surfaced as UpdateWelcomeTest failing roughly one run in
+// six, in a file that has nothing to do with updates.
+//
+// Asserted on the files rather than on the recorded calls: what matters is
+// that nothing left this test, and a future double that forgot to intercept
+// one command would still pass a call-list assertion.
+test('it leaves the compiled caches the rest of the suite is reading alone', function () {
+    $manifests = [app()->getCachedPackagesPath(), app()->getCachedServicesPath()];
+
+    // Both are written during the first application boot of any run, so by
+    // now they are there to be deleted.
+    expect(array_filter($manifests, 'file_exists'))->toBe($manifests);
+
+    $this->artisan('projectsend:update')->assertSuccessful();
+
+    expect(array_filter($manifests, 'file_exists'))->toBe($manifests);
 });

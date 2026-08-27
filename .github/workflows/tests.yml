@@ -50,6 +50,23 @@ concurrency:
   group: tests-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# A second push supersedes the first — the later run covers a superset of
+# what the earlier one was checking, so finishing both buys nothing and
+# costs a runner.
+#
+# Keyed on the ref, so `main` and a branch never cancel each other. A push
+# to a branch that also has a pull request open produces two events with
+# two different refs, which is why they do not fight either.
+#
+# The tradeoff worth naming: on `main` this means an intermediate commit
+# can end up with no run of its own when two pushes land together. That is
+# accepted here — what is being verified is the state of the branch, and
+# the run that survives is the one that includes both commits. If a commit
+# ever needs its own green tick (a bisect, a release audit), push it alone.
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ci:
     runs-on: ubuntu-latest

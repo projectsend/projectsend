@@ -9,6 +9,7 @@ use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientFieldContext;
 use App\Modules\Clients\ClientPortalCustomFields;
 use App\Modules\Identity\Erasure\ErasureSchedule;
+use App\Modules\Identity\StaffAccounts;
 use App\Modules\Platform\Localization\TimezoneRegistry;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -24,6 +25,7 @@ class ProfileController extends Controller
     public function __construct(
         private readonly ClientPortalCustomFields $customFields,
         private readonly TimezoneRegistry $timezones,
+        private readonly StaffAccounts $accounts,
     ) {}
 
     /**
@@ -103,6 +105,19 @@ class ProfileController extends Controller
 
         $user = $request->user();
         assert($user !== null);
+
+        // The rule every other door into this already asks: Staff update(),
+        // guardDeletable(), and both role-conversion directions. This one
+        // did not, and self-deletion is the one door where the account
+        // being removed is certainly signed in — so the last active
+        // administrator could take themselves out, leaving no live staff
+        // row at all. EnsureSetupIsComplete then reopens first-run setup to
+        // anybody who asks, which is the other half of this and is closed
+        // below.
+        $this->accounts->guardLastAdministrator(
+            $user,
+            removesAdmin: $this->accounts->isAdministratorRole($user->role_id),
+        );
 
         Auth::logout();
 

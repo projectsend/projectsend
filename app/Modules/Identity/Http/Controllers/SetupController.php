@@ -97,8 +97,16 @@ class SetupController extends Controller
         return Inertia::render('setup-success');
     }
 
+    /**
+     * Trashed staff count, for the reason EnsureSetupIsComplete gives:
+     * this asks whether the installation was ever set up, and store()
+     * below is the door a stranger walks through if the answer is wrong.
+     * The middleware and this must agree — one of them saying "not set
+     * up" while the other says "set up" is either a redirect loop or an
+     * open form.
+     */
     private function setupIsComplete(): bool
     {
-        return User::query()->where('type', UserType::Staff)->exists();
+        return User::query()->withTrashed()->where('type', UserType::Staff)->exists();
     }
 }

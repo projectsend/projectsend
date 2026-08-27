@@ -89,6 +89,23 @@ of the boundary work above, and to [@mstewart14](https://github.com/mstewart14),
 [@elibrachas](https://github.com/elibrachas), [@mueller7382](https://github.com/mueller7382) and
 [@pabloalvarez44](https://github.com/pabloalvarez44) for reports and fixes.
 
+### Issues closed since 2.1.0
+
+The summary above is what changed. This is the paper trail, for anyone who wants to read the
+original report.
+
+- [#1627](https://github.com/projectsend/projectsend/issues/1627) — Errors while installing via Docker
+- [#1648](https://github.com/projectsend/projectsend/issues/1648) — A deleted account's email address can never be used again
+- [#1661](https://github.com/projectsend/projectsend/issues/1661) — Docker update instructions do not update ProjectSend when using official Compose setup
+- [#1662](https://github.com/projectsend/projectsend/issues/1662) — Preview files not available on v2.1.0
+- [#1663](https://github.com/projectsend/projectsend/issues/1663) — Dashboard 500s on shared hosting: container detection trips open_basedir
+- [#1664](https://github.com/projectsend/projectsend/issues/1664) — INSTALL.md: the nginx-in-front-of-Apache path needs the buffer advice too
+- [#1668](https://github.com/projectsend/projectsend/issues/1668) — INSTALL.md: X-Accel downloads fail when nginx and PHP-FPM run as different users
+- [#1672](https://github.com/projectsend/projectsend/issues/1672) — Projectsend 2 behind Traefik issues 419 when logging in or hitting an error?
+- [#1673](https://github.com/projectsend/projectsend/issues/1673) — Projectsend 2: Setting Widget Columns throws error
+- [#1675](https://github.com/projectsend/projectsend/issues/1675) — Success toast shows twice after create/delete redirects
+- [#1706](https://github.com/projectsend/projectsend/issues/1706) — V1 migration imports $2a$ bcrypt hashes that cause HTTP 500 on login
+
 ## 2.1.0 — 18 August 2026
 
 Updating, mostly. ProjectSend now tells you when there is a new version, ends an update somewhere

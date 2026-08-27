@@ -49,7 +49,7 @@ A big release. Most of it closes holes in who can see what. The rest is a handfu
 - An installation built from source is no longer told to pull an image.
 - One confirmation message instead of two.
 
-**Before you upgrade, read the three notes below.** One of them needs you to do something if you
+**Before you upgrade, read the two notes below.** One of them needs you to do something if you
 installed ProjectSend by hand.
 
 ### Upgrade notes
@@ -66,16 +66,6 @@ installed ProjectSend by hand.
 
   If it is ever missed, ProjectSend now says so on screen: staff who can see system information get
   a banner naming the problem and the fix.
-
-- **Hosting ProjectSend for other people?** Three environment variables are new, and all three are
-  for you rather than for somebody running a single installation of their own.
-  `PROJECTSEND_PLATFORM_MAX_STAFF_USERS` and `PROJECTSEND_PLATFORM_MAX_CLIENTS` cap how many
-  accounts an installation may hold; leave them unset for no limit, which is what every ordinary
-  install wants. `PROJECTSEND_TWO_FACTOR_ENFORCEMENT` seeds the two-factor policy on the very first
-  boot, before the first administrator exists — it is only ever a starting value, and an
-  administrator who changes it afterwards keeps their change. `php artisan projectsend:status
-  --json` reports the version, the edition, the capabilities in force and the seat counts, so you
-  can read all of it without opening a shell inside the application.
 
 - **If you run behind a reverse proxy, check `TRUSTED_PROXIES`.** It is now read correctly, which it
   was not before — see the fix below. Set it in `.env`, and do not run `config:cache`, which stops

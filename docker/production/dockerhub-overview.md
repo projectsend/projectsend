@@ -40,7 +40,10 @@ services:
     restart: unless-stopped
     ports:
       # Put a TLS-terminating proxy in front of this in any real install.
-      - "8080:80"
+      # Bound to loopback because TRUSTED_PROXIES below is "*": the
+      # application then believes the X-Forwarded-For of whoever connects,
+      # so nobody but the proxy may be able to.
+      - "127.0.0.1:8080:80"
     environment:
       APP_URL: https://files.example.com
       APP_ENV: production
@@ -58,6 +61,8 @@ services:
 
       # Required whenever anything sits between your visitors and this
       # container — including the reverse proxy you should be running.
+      # "*" trusts whoever connects, so it goes together with the loopback
+      # binding above: change one and you have to change the other.
       TRUSTED_PROXIES: "*"
 
       # Optional: uncomment these — with a password of your own — to create

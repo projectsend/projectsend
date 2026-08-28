@@ -113,18 +113,32 @@ class FileComment extends Model
      * The name to show. Snapshotted for guests at write time; read live
      * for accounts so a rename is reflected everywhere at once.
      *
-     * author_id cascades on delete, so a row that has one always has the
-     * account behind it — there is no deleted-author case to snapshot
-     * against, unlike the activity log's actor_name.
+     * A deleted account is still read. author_id cascades on delete, but
+     * a user is soft-deleted and the cascade never fires, so the row
+     * behind a deleted commenter is still there — and reading it through
+     * the plain relation returned null, which sent a named client's
+     * comment out as "Anonymous". That is what a guest comment looks
+     * like, and a guest comment is governed by different rules; the two
+     * must not be able to look the same. Whether the author is a guest is
+     * decided by author_id alone, which is also what isFromGuest() asks.
      */
     public function authorName(): string
     {
+        if ($this->author_id === null) {
+            return $this->guest_name ?? (string) __('Anonymous');
+        }
+
         $author = $this->author;
 
         if ($author !== null) {
             return $author->name;
         }
 
-        return $this->guest_name ?? (string) __('Anonymous');
+        // Trashed: the row is still there, the relation simply will not
+        // hand it over. Nothing comes back only once the grace-period
+        // erasure has removed the row for real.
+        $name = $this->author()->withTrashed()->value('name');
+
+        return is_string($name) ? $name : (string) __('Anonymous');
     }
 }

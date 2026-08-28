@@ -220,10 +220,27 @@ class FileComments
             return null;
         }
 
+        // Asked of the column, not of the relation. client_context_id is
+        // cascadeOnDelete, but a user is soft-deleted, so the cascade
+        // never fires: the column goes on pointing at a row that is still
+        // there while the relation resolves to null. Branching on the
+        // relation therefore read "this is Alice's conversation" as "this
+        // has no conversation" — and a null context on a Clients comment
+        // is the branch every client on the file reads (see
+        // VisibleCommentScope's opening rule). A private reply became a
+        // circular, and canAssignClient below was skipped on the way.
+        if ($replyTo->client_context_id === null) {
+            return null;
+        }
+
         $client = $replyTo->clientContext;
 
         if ($client === null) {
-            return null;
+            // The column points at somebody, and that somebody is gone.
+            // There is nobody to answer, and the one outcome that must
+            // not follow from a filled column is the broadcast above, so
+            // this refuses rather than falling through to it.
+            throw new AuthorizationException('You cannot reply in this conversation.');
         }
 
         if (! $this->library->canAssignClient($author, $client)) {

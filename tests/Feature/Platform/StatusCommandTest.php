@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Platform\Capabilities\Edition;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * The probe a reconciler reads instead of being given a shell one-liner
@@ -71,5 +72,64 @@ test('the human form says unlimited in words', function () {
 
     $this->artisan('projectsend:status')
         ->expectsOutputToContain('of unlimited')
+        ->assertSuccessful();
+});
+
+// -------------------------------------------------------- is anybody there
+
+/**
+ * The one question a platform cannot answer from outside the container.
+ *
+ * Written against the real sign-in path rather than by inserting log rows:
+ * what makes this trustworthy is that a login writes the entry, and a test
+ * that writes its own entry would keep passing after the listener stopped.
+ */
+test('it reports when a staff account last signed in', function () {
+    $this->travelTo('2026-08-24 21:13:32');
+    Auth::login($this->admin);
+
+    expect(statusJson()['activity']['last_staff_login_at'])->toBe('2026-08-24T21:13:32+00:00');
+});
+
+test('it reports the most recent sign-in, not the first', function () {
+    $this->travelTo('2026-08-01 09:00:00');
+    Auth::login($this->admin);
+
+    $this->travelTo('2026-08-24 21:13:32');
+    Auth::login(User::factory()->create());
+
+    expect(statusJson()['activity']['last_staff_login_at'])->toBe('2026-08-24T21:13:32+00:00');
+});
+
+test('a client signing in is not a staff sign-in', function () {
+    // Clients using an installation says nothing about whether anybody is
+    // still administering it, which is the question being asked.
+    Auth::login(User::factory()->client()->create());
+
+    expect(statusJson()['activity']['last_staff_login_at'])->toBeNull();
+});
+
+test('never is null, and the key is there to say so', function () {
+    // "Nobody has ever signed in" and "we got no answer from the probe"
+    // have to stay distinguishable, and a missing key collapses them.
+    $status = statusJson();
+
+    expect($status['activity'])->toHaveKey('last_staff_login_at')
+        ->and($status['activity']['last_staff_login_at'])->toBeNull();
+});
+
+test('an API token is not somebody signing in', function () {
+    // An hourly integration must not make a dormant installation look
+    // busy. Only Laravel's Login event writes the entry this reads, and
+    // token authentication does not fire it.
+    Laravel\Sanctum\Sanctum::actingAs($this->admin, ['manage_users']);
+    $this->getJson('/api/v1/users')->assertOk();
+
+    expect(statusJson()['activity']['last_staff_login_at'])->toBeNull();
+});
+
+test('the human form says never rather than nothing', function () {
+    $this->artisan('projectsend:status')
+        ->expectsOutputToContain('Last staff login: never')
         ->assertSuccessful();
 });

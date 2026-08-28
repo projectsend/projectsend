@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Modules\Platform\Installation\Console;
 
+use App\Modules\Audit\Action;
+use App\Modules\Audit\ActivityLog;
+use App\Modules\Identity\UserType;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Seats\SeatAllowance;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 
 /**
  * What this installation is, as a fact rather than a screen.
@@ -33,6 +37,23 @@ use Illuminate\Console\Command;
  * an inactive account, or a soft-deleted one — and the divergence looks
  * like a billing fault rather than a counting one. So there is one
  * definition and this reads it.
+ *
+ * ### Is anybody there
+ *
+ * `activity.last_staff_login_at` answers the one question a platform
+ * cannot answer from outside: whether a human still uses this
+ * installation. It is a timestamp and nothing else — no name, no address,
+ * no session. Only interactive sign-ins reach it, because that is all
+ * Laravel's Login event fires for: an integration polling the API every
+ * hour must not make a dormant installation look busy.
+ *
+ * Derived from the activity log rather than denormalised onto `users`. A
+ * column would need a migration, a listener change and a backfill to save
+ * one indexed MAX() over a table that is small on exactly the
+ * installations anybody asks this about. The log is never pruned, and
+ * erasure anonymises entries rather than deleting them (`actor_type`
+ * survives on purpose — see AccountEraser), so the answer does not change
+ * when the person who gave it is forgotten.
  */
 class StatusCommand extends Command
 {
@@ -60,6 +81,14 @@ class StatusCommand extends Command
                     'limit' => $seats->clientLimit(),
                 ],
             ],
+            'activity' => [
+                // Null means "no staff account has ever signed in here",
+                // and is emitted rather than left out for the same reason
+                // an unlimited seat count is: a watcher has to be able to
+                // tell that apart from "we got no answer". Collapsing the
+                // two is how a broken probe reads as a dormant fleet.
+                'last_staff_login_at' => $this->lastStaffLoginAt(),
+            ],
         ];
 
         if ($this->option('json')) {
@@ -72,8 +101,25 @@ class StatusCommand extends Command
         $this->line('Capabilities: '.(implode(', ', $status['capabilities']) ?: 'none'));
         $this->line('Staff seats:  '.$this->seatLine($status['seats']['staff']));
         $this->line('Clients:      '.$this->seatLine($status['seats']['clients']));
+        $this->line('Last staff login: '.($status['activity']['last_staff_login_at'] ?? 'never'));
 
         return self::SUCCESS;
+    }
+
+    /**
+     * The most recent interactive staff sign-in, or null if there has
+     * never been one.
+     */
+    private function lastStaffLoginAt(): ?string
+    {
+        $latest = ActivityLog::query()
+            ->where('action', Action::Login->value)
+            ->where('actor_type', UserType::Staff->value)
+            ->max('created_at');
+
+        // `action` and `actor_type` carry an index each, so this narrows
+        // on one of them rather than reading the log.
+        return $latest === null ? null : Carbon::parse($latest)->toIso8601String();
     }
 
     /**

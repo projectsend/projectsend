@@ -13,6 +13,22 @@ Anything under **Upgrade notes** is something you have to do, not something we d
 This section collects changes as they land; the release process turns it into a numbered entry when
 a version is cut.
 
+**Security**
+
+- [#1745](https://github.com/projectsend/projectsend/pull/1745) — Gate the comment moderation
+  surfaces on reading, not just on the library. Permission to moderate comments was letting somebody
+  read them, which is not the same thing: on the moderation screen and through the API, a role that
+  could moderate comments but could not open any file was shown every comment in the installation —
+  the text, staff-only notes, the client each conversation belongs to, and a visitor's IP address —
+  about files it would be refused on. Approving a comment over the API handed back its body the same
+  way.
+
+  **Who this affected.** Only installations with a custom role built that way. None of the roles
+  ProjectSend ships is affected: Account Manager, the only one that moderates comments, can read
+  files as well, and so can a System Administrator. If you did build such a role, it can no longer
+  moderate — give it one of the file permissions (upload, edit files, or edit other people's files)
+  and it works again, now seeing only the comments on files it can actually open.
+
 ## 2.2.1 — 28 August 2026
 
 A security release. Most of it closes ways somebody could reach past a boundary the rest of the

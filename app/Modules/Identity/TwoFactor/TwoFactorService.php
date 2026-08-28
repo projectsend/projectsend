@@ -62,19 +62,20 @@ class TwoFactorService
 
         $replayKey = "two-factor.used.{$user->id}.".hash('sha256', $code);
 
-        if (Cache::has($replayKey)) {
-            return false;
-        }
-
         if ($this->engine->verifyKey($secret, $code) === false) {
             return false;
         }
 
-        // A TOTP code is valid for one window either side; block reuse
-        // for slightly longer than that.
-        Cache::put($replayKey, true, now()->addSeconds(90));
-
-        return true;
+        // Claiming the code *is* the answer. Cache::add writes only if the
+        // key is absent, so of two requests carrying the same valid code
+        // exactly one is told true — where has()-then-put() let both read
+        // "unused" before either wrote, and a code intercepted once could
+        // be spent twice inside its window. Same mechanism, and the same
+        // reason, as the preview log's debounce.
+        //
+        // A TOTP code is valid for one window either side; the claim
+        // outlives that by a little.
+        return Cache::add($replayKey, true, now()->addSeconds(90));
     }
 
     /**

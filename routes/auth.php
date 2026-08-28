@@ -95,7 +95,12 @@ Route::middleware('auth')->group(function () {
     Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
         ->name('password.confirm');
 
-    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
+    // Named so EnforceTwoFactor can exempt it. Its exemption list matches
+    // on route names, and an unnamed route matches nothing -- which left
+    // the form reachable and its submission not, closing the enrolment
+    // path enforcement depends on.
+    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store'])
+        ->name('password.confirm.store');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');

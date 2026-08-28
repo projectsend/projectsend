@@ -40,12 +40,17 @@ class EnforceTwoFactor
             return $next($request);
         }
 
-        // password.confirm is on this list because the two-factor mutation
+        // password.confirm* is on this list because the two-factor mutation
         // routes now require it: without the exemption, enrolling would
         // redirect to the confirm-password screen, which this middleware
         // would redirect straight back to two-factor.show — a loop that
         // locks the user out of the only exit.
-        if ($request->routeIs('two-factor.*', 'password.confirm', 'logout', 'locale.update')) {
+        //
+        // The pattern covers both halves of that screen. Naming only the
+        // GET left the form rendering and its submission redirected away,
+        // so the password was never confirmed and the loop stayed shut
+        // one step further along than before.
+        if ($request->routeIs('two-factor.*', 'password.confirm*', 'logout', 'locale.update')) {
             return $next($request);
         }
 

@@ -141,14 +141,19 @@ class CommentPresenter
         ];
     }
 
+    /**
+     * Asked of the column, not of the relation — the same rule
+     * isFromGuest() and authorName() follow. Since author() reads a
+     * deleted account too this would now answer correctly either way; it
+     * is written this way so the next reader does not re-derive "no
+     * author row means guest", which is what it used to mean here.
+     */
     private function authorType(FileComment $comment): string
     {
-        $author = $comment->author;
-
-        if ($author === null) {
+        if ($comment->isFromGuest()) {
             return 'guest';
         }
 
-        return $author->isStaff() ? 'staff' : 'client';
+        return $comment->author?->isStaff() === true ? 'staff' : 'client';
     }
 }

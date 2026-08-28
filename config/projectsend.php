@@ -49,6 +49,27 @@ return [
     |
     */
 
+    /*
+    |--------------------------------------------------------------------------
+    | Capabilities this installation has been told it may not use
+    |--------------------------------------------------------------------------
+    |
+    | Comma-separated capability keys, subtracted from what the edition
+    | grants. Only ever subtracted: nothing here can switch a capability on,
+    | because a variable that could would put the hosted edition's screens
+    | one line of .env away on every self-hosted install.
+    |
+    | For a managed installation whose plan does not include something its
+    | edition otherwise has -- branding.customize on a free plan is the case
+    | this was built for. Unknown keys are ignored rather than fatal: the
+    | variable outlives both the plan that wrote it and the release that
+    | named the key, and an instance refusing to boot over a stale one would
+    | be an outage on upgrade day.
+    |
+    */
+
+    'capabilities_disabled' => env('PROJECTSEND_CAPABILITIES_DISABLED'),
+
     'platform' => [
         'max_staff_users' => env('PROJECTSEND_PLATFORM_MAX_STAFF_USERS'),
         'max_clients' => env('PROJECTSEND_PLATFORM_MAX_CLIENTS'),

@@ -68,6 +68,10 @@ class PlatformServiceProvider extends ServiceProvider
 
             return new CapabilityRegistry(
                 $edition instanceof Edition ? $edition : Edition::from($edition),
+                // Read on every resolve rather than once, for the same
+                // reason the edition is: a test that sets it expects the
+                // next resolve to honour it.
+                config('projectsend.capabilities_disabled'),
             );
         });
 

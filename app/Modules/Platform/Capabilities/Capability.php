@@ -46,9 +46,29 @@ enum Capability: string
     // cloud-modules below.
     case CustomAssets = 'custom_assets.manage';
 
-    // Cloud-only — code lives in the private projectsend/cloud-modules
-    // package (github.com/projectsend/cloud-modules), never in this repo.
+    // Both editions. An installation dressing itself in its own logo, and
+    // watermarking what its clients and visitors see, is not a hosted
+    // concern -- it was Cloud-only because the code happened to live in
+    // the private package, which is a fact about where somebody typed it
+    // rather than about who should have it. Moved into core 2026-08-28.
+    //
+    // What a *plan* withholds is a different question from what an
+    // edition has, and it is answered by subtracting this key from an
+    // instance's environment rather than by moving it back. See
+    // CapabilityRegistry.
     case Branding = 'branding.customize';
+
+    // Cloud-only, and deliberately not part of Branding above: taking
+    // ProjectSend's name off the pages somebody's own visitors see is the
+    // white-label half, and white-labelling is one of the things a hosted
+    // customer pays for.
+    //
+    // The gate is not this key. It is that the only code able to answer
+    // "hide it" ships in the private package, so an installation without
+    // that package has no listener to run and flipping an edition
+    // variable buys nothing. This key exists so a screen knows whether to
+    // offer the switch at all. See ResolvingAttribution.
+    case AttributionHide = 'attribution.hide';
 
     // Cloud-only — the storage backend is ours, supplied by the
     // environment when the instance is provisioned and not the customer's
@@ -108,9 +128,10 @@ enum Capability: string
             self::SchedulerMonitoring,
             self::CustomAssets => [Edition::Community],
 
-            self::UsersManage => [Edition::Community, Edition::Cloud],
+            self::UsersManage,
+            self::Branding => [Edition::Community, Edition::Cloud],
 
-            self::Branding,
+            self::AttributionHide,
             self::StorageManaged,
             self::CaptchaManagedKeys,
             self::PlatformManaged,

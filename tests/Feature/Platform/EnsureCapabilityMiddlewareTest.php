@@ -13,13 +13,22 @@ beforeEach(function () {
     // because a managed installation is given its storage, which is the
     // clearest example of the edition line the middleware exists to draw.
     Route::middleware('capability:storage.configure')->get('/test/community-only', fn () => 'ok');
-    Route::middleware('capability:branding.customize')->get('/test/cloud-only', fn () => 'ok');
+
+    // storage.managed rather than branding.customize, for the second time
+    // this file has had to move: branding stopped being Cloud-only on
+    // 2026-08-28, as users.manage had before it. Both pairs are the same
+    // key seen from either side -- one edition configures its own storage,
+    // the other is given storage it cannot see -- which makes them the two
+    // least likely to move again. If this ever needs picking a third time,
+    // the question to ask is which capability describes *who operates the
+    // installation* rather than what the customer is sold.
+    Route::middleware('capability:storage.managed')->get('/test/cloud-only', fn () => 'ok');
 
     // Under api/, because ProblemDetails is scoped to the API on purpose —
     // a refusal on a web route is not supposed to be an RFC 7807 document.
     // Not api/v1/, so OpenApiContractTest's documented-vs-registered
     // comparison ignores it.
-    Route::middleware('capability:branding.customize')->get('api/test/cloud-only', fn () => 'ok');
+    Route::middleware('capability:storage.managed')->get('api/test/cloud-only', fn () => 'ok');
 });
 
 test('a capability available in the current edition lets the request through', function () {
@@ -48,7 +57,7 @@ test('a capability unavailable in the current edition returns a machine-readable
         ->assertJson([
             'type' => 'capability_unavailable',
             'status' => 403,
-            'capability' => 'branding.customize',
+            'capability' => 'storage.managed',
             'edition' => 'community',
         ]);
 });

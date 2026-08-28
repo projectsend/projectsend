@@ -516,9 +516,23 @@ class FilesController extends Controller
         });
 
         $requested = count($validated['file_ids']);
-        $message = $updated < $requested
-            ? __(':updated of :requested selected files were updated. The rest were skipped because you don\'t have permission to edit them.', ['updated' => $updated, 'requested' => $requested])
-            : trans_choice(':count file updated.|:count files updated.', $updated, ['count' => $updated]);
+
+        // Two different reasons a selected file can go unchanged, and they
+        // are not the same sentence. Files dropped by the Gate::allows
+        // filter above are ones this user may not edit at all. A file that
+        // survived the filter and still changed nothing was editable --
+        // every field they asked to change was one their role does not let
+        // them set, which is the case the single-file editor states
+        // separately too. Reporting the first reason for the second told a
+        // staff member with edit_files but without set_file_expiration_date
+        // that three files they own are not theirs to edit.
+        $unreachable = $requested - $files->count();
+
+        $message = match (true) {
+            $updated === $requested => trans_choice(':count file updated.|:count files updated.', $updated, ['count' => $updated]),
+            $updated + $unreachable === $requested => __(':updated of :requested selected files were updated. The rest were skipped because you don\'t have permission to edit them.', ['updated' => $updated, 'requested' => $requested]),
+            default => __(':updated of :requested selected files were updated. The rest were skipped because you don\'t have permission to make those changes.', ['updated' => $updated, 'requested' => $requested]),
+        };
 
         return back()->with('success', $message);
     }

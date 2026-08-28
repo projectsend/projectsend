@@ -104,6 +104,66 @@ test('an editable_once field locks after the client sets it once', function () {
         ->toBe('1');
 });
 
+test('an editable_once checkbox is not locked by never having been ticked', function () {
+    // Saving the form writes '0' for an unticked box, and filled('0') is
+    // true — so the field locked itself on the first save of the page it
+    // sits on, before the client had decided anything. A text field left
+    // empty stores null and stays open, which is the behaviour this now
+    // matches.
+    $client = User::factory()->client()->create();
+
+    $field = ClientCustomField::query()->create([
+        'name' => 'newsletter', 'label' => 'Send me the newsletter', 'type' => 'checkbox',
+        'required' => false, 'client_editability' => 'editable_once',
+        'client_contexts' => ['account_edit'],
+    ]);
+
+    // A save that has nothing to do with the checkbox.
+    $this->actingAs($client)->patch('/settings/profile', [
+        'name' => 'Renamed', 'email' => $client->email,
+    ])->assertSessionDoesntHaveErrors();
+
+    $this->actingAs($client)->get('/settings/profile')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('custom_fields.0.locked', false),
+    );
+
+    // And the one decision they are entitled to still lands.
+    $this->actingAs($client)->patch('/settings/profile', [
+        'name' => 'Renamed', 'email' => $client->email,
+        'custom_field_values' => [$field->id => '1'],
+    ])->assertSessionDoesntHaveErrors();
+
+    expect(ClientCustomFieldValue::query()
+        ->where('client_custom_field_id', $field->id)->where('user_id', $client->id)->value('value'))->toBe('1');
+
+    $this->actingAs($client)->get('/settings/profile')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('custom_fields.0.locked', true),
+    );
+});
+
+test('an editable_once text field is unchanged by all this', function () {
+    $client = User::factory()->client()->create();
+
+    $field = ClientCustomField::query()->create([
+        'name' => 'vat', 'label' => 'VAT number', 'type' => 'text',
+        'required' => false, 'client_editability' => 'editable_once',
+        'client_contexts' => ['account_edit'],
+    ]);
+
+    $this->actingAs($client)->patch('/settings/profile', [
+        'name' => $client->name, 'email' => $client->email,
+        'custom_field_values' => [$field->id => 'ATU12345678'],
+    ])->assertSessionDoesntHaveErrors();
+
+    $this->actingAs($client)->patch('/settings/profile', [
+        'name' => $client->name, 'email' => $client->email,
+        'custom_field_values' => [$field->id => 'changed'],
+    ])->assertSessionDoesntHaveErrors();
+
+    expect(ClientCustomFieldValue::query()
+        ->where('client_custom_field_id', $field->id)->where('user_id', $client->id)->value('value'))->toBe('ATU12345678');
+});
+
 test('a required checkbox in a client context must actually be checked', function () {
     $client = User::factory()->client()->create();
 

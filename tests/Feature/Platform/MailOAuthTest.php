@@ -11,6 +11,7 @@ use App\Modules\Platform\Settings\MailConfigApplier;
 use App\Modules\Platform\Settings\MailProvider;
 use App\Modules\Platform\Settings\MailProviderSettings;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
@@ -423,6 +424,39 @@ test('the scheduled refresh keeps a healthy connection fresh', function () {
         ->and($connection->refresh_token)->toBe('refresh-token-2')
         ->and($connection->last_error)->toBeNull()
         ->and($connection->last_refreshed_at)->not->toBeNull();
+});
+
+// freshAccessToken() takes a per-connection lock because a refresh token
+// is good for one use, and its comment names this command as one of the
+// racers. The command refreshed outside that lock, so it was the other
+// half of the race rather than a party to it.
+test('the scheduled refresh stands aside for a send that is already refreshing', function () {
+    Http::fake([
+        'login.microsoftonline.com/*' => Http::response(fakeTokenResponse([
+            'access_token' => 'access-token-2',
+            'refresh_token' => 'refresh-token-2',
+        ])),
+    ]);
+
+    connectMicrosoftMailbox();
+
+    $before = MailOAuthConnection::for(MailProvider::Microsoft365);
+
+    // Somebody else is mid-refresh on this connection.
+    $held = Cache::lock('mail-oauth-refresh:microsoft365', 30);
+    expect($held->get())->toBeTrue();
+
+    Artisan::call('projectsend:refresh-mail-oauth-tokens');
+
+    // The token the holder is spending was not spent a second time.
+    Http::assertNothingSent();
+
+    $after = MailOAuthConnection::for(MailProvider::Microsoft365);
+    expect($after->access_token)->toBe($before->access_token)
+        ->and($after->refresh_token)->toBe($before->refresh_token)
+        ->and($after->last_error)->toBeNull();
+
+    $held->release();
 });
 
 test('a dead grant records the error and notifies settings admins exactly once', function () {

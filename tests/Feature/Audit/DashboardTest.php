@@ -7,6 +7,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
 use App\Modules\Audit\ActivityOrigin;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Models\FolderAssignment;
 use App\Modules\Files\Models\ShareLink;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Identity\Models\Role;
@@ -315,6 +316,55 @@ test('clients get the portal dashboard with their own numbers', function () {
     );
 
     expect((string) $response->getContent())->not->toContain('Hidden');
+});
+
+test('the portal dashboard does not count a file the client can no longer open', function () {
+    // File::scopeVisibleToClient ends in notExpired(), so /my-files stops
+    // listing an expired file and the download is refused. The dashboard
+    // restated the assignment half of that scope without its ending, and
+    // went on offering the file's name.
+    $client = User::factory()->client()->create();
+    $file = File::factory()->create([
+        'uploaded_by' => $this->admin->id,
+        'name' => 'old-offer',
+        'expires_at' => now()->subDay(),
+    ]);
+    shareFileWith($file, $client);
+
+    $this->actingAs($client)->get("/files/{$file->id}/download")->assertForbidden();
+
+    $this->actingAs($client)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->where('files_count', 0)
+            ->has('latest_files', 0),
+    );
+});
+
+test('the portal dashboard counts a file that reaches the client through a folder', function () {
+    // The other direction of the same substitution: a shared folder and a
+    // client's own upload are two of the three ways into
+    // scopeVisibleToClient that the hand-rolled query left out, so the
+    // number was under the truth as well as over it.
+    $client = User::factory()->client()->create();
+    $folder = makeFolder('Shared with them');
+    FolderAssignment::query()->create([
+        'folder_id' => $folder->id,
+        'assignable_type' => $client->getMorphClass(),
+        'assignable_id' => $client->id,
+    ]);
+
+    File::factory()->create([
+        'uploaded_by' => $this->admin->id,
+        'name' => 'in-the-folder',
+        'folder_id' => $folder->id,
+    ]);
+    File::factory()->create(['uploaded_by' => $client->id, 'name' => 'their-own-upload']);
+
+    $this->actingAs($client)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->where('files_count', 2)
+            ->has('latest_files', 2),
+    );
 });
 
 test('the recent-activity widget carries origin so an actorless entry is not mislabelled', function () {

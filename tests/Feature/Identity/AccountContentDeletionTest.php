@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 use App\Models\User;
 use App\Modules\Files\Models\File;
+use App\Modules\Identity\Models\Role;
+use App\Modules\Identity\Models\RolePermission;
+use App\Modules\Identity\Permissions\Permission;
 use App\Modules\Identity\Permissions\SystemRole;
 use Illuminate\Support\Facades\Storage;
 
@@ -115,4 +118,82 @@ test('both screens offer the same reassignment candidates', function () {
         // Inactive accounts cannot inherit anything, on either screen.
         ->and(collect($fromUsers)->pluck('name'))->not->toContain('Inactive One')
         ->and(collect($fromClients)->pluck('name'))->not->toContain('Inactive One');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Who the picker is sent to, and what it may name
+|--------------------------------------------------------------------------
+|
+| The candidate list is the delete dialog's picker: every active account in
+| the installation, by name and role. It sits on index pages next to a
+| listing that is deliberately narrowed, and it was narrowed by nothing.
+|
+*/
+
+/** @return array{0: User, 1: User, 2: User} viewer, their client, a stranger's client */
+function scopedClientManager(array $permissions): array
+{
+    $role = Role::query()->create(['name' => 'Scoped rep '.count($permissions), 'client_scoped' => true]);
+    foreach ($permissions as $permission) {
+        RolePermission::query()->create(['role_id' => $role->id, 'permission' => $permission]);
+    }
+
+    $viewer = User::factory()->create(['role_id' => $role->id, 'name' => 'The Rep']);
+    $mine = User::factory()->client()->create(['name' => 'Mine']);
+    $viewer->assignedClients()->attach($mine->id);
+
+    $stranger = User::factory()->client()->create(['name' => 'Stranger Ltd']);
+
+    return [$viewer, $mine, $stranger];
+}
+
+test('the picker names no client the viewer may not see', function () {
+    [$viewer] = scopedClientManager([
+        Permission::ManageClients->value,
+        Permission::DeleteClients->value,
+    ]);
+
+    $props = $this->actingAs($viewer)->get('/clients')->assertOk()->viewData('page')['props'];
+
+    $names = collect($props['reassign_candidates'])->pluck('name');
+
+    // Two lines above it, the listing itself is narrowed to their roster.
+    expect(collect($props['clients'])->pluck('name')->all())->toBe(['Mine'])
+        ->and($names)->toContain('Mine')
+        ->and($names)->not->toContain('Stranger Ltd');
+});
+
+test('the picker is not sent at all to somebody who may not delete', function () {
+    [$viewer] = scopedClientManager([Permission::ManageClients->value]);
+
+    $props = $this->actingAs($viewer)->get('/clients')->assertOk()->viewData('page')['props'];
+
+    expect($props['reassign_candidates'])->toBe([]);
+});
+
+test('the same holds for the staff list', function () {
+    $role = Role::query()->create(['name' => 'Staff lister']);
+    RolePermission::query()->insert([
+        ['role_id' => $role->id, 'permission' => Permission::ManageUsers->value],
+    ]);
+    $viewer = User::factory()->create(['role_id' => $role->id]);
+
+    $props = $this->actingAs($viewer)->get('/users')->assertOk()->viewData('page')['props'];
+
+    expect($props['reassign_candidates'])->toBe([]);
+});
+
+test('an unscoped administrator still gets every active account', function () {
+    // The half that must not narrow: nothing changes for the role that
+    // actually runs these screens.
+    $client = User::factory()->client()->create(['name' => 'Acme Ltd']);
+    $staff = User::factory()->role(SystemRole::ClientManager)->create(['name' => 'Sam Staff']);
+
+    $props = $this->actingAs($this->admin)->get('/clients')->assertOk()->viewData('page')['props'];
+
+    expect(collect($props['reassign_candidates'])->pluck('name'))
+        ->toContain('Acme Ltd')
+        ->toContain('Sam Staff')
+        ->toContain($this->admin->name);
 });

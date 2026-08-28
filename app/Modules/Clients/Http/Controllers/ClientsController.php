@@ -98,7 +98,12 @@ class ClientsController extends Controller
             'clients' => $clients->items(),
             'pagination' => Pagination::meta($clients),
             'filters' => $filters,
-            'reassign_candidates' => $this->accountDeletion->candidates(),
+            // Only for somebody who may actually reassign: the picker is
+            // part of the delete dialog, and React filtering it out of the
+            // page is not the same as it never being on the page.
+            'reassign_candidates' => $viewer->can('delete_clients')
+                ? $this->accountDeletion->candidates($viewer)
+                : [],
             // Null on a self-hosted install: no limit, nothing to say.
             'seats' => $this->seats->clientState(),
         ]);
@@ -214,7 +219,9 @@ class ClientsController extends Controller
                 ->where('user_id', $client->id)
                 ->pluck('value', 'client_custom_field_id'),
             'content' => $this->accountContent->summarize($client),
-            'reassign_candidates' => $this->accountDeletion->candidates($client->id),
+            'reassign_candidates' => $request->user()?->can('delete_clients') === true
+                ? $this->accountDeletion->candidates($request->user(), $client->id)
+                : [],
         ]);
     }
 

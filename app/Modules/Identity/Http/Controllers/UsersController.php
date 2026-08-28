@@ -108,7 +108,11 @@ class UsersController extends Controller
             'filters' => $filters,
             'roles' => Role::query()->orderBy('name')->get(['id', 'name'])
                 ->map(fn (Role $role): array => ['id' => $role->id, 'name' => $role->name])->all(),
-            'reassign_candidates' => $this->accountDeletion->candidates(),
+            // Same rule as the clients list: the picker belongs to the
+            // delete dialog, so it is sent to whoever may open one.
+            'reassign_candidates' => $this->actor()->can('delete_users')
+                ? $this->accountDeletion->candidates($this->actor())
+                : [],
             // Null on a self-hosted install: no limit, nothing to say.
             'seats' => $this->seats->staffState(),
         ]);
@@ -184,7 +188,9 @@ class UsersController extends Controller
                 && $this->accounts->isAdministratorRole($user->role_id)
                 && $this->accounts->activeAdministratorCount() === 1,
             'content' => $this->accountContent->summarize($user),
-            'reassign_candidates' => $this->accountDeletion->candidates($user->id),
+            'reassign_candidates' => $this->actor()->can('delete_users')
+                ? $this->accountDeletion->candidates($this->actor(), $user->id)
+                : [],
             // Read-only, deliberately: an administrator may see that an
             // integration exists and what it is allowed to do, but only
             // the owner can rename, re-scope or revoke it. See ApiTokens.

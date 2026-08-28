@@ -37,7 +37,10 @@ class PrivacySettingsController extends Controller
             'account_erasure_grace_days' => $this->settings->get(Setting::AccountErasureGraceDays),
             'account_erasure_content_action' => $this->settings->get(Setting::AccountErasureContentAction),
             'account_erasure_reassign_to' => $this->settings->get(Setting::AccountErasureReassignTo),
-            'reassign_candidates' => $this->accountDeletion->candidates(),
+            // Installation-wide on purpose: this is the default every
+            // erasure will use, stored once for everybody, and the page is
+            // already behind edit_settings.
+            'reassign_candidates' => $this->accountDeletion->candidates(null),
             'api_request_log_retention_days' => $this->settings->get(Setting::ApiRequestLogRetentionDays),
             'discourage_search_indexing' => $this->settings->get(Setting::DiscourageSearchIndexing),
         ]);

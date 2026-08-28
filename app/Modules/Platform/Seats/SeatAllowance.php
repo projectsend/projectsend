@@ -25,6 +25,12 @@ use Illuminate\Validation\ValidationException;
  * like a billing fault rather than a counting one. So `staffUsed()` and
  * `clientUsed()` are public and are what `guard*()` reads.
  *
+ * That second consumer stopped being hypothetical on 2026-08-27: the
+ * hosted fleet console shows these numbers per tenant, read from
+ * `projectsend:status --json`. So the rules below are load-bearing on a
+ * screen support staff read, and changing one changes what they are told
+ * before it changes what a customer hits.
+ *
  * ### What counts
  *
  * A soft-deleted account does not. Its address stays reserved until

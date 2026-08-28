@@ -497,23 +497,25 @@ class DashboardController extends Controller
 
     private function clientDashboard(User $client): Response
     {
-        $assignedFiles = File::query()->whereHas('assignments', function ($query) use ($client): void {
-            $query->where(function ($direct) use ($client): void {
-                $direct->where('assignable_type', User::class)->where('assignable_id', $client->id);
-            })->orWhere(function ($viaGroup) use ($client): void {
-                $viaGroup->where('assignable_type', Group::class)
-                    ->whereIn('assignable_id', $client->memberOfGroups()->pluck('groups.id'));
-            });
-        });
+        // File::scopeVisibleToClient is the single source of truth for
+        // client file access, and this page has to agree with the portal it
+        // introduces. Restating the assignment half here made it disagree
+        // in both directions: it counted expired files, which the scope
+        // ends by excluding and /my-files therefore never shows, and it
+        // missed everything that reaches a client another way — a file in a
+        // folder shared with them, their own portal upload, and a revision,
+        // which owns no assignment row and inherits its original's
+        // recipients.
+        $visibleFiles = File::query()->visibleToClient($client);
 
         return Inertia::render('portal/dashboard', [
-            'files_count' => (clone $assignedFiles)->count(),
+            'files_count' => (clone $visibleFiles)->count(),
             'groups_count' => $client->memberOfGroups()->where('public', true)->count(),
             'storage' => [
                 'used_bytes' => $this->storageUsage->usedBytes($client),
                 'quota_bytes' => $this->storageUsage->quotaBytes($client) ?: null,
             ],
-            'latest_files' => $assignedFiles->orderByDesc('created_at')->limit(5)->get()
+            'latest_files' => $visibleFiles->orderByDesc('created_at')->limit(5)->get()
                 ->map(fn (File $file): array => [
                     'id' => $file->id,
                     'name' => $file->name,

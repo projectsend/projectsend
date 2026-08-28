@@ -11,6 +11,7 @@ use App\Modules\Identity\Social\SocialGateway;
 use App\Modules\Identity\Social\SocialIdentity;
 use App\Modules\Identity\Social\SocialProvider;
 use App\Modules\Identity\Social\SocialSettings;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Testing\TestResponse;
 use Tests\Support\FakeSocialGateway;
 
@@ -145,6 +146,30 @@ test('an account created by a provider cannot remove its last connection', funct
         ->assertSessionHasErrors('provider');
 
     expect(SocialAccount::query()->count())->toBe(1);
+});
+
+// And the instruction inside that refusal, followed. AuthSource says a
+// social account "may later set a real password"; a reset by emailed token
+// is where somebody does, and nothing else in the application records it.
+test('a provider account that resets its password can then disconnect', function () {
+    $client = User::factory()->client()->create();
+    $client->forceFill(['auth_source' => AuthSource::Social])->save();
+    linkRow($client, 'sub-1');
+
+    $this->post(route('password.store'), [
+        'token' => Password::createToken($client),
+        'email' => $client->email,
+        'password' => 'a-password-of-her-own',
+        'password_confirmation' => 'a-password-of-her-own',
+    ])->assertSessionHasNoErrors();
+
+    expect($client->fresh()->auth_source)->toBe(AuthSource::Local);
+
+    $this->actingAs($client->fresh())
+        ->delete(route('connected-accounts.destroy', ['provider' => 'google']))
+        ->assertSessionHasNoErrors();
+
+    expect(SocialAccount::query()->count())->toBe(0);
 });
 
 test('it can remove one of two connections', function () {

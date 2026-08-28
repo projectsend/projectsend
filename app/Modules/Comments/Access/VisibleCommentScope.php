@@ -10,6 +10,7 @@ use App\Modules\Comments\GuestCommentIdentity;
 use App\Modules\Comments\Models\FileComment;
 use App\Modules\Files\Access\ShareTargets;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Identity\UserType;
@@ -51,6 +52,7 @@ class VisibleCommentScope
 {
     public function __construct(
         private readonly StaffLibraryScope $scope,
+        private readonly ViewableFileScope $viewable,
         private readonly ShareTargets $shareTargets,
         private readonly GuestCommentIdentity $guests,
     ) {}
@@ -123,6 +125,13 @@ class VisibleCommentScope
      * way around the visibility model** — moderating means deciding about
      * comments you can already see.
      *
+     * Which is why the files come from ViewableFileScope rather than from
+     * StaffLibraryScope: FilePolicy::view() is a permission half AND a
+     * library half, and narrowing by the library alone would hand every
+     * comment in the installation to a role holding moderate_comments and
+     * none of the three file keys — somebody who gets a 403 on every file
+     * these comments are about.
+     *
      * Staff only. A client has no cross-file view of comments and asking
      * for one is a mistake rather than an empty result, but returning
      * nothing is the safe way to be wrong.
@@ -136,7 +145,7 @@ class VisibleCommentScope
         }
 
         return $this->applyVisibility(
-            FileComment::query()->whereIn('file_id', $this->scope->files($viewer)->select('files.id')),
+            FileComment::query()->whereIn('file_id', $this->viewable->for($viewer)->select('files.id')),
             $viewer,
             // Publicness is a property of each file, so it cannot be one
             // value for a query spanning many. It does not have to be: the
@@ -156,6 +165,12 @@ class VisibleCommentScope
      * than about what this viewer may read, and a moderator who cannot see
      * a particular client's thread must still be told the file has
      * something waiting.
+     *
+     * The file boundary is still the same one, though. ViewableFileScope
+     * rather than StaffLibraryScope: which files is the part that varies
+     * per client, whether any is the part that does not, and a badge
+     * counting the whole installation for somebody who may open none of it
+     * is a number about other people's files.
      */
     public function pendingTotal(User $viewer): int
     {
@@ -165,7 +180,7 @@ class VisibleCommentScope
 
         return FileComment::query()
             ->whereNull('approved_at')
-            ->whereIn('file_id', $this->scope->files($viewer)->select('files.id'))
+            ->whereIn('file_id', $this->viewable->for($viewer)->select('files.id'))
             ->count();
     }
 

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Modules\Identity\TwoFactor\TwoFactorService;
 use Illuminate\Support\Facades\Cache;
 use PragmaRX\Google2FA\Google2FA;
 
@@ -87,6 +88,33 @@ test('a totp code cannot be replayed', function () {
         ->assertSessionHasErrors('code');
 
     $this->assertGuest();
+});
+
+// The replay guard used to read, verify, then write. Two requests carrying
+// the same code could both read "unused" before either wrote, and both be
+// told yes -- which is the whole window an intercepted code has. This is
+// that interleaving: the second request's read lands before the winner's
+// write, so the key looks free and is not.
+test('a code already claimed by another request in flight is refused', function () {
+    $user = User::factory()->create();
+    $secret = enableTwoFactor($user);
+
+    $code = app(Google2FA::class)->getCurrentOtp($secret);
+
+    // The winner of the race has claimed the code.
+    Cache::put('two-factor.used.'.$user->id.'.'.hash('sha256', $code), true, now()->addSeconds(90));
+
+    // The loser read before that write landed, so its has() still reports
+    // the key as free. Only that one answer is stale — everything else is
+    // the real store — which leaves the claim itself as the deciding call.
+    $stale = Mockery::mock(Cache::store())->makePartial();
+    $stale->shouldReceive('has')->andReturnFalse();
+
+    config()->set('cache.stores.stale-read', ['driver' => 'stale-read']);
+    Cache::extend('stale-read', fn () => $stale);
+    Cache::setDefaultDriver('stale-read');
+
+    expect(app(TwoFactorService::class)->verify($user->refresh(), $code))->toBeFalse();
 });
 
 test('a recovery code logs in and is consumed', function () {

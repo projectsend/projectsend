@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Api\Support;
 
 use App\Modules\Platform\Capabilities\CapabilityUnavailable;
+use App\Support\ApiSurface;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -16,7 +17,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 /**
- * RFC 7807 error bodies for /api/* only.
+ * RFC 7807 error bodies for the API surface only -- see ApiSurface, which
+ * is the same question the capability middleware asks.
  *
  * Two properties this class exists to guarantee:
  *
@@ -55,7 +57,7 @@ class ProblemDetails
 
     public function shouldHandle(Request $request): bool
     {
-        return $request->is('api/*');
+        return ApiSurface::matches($request);
     }
 
     public function render(Request $request, Throwable $e): JsonResponse

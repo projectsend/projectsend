@@ -62,6 +62,27 @@ test('a capability unavailable in the current edition returns a machine-readable
         ]);
 });
 
+test('an API route answers 403 whatever the caller is willing to parse', function () {
+    // Accept is the caller's preference; whether a feature exists in this
+    // edition is not. routes/api.php promises the machine-readable 403,
+    // and a caller sending */* -- a curl default -- used to get a bare 404
+    // on the same route instead.
+    config()->set('projectsend.edition', Edition::Community);
+
+    $this->get('api/test/cloud-only', ['Accept' => '*/*'])
+        ->assertForbidden()
+        ->assertHeader('Content-Type', 'application/problem+json')
+        ->assertJson(['type' => 'capability_unavailable']);
+});
+
+test('a web route still answers 404 even when the caller asks for JSON', function () {
+    // The mirror image: an Inertia request accepts JSON, and an
+    // unavailable feature must stay absent rather than announce itself.
+    config()->set('projectsend.edition', Edition::Community);
+
+    $this->getJson('/test/cloud-only')->assertNotFound();
+});
+
 test('the same routes flip availability when running as the cloud edition', function () {
     config()->set('projectsend.edition', Edition::Cloud);
 

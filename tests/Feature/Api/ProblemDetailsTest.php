@@ -53,6 +53,14 @@ test('an unexpected failure never leaks its message when debug is off', function
     expect($response->getContent())->not->toContain('hunter2');
 });
 
+test('a staff page that lives under the API prefix is not an API route', function () {
+    // /api/docs and /api are pages from routes/web.php. Answering their
+    // errors in problem+json told a signed-out visitor to send a Bearer
+    // token, on a page whose whole purpose is to be read in a browser.
+    $this->get('/api/docs')->assertRedirect('/login');
+    $this->get('/api')->assertRedirect('/login');
+});
+
 test('web routes are untouched by the API error format', function () {
     // The renderer is scoped by path, not by whether the request accepts
     // JSON — Inertia requests do accept JSON, and reshaping their errors

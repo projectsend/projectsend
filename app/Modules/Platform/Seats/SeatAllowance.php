@@ -85,6 +85,27 @@ class SeatAllowance
     }
 
     /**
+     * The staff seat position, for a screen rather than a guard.
+     *
+     * Null on a self-hosted install: there is no limit, so there is
+     * nothing for a screen to say about one.
+     *
+     * @return array{limit: int, used: int, full: bool, message: string|null}|null
+     */
+    public function staffState(): ?array
+    {
+        return $this->state($this->staffLimit(), $this->staffUsed(), fn (): string => $this->staffFullMessage());
+    }
+
+    /**
+     * @return array{limit: int, used: int, full: bool, message: string|null}|null
+     */
+    public function clientState(): ?array
+    {
+        return $this->state($this->clientLimit(), $this->clientUsed(), fn (): string => $this->clientFullMessage());
+    }
+
+    /**
      * @throws ValidationException when one more staff account would exceed
      *                             what this installation may hold.
      */
@@ -96,11 +117,7 @@ class SeatAllowance
             return;
         }
 
-        throw ValidationException::withMessages([
-            $field => __('Staff accounts on this installation are limited to :count. Remove one, or ask for a larger plan.', [
-                'count' => (string) $limit,
-            ]),
-        ]);
+        throw ValidationException::withMessages([$field => $this->staffFullMessage()]);
     }
 
     /**
@@ -115,11 +132,59 @@ class SeatAllowance
             return;
         }
 
-        throw ValidationException::withMessages([
-            $field => __('Clients on this installation are limited to :count. Remove one, or ask for a larger plan.', [
-                'count' => (string) $limit,
-            ]),
+        throw ValidationException::withMessages([$field => $this->clientFullMessage()]);
+    }
+
+    /**
+     * Why a screen is closed, in the words the guard would have used.
+     *
+     * A door that turns somebody away and a guard that refuses them are
+     * the same rule met at two moments, so they say the same sentence. Two
+     * wordings of one limit is how a person ends up believing there are
+     * two limits.
+     */
+    public function staffFullMessage(): string
+    {
+        return __('Staff accounts on this installation are limited to :count. Remove one, or ask for a larger plan.', [
+            'count' => (string) $this->staffLimit(),
         ]);
+    }
+
+    public function clientFullMessage(): string
+    {
+        return __('Clients on this installation are limited to :count. Remove one, or ask for a larger plan.', [
+            'count' => (string) $this->clientLimit(),
+        ]);
+    }
+
+    /**
+     * `full` is derived here rather than in each caller, and from the same
+     * comparison `guard*()` refuses on. A screen that works out for itself
+     * whether there is room can disagree with the guard about the edge --
+     * `used > limit` after an operator lowers a limit is the obvious one --
+     * and then the button is offered for a form that cannot be submitted,
+     * which is the whole fault this is here to prevent.
+     *
+     * The message travels with the state so a screen never has to write
+     * its own version of the refusal.
+     *
+     * @param  callable(): string  $message
+     * @return array{limit: int, used: int, full: bool, message: string|null}|null
+     */
+    private function state(?int $limit, int $used, callable $message): ?array
+    {
+        if ($limit === null) {
+            return null;
+        }
+
+        $full = $used >= $limit;
+
+        return [
+            'limit' => $limit,
+            'used' => $used,
+            'full' => $full,
+            'message' => $full ? $message() : null,
+        ];
     }
 
     /**

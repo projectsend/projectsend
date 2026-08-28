@@ -99,11 +99,23 @@ class ClientsController extends Controller
             'pagination' => Pagination::meta($clients),
             'filters' => $filters,
             'reassign_candidates' => $this->accountDeletion->candidates(),
+            // Null on a self-hosted install: no limit, nothing to say.
+            'seats' => $this->seats->clientState(),
         ]);
     }
 
-    public function create(): Response
+    public function create(): RedirectResponse|Response
     {
+        // The same courtesy UsersController::create() does: a full
+        // installation is an ordinary state on a managed plan, so say so
+        // before somebody fills in a form that cannot be submitted. The
+        // guard in store() is still the rule; this is only the door.
+        $seats = $this->seats->clientState();
+
+        if ($seats !== null && $seats['full']) {
+            return redirect()->route('clients.index')->with('error', $seats['message']);
+        }
+
         return Inertia::render('clients/create', [
             'custom_fields' => $this->customFieldDefinitions(),
             'default_storage_quota_mb' => (int) $this->settings->get(Setting::DefaultClientStorageQuotaMb),

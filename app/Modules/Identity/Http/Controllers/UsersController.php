@@ -14,6 +14,7 @@ use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\StaffAccounts;
 use App\Modules\Identity\TwoFactor\TwoFactorAdministration;
 use App\Modules\Identity\UserType;
+use App\Modules\Platform\Seats\SeatAllowance;
 use App\Support\Pagination;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -26,9 +27,17 @@ use Inertia\Inertia;
 use Inertia\Response;
 
 /**
- * Staff ("system users") management — community edition only; managed
- * installations create them outside the application. Clients are a different
- * population managed by the Clients module: they never appear here.
+ * Staff ("system users") management. Clients are a different population
+ * managed by the Clients module: they never appear here.
+ *
+ * Available on both editions since 2.2.0. A managed installation is sold a
+ * number of seats and fills them itself — see Capability::UsersManage for
+ * why capacity is the platform's and who fills it is the tenant's.
+ *
+ * That makes a full installation an ordinary state rather than an error,
+ * so `index()` reports the seat position and `create()` refuses to open a
+ * form nothing can be submitted through. SeatAllowance::guardStaff() still
+ * runs in `store()`: this is the courtesy, that is the rule.
  */
 class UsersController extends Controller
 {
@@ -37,6 +46,7 @@ class UsersController extends Controller
         private readonly AccountContentDeletion $accountDeletion,
         private readonly ApiTokens $apiTokens,
         private readonly StaffAccounts $accounts,
+        private readonly SeatAllowance $seats,
     ) {}
 
     public function index(Request $request): Response
@@ -99,11 +109,24 @@ class UsersController extends Controller
             'roles' => Role::query()->orderBy('name')->get(['id', 'name'])
                 ->map(fn (Role $role): array => ['id' => $role->id, 'name' => $role->name])->all(),
             'reassign_candidates' => $this->accountDeletion->candidates(),
+            // Null on a self-hosted install: no limit, nothing to say.
+            'seats' => $this->seats->staffState(),
         ]);
     }
 
-    public function create(): Response
+    public function create(): RedirectResponse|Response
     {
+        // Turned away here rather than on submit. Somebody reaching this
+        // by link or bookmark used to fill in a name, an email and a
+        // password they had to invent, and learn the installation was full
+        // from a validation error under the email field — which reads as a
+        // fault with the address rather than a fact about the plan.
+        $seats = $this->seats->staffState();
+
+        if ($seats !== null && $seats['full']) {
+            return redirect()->route('users.index')->with('error', $seats['message']);
+        }
+
         return Inertia::render('users/create', [
             'roles' => $this->roleOptions(),
             'clients' => $this->clientOptions(),

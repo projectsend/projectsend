@@ -9,6 +9,7 @@ use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Validation\ValidationException;
+use Inertia\Testing\AssertableInertia;
 
 /**
  * A cap is only a cap if every door asks.
@@ -201,6 +202,77 @@ test('door: demoting a staff account to client', function () {
     ])->assertSessionHasErrors('email');
 
     expect($staffer->refresh()->isStaff())->toBeTrue();
+});
+
+// ------------------------------------------- saying so before anything is typed
+
+/**
+ * A full installation is an ordinary state on a managed plan, not a fault.
+ *
+ * It used to read as one: the create screen opened, you invented a
+ * password, submitted, and the plan limit came back as a validation error
+ * under the email field — which looks like a complaint about the address.
+ * The guard stays where it is; these cases are about the screen in front
+ * of it.
+ */
+test('the create screen turns you away instead of taking a form it cannot accept', function () {
+    seatLimits(staff: 1); // the admin already fills it
+
+    $this->actingAs($this->admin)->get('/users/create')
+        ->assertRedirect('/users')
+        ->assertSessionHas('error', fn (string $message): bool => str_contains($message, 'limited to 1.'));
+});
+
+test('the client create screen does the same', function () {
+    seatLimits(clients: 0);
+
+    $this->actingAs($this->admin)->get('/clients/create')
+        ->assertRedirect('/clients')
+        ->assertSessionHas('error', fn (string $message): bool => str_contains($message, 'limited to 0.'));
+});
+
+test('room under the cap still opens the create screen', function () {
+    seatLimits(staff: 2, clients: 2);
+
+    $this->actingAs($this->admin)->get('/users/create')->assertOk();
+    $this->actingAs($this->admin)->get('/clients/create')->assertOk();
+});
+
+test('the list says where the installation stands, so the button can go dead with a reason', function () {
+    seatLimits(staff: 2);
+
+    $this->actingAs($this->admin)->get('/users')
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->where('seats.limit', 2)
+            ->where('seats.used', 1)
+            ->where('seats.full', false)
+            // Nothing to explain while there is room.
+            ->where('seats.message', null));
+});
+
+test('the list carries the refusal in the guard\'s own words once it is full', function () {
+    // One wording for one limit: two is how somebody ends up believing
+    // there are two limits.
+    seatLimits(clients: 1);
+
+    User::factory()->client()->create();
+
+    $this->actingAs($this->admin)->get('/clients')
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->where('seats.full', true)
+            ->where('seats.message', fn (string $message): bool => str_contains($message, 'limited to 1.')));
+});
+
+test('a self-hosted install is told nothing about seats at all', function () {
+    // No limit, so no counter, no dead button, and no invitation to
+    // wonder which plan it is on.
+    seatLimits();
+
+    $this->actingAs($this->admin)->get('/users')
+        ->assertInertia(fn (AssertableInertia $page) => $page->where('seats', null));
+
+    $this->actingAs($this->admin)->get('/clients')
+        ->assertInertia(fn (AssertableInertia $page) => $page->where('seats', null));
 });
 
 // --------------------------------------------------------- what must not change

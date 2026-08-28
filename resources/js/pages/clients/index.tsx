@@ -6,6 +6,7 @@ import { ConfirmDialog } from '@/components/confirm-dialog';
 import Heading from '@/components/heading';
 import { FilterField, ListToolbar } from '@/components/list-toolbar';
 import { Pagination, PaginationMeta } from '@/components/pagination';
+import { SeatLimitedAction, type SeatState } from '@/components/seat-limit';
 import { TableShell } from '@/components/table-shell';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -35,9 +36,10 @@ interface ClientsIndexProps {
     pagination: PaginationMeta;
     filters: Filters;
     reassign_candidates: ReassignCandidate[];
+    seats: SeatState | null;
 }
 
-export default function ClientsIndex({ clients, pagination, filters, reassign_candidates }: ClientsIndexProps) {
+export default function ClientsIndex({ clients, pagination, filters, reassign_candidates, seats }: ClientsIndexProps) {
     const { t } = useTranslation();
     const { auth } = usePage<SharedData>().props;
 
@@ -66,16 +68,19 @@ export default function ClientsIndex({ clients, pagination, filters, reassign_ca
             <div className="px-4 py-6">
                 <div className="flex items-start justify-between">
                     <Heading title={t('Clients')} description={t('The people you share files with')} />
-                    <div className="flex gap-2">
+                    <div className="flex items-start gap-2">
                         {can('manage_custom_fields') && (
                             <Button variant="outline" asChild>
                                 <Link href={route('client-custom-fields.index')}>{t('Manage custom fields')}</Link>
                             </Button>
                         )}
                         {can('create_clients') && (
-                            <Button asChild>
-                                <Link href={route('clients.create')}>{t('New client')}</Link>
-                            </Button>
+                            <SeatLimitedAction
+                                seats={seats}
+                                href={route('clients.create')}
+                                label={t('New client')}
+                                usage={({ used, limit }) => t(':used of :limit client accounts used', { used, limit })}
+                            />
                         )}
                     </div>
                 </div>

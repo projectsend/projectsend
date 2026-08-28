@@ -7,6 +7,7 @@ import { ConfirmDialog } from '@/components/confirm-dialog';
 import Heading from '@/components/heading';
 import { FilterField, ListToolbar } from '@/components/list-toolbar';
 import { Pagination, PaginationMeta } from '@/components/pagination';
+import { SeatLimitedAction, type SeatState } from '@/components/seat-limit';
 import { TableShell } from '@/components/table-shell';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -43,9 +44,10 @@ interface UsersIndexProps {
     filters: Filters;
     roles: { id: number; name: string }[];
     reassign_candidates: ReassignCandidate[];
+    seats: SeatState | null;
 }
 
-export default function UsersIndex({ users, pagination, filters, roles, reassign_candidates }: UsersIndexProps) {
+export default function UsersIndex({ users, pagination, filters, roles, reassign_candidates, seats }: UsersIndexProps) {
     const { t } = useTranslation();
     const { auth } = usePage<SharedData>().props;
 
@@ -66,9 +68,12 @@ export default function UsersIndex({ users, pagination, filters, roles, reassign
                 <div className="flex items-start justify-between">
                     <Heading title={t('System users')} description={t('The people who administer this installation and upload files')} />
                     {can('create_users') && (
-                        <Button asChild>
-                            <Link href={route('users.create')}>{t('New user')}</Link>
-                        </Button>
+                        <SeatLimitedAction
+                            seats={seats}
+                            href={route('users.create')}
+                            label={t('New user')}
+                            usage={({ used, limit }) => t(':used of :limit staff seats used', { used, limit })}
+                        />
                     )}
                 </div>
 

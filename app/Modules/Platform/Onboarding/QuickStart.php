@@ -126,8 +126,11 @@ class QuickStart
             ];
         }
 
-        // Community only, and the example the brief named: a managed
-        // installation has no staff accounts of its own to hand out.
+        // Both editions since 2.2.0. A managed installation was once the
+        // example of a site with no staff accounts of its own to hand out;
+        // it is sold seats and fills them itself now, so this step belongs
+        // on its list too. The capability stays in the condition as the
+        // seam an edition difference would travel through.
         if ($this->permissions->allows($user, Permission::CreateUsers)
             && $this->capabilities->has(Capability::UsersManage)) {
             $items[] = [

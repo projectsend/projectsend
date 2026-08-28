@@ -94,6 +94,20 @@ use Throwable;
  * `modules` is filled by whatever packages are installed, through
  * ResolvingInstallationStatus. A platform that provisioned a bucket knows
  * what it asked for; only the installation knows what loaded.
+ *
+ * ### A version is a decision, a commit is a fact
+ *
+ * `build` says which commit this installation was built from. A version
+ * string is chosen by somebody and stamped; two images can carry the same
+ * one and different code — an image built from the tag, and one built
+ * from the branch that tag sits on. A fleet spent a day reporting "2.2.0"
+ * from images that were not the released 2.2.0, and nothing inside any of
+ * them could have said so.
+ *
+ * Null on a source checkout, all four fields, because `config/build.php`
+ * is written by build-release.sh and a checkout is not a build. That is
+ * the honest answer rather than a missing one: "I was not built" and "I
+ * will not say" are different, and only the first is true here.
  */
 class StatusCommand extends Command
 {
@@ -146,6 +160,16 @@ class StatusCommand extends Command
             // reader unmarshalling a map breaks on the day it happens to
             // be empty rather than on the day it is written.
             'modules' => (object) $this->modules(),
+            'build' => [
+                // `channel` is 'release' or 'dev'. An internal build names
+                // itself after its commit and can never be published, so a
+                // fleet reading 'dev' is looking at something deliberate
+                // rather than at a mistake.
+                'commit' => $this->buildFact('commit'),
+                'ref' => $this->buildFact('ref'),
+                'channel' => $this->buildFact('channel'),
+                'built_at' => $this->buildFact('built_at'),
+            ],
         ];
 
         if ($this->option('json')) {
@@ -160,11 +184,20 @@ class StatusCommand extends Command
         $this->line('Clients:      '.$this->seatLine($status['seats']['clients']));
         $this->line('Last staff login: '.($status['activity']['last_staff_login_at'] ?? 'never'));
         $this->line('Storage:      '.number_format($status['storage']['bytes']).' bytes in '.$status['storage']['files'].' files');
+        $this->line('Build:        '.($status['build']['ref'] ?? 'not a build')
+            .($status['build']['channel'] === 'dev' ? ' (dev)' : ''));
         $this->line('Health:       '.$status['health']['pending_migrations'].' migrations pending, '
             .$status['health']['failed_jobs'].' failed jobs, '
             .array_sum(array_filter($status['health']['queues'], 'is_int')).' queued');
 
         return self::SUCCESS;
+    }
+
+    private function buildFact(string $key): ?string
+    {
+        $value = config("build.$key");
+
+        return is_string($value) && $value !== '' ? $value : null;
     }
 
     private function enforcement(Settings $settings): string

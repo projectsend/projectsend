@@ -232,3 +232,56 @@ test('a package can report what core has no way to know', function () {
 test('an installation running no packages answers with a map, not a list', function () {
     expect(json_encode(statusJson(false)['modules']))->toBe('{}');
 });
+
+// ----------------------------------------------------- which build is this
+
+/**
+ * A version is a decision somebody made; a commit is a fact.
+ *
+ * Two images can carry the same version and different code — one built
+ * from the tag, one from the branch that tag sits on — and a fleet spent a
+ * day reporting "2.2.0" from images that were not the released 2.2.0. This
+ * is what lets an installation say which one it is.
+ */
+test('a source checkout says it is not a build, in every field', function () {
+    // config/build.php is written by build-release.sh and gitignored, so a
+    // checkout has none. Null is the honest answer: "I was not built" and
+    // "I will not say" are different, and only the first is true here.
+    expect(statusJson()['build'])->toBe([
+        'commit' => null,
+        'ref' => null,
+        'channel' => null,
+        'built_at' => null,
+    ]);
+});
+
+test('a built artifact reports the commit it came from', function () {
+    config([
+        'build.commit' => '2029309aa1b2c3d4e5f6',
+        'build.ref' => 'v2.2.1',
+        'build.channel' => 'release',
+        'build.built_at' => '2026-08-28T04:00:00Z',
+    ]);
+
+    expect(statusJson()['build'])->toBe([
+        'commit' => '2029309aa1b2c3d4e5f6',
+        'ref' => 'v2.2.1',
+        'channel' => 'release',
+        'built_at' => '2026-08-28T04:00:00Z',
+    ]);
+});
+
+test('an internal build says so, so nobody reads it as a release', function () {
+    config(['build.channel' => 'dev', 'build.ref' => '2.2.2-dev.15.g06c364d']);
+
+    expect(statusJson()['build']['channel'])->toBe('dev');
+});
+
+test('an empty string is not an answer', function () {
+    // A build step that ran and produced nothing must not be reported as a
+    // build identity — that would read as "answered" to anything checking
+    // for presence, which is the distinction this whole file protects.
+    config(['build.commit' => '']);
+
+    expect(statusJson()['build']['commit'])->toBeNull();
+});

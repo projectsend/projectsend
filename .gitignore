@@ -46,3 +46,6 @@ yarn-error.log
 # mkcert certificates and the nginx config that terminates HTTPS on the
 # dev `web` container. Machine-specific, and one of them is a private key.
 /docker/web/local/
+
+# Written into an artifact by build-release.sh, never into a checkout.
+/config/build.php

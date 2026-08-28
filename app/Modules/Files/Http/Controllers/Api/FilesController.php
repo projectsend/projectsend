@@ -134,9 +134,12 @@ class FilesController extends Controller
         }
 
         // Expiry is a filter, not a default: staff see expired files in the
-        // UI too (that is how they notice and act on them). Only the client
-        // branch of the visibility rules drops them, and it does so inside
-        // ViewableFileScope where it belongs.
+        // UI too (that is how they notice and act on them). Dropping them
+        // is the client branch's rule, applied inside the visibility scopes
+        // where it belongs — which is also why a client-scoped caller does
+        // not get their clients' expired files back here whatever this
+        // filter says: their library is built on that same branch. See
+        // File::isExpired.
         if ($request->has('expired') && ($filters['expired'] ?? null) !== null) {
             $request->boolean('expired') ? $query->expired() : $query->notExpired();
         }

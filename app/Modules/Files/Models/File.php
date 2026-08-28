@@ -251,8 +251,20 @@ class File extends Model
     /**
      * A file's own expiration date — independent of any share link's.
      * Null means never expires. Once past, the file is hidden from
-     * clients and the public site (see scopeNotExpired) but staff keep
-     * full access to view, download, and manage it.
+     * clients and the public site (see scopeNotExpired) and staff keep
+     * full access to view, download, and manage it — with one boundary
+     * this used to leave out.
+     *
+     * A client-scoped staff member's library is their own uploads ∪ what
+     * each assigned client may see (StaffLibraryScope::buildFiles), and
+     * that second half is scopeVisibleToClient, which ends in
+     * notExpired(). So an expired file they held only through a client
+     * leaves their library too, while their own expired upload stays.
+     * That is deliberate: c8078f65 weighed widening it and left the
+     * boundary where it is, because scopeVisibleToClient is the single
+     * source of truth for client file access, and relabelled the
+     * expired-files widget instead. ExpiredFileStaffAccessTest pins both
+     * halves so the sentence above cannot drift from the code again.
      */
     public function isExpired(): bool
     {

@@ -162,8 +162,9 @@ class EmailOAuthController extends Controller
             'refresh_token' => null,
             'token_expires_at' => null,
             'account_email' => null,
-            'last_error' => null,
-        ])->save();
+        ]);
+        $connection->clearFailure();
+        $connection->save();
 
         $this->activateConnection();
 

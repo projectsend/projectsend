@@ -21,9 +21,12 @@ use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Storage\ResolvingUploadDisk;
 use App\Modules\Files\Uploads\StoreUploadedFile;
 use App\Modules\Files\Uploads\UploadExtensionPolicy;
+use App\Modules\Platform\Localization\LocalDay;
+use App\Modules\Platform\Localization\TimezoneRegistry;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use App\Support\Rules;
+use Carbon\Carbon;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -59,6 +62,7 @@ class FilesController extends Controller
         private readonly ActivityLogger $activity,
         private readonly CommentingRules $commenting,
         private readonly StaffLibraryScope $scope,
+        private readonly TimezoneRegistry $timezones,
     ) {}
 
     /**
@@ -263,6 +267,12 @@ class FilesController extends Controller
      * without the matching permission leaves that field untouched rather
      * than failing the whole request, which mirrors the web interface.
      *
+     * `expires_at` accepts either a calendar day (`2026-09-12`) or a full
+     * timestamp. A day means the end of that day in the caller's timezone,
+     * which is what the same value means on the web and what the file's
+     * own `expires_at` reads back as; a timestamp is taken as the instant
+     * it names.
+     *
      * `commentable` only has an effect while the installation's comment
      * setting is "only files marked as commentable"; under any other
      * setting it is ignored, again rather than failing.
@@ -306,7 +316,7 @@ class FilesController extends Controller
         $attributes = array_intersect_key($validated, array_flip(['name', 'description', 'folder_id']));
 
         if (array_key_exists('expires_at', $validated) && $user->can('set_file_expiration_date')) {
-            $attributes['expires_at'] = $validated['expires_at'];
+            $attributes['expires_at'] = $this->expiryInstant($validated['expires_at'], $user);
         }
 
         if (array_key_exists('download_limit', $validated) && $user->can('limit_downloads')) {
@@ -355,5 +365,30 @@ class FilesController extends Controller
         $this->activity->log(Action::FileDeleted, context: ['name' => $name]);
 
         return response()->json(status: 204);
+    }
+
+    /**
+     * What an `expires_at` value means.
+     *
+     * A bare `YYYY-MM-DD` is a calendar day, and a calendar day ends where
+     * the person naming it lives — the same rule the web form's date input
+     * gets from FilesController::expiryInstant. Stored as it arrives it
+     * would be midnight UTC instead, so a file asked to expire on the 12th
+     * would die at the *start* of the 12th, and for a caller west of
+     * Greenwich partway through the 11th.
+     *
+     * Anything carrying a time is an instant the caller named on purpose
+     * and is stored as it arrives, unchanged from before: the API can
+     * express a moment, and a date input cannot.
+     */
+    private function expiryInstant(?string $value, User $setter): ?Carbon
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        return preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) === 1
+            ? LocalDay::end($value, $this->timezones->resolve($setter))
+            : Carbon::parse($value);
     }
 }

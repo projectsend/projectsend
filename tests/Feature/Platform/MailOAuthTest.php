@@ -494,6 +494,82 @@ test('a dead grant records the error and notifies settings admins exactly once',
     expect(InAppNotification::query()->where('type', 'mail_oauth_connection_broken')->count())->toBe(1);
 });
 
+/**
+ * The same grant, dying in the order it actually dies on an installation
+ * that sends mail: a message goes out, the transport refreshes, and the
+ * failure is recorded by the send path — which notifies nobody. Reading
+ * that record as "already told them" is what kept the daily command
+ * silent for good.
+ */
+test('a send that reaches the dead grant first does not swallow the alarm', function () {
+    Http::fake([
+        'login.microsoftonline.com/*' => Http::response([
+            'error' => 'invalid_grant',
+            'error_description' => 'AADSTS50173: The provided grant has expired.',
+        ], 400),
+    ]);
+
+    $connection = connectMicrosoftMailbox();
+    $connection->fill(['token_expires_at' => now()->subMinute()])->save();
+
+    // A password-reset mail — the case the command's docblock is about.
+    try {
+        Mail::mailer('microsoft-graph')->raw('Reset your password', function ($message) {
+            $message->to('client@example.com')->subject('Password reset');
+        });
+    } catch (TransportException) {
+        // The send fails; that half already worked.
+    }
+
+    // The send path records the failure and tells nobody, as before.
+    expect(MailOAuthConnection::for(MailProvider::Microsoft365)->last_error)->toContain('AADSTS50173')
+        ->and(InAppNotification::query()->where('type', 'mail_oauth_connection_broken')->count())->toBe(0);
+
+    Artisan::call('projectsend:refresh-mail-oauth-tokens');
+
+    expect(InAppNotification::query()->where('type', 'mail_oauth_connection_broken')->count())->toBe(1);
+
+    // And still exactly once: the anti-nag rule is unchanged.
+    Artisan::call('projectsend:refresh-mail-oauth-tokens');
+
+    expect(InAppNotification::query()->where('type', 'mail_oauth_connection_broken')->count())->toBe(1);
+});
+
+test('a connection that recovers can raise the alarm a second time', function () {
+    Http::fake([
+        'login.microsoftonline.com/*' => Http::sequence()
+            ->push(['error' => 'invalid_grant'], 400)
+            ->push(fakeTokenResponse())
+            ->push(['error' => 'invalid_grant'], 400),
+    ]);
+
+    connectMicrosoftMailbox();
+
+    Artisan::call('projectsend:refresh-mail-oauth-tokens');   // dies, alarms
+    Artisan::call('projectsend:refresh-mail-oauth-tokens');   // recovers
+    Artisan::call('projectsend:refresh-mail-oauth-tokens');   // dies again
+
+    expect(InAppNotification::query()->where('type', 'mail_oauth_connection_broken')->count())->toBe(2);
+});
+
+test('ending the failure any other way also clears the record of having alarmed', function () {
+    Http::fake([
+        'login.microsoftonline.com/*' => Http::response(['error' => 'invalid_grant'], 400),
+    ]);
+
+    connectMicrosoftMailbox();
+    Artisan::call('projectsend:refresh-mail-oauth-tokens');
+
+    expect(MailOAuthConnection::for(MailProvider::Microsoft365)->broken_notified_at)->not->toBeNull();
+
+    $this->actingAs($this->admin)
+        ->from('/system/settings/email')
+        ->delete('/system/settings/email/oauth')
+        ->assertRedirect();
+
+    expect(MailOAuthConnection::for(MailProvider::Microsoft365)->broken_notified_at)->toBeNull();
+});
+
 test('a transient token endpoint failure neither flags the connection nor notifies anyone', function () {
     Http::fake([
         'login.microsoftonline.com/*' => Http::response(['error' => 'temporarily_unavailable'], 503),

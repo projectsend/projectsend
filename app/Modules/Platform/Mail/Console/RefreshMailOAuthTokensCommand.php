@@ -80,7 +80,17 @@ class RefreshMailOAuthTokensCommand extends Command
                 // notification would otherwise repeat daily for as long
                 // as nobody reconnects, and a nagging alert trains
                 // people to ignore the one that matters.
-                if (! $hadError) {
+                //
+                // Asked of broken_notified_at, not of last_error. The
+                // question is "have the admins been told", and last_error
+                // cannot answer it: the send path writes that column too
+                // (OAuthCodeFlowBroker::refresh, reached from
+                // freshAccessToken) and notifies nobody. On an
+                // installation that actually sends mail, that write lands
+                // first — so reading it as "already told them" left this
+                // silent for good, on exactly the installations whose
+                // password-reset mail rides on the connection.
+                if ($connection->broken_notified_at === null) {
                     $recipients = array_values(User::query()->where('type', UserType::Staff)->get()
                         ->filter(fn (User $staff): bool => $permissions->allows($staff, Permission::EditSettings))
                         ->all());
@@ -89,6 +99,9 @@ class RefreshMailOAuthTokensCommand extends Command
                         'provider' => $connection->provider->label(),
                         'account' => (string) $connection->account_email,
                     ]);
+
+                    $connection->broken_notified_at = now();
+                    $connection->save();
                 }
 
                 $mailConfig->flush();

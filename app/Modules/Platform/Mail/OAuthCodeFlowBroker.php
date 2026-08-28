@@ -230,7 +230,7 @@ abstract class OAuthCodeFlowBroker implements MailOAuthBroker
         }
 
         $connection->last_refreshed_at = now();
-        $connection->last_error = null;
+        $connection->clearFailure();
         $connection->save();
     }
 

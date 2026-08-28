@@ -35,6 +35,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $token_expires_at
  * @property Carbon|null $last_refreshed_at
  * @property string|null $last_error
+ * @property Carbon|null $broken_notified_at
  */
 class MailOAuthConnection extends Model
 {
@@ -51,7 +52,25 @@ class MailOAuthConnection extends Model
             'refresh_token' => 'encrypted',
             'token_expires_at' => 'datetime',
             'last_refreshed_at' => 'datetime',
+            'broken_notified_at' => 'datetime',
         ];
+    }
+
+    /**
+     * The failure is over: the error and the record of having alarmed
+     * about it go together, because they describe one state.
+     *
+     * One method rather than two nulls at each call site. The three
+     * places that end a failure — a successful refresh, a disconnect, a
+     * changed client id — must never clear one and keep the other: a
+     * connection that is healthy but still marked "already told them"
+     * would go quiet the next time it dies, which is the shape of the
+     * bug this column was added to close.
+     */
+    public function clearFailure(): void
+    {
+        $this->last_error = null;
+        $this->broken_notified_at = null;
     }
 
     public static function for(MailProvider $provider): self

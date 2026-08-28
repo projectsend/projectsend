@@ -669,6 +669,11 @@ Then reload PHP-FPM, and bring the site back with: php artisan up"
     if [[ "$NO_RESTART" == "1" ]]; then
         warn "Not touching systemd, as asked."
         warn "PHP is still running the old code until you reload it — ProjectSend will keep telling your staff so."
+        # Said rather than done: the check below edits a unit file, which is
+        # exactly what --no-restart asks us not to do. But a worker that
+        # predates the zips queue is broken whether or not we are allowed to
+        # touch it, and this is the only place that knows to mention it.
+        warn "Your worker's queues were not checked either. If it predates the zips queue, zip downloads never finish — run without --no-restart, or add 'zips' to its --queue list yourself."
     elif [[ "${SYSTEMD:-0}" == "1" && -n "${FPM_SERVICE:-}" ]]; then
         say "Reloading $FPM_SERVICE"
         systemctl reload "$FPM_SERVICE" 2>/dev/null || systemctl restart "$FPM_SERVICE" \
@@ -684,6 +689,29 @@ Then reload PHP-FPM, and bring the site back with: php artisan up"
         fi
     else
         warn "No PHP-FPM service was found to reload. Reload PHP yourself now, or it keeps serving the old code."
+
+        # The worker is a different unit from PHP-FPM, and not finding one
+        # says nothing about the other: a host running mod_php, or one where
+        # the FPM unit is named in a way this script does not recognise, can
+        # still have a systemd worker that predates the zips queue. The
+        # function returns immediately unless systemd and a worker unit are
+        # both there, so reaching it from here costs nothing and stops this
+        # branch being the one place the queue is never mentioned.
+        ensure_worker_watches_zips
+
+        # Paired with the edit, exactly as the FPM branch above pairs them,
+        # and for the reason its comment gives: the new --queue argument
+        # only reaches the worker when systemd next starts it from
+        # ExecStart. projectsend:update's queue:restart cannot deliver it —
+        # that makes a worker pick up new *code*, and it has already run by
+        # the time we get here, so the worker came back on the old command
+        # line. Without this, the unit is edited, the operator is told so,
+        # and zips still never finish: a false completion, which is worse
+        # than the silence this branch used to keep.
+        if [[ "${SYSTEMD:-0}" == "1" && -n "${WORKER_SERVICE:-}" ]]; then
+            say "Restarting $WORKER_SERVICE"
+            systemctl restart "$WORKER_SERVICE" || warn "Could not restart $WORKER_SERVICE."
+        fi
     fi
 
     say "Bringing the site back up"

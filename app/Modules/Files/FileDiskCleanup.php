@@ -24,15 +24,37 @@ class FileDiskCleanup
 {
     public function delete(File $file): void
     {
-        try {
-            Storage::disk($file->disk)->delete($file->path);
+        $this->attempt($file, fn () => Storage::disk($file->disk)->delete($file->path));
 
-            // Every rendition, for every audience — a deleted file's bytes
-            // must not survive on disk because whoever wrote the cleanup
-            // only knew about the one copy they had in mind.
+        // Every rendition, for every audience — a deleted file's bytes must
+        // not survive on disk because whoever wrote the cleanup only knew
+        // about the one copy they had in mind.
+        //
+        // Attempted separately from the original above, not because the two
+        // are unrelated but because they are on different disks: renditions
+        // are always local, and Storage::disk() throws outright for a name
+        // with no configured driver — which is exactly the state the
+        // original's disk is in when this fails at all. Sharing one `try`
+        // meant a file whose source disk had been removed kept every cached
+        // copy of itself, and nothing looks for those again:
+        // OrphanFileScanner skips the rendition directories on purpose.
+        $this->attempt($file, function () use ($file): void {
             foreach (ThumbnailGenerator::pathsFor($file->id, $file->mime_type) as $renditionPath) {
                 Storage::disk('files')->delete($renditionPath);
             }
+        });
+    }
+
+    /**
+     * Deliberately tolerant, as the class docblock says: the warning is the
+     * whole report. Nothing else will find these bytes -- the row is
+     * soft-deleted, and OrphanFileScanner::knownPaths() counts a trashed
+     * row's path as claimed, so a scan never lists it.
+     */
+    private function attempt(File $file, callable $work): void
+    {
+        try {
+            $work();
         } catch (Throwable $exception) {
             Log::warning('Could not remove disk bytes for deleted file '.$file->id.': '.$exception->getMessage());
         }

@@ -11,6 +11,7 @@ use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Groups\Http\Resources\Api\GroupResource;
 use App\Modules\Groups\Models\Group;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -56,7 +57,7 @@ class GroupMembersController extends Controller
 
         $this->activity->log(Action::GroupMemberAdded, subject: $group, context: ['member' => $client->name]);
 
-        return new GroupResource($group->loadCount('members')->load('members'));
+        return $this->response($group, $actor);
     }
 
     public function destroy(Request $request, Group $group, User $member): GroupResource
@@ -72,6 +73,28 @@ class GroupMembersController extends Controller
 
         $this->activity->log(Action::GroupMemberRemoved, subject: $group, context: ['member' => $member->name]);
 
-        return new GroupResource($group->loadCount('members')->load('members'));
+        return $this->response($group, $actor);
+    }
+
+    /**
+     * The group as this actor may see it.
+     *
+     * GroupResource carries a name and an email per member, and its own
+     * docblock puts the boundary here: "the controller loading this
+     * relation is where that narrowing is applied". Api\GroupsController
+     * ::show() applies it for the read of the same group; changing the
+     * membership is not a reason to be told more than reading it, so both
+     * halves narrow by the same query.
+     *
+     * The count is deliberately not narrowed. members_count is the size of
+     * the group, which is a fact about the group rather than about who is
+     * in it, and the web screen shows the same total.
+     */
+    private function response(Group $group, User $actor): GroupResource
+    {
+        return new GroupResource($group->loadCount('members')->load([
+            'members' => fn (BelongsToMany $members) => $members
+                ->whereIn('users.id', $this->scope->clients($actor)->select('id')),
+        ]));
     }
 }

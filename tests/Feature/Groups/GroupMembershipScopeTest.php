@@ -600,6 +600,55 @@ test('the API twin narrows the membership it hands back', function () {
         ->and($data['members_count'])->toBe(2);
 });
 
+test('the API narrows the membership a member write hands back, the same way', function () {
+    // The read above is narrowed; changing the membership went through the
+    // same resource with the relation loaded whole, so the write handed
+    // back what the read refuses to.
+    $ours = Group::query()->create(['name' => 'Ours', 'slug' => 'ours', 'public' => false]);
+    $ours->members()->syncWithoutDetaching([$this->stranger->id]);
+
+    $token = $this->rep->createToken('t', [Permission::EditGroups->value])->plainTextToken;
+
+    $data = $this->withToken($token)
+        ->postJson("/api/v1/groups/{$ours->id}/members", ['user_id' => $this->mine->id])
+        ->assertOk()
+        ->json('data');
+
+    expect(array_column($data['members'], 'name'))->toBe(['Mine'])
+        ->and($data['members_count'])->toBe(2);
+});
+
+test('and on the way back out again', function () {
+    $ours = Group::query()->create(['name' => 'Ours', 'slug' => 'ours', 'public' => false]);
+    $second = User::factory()->client()->create(['name' => 'Also Mine']);
+    $this->rep->assignedClients()->sync([$this->mine->id, $second->id]);
+    $ours->members()->syncWithoutDetaching([$this->mine->id, $second->id, $this->stranger->id]);
+
+    $token = $this->rep->createToken('t', [Permission::EditGroups->value])->plainTextToken;
+
+    $data = $this->withToken($token)
+        ->deleteJson("/api/v1/groups/{$ours->id}/members/{$second->id}")
+        ->assertOk()
+        ->json('data');
+
+    expect(array_column($data['members'], 'name'))->toBe(['Mine'])
+        ->and($data['members_count'])->toBe(2);
+});
+
+test('an unscoped token keeps every member in the write response', function () {
+    $ours = Group::query()->create(['name' => 'Ours', 'slug' => 'ours', 'public' => false]);
+    $ours->members()->syncWithoutDetaching([$this->stranger->id]);
+
+    $token = $this->admin->createToken('t', [Permission::EditGroups->value])->plainTextToken;
+
+    $data = $this->withToken($token)
+        ->postJson("/api/v1/groups/{$ours->id}/members", ['user_id' => $this->mine->id])
+        ->assertOk()
+        ->json('data');
+
+    expect(array_column($data['members'], 'name'))->toBe(['Mine', 'Not Mine']);
+});
+
 test('an unscoped viewer keeps the whole roster and every member', function () {
     $ours = Group::query()->create(['name' => 'Ours', 'slug' => 'ours', 'public' => false]);
     $ours->members()->syncWithoutDetaching([$this->mine->id]);

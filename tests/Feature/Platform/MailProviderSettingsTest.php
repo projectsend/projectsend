@@ -21,6 +21,66 @@ test('the password is encrypted at rest', function () {
         ->and(MailProviderSettings::current()->password)->toBe('super-secret-smtp-password');
 });
 
+test('the password never reaches the cache store', function () {
+    // The column above is only half the promise. This class caches its
+    // resolved settings forever on every process boot, and a cache store
+    // encrypts nothing — so a password in that array is a password in
+    // clear, in whatever the store happens to be. On the store INSTALL.md
+    // documents that is the same database the cast above protects.
+    MailProviderSettings::current()->fill([
+        'host' => 'smtp.example.test',
+        'port' => 587,
+        'username' => 'postmaster',
+        'password' => 'super-secret-smtp-password',
+    ])->save();
+
+    Cache::flush();
+    app(MailConfigApplier::class)->apply();
+
+    $cached = Cache::get('platform.mail_provider_settings.v4');
+
+    expect($cached)->toBeArray()
+        ->and(json_encode($cached))->not->toContain('super-secret-smtp-password');
+});
+
+test('the password never reaches the database cache store either', function () {
+    // The same assertion against the store config/cache.php actually
+    // defaults to, read as the raw row an operator would find in a dump —
+    // phpunit.xml runs the suite on the array store, where a regression
+    // here would still be invisible to anybody reading a backup.
+    config(['cache.default' => 'database']);
+
+    MailProviderSettings::current()->fill([
+        'host' => 'smtp.example.test',
+        'port' => 587,
+        'username' => 'postmaster',
+        'password' => 'super-secret-smtp-password',
+    ])->save();
+
+    Cache::store('database')->flush();
+    app(MailConfigApplier::class)->apply();
+
+    $rows = DB::table('cache')->pluck('value')->implode('|');
+
+    expect($rows)->not->toContain('super-secret-smtp-password');
+});
+
+test('apply() still configures the smtp password it no longer caches', function () {
+    // The other half: keeping the credential out of the cache must not
+    // stop the transport from being configured with it.
+    MailProviderSettings::current()->fill([
+        'host' => 'smtp.example.test',
+        'port' => 587,
+        'username' => 'postmaster',
+        'password' => 'super-secret-smtp-password',
+    ])->save();
+
+    Cache::flush();
+    app(MailConfigApplier::class)->apply();
+
+    expect(config('mail.mailers.smtp.password'))->toBe('super-secret-smtp-password');
+});
+
 test('apply() is a no-op when no host is configured', function () {
     $originalHost = config('mail.mailers.smtp.host');
 

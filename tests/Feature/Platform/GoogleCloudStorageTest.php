@@ -8,6 +8,7 @@ use App\Modules\Files\Storage\ResolvingUploadDisk;
 use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
 use App\Modules\Platform\Settings\ExternalStorageSettings;
 use App\Modules\Platform\Settings\StorageProvider;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
@@ -162,6 +163,52 @@ test('the service account key is encrypted at rest', function () {
     expect($raw)->not->toContain('BEGIN PRIVATE KEY')
         ->and($raw)->not->toContain('iam.gserviceaccount.com')
         ->and(json_decode((string) ExternalStorageSettings::current()->key_file, true)['private_key'])
+        ->toBe($key['private_key']);
+});
+
+test('the service account key never reaches the cache store', function () {
+    // The assertion above says the private key is not in the column. It was
+    // in the cache store at the same moment: ExternalStorageConfigApplier
+    // cached the key file verbatim, forever, and a cache store encrypts
+    // nothing.
+    $key = fakeServiceAccountKey();
+
+    ExternalStorageSettings::current()->fill([
+        'active' => true,
+        'provider' => StorageProvider::Gcs,
+        'bucket' => 'projectsend-files',
+        'key_file' => json_encode($key),
+    ])->save();
+
+    Cache::flush();
+    app(ExternalStorageConfigApplier::class)->apply();
+
+    $cached = Cache::get('platform.external_storage_settings.v3');
+
+    // Asserted to exist before it is searched: a renamed cache key would
+    // otherwise make this pass by finding nothing at all, which is how a
+    // test for an absence quietly stops testing anything.
+    expect($cached)->toBeArray()
+        ->and(json_encode($cached))->not->toContain('BEGIN PRIVATE KEY')
+        ->and(json_encode($cached))->not->toContain('iam.gserviceaccount.com');
+});
+
+test('apply() still configures the key file it no longer caches', function () {
+    $key = fakeServiceAccountKey();
+
+    ExternalStorageSettings::current()->fill([
+        'active' => true,
+        'provider' => StorageProvider::Gcs,
+        'bucket' => 'projectsend-files',
+        'key_file' => json_encode($key),
+    ])->save();
+
+    app(ExternalStorageConfigApplier::class)->flush();
+    app(ExternalStorageConfigApplier::class)->apply();
+
+    expect(config('filesystems.disks.files_external.key_file'))
+        ->toBeArray()
+        ->and(config('filesystems.disks.files_external.key_file')['private_key'])
         ->toBe($key['private_key']);
 });
 

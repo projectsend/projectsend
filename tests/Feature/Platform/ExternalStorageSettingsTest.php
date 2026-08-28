@@ -26,6 +26,65 @@ test('the secret is encrypted at rest', function () {
         ->and(ExternalStorageSettings::current()->secret)->toBe('super-secret-access-key');
 });
 
+test('the secret never reaches the cache store', function () {
+    // The column above is only half the promise: this class caches its
+    // resolved settings forever on every process boot, and a cache store
+    // encrypts nothing. See the same pair in MailProviderSettingsTest.
+    ExternalStorageSettings::current()->fill([
+        'active' => true,
+        'key' => 'AKIAEXAMPLE',
+        'secret' => 'super-secret-access-key',
+        'bucket' => 'my-bucket',
+        'region' => 'us-east-1',
+    ])->save();
+
+    Cache::flush();
+    app(ExternalStorageConfigApplier::class)->apply();
+
+    $cached = Cache::get('platform.external_storage_settings.v3');
+
+    expect($cached)->toBeArray()
+        ->and(json_encode($cached))->not->toContain('super-secret-access-key');
+});
+
+test('the secret never reaches the database cache store either', function () {
+    // Against the store config/cache.php actually defaults to, read as the
+    // raw row an operator would find in a dump.
+    config(['cache.default' => 'database']);
+
+    ExternalStorageSettings::current()->fill([
+        'active' => true,
+        'key' => 'AKIAEXAMPLE',
+        'secret' => 'super-secret-access-key',
+        'bucket' => 'my-bucket',
+        'region' => 'us-east-1',
+    ])->save();
+
+    Cache::store('database')->flush();
+    app(ExternalStorageConfigApplier::class)->apply();
+
+    $rows = DB::table('cache')->pluck('value')->implode('|');
+
+    expect($rows)->not->toContain('super-secret-access-key');
+});
+
+test('apply() still configures the secret it no longer caches', function () {
+    // The other half: keeping the credential out of the cache must not
+    // stop the disk from being configured with it.
+    ExternalStorageSettings::current()->fill([
+        'active' => true,
+        'key' => 'AKIAEXAMPLE',
+        'secret' => 'super-secret-access-key',
+        'bucket' => 'my-bucket',
+        'region' => 'us-east-1',
+    ])->save();
+
+    app(ExternalStorageConfigApplier::class)->flush();
+    app(ExternalStorageConfigApplier::class)->apply();
+
+    expect(config('filesystems.disks.files_external.secret'))->toBe('super-secret-access-key');
+});
+
 test('apply() is a no-op when not fully configured', function () {
     $originalKey = config('filesystems.disks.files_external.key');
 

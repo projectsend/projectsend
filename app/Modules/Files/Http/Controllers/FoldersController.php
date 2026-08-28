@@ -405,9 +405,31 @@ class FoldersController extends Controller
         return back();
     }
 
-    public function destroy(Folder $folder): RedirectResponse
+    public function destroy(Request $request, Folder $folder): RedirectResponse
     {
         Gate::authorize('delete', $folder);
+
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // Deleting a folder cascades to every file in its subtree, and a
+        // File's `deleted` hook removes the bytes from disk — there is no
+        // restore. Authorizing the folder is not authorizing its contents:
+        // FilePolicy::delete asks for `delete_others_files` on somebody
+        // else's upload, and for the library boundary on top of that, and
+        // neither question is asked anywhere on this path.
+        //
+        // MyFoldersController::destroy already refuses for the client half
+        // of the same cascade, in the same words. This is the staff half.
+        $blocked = $this->undeletableFileCount($viewer, $folder);
+
+        if ($blocked > 0) {
+            return back()->with('error', trans_choice(
+                'This folder cannot be deleted: it holds :count file you may not delete.|This folder cannot be deleted: it holds :count files you may not delete.',
+                $blocked,
+                ['count' => (string) $blocked],
+            ));
+        }
 
         $name = $folder->name;
         $parentId = $folder->parent_id;
@@ -417,6 +439,50 @@ class FoldersController extends Controller
         $this->activity->log(Action::FolderDeleted, context: ['name' => $name]);
 
         return redirect()->route('files.index', $parentId !== null ? ['folder' => $parentId] : [])->with('success', __('Folder deleted.'));
+    }
+
+    /**
+     * How many files in this folder's subtree the viewer may not delete.
+     *
+     * Asked as one count rather than FilePolicy::delete per file: a folder
+     * can hold thousands, Gate resolves a fresh policy for every check, and
+     * a per-row policy check on a listing is the cost 0a8b609e went to
+     * some trouble to remove. The two halves of FilePolicy::delete are
+     * expressible in SQL — the permission half is constant for this
+     * viewer, and the library half is the query StaffLibraryScope already
+     * memoises per request.
+     *
+     * Somebody holding both delete permissions and no library scope can
+     * delete anything in the subtree by construction, so they never pay for
+     * the query at all.
+     */
+    private function undeletableFileCount(User $viewer, Folder $folder): int
+    {
+        $mayDeleteOwn = $viewer->can('delete_files');
+        $mayDeleteOthers = $viewer->can('delete_others_files');
+        $scoped = $viewer->isClientScoped();
+
+        if ($mayDeleteOwn && $mayDeleteOthers && ! $scoped) {
+            return 0;
+        }
+
+        return File::query()
+            ->whereIn('folder_id', $folder->subtreeFolderIds())
+            ->where(function (Builder $outer) use ($viewer, $mayDeleteOwn, $mayDeleteOthers, $scoped): void {
+                if (! $mayDeleteOwn) {
+                    $outer->orWhere('uploaded_by', $viewer->id);
+                }
+
+                if (! $mayDeleteOthers) {
+                    $outer->orWhere(fn (Builder $others): Builder => $others
+                        ->whereNull('uploaded_by')->orWhere('uploaded_by', '!=', $viewer->id));
+                }
+
+                if ($scoped) {
+                    $outer->orWhereNotIn('id', $this->scope->files($viewer)->select('id'));
+                }
+            })
+            ->count();
     }
 
     private function resolveParent(?User $user, ?int $parentId): ?Folder

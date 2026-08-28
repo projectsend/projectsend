@@ -15,26 +15,46 @@ declare(strict_types=1);
 // ceiling there rather than a guarantee. That asymmetry is invisible from the
 // configuration and is exactly what someone would "simplify" away.
 
+use Illuminate\Support\Env;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\ParallelTesting;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Points the `files` disk at a scratch root, configured the way
+ * This worker's scratch root.
+ *
+ * Per worker, like the upload parts directory in Tests\TestCase: eight of
+ * them run this file at once, and the afterEach below deletes the tree it
+ * is given. Shared, one worker's cleanup lands in the middle of another
+ * worker's test, and the failure is a mode read from a directory that was
+ * removed underneath it.
+ */
+function filesPermissionRoot(): string
+{
+    return storage_path('app/files-permission-test/w'.(ParallelTesting::token() ?: '0'));
+}
+
+/**
+ * Points the `files` disk at that root, configured the way
  * config/filesystems.php configures it for the given flag.
+ *
+ * The configuration is *read from that file*, with only the root replaced.
+ * Restating its branch here — which is what this used to do, verbatim down
+ * to the 0755 — meant the test went on passing against its own copy after
+ * somebody changed the shipped one, which is the single thing it exists to
+ * notice.
  */
 function filesDiskWith(bool $webServerReadable): string
 {
-    $root = storage_path('app/files-permission-test');
+    $root = filesPermissionRoot();
 
-    config(['filesystems.disks.files' => [
-        'driver' => 'local',
-        'root' => $root,
-        'serve' => false,
-        'throw' => false,
-        ...($webServerReadable
-            ? ['visibility' => 'public', 'permissions' => ['dir' => ['private' => 0755]]]
-            : []),
-    ]]);
+    Env::getRepository()->set('FILES_WEB_SERVER_READABLE', $webServerReadable ? 'true' : 'false');
+
+    // Required rather than read through config(), so the env() call in it
+    // is evaluated now, against the flag just set.
+    $shipped = require base_path('config/filesystems.php');
+
+    config(['filesystems.disks.files' => [...$shipped['disks']['files'], 'root' => $root]]);
 
     Storage::forgetDisk('files');
 
@@ -50,11 +70,16 @@ function modeOf(string $path): string
 
 beforeEach(function () {
     $this->originalUmask = umask();
+
+    // Also before: a run killed mid-test leaves its tree behind, and these
+    // cases read modes off directories they expect to have created.
+    File::deleteDirectory(filesPermissionRoot());
 });
 
 afterEach(function () {
     umask($this->originalUmask);
-    File::deleteDirectory(storage_path('app/files-permission-test'));
+    File::deleteDirectory(filesPermissionRoot());
+    Env::getRepository()->clear('FILES_WEB_SERVER_READABLE');
     Storage::forgetDisk('files');
 });
 

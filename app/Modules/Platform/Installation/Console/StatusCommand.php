@@ -65,6 +65,15 @@ use Throwable;
  * survives on purpose — see AccountEraser), so the answer does not change
  * when the person who gave it is forgotten.
  *
+ * **That "never pruned" is now somebody's safety argument.** The hosted
+ * platform warns, pauses and finally removes a free instance nobody has
+ * signed in to, and this field is what it counts from. Retention or
+ * pruning added to `activity_log` would not break anything here — it
+ * would quietly make old installations look dormant, and the thing that
+ * acts on that reading deletes them. Anyone adding it needs to give this
+ * field another source first, not merely check that the tests still
+ * pass.
+ *
  * ### Storage is the application's number, not the disk's
  *
  * `storage.bytes` is what this installation holds, summed from the rows

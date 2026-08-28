@@ -9,6 +9,8 @@ use App\Modules\Clients\ClientCustomFieldType;
 use App\Modules\Clients\Models\ClientCustomField;
 use App\Modules\Clients\Models\ClientCustomFieldValue;
 use App\Modules\Files\Models\File;
+use App\Modules\Identity\Models\Role;
+use App\Modules\Identity\Models\RolePermission;
 use App\Modules\Identity\Permissions\Permission;
 use Illuminate\Support\Facades\Storage;
 
@@ -97,6 +99,32 @@ test('a client can be created', function () {
     expect($client->isClient())->toBeTrue()
         ->and($client->active)->toBeTrue()
         ->and(ActivityLog::query()->where('action', Action::UserCreated)->exists())->toBeTrue();
+});
+
+test('a client-scoped token keeps the client it creates', function () {
+    // The API twin of the same rule: without the roster entry, the token's
+    // owner gets a 404 from every route that binds the client they just
+    // created, including show and update.
+    $role = Role::query()->create(['name' => 'Scoped creator', 'client_scoped' => true]);
+    RolePermission::query()->insert([
+        ['role_id' => $role->id, 'permission' => Permission::ManageClients->value],
+        ['role_id' => $role->id, 'permission' => Permission::CreateClients->value],
+        ['role_id' => $role->id, 'permission' => Permission::EditClients->value],
+    ]);
+    $creator = User::factory()->create(['role_id' => $role->id]);
+    $token = $creator->createToken('t', [
+        Permission::ManageClients->value,
+        Permission::CreateClients->value,
+        Permission::EditClients->value,
+    ])->plainTextToken;
+
+    $id = $this->withToken($token)->postJson('/api/v1/clients', [
+        'name' => 'Brand New',
+        'email' => 'api-brand-new@example.com',
+        'password' => 'super-secret-password',
+    ])->assertCreated()->json('data.id');
+
+    $this->withToken($token)->getJson("/api/v1/clients/{$id}")->assertOk();
 });
 
 test('a required custom field is enforced on create', function () {

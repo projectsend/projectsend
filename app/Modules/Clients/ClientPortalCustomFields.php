@@ -158,7 +158,23 @@ class ClientPortalCustomFields
      */
     private function isLocked(ClientCustomField $field, BaseCollection $values): bool
     {
-        return $field->client_editability === ClientFieldEditability::EditableOnce
-            && filled($values->get($field->id));
+        if ($field->client_editability !== ClientFieldEditability::EditableOnce) {
+            return false;
+        }
+
+        $stored = $values->get($field->id);
+
+        // A checkbox has a stored value from the first save onwards: an
+        // unticked box is written as '0', and filled('0') is true. Asking
+        // "is anything stored" therefore locked the field on the first save
+        // of the form it sits on, whatever the client had chosen — and a
+        // box they never ticked can then never be ticked. '0' is the
+        // absence of a decision, which is the state the other types express
+        // as null, so it is what an unlocked checkbox looks like.
+        if ($field->type === ClientCustomFieldType::Checkbox) {
+            return $stored === '1';
+        }
+
+        return filled($stored);
     }
 }

@@ -10,7 +10,6 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Groups\Models\Group;
-use App\Modules\Identity\UserType;
 use App\Support\Pagination;
 use App\Support\PublicUrl;
 use App\Support\Rules;
@@ -102,8 +101,18 @@ class GroupsController extends Controller
         return $target->with('success', __('Group created.'));
     }
 
-    public function edit(Group $group): Response
+    public function edit(Request $request, Group $group): Response
     {
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // The same reach question update() and destroy() ask, asked one
+        // step earlier. Without it this was the one group route holding no
+        // library boundary at all: a scoped staff member could open a group
+        // whose contents they cannot see, read its membership off the
+        // screen, and only be refused on save.
+        abort_unless($this->scope->allowsGroupChange($viewer, $group), 404);
+
         return Inertia::render('groups/edit', [
             'group' => [
                 'id' => $group->id,
@@ -112,14 +121,24 @@ class GroupsController extends Controller
                 'description' => $group->description,
                 'public' => $group->public,
             ],
-            'members' => $group->members()->orderBy('name')->get()
+            // Both lists narrow through StaffLibraryScope::clients(), which
+            // is the listing half of the rule this screen's buttons are
+            // already guarded with: a member outside the roster cannot be
+            // removed here (allowsGroupMembership refuses it), and a client
+            // outside it cannot be added. Naming them anyway, with their
+            // address, was the same mistake the client list made before
+            // that method existed. An unscoped viewer sees everything,
+            // unchanged.
+            'members' => $group->members()
+                ->whereIn('users.id', $this->scope->clients($viewer)->select('id'))
+                ->orderBy('name')
+                ->get()
                 ->map(fn (User $member): array => [
                     'id' => $member->id,
                     'name' => $member->name,
                     'email' => $member->email,
                 ])->all(),
-            'available_clients' => User::query()
-                ->where('type', UserType::Client)
+            'available_clients' => $this->scope->clients($viewer)
                 ->whereNotIn('id', $group->members()->pluck('users.id'))
                 ->orderBy('name')
                 ->get()

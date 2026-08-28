@@ -13,9 +13,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @mixin Group
  *
  * Members carry a name and an email, which is what the group edit screen
- * already shows to anyone holding `edit_groups`. They are attached only
- * when explicitly loaded, so a listing of groups does not become a bulk
- * export of every client's address.
+ * shows the same viewer. That is a claim about the screen, so it holds
+ * only for as long as the screen does: both narrow the list to the
+ * clients the viewer may act on, and the controller loading this relation
+ * is where that narrowing is applied. They are attached only when
+ * explicitly loaded, so a listing of groups does not become a bulk export
+ * of every client's address.
  */
 class GroupResource extends JsonResource
 {

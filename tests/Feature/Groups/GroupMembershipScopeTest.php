@@ -420,3 +420,60 @@ test('an unscoped administrator manages every group exactly as before', function
 
     expect(Group::query()->whereKey($this->strangerGroup->id)->exists())->toBeFalse();
 });
+
+/*
+|--------------------------------------------------------------------------
+| The screen that edits a group, and its API twin
+|--------------------------------------------------------------------------
+*/
+
+test('a group reaching past the library cannot even be opened', function () {
+    // update() and destroy() already refuse this group. Reading it was the
+    // one group route that did not.
+    $this->actingAs($this->rep)->get("/groups/{$this->strangerGroup->id}")->assertNotFound();
+
+    $token = $this->rep->createToken('t', [Permission::EditGroups->value])->plainTextToken;
+    $this->withToken($token)->getJson("/api/v1/groups/{$this->strangerGroup->id}")->assertNotFound();
+});
+
+test('the edit screen stops naming clients this viewer has no business hearing about', function () {
+    // Nothing is shared with this group, so it reaches nowhere and stays
+    // open to the rep — which is exactly the case a reach guard alone
+    // would leave holding a stranger's address.
+    $ours = Group::query()->create(['name' => 'Ours', 'slug' => 'ours', 'public' => false]);
+    $ours->members()->syncWithoutDetaching([$this->mine->id, $this->stranger->id]);
+
+    $props = $this->actingAs($this->rep)->get("/groups/{$ours->id}")->assertOk()->viewData('page')['props'];
+
+    expect(array_column($props['members'], 'name'))->toBe(['Mine'])
+        ->and(array_column($props['members'], 'email'))->toBe([$this->mine->email])
+        // Every client the rep may reach is already in the group, so there
+        // is nobody left to add — rather than the stranger, whom they could
+        // not have added anyway.
+        ->and($props['available_clients'])->toBe([]);
+});
+
+test('the API twin narrows the membership it hands back', function () {
+    $ours = Group::query()->create(['name' => 'Ours', 'slug' => 'ours', 'public' => false]);
+    $ours->members()->syncWithoutDetaching([$this->mine->id, $this->stranger->id]);
+
+    $token = $this->rep->createToken('t', [Permission::EditGroups->value])->plainTextToken;
+    $data = $this->withToken($token)->getJson("/api/v1/groups/{$ours->id}")->assertOk()->json('data');
+
+    expect(array_column($data['members'], 'name'))->toBe(['Mine'])
+        // members_count is left whole on purpose: a size is not an
+        // identity, and it is the same number the group listing reports.
+        ->and($data['members_count'])->toBe(2);
+});
+
+test('an unscoped viewer keeps the whole roster and every member', function () {
+    $ours = Group::query()->create(['name' => 'Ours', 'slug' => 'ours', 'public' => false]);
+    $ours->members()->syncWithoutDetaching([$this->mine->id]);
+
+    $props = $this->actingAs($this->admin)->get("/groups/{$ours->id}")->assertOk()->viewData('page')['props'];
+
+    expect(array_column($props['members'], 'name'))->toBe(['Mine'])
+        ->and(array_column($props['available_clients'], 'name'))->toBe(['Not Mine']);
+
+    $this->actingAs($this->admin)->get("/groups/{$this->strangerGroup->id}")->assertOk();
+});

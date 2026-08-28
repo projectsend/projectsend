@@ -9,6 +9,7 @@ use App\Modules\Notifications\NotificationPreference;
 use App\Modules\Notifications\Notifier;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Inertia\Testing\AssertableInertia;
 
@@ -133,4 +134,65 @@ test('the preferences edit page lists every type that can email, however it emai
                 ->not->toContain('client_uploaded');
         },
     );
+});
+
+test('saving rejects more preferences than there are types', function () {
+    // The registry check asks what each type is, not how many were sent,
+    // and the loop wrote a row per element. Sent as JSON: a form-encoded
+    // array this large is truncated by max_input_vars before it reaches
+    // the rule under test.
+    $client = User::factory()->client()->create();
+
+    $preferences = [];
+
+    for ($i = 0; $i < 2000; $i++) {
+        $preferences[] = ['type' => 'group.membership_approved', 'email_enabled' => true];
+    }
+
+    DB::enableQueryLog();
+
+    $this->actingAs($client)
+        ->putJson('/settings/notifications', ['preferences' => $preferences])
+        ->assertJsonValidationErrors(['preferences']);
+
+    $queries = count(DB::getQueryLog());
+    DB::disableQueryLog();
+
+    expect($queries)->toBeLessThan(20)
+        ->and(NotificationPreference::query()->count())->toBe(0);
+});
+
+test('saving rejects the same type twice', function () {
+    $client = User::factory()->client()->create();
+
+    $this->actingAs($client)->putJson('/settings/notifications', [
+        'preferences' => [
+            ['type' => 'group.membership_approved', 'email_enabled' => true],
+            ['type' => 'group.membership_approved', 'email_enabled' => false],
+        ],
+    ])->assertJsonValidationErrors(['preferences.0.type']);
+
+    expect(NotificationPreference::query()->count())->toBe(0);
+});
+
+test('the whole set of emailable types still saves at once', function () {
+    // The bound is the registry, so what edit() offers must always fit:
+    // this is the largest submission the screen itself can produce.
+    $client = User::factory()->client()->create();
+
+    $types = $this->actingAs($client)->get('/settings/notifications')
+        ->viewData('page')['props']['types'];
+
+    $preferences = array_map(
+        fn (array $type): array => ['type' => $type['key'], 'email_enabled' => false],
+        $types,
+    );
+
+    $this->actingAs($client)
+        ->putJson('/settings/notifications', ['preferences' => $preferences])
+        ->assertSessionHasNoErrors();
+
+    expect(NotificationPreference::query()->where('user_id', $client->id)->count())
+        ->toBe(count($types))
+        ->and(count($types))->toBeGreaterThan(0);
 });

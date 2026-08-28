@@ -226,6 +226,88 @@ test('unscoped staff manage membership exactly as before', function () {
     expect($this->strangerGroup->members()->pluck('users.id')->all())->toBe([$this->mine->id]);
 });
 
+// A folder shared with a group hands over its whole subtree, so the guard
+// has to ask about the contents and not only about the folder named in
+// the assignment. The docblock on groupReachesNoFurther() already claims
+// it does ("the folders whose subtrees it can browse").
+test('a subfolder outside the library counts as reach as well', function () {
+    // The rep's own folder, so it is in their library by "own uploads".
+    $parent = app(FolderService::class)->create('Rep Folder', null);
+    $parent->forceFill(['created_by' => $this->rep->id])->save();
+
+    // Somebody else's subfolder inside it, which is not.
+    $child = app(FolderService::class)->create('Admin Subfolder', $parent);
+    $child->forceFill(['created_by' => $this->admin->id])->save();
+
+    $group = Group::query()->create(['name' => 'Newsletter', 'slug' => 'newsletter', 'public' => false]);
+    FolderAssignment::query()->create([
+        'folder_id' => $parent->id,
+        'assignable_type' => $group->getMorphClass(),
+        'assignable_id' => $group->id,
+    ]);
+
+    $this->actingAs($this->rep)
+        ->post("/groups/{$group->id}/members", ['user_id' => $this->mine->id])
+        ->assertForbidden();
+
+    expect($group->members()->count())->toBe(0);
+});
+
+test('a stranger file inside the rep own folder counts as reach', function () {
+    // Every folder in the subtree is theirs, and the file in it is not:
+    // files() is own uploads plus what an assigned client may see, and
+    // somebody else's upload into a folder this rep happens to own is
+    // neither. Adding their own client would have handed it over -- and
+    // handed it to the rep too, since files() then includes it.
+    $parent = app(FolderService::class)->create('Rep Folder', null);
+    $parent->forceFill(['created_by' => $this->rep->id])->save();
+
+    $secret = uploadNamedFile($this->admin, 'stranger-secret');
+    $secret->forceFill(['folder_id' => $parent->id])->save();
+
+    expect(libraryHolds($this->rep, $secret->id))->toBeFalse();
+
+    $group = Group::query()->create(['name' => 'Bulletin', 'slug' => 'bulletin', 'public' => false]);
+    FolderAssignment::query()->create([
+        'folder_id' => $parent->id,
+        'assignable_type' => $group->getMorphClass(),
+        'assignable_id' => $group->id,
+    ]);
+
+    $this->actingAs($this->rep)
+        ->post("/groups/{$group->id}/members", ['user_id' => $this->mine->id])
+        ->assertForbidden();
+
+    expect($group->members()->count())->toBe(0);
+});
+
+test('a subtree that is wholly inside the library stays manageable', function () {
+    // The half that must not harden: everything shared with this group is
+    // reachable by the rep, subfolder and file alike, so the group is
+    // theirs to populate.
+    $parent = app(FolderService::class)->create('Ours', null);
+    $parent->forceFill(['created_by' => $this->rep->id])->save();
+
+    $child = app(FolderService::class)->create('Ours Too', $parent);
+    $child->forceFill(['created_by' => $this->rep->id])->save();
+
+    $own = uploadNamedFile($this->rep, 'our-own-file');
+    $own->forceFill(['folder_id' => $child->id])->save();
+
+    $group = Group::query()->create(['name' => 'Ours', 'slug' => 'ours-group', 'public' => false]);
+    FolderAssignment::query()->create([
+        'folder_id' => $parent->id,
+        'assignable_type' => $group->getMorphClass(),
+        'assignable_id' => $group->id,
+    ]);
+
+    $this->actingAs($this->rep)
+        ->post("/groups/{$group->id}/members", ['user_id' => $this->mine->id])
+        ->assertRedirect();
+
+    expect($group->members()->count())->toBe(1);
+});
+
 test('a folder shared with a group counts as reach too', function () {
     $folder = app(FolderService::class)->create('Their Folder', null);
     FolderAssignment::query()->create([

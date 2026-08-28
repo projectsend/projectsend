@@ -292,9 +292,54 @@ class StaffLibraryScope
         $assignedFolders = FolderAssignment::query()->select('folder_id')
             ->where('assignable_type', $morph)->where('assignable_id', $group->id);
 
-        return ! Folder::query()
-            ->whereIn('id', $assignedFolders)
+        // The whole subtree, not the folder the assignment names. A folder
+        // shared with a group hands its members everything inside it —
+        // File::scopeVisibleToClient matches on folder placement, and a
+        // folder is visible to a client when it or an ancestor is shared
+        // with them — so "is anything shared with this group outside my
+        // library" has to ask about the contents, which is what the
+        // docblock above already claims ("the folders whose subtrees it
+        // can browse").
+        //
+        // Measured: a scoped staff member's own folder, with a subfolder
+        // somebody else created inside it and somebody else's file in
+        // that. The folder is theirs, its contents are not, and adding
+        // their own client to a group holding the parent handed that
+        // client the file — which then enters the staff member's own
+        // library too, because files() is "everything my clients can
+        // see". That is the widening this guard exists to refuse, and the
+        // test above it says so in as many words.
+        $reachable = Folder::query()->whereIn('id', $assignedFolders)->get()
+            ->flatMap(fn (Folder $folder): array => $folder->subtreeFolderIds())
+            ->unique()
+            ->values()
+            ->all();
+
+        if ($reachable === []) {
+            return true;
+        }
+
+        if (Folder::query()
+            ->whereIn('id', $reachable)
             ->whereNotIn('id', $this->folders($user)->select('id'))
+            ->exists()
+        ) {
+            return false;
+        }
+
+        // And the files sitting in them. A folder can be inside the
+        // library while a file in it is not: files() is own uploads plus
+        // what an assigned client may see, and neither covers somebody
+        // else's upload into a folder this staff member happens to own.
+        //
+        // notExpired() for the same reason the assignment half above skips
+        // deleted files: membership in this group grants nobody access to
+        // an expired file, because scopeVisibleToClient ends by excluding
+        // them, and something nobody can reach is not reach.
+        return ! File::query()
+            ->whereIn('folder_id', $reachable)
+            ->notExpired()
+            ->whereNotIn('id', $this->files($user)->select('id'))
             ->exists();
     }
 }

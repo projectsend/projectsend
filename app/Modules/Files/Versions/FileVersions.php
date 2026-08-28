@@ -96,8 +96,9 @@ class FileVersions
             DB::transaction(function () use ($file, $previous, $root, $actor): void {
                 // Move, never drop: a revision holds no recipients of its
                 // own, but the people who already had this file must not
-                // lose it. Through FileSharing so each target still gets
-                // its activity entry, notification and digest.
+                // lose it. Through FileSharing, so a target the root does
+                // not hold yet still gets its activity entry, notification
+                // and digest — and only such a target, see below.
                 $this->moveAssignmentsToRoot($file, $root);
 
                 $file->update([
@@ -544,8 +545,27 @@ class FileVersions
                 continue;
             }
 
-            // firstOrCreate inside, so a target the root already has is a
-            // no-op rather than a duplicate notification.
+            // A target the root already holds gains nothing here, so it
+            // is skipped rather than handed to FileSharing::assign().
+            // That method's firstOrCreate makes the assignment row
+            // idempotent but not the three side effects under it, so such
+            // a target was told a file had been shared with it about a
+            // file it already had — on top of the file_new_version it
+            // gets from sharedAudience(), which is exactly the two
+            // notifications for one action link() resolves that audience
+            // early to avoid. copyAssignmentsFrom() below states the rule
+            // outright for its own case: nobody is gaining access, so the
+            // notification would be a lie.
+            $alreadyOnRoot = FileAssignment::query()
+                ->where('file_id', $root->id)
+                ->where('assignable_type', $target->getMorphClass())
+                ->where('assignable_id', $target->getKey())
+                ->exists();
+
+            if ($alreadyOnRoot) {
+                continue;
+            }
+
             $this->sharing->assign($root, $target, $target->name);
         }
 

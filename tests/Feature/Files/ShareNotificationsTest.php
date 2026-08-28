@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 use App\Models\User;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Models\FileAssignment;
 use App\Modules\Files\Models\Folder;
+use App\Modules\Files\Versions\FileVersions;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Notifications\InAppNotification;
 use Illuminate\Database\Eloquent\Collection;
@@ -103,3 +105,75 @@ test('unsharing does not notify', function (string $type) {
 
     expect(sharedNotificationsFor($client))->toHaveCount(1);
 })->with(['files', 'folders']);
+
+/*
+|--------------------------------------------------------------------------
+| Linking a revision moves recipients; it must not re-announce the root
+|--------------------------------------------------------------------------
+*/
+
+function notificationTypesFor(User $client): array
+{
+    return InAppNotification::query()
+        ->where('user_id', $client->id)
+        ->orderBy('id')
+        ->pluck('type')
+        ->all();
+}
+
+test('linking a revision does not re-announce the root to somebody who already had it', function () {
+    $client = User::factory()->client()->create();
+    $root = File::factory()->create(['name' => 'Report']);
+    $revision = File::factory()->create(['name' => 'Report v2']);
+
+    $this->actingAs($this->admin)->post("/files/{$root->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+    $this->actingAs($this->admin)->post("/files/{$revision->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+
+    InAppNotification::query()->where('user_id', $client->id)->delete();
+
+    app(FileVersions::class)->link($revision->refresh(), $root->refresh(), $this->admin);
+
+    // One action, one notification. file_new_version is the right one:
+    // link() resolves that audience before the merge precisely so the
+    // people who could already see both are told once, and here they hold
+    // the root itself, so nothing was shared with them.
+    expect(notificationTypesFor($client))->toBe(['file_new_version'])
+        ->and(FileAssignment::query()->where('file_id', $root->id)->count())->toBe(1);
+});
+
+test('linking a revision still announces the root to somebody who is gaining it', function () {
+    $client = User::factory()->client()->create();
+    $root = File::factory()->create(['name' => 'Report']);
+    $revision = File::factory()->create(['name' => 'Report v2']);
+
+    // Only the revision, so the merge really does hand them the root.
+    $this->actingAs($this->admin)->post("/files/{$revision->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+
+    InAppNotification::query()->where('user_id', $client->id)->delete();
+
+    app(FileVersions::class)->link($revision->refresh(), $root->refresh(), $this->admin);
+
+    // Not file_new_version: they could not see the root before, so they are
+    // not part of sharedAudience() — see its INTERSECTION docblock.
+    expect(notificationTypesFor($client))->toBe(['file_shared'])
+        ->and(FileAssignment::query()->where('file_id', $root->id)->count())->toBe(1);
+});
+
+test('a group already on the root is skipped the same way a client is', function () {
+    $member = User::factory()->client()->create();
+    $group = Group::query()->create(['name' => 'Design Team']);
+    $group->members()->sync([$member->id]);
+
+    $root = File::factory()->create(['name' => 'Report']);
+    $revision = File::factory()->create(['name' => 'Report v2']);
+
+    $this->actingAs($this->admin)->post("/files/{$root->id}/assignments", ['type' => 'group', 'id' => $group->id]);
+    $this->actingAs($this->admin)->post("/files/{$revision->id}/assignments", ['type' => 'group', 'id' => $group->id]);
+
+    InAppNotification::query()->where('user_id', $member->id)->delete();
+
+    app(FileVersions::class)->link($revision->refresh(), $root->refresh(), $this->admin);
+
+    expect(notificationTypesFor($member))->toBe(['file_new_version'])
+        ->and(FileAssignment::query()->where('file_id', $root->id)->count())->toBe(1);
+});

@@ -6,11 +6,21 @@ namespace App\Modules\Platform\Installation\Console;
 
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Files\Models\File;
+use App\Modules\Identity\TwoFactor\TwoFactorEnforcement;
 use App\Modules\Identity\UserType;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
+use App\Modules\Platform\Installation\Events\ResolvingInstallationStatus;
 use App\Modules\Platform\Seats\SeatAllowance;
+use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Settings\Settings;
 use Illuminate\Console\Command;
+use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
+use Throwable;
 
 /**
  * What this installation is, as a fact rather than a screen.
@@ -54,6 +64,36 @@ use Illuminate\Support\Carbon;
  * erasure anonymises entries rather than deleting them (`actor_type`
  * survives on purpose — see AccountEraser), so the answer does not change
  * when the person who gave it is forgotten.
+ *
+ * ### Storage is the application's number, not the disk's
+ *
+ * `storage.bytes` is what this installation holds, summed from the rows
+ * that record it. Measuring the directory instead was correct until
+ * external storage went live, and silently stopped being: an upload that
+ * resolves to a bucket leaves nothing on the volume to measure, so a
+ * figure taken from the filesystem freezes while the account keeps
+ * filling. `by_disk` is the same sum split by where the bytes went, which
+ * is the only way to see what is still sitting on local disk from before
+ * a cutover.
+ *
+ * Trashed files are excluded because they hold no bytes: File's `deleted`
+ * hook removes them, so a soft-deleted row is a record of something that
+ * is gone rather than something still costing anything.
+ *
+ * ### Health is what a container cannot show from outside
+ *
+ * A tenant's queue worker dying is invisible to anything watching the
+ * container: it is still up, and zips quietly stop building while mail
+ * stops going out. Same for migrations that failed after a deploy — the
+ * application answers every request and is a schema behind. Neither is a
+ * secret; both are already visible to anyone who can open the database,
+ * which is anyone who can run this command.
+ *
+ * ### What core cannot answer
+ *
+ * `modules` is filled by whatever packages are installed, through
+ * ResolvingInstallationStatus. A platform that provisioned a bucket knows
+ * what it asked for; only the installation knows what loaded.
  */
 class StatusCommand extends Command
 {
@@ -61,7 +101,7 @@ class StatusCommand extends Command
 
     protected $description = 'Report this installation\'s version, edition, capabilities and seat usage';
 
-    public function handle(CapabilityRegistry $capabilities, SeatAllowance $seats): int
+    public function handle(CapabilityRegistry $capabilities, SeatAllowance $seats, Settings $settings): int
     {
         $status = [
             'version' => (string) config('projectsend.version'),
@@ -89,6 +129,23 @@ class StatusCommand extends Command
                 // two is how a broken probe reads as a dormant fleet.
                 'last_staff_login_at' => $this->lastStaffLoginAt(),
             ],
+            'storage' => $this->storage(),
+            'health' => $this->health(),
+            'settings' => [
+                // Echoed back rather than assumed: an operator writes the
+                // environment variable, and this is the installation
+                // saying what it actually applied. Read the way
+                // EnforceTwoFactor reads it, down to what an unreadable
+                // value falls back to -- reporting a stricter answer than
+                // the middleware enforces would be worse than reporting
+                // none at all.
+                'two_factor_enforcement' => $this->enforcement($settings),
+            ],
+            // Cast so an installation with no packages emits {} rather
+            // than [] -- an empty PHP array encodes as a list, and a
+            // reader unmarshalling a map breaks on the day it happens to
+            // be empty rather than on the day it is written.
+            'modules' => (object) $this->modules(),
         ];
 
         if ($this->option('json')) {
@@ -102,8 +159,126 @@ class StatusCommand extends Command
         $this->line('Staff seats:  '.$this->seatLine($status['seats']['staff']));
         $this->line('Clients:      '.$this->seatLine($status['seats']['clients']));
         $this->line('Last staff login: '.($status['activity']['last_staff_login_at'] ?? 'never'));
+        $this->line('Storage:      '.number_format($status['storage']['bytes']).' bytes in '.$status['storage']['files'].' files');
+        $this->line('Health:       '.$status['health']['pending_migrations'].' migrations pending, '
+            .$status['health']['failed_jobs'].' failed jobs, '
+            .array_sum(array_filter($status['health']['queues'], 'is_int')).' queued');
 
         return self::SUCCESS;
+    }
+
+    private function enforcement(Settings $settings): string
+    {
+        $value = $settings->get(Setting::TwoFactorEnforcement);
+
+        $enforcement = (is_string($value) ? TwoFactorEnforcement::tryFrom($value) : null)
+            ?? TwoFactorEnforcement::None;
+
+        return $enforcement->value;
+    }
+
+    /**
+     * What this installation holds, from the rows that record it.
+     *
+     * @return array{bytes: int, files: int, by_disk: object}
+     */
+    private function storage(): array
+    {
+        $perDisk = File::query()
+            ->groupBy('disk')
+            ->selectRaw('disk, sum(size) as bytes, count(*) as files')
+            ->get();
+
+        return [
+            'bytes' => (int) $perDisk->sum(fn (File $row): int => (int) $row->getAttribute('bytes')),
+            'files' => (int) $perDisk->sum(fn (File $row): int => (int) $row->getAttribute('files')),
+            // Keyed by disk name rather than a list, because the reader
+            // wants one of them by name — "how much is still local" — and
+            // not to walk a list looking for it.
+            // Same reason as `modules`: an installation holding no files
+            // at all must still answer with a map.
+            'by_disk' => (object) $perDisk
+                ->mapWithKeys(fn (File $row): array => [
+                    (string) $row->getAttribute('disk') => [
+                        'bytes' => (int) $row->getAttribute('bytes'),
+                        'files' => (int) $row->getAttribute('files'),
+                    ],
+                ])->all(),
+        ];
+    }
+
+    /**
+     * @return array{pending_migrations: int, failed_jobs: int, queues: array<string, int|null>}
+     */
+    private function health(): array
+    {
+        return [
+            'pending_migrations' => $this->pendingMigrations(),
+            'failed_jobs' => $this->failedJobs(),
+            // The two this application actually runs workers for. A depth
+            // is not a fault on its own -- a busy installation has one --
+            // but a depth that only ever grows is a worker that died, and
+            // nothing outside the container can see the difference.
+            'queues' => [
+                'default' => $this->queueDepth('default'),
+                'zips' => $this->queueDepth('zips'),
+            ],
+        ];
+    }
+
+    private function pendingMigrations(): int
+    {
+        /** @var Migrator $migrator */
+        $migrator = app('migrator');
+
+        // Every path, not just database/migrations: a package registers
+        // its own, and a package migration left unrun is exactly the kind
+        // of half-deploy this is here to report.
+        $files = $migrator->getMigrationFiles(array_merge([database_path('migrations')], $migrator->paths()));
+
+        return count(array_diff(array_keys($files), $migrator->getRepository()->getRan()));
+    }
+
+    private function failedJobs(): int
+    {
+        $table = config('queue.failed.table');
+
+        if (! is_string($table) || $table === '') {
+            return 0;
+        }
+
+        return DB::table($table)->count();
+    }
+
+    /**
+     * Null rather than a crash when the queue cannot be reached, and null
+     * rather than zero: an unreachable Redis is not an empty queue, and a
+     * reader watching for a worker that died would read the second as
+     * everything being fine.
+     *
+     * This command is a probe, and a probe that dies on one unreachable
+     * dependency tells the reader nothing about the facts it could still
+     * have answered.
+     */
+    private function queueDepth(string $queue): ?int
+    {
+        try {
+            return Queue::size($queue);
+        } catch (Throwable) {
+            return null;
+        }
+    }
+
+    /**
+     * @return array<string, string|int|bool|null>
+     */
+    private function modules(): array
+    {
+        $event = new ResolvingInstallationStatus;
+
+        Event::dispatch($event);
+
+        return $event->facts;
     }
 
     /**

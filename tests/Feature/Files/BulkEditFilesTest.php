@@ -209,6 +209,62 @@ test('expiration and category changes in a bulk edit are silently ignored withou
         ->and($file->categories()->count())->toBe(0);
 });
 
+test('a skip for a missing field permission is not reported as a missing edit permission', function () {
+    // They own all three files and hold edit_files. What they lack is
+    // set_file_expiration_date, and that is what the message has to say --
+    // "you don't have permission to edit them" is both wrong and
+    // unactionable, since editing is exactly what they may do.
+    $staff = ownFilesOnlyStaff('File Editor Only, No Expiry');
+    expect($staff->can('edit_files'))->toBeTrue()
+        ->and($staff->can('set_file_expiration_date'))->toBeFalse();
+
+    $files = collect(['a.pdf', 'b.pdf', 'c.pdf'])
+        ->map(fn (string $name) => uploadDocumentFile($staff, $name));
+
+    $this->actingAs($staff)->patch('/files/bulk-edit', noEditPayload([
+        'file_ids' => $files->pluck('id')->all(),
+        'expiration_action' => 'set',
+        'expires_at' => '2030-01-01',
+    ]))->assertRedirect();
+
+    expect(session('success'))
+        ->toBe('0 of 3 selected files were updated. The rest were skipped because you don\'t have permission to make those changes.');
+});
+
+test('a skip for a missing edit permission still says so', function () {
+    // The other reason, unchanged: every file that went unchanged here is
+    // one this staff member may not edit at all.
+    $staff = ownFilesOnlyStaff('Own Files Only, Two Reasons Apart');
+    $own = uploadDocumentFile($staff, 'own.pdf');
+    $theirs = uploadDocumentFile($this->admin, 'theirs.pdf');
+
+    $this->actingAs($staff)->patch('/files/bulk-edit', noEditPayload([
+        'file_ids' => [$own->id, $theirs->id],
+        'description_action' => 'set',
+        'description' => 'edited',
+    ]))->assertRedirect();
+
+    expect(session('success'))
+        ->toBe('1 of 2 selected files were updated. The rest were skipped because you don\'t have permission to edit them.');
+});
+
+test('a mixture of both reasons reports the one that covers both', function () {
+    $staff = ownFilesOnlyStaff('Own Files Only, No Expiry');
+    $own = uploadDocumentFile($staff, 'own.pdf');
+    $theirs = uploadDocumentFile($this->admin, 'theirs.pdf');
+
+    // One file is not theirs to edit; the other is, but the only change
+    // asked for needs a permission they do not hold.
+    $this->actingAs($staff)->patch('/files/bulk-edit', noEditPayload([
+        'file_ids' => [$own->id, $theirs->id],
+        'expiration_action' => 'set',
+        'expires_at' => '2030-01-01',
+    ]))->assertRedirect();
+
+    expect(session('success'))
+        ->toBe('0 of 2 selected files were updated. The rest were skipped because you don\'t have permission to make those changes.');
+});
+
 test('a bulk edit that changes nothing is rejected', function () {
     $file = uploadDocumentFile($this->admin);
 

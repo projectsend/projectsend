@@ -7,6 +7,7 @@ namespace App\Modules\Identity\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\Api\Auth\ApiTokens;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\DeletedAccountContent;
 use App\Modules\Identity\AccountConversion;
 use App\Modules\Identity\Models\Role;
@@ -46,6 +47,7 @@ class AccountConversionController extends Controller
         private readonly StaffAccounts $accounts,
         private readonly DeletedAccountContent $accountContent,
         private readonly ApiTokens $apiTokens,
+        private readonly StaffLibraryScope $library,
     ) {}
 
     public function index(Request $request): Response
@@ -59,8 +61,18 @@ class AccountConversionController extends Controller
         $search = $validated['search'] ?? null;
         $actor = $this->actor($request);
 
-        $accounts = User::query()
-            ->where('type', $direction === 'to_client' ? UserType::Staff : UserType::Client)
+        // Narrowed for the direction that lists clients, by the same rule
+        // store() refuses one with: AccountConversion::guardToStaff() aborts
+        // 404 unless StaffLibraryScope::canAssignClient() allows the target,
+        // and clients() is that same method's listing half. Without this a
+        // client-scoped staff member was refused the promotion and then
+        // shown the person's name and address in the list it was refused
+        // from. Staff are not narrowed: whoever may demote a staff member
+        // may see the staff roster, which is what assignableRoles() and
+        // guardTarget() already decide on the write side.
+        $accounts = ($direction === 'to_client'
+            ? User::query()->where('type', UserType::Staff)
+            : $this->library->clients($actor))
             ->with('role')
             ->when($search, fn (Builder $query, string $term) => $query->where(fn (Builder $inner) => $inner
                 ->where('name', 'like', "%{$term}%")

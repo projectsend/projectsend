@@ -107,3 +107,58 @@ test('the demotion direction keeps answering through guardTarget', function () {
 
     expect($colleague->fresh()->type)->toBe(UserType::Staff);
 });
+
+/*
+|--------------------------------------------------------------------------
+| The listing half of the same boundary
+|--------------------------------------------------------------------------
+| The refusals above are about the write. index() builds the list the
+| write is started from, and a name and an address handed to somebody who
+| may reach nothing of that person is the disclosure the refusal exists to
+| prevent.
+*/
+
+test('the promotion list does not show a client outside the roster', function () {
+    $response = $this->actingAs($this->rep)->get('/users/convert?direction=to_staff');
+
+    $response->assertOk();
+
+    expect($response->getContent())->not->toContain($this->stranger->email)
+        ->and($response->getContent())->not->toContain('Not Mine');
+});
+
+test('the promotion list still shows the scoped staff member their own client', function () {
+    $response = $this->actingAs($this->rep)->get('/users/convert?direction=to_staff');
+
+    expect($response->getContent())->toContain($this->mine->email);
+});
+
+test('search cannot reach a client outside the roster', function () {
+    // The narrowing is on the query the search filters, not on the result,
+    // so naming the account exactly still returns nothing.
+    $response = $this->actingAs($this->rep)->get('/users/convert?direction=to_staff&search=Not+Mine');
+
+    $response->assertOk();
+
+    expect($response->getContent())->not->toContain($this->stranger->email);
+});
+
+test('unscoped staff still see every client in the promotion list', function () {
+    $response = $this->actingAs($this->admin)->get('/users/convert?direction=to_staff');
+
+    expect($response->getContent())->toContain($this->stranger->email)
+        ->and($response->getContent())->toContain($this->mine->email);
+});
+
+test('the demotion list is unchanged, and still lists staff', function () {
+    // Only the client direction is narrowed: whoever may demote a staff
+    // member may see the staff roster, which guardTarget() decides on the
+    // write side rather than the listing.
+    $colleague = User::factory()->create(['name' => 'A Colleague']);
+
+    $response = $this->actingAs($this->rep)->get('/users/convert?direction=to_client');
+
+    $response->assertOk();
+
+    expect($response->getContent())->toContain($colleague->email);
+});

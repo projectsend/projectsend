@@ -124,6 +124,47 @@ test('a file can be updated field by field', function () {
         ->and($file->description)->toBe($file->getOriginal('description'));
 });
 
+test('a calendar day means the end of that day where the caller lives', function () {
+    // The same value on the web means the end of the 12th (LocalDay::end via
+    // FilesController::expiryInstant). Stored as it arrives it is midnight
+    // UTC, so the file would die at the *start* of the 12th instead.
+    $this->admin->update(['timezone' => 'Europe/Berlin']);
+    $file = File::factory()->create(['uploaded_by' => $this->admin->id]);
+
+    $this->withToken($this->token)->patchJson("/api/v1/files/{$file->id}", [
+        'expires_at' => '2026-09-12',
+    ])->assertOk();
+
+    // 23:59:59 on the 12th in Berlin is 21:59:59Z.
+    expect($file->refresh()->expires_at?->toIso8601String())->toBe('2026-09-12T21:59:59+00:00');
+});
+
+test('a timestamp is stored as the instant it names', function () {
+    // The half that must not change: an API caller can name a moment, and
+    // naming one is not the same as naming a day.
+    $this->admin->update(['timezone' => 'Europe/Berlin']);
+    $file = File::factory()->create(['uploaded_by' => $this->admin->id]);
+
+    $this->withToken($this->token)->patchJson("/api/v1/files/{$file->id}", [
+        'expires_at' => '2026-09-12T08:30:00+00:00',
+    ])->assertOk();
+
+    expect($file->refresh()->expires_at?->toIso8601String())->toBe('2026-09-12T08:30:00+00:00');
+});
+
+test('clearing the expiry still clears it', function () {
+    $file = File::factory()->create([
+        'uploaded_by' => $this->admin->id,
+        'expires_at' => now()->addWeek(),
+    ]);
+
+    $this->withToken($this->token)->patchJson("/api/v1/files/{$file->id}", [
+        'expires_at' => null,
+    ])->assertOk();
+
+    expect($file->refresh()->expires_at)->toBeNull();
+});
+
 test('fields the caller lacks permission for are left alone rather than refused', function () {
     // Mirrors the web controller: a user who may edit a file but not set
     // expiry dates still gets to rename it.

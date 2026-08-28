@@ -325,6 +325,58 @@ test('a deleted file does not excuse a live one that is still out of reach', fun
         ->assertForbidden();
 });
 
+// Expiry is the same answer for the same reason: membership grants nobody
+// access to an expired file, because scopeVisibleToClient ends in
+// notExpired(). It is only invisible to files(), which read as reach.
+test('a group is not locked shut by a file that has since expired', function () {
+    $group = Group::query()->create(['name' => 'Seasonal', 'slug' => 'seasonal', 'public' => false]);
+    $group->members()->syncWithoutDetaching([$this->mine->id]);
+
+    $file = uploadNamedFile($this->admin, 'summer-offer');
+    shareFileWithGroup($file, $group);
+
+    $second = User::factory()->client()->create(['name' => 'Also Mine']);
+    $this->rep->assignedClients()->attach($second->id);
+
+    $this->actingAs($this->rep)
+        ->post("/groups/{$group->id}/members", ['user_id' => $second->id])
+        ->assertRedirect();
+
+    $file->update(['expires_at' => now()->subDay()]);
+
+    // Nobody in the group can reach it any more — the premise of the rule.
+    $this->actingAs($this->mine)->get("/files/{$file->id}/download")->assertForbidden();
+
+    $third = User::factory()->client()->create(['name' => 'Mine Too']);
+    $this->rep->assignedClients()->attach($third->id);
+
+    $this->actingAs($this->rep)
+        ->post("/groups/{$group->id}/members", ['user_id' => $third->id])
+        ->assertRedirect();
+
+    expect($group->members()->count())->toBe(3);
+
+    // And taking their own client out again, which is the part that reads
+    // worst: the rep could not undo their own membership change.
+    $this->actingAs($this->rep)
+        ->delete("/groups/{$group->id}/members/{$third->id}")
+        ->assertRedirect();
+
+    expect($group->members()->count())->toBe(2);
+});
+
+test('an expired file does not excuse a live one that is still out of reach', function () {
+    $expired = uploadNamedFile($this->admin, 'was-current');
+    shareFileWithGroup($expired, $this->strangerGroup);
+    $expired->update(['expires_at' => now()->subDay()]);
+
+    // $this->secret is live, shared with the same group and outside this
+    // rep's library — the guard still has to answer no.
+    $this->actingAs($this->rep)
+        ->post("/groups/{$this->strangerGroup->id}/members", ['user_id' => $this->mine->id])
+        ->assertForbidden();
+});
+
 
 /**
  * The rep role ships without delete_groups, and these cases are about the

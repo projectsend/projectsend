@@ -7,6 +7,7 @@ use App\Modules\Files\FilesServiceProvider;
 use App\Modules\Groups\GroupsServiceProvider;
 use App\Modules\Identity\IdentityServiceProvider;
 use App\Modules\Notifications\NotificationsServiceProvider;
+use App\Modules\Platform\Branding\BrandingServiceProvider;
 use App\Modules\Platform\PlatformServiceProvider;
 use App\Providers\AppServiceProvider;
 
@@ -19,5 +20,6 @@ return [
     IdentityServiceProvider::class,
     NotificationsServiceProvider::class,
     PlatformServiceProvider::class,
+    BrandingServiceProvider::class,
     AppServiceProvider::class,
 ];

@@ -201,13 +201,32 @@ test('a module endpoint is refused in an edition without its capability', functi
         return;
     }
 
+    // Read the capability off the route rather than naming one. This used
+    // to assert "branding is cloud-only, and the suite runs as community",
+    // which stopped being true when branding moved into core on
+    // 2026-08-28 — and the assumption was never what the test was for. The
+    // invariant is that a module endpoint is refused when its capability
+    // is absent, whichever module happens to be installed and whichever
+    // capability it declares.
+    $capability = collect($moduleRoute->gatherMiddleware())
+        ->map(fn (mixed $middleware): string => is_string($middleware) ? $middleware : '')
+        ->first(fn (string $middleware): bool => str_starts_with($middleware, 'capability:'));
+
+    expect($capability)->not->toBeNull('a module route with no capability gate is the bug this file exists to catch');
+
+    $key = substr((string) $capability, strlen('capability:'));
+
     $staff = User::factory()->create();
     $token = $staff->createToken('t', ['edit_settings'])->plainTextToken;
 
-    // Branding is cloud-only; the suite runs as community by default.
+    // Taken away from an installation that would otherwise hold it, which
+    // is how a hosted plan withholds one — see CapabilityRegistry.
+    config(['projectsend.edition' => Edition::Cloud, 'projectsend.capabilities_disabled' => $key]);
+    forgetRequestState();
+
     $this->withToken($token)->getJson('/'.$moduleRoute->uri())->assertForbidden();
 
-    config(['projectsend.edition' => Edition::Cloud]);
+    config(['projectsend.capabilities_disabled' => null]);
     forgetRequestState();
 
     $this->withToken($token)->getJson('/'.$moduleRoute->uri())->assertOk();

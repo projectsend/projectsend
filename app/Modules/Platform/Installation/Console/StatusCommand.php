@@ -104,6 +104,15 @@ use Throwable;
  * ResolvingInstallationStatus. A platform that provisioned a bucket knows
  * what it asked for; only the installation knows what loaded.
  *
+ * ### `capabilities` is compared, not displayed
+ *
+ * The control plane reads this list against the plan it wrote for the
+ * tenant — "this instance is on the free plan and still grants branding"
+ * is a comparison, not a glance. So the *keys* and their order are a
+ * contract: renaming one, or reordering the enum they come from, breaks
+ * that comparison while every test here keeps passing. A key that changes
+ * meaning needs a new key, not an edit.
+ *
  * ### A version is a decision, a commit is a fact
  *
  * `build` says which commit this installation was built from. A version

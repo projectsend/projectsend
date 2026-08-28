@@ -15,6 +15,7 @@ use App\Modules\Identity\Http\Controllers\SocialLoginController;
 use App\Modules\Identity\Http\Controllers\SocialLoginSettingsController;
 use App\Modules\Identity\Http\Controllers\TwoFactorEnrollmentController;
 use App\Modules\Notifications\Http\Controllers\NotificationPreferencesController;
+use App\Modules\Platform\Branding\Http\Controllers\BrandingController;
 use App\Modules\Platform\Http\Controllers\AboutController;
 use App\Modules\Platform\Http\Controllers\CaptchaSettingsController;
 use App\Modules\Platform\Http\Controllers\EmailOAuthController;
@@ -211,6 +212,28 @@ Route::middleware('auth')->group(function () {
             Route::get('system/settings/storage', [ExternalStorageSettingsController::class, 'edit'])->name('system-settings.storage.edit');
             Route::patch('system/settings/storage', [ExternalStorageSettingsController::class, 'update'])->name('system-settings.storage.update');
             Route::post('system/settings/storage/test', [ExternalStorageSettingsController::class, 'testConnection'])->name('system-settings.storage.test');
+        });
+
+        // Both editions since 2026-08-28, and gated all-or-nothing like
+        // Storage above: read included, so a staff member who may not
+        // change the logo never sees the page either. A managed
+        // installation on a plan without branding has the capability
+        // subtracted from its environment, and these 404 for it — the
+        // instance refusing is the enforcement, not the portal's screen.
+        Route::middleware('capability:branding.customize')->group(function () {
+            Route::get('system/settings/branding', [BrandingController::class, 'edit'])->name('branding.edit');
+            Route::post('system/settings/branding', [BrandingController::class, 'store'])->name('branding.store');
+            Route::delete('system/settings/branding', [BrandingController::class, 'destroy'])->name('branding.destroy');
+
+            // POST rather than PATCH: the form carries a file, so it is
+            // multipart, and PHP only populates $_FILES for POST.
+            Route::post('system/settings/branding/watermark', [BrandingController::class, 'updateWatermark'])->name('branding.watermark.update');
+            Route::delete('system/settings/branding/watermark', [BrandingController::class, 'destroyWatermark'])->name('branding.watermark.destroy');
+
+            // The live sample on the settings screen: a GET with the values
+            // currently in the form, so it updates as they are adjusted
+            // rather than only after a save.
+            Route::get('system/settings/branding/watermark/sample', [BrandingController::class, 'watermarkSample'])->name('branding.watermark.sample');
         });
 
         // Same all-or-nothing shape as Storage above (Capability::SchedulerMonitoring).

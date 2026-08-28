@@ -35,6 +35,7 @@ export type Capability =
     | 'scheduler.monitoring'
     | 'custom_assets.manage'
     | 'branding.customize'
+    | 'attribution.hide'
     | 'captcha.managed_keys';
 
 export interface SocialLoginProvider {

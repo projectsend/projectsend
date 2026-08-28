@@ -138,3 +138,27 @@ test('a storage failure while cleaning up disk bytes never blocks the file from 
 
     expect(File::withTrashed()->findOrFail($file->id)->trashed())->toBeTrue();
 });
+
+// The renditions are always on the local disk, whatever the original's
+// disk is — so a source disk that cannot even be resolved is no reason to
+// keep them. Nothing else would: OrphanFileScanner skips the rendition
+// directories on purpose, and the trashed row still claims its own path.
+test('a source disk that cannot be resolved does not keep the renditions alive', function () {
+    $file = makeStoredFile([
+        'disk' => 'nonexistent-disk',
+        'path' => 'whatever.jpg',
+        'mime_type' => 'image/jpeg',
+    ]);
+
+    $paths = ThumbnailGenerator::pathsFor($file->id, 'image/jpeg');
+
+    foreach ($paths as $path) {
+        Storage::disk('files')->put($path, 'fake-thumbnail-bytes');
+    }
+
+    $this->actingAs($this->admin)->delete("/files/{$file->id}")->assertRedirect();
+
+    foreach ($paths as $path) {
+        Storage::disk('files')->assertMissing($path);
+    }
+});

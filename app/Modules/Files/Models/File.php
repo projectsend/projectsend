@@ -110,8 +110,12 @@ class File extends Model
             // an account's content — deletes many rows in one transaction,
             // and anything that rolls it back afterwards puts every row
             // back while the bytes are already gone: a loss nothing can
-            // undo. Deferred, the worst case is bytes left on disk with no
-            // row, which OrphanFileScanner already finds and reports.
+            // undo. Deferred, the worst case is bytes left on disk with a
+            // row that is only trashed, and a scan will not offer those:
+            // OrphanFileScanner::knownPaths() counts a trashed row's path
+            // as claimed, on purpose, so nothing double-adopts a file still
+            // inside its erasure grace period. FileDiskCleanup's warning is
+            // therefore the only record that it happened.
             //
             // Outside a transaction the callback runs immediately, so
             // deleting one file is unchanged. Nested transactions only fire

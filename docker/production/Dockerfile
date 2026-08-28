@@ -147,6 +147,43 @@ VOLUME ["/var/www/html/storage"]
 # an environment variable survives that.
 ENV PROJECTSEND_IMAGE=1
 
+# This is a production image, so it says so itself.
+#
+# The entrypoint seeds storage/.env from .env.example on first boot when no
+# .env exists yet, and .env.example is the development template:
+# APP_ENV=local, APP_DEBUG=true. compose.example.yaml sets both correctly,
+# so the documented way to run this was never affected -- but `docker run`
+# with nothing but a database address, a Portainer/unRAID/TrueNAS template,
+# or a Kubernetes manifest naming only DB/Redis/APP_URL, all quietly got a
+# debug build.
+#
+# Two consequences an operator would not expect and cannot see from the
+# outside:
+#
+#   - APP_DEBUG=true renders Laravel's exception page -- stack trace,
+#     file, surrounding source -- to whoever triggered the 500, signed in
+#     or not. php.ini's display_errors=Off does not prevent it: Laravel
+#     renders that page itself.
+#   - PasswordPolicy appends ->uncompromised() only when
+#     app()->isProduction(), so on APP_ENV=local an administrator's
+#     "reject known-breached passwords" never ran, while descriptor() went
+#     on advertising it and the security settings screen went on showing
+#     it as active.
+#
+# Set here rather than in the seeded .env so that an installation already
+# running on a stale .env is fixed by pulling the image, not only a fresh
+# one.
+#
+# What this does and does not outrank. Laravel builds its env repository
+# immutable (Illuminate\Support\Env), so a real environment variable wins
+# over the .env file. `docker run -e`, compose `environment:` and a
+# Kubernetes `env:` all set real environment variables and therefore still
+# win over these -- an operator who asks for something explicitly gets it.
+# Editing APP_ENV or APP_DEBUG *inside* storage/.env no longer takes
+# effect, because these are real environment variables and that file is
+# not; `-e APP_DEBUG=true` is the way to turn debug on deliberately.
+ENV APP_ENV=production APP_DEBUG=false
+
 EXPOSE 80
 
 # Laravel's health route (bootstrap/app.php: health: '/up'). Hitting it

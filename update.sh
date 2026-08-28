@@ -332,7 +332,36 @@ ensure_worker_watches_zips() {
     local unit_file exec_line
     unit_file="$(systemctl show -p FragmentPath --value "$WORKER_SERVICE" 2>/dev/null || true)"
 
-    [[ -n "$unit_file" && -w "$unit_file" ]] || return 0
+    # Empty means systemd does not know that unit — almost always a
+    # mistyped --worker. Said out loud rather than skipped quietly: this
+    # whole function exists so that zip downloads do not silently never
+    # finish, and skipping it in silence produces exactly the outcome it
+    # is here to prevent, with the operator believing it was checked.
+    #
+    # (`systemctl show` answers an unknown *property* the same way, with an
+    # empty value and a zero exit. FragmentPath is right, and this is the
+    # sentence that would tell somebody if a future edit made it wrong.)
+    if [[ -z "$unit_file" ]]; then
+        warn "Could not read the unit file for $WORKER_SERVICE — systemd does not seem to know it."
+        warn "Skipping the check that your worker watches the 'zips' queue. If it does not,"
+        warn "zip downloads will never finish and nothing will say why. Check the name and rerun,"
+        warn "or see INSTALL.md for the queue:work line the worker needs."
+        return 0
+    fi
+
+    # Readable but not writable: the file is somebody else's to change —
+    # a root-owned unit under a non-root update, or a read-only /etc. The
+    # repair below cannot run, but the diagnosis still can.
+    if [[ ! -w "$unit_file" ]]; then
+        exec_line="$(sed -n 's/^ExecStart=//p' "$unit_file" 2>/dev/null | head -n 1)"
+
+        if [[ "$exec_line" == *queue:work* && "$exec_line" != *zips* ]]; then
+            warn "$WORKER_SERVICE does not watch the 'zips' queue, and $unit_file is not writable here."
+            warn "Zip downloads will never finish until it does. Change:  queue:work  ->  queue:work --queue=default,zips"
+        fi
+
+        return 0
+    fi
 
     exec_line="$(sed -n 's/^ExecStart=//p' "$unit_file" | head -n 1)"
 

@@ -5,6 +5,9 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Identity\Models\Role;
+use App\Modules\Identity\Models\RolePermission;
+use App\Modules\Identity\Permissions\Permission;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\UserType;
 use App\Modules\Platform\Capabilities\Edition;
@@ -12,6 +15,54 @@ use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
     $this->admin = User::factory()->create();
+});
+
+/*
+|--------------------------------------------------------------------------
+| A scoped creator keeps what they create
+|--------------------------------------------------------------------------
+*/
+
+test('a client-scoped creator can open the client they just made', function () {
+    // guardTarget() answers 404 for anything off the roster, and
+    // StaffLibraryScope::clients() leaves it out of the list -- so without
+    // the roster entry the record exists, is welcomed by email, and is
+    // invisible to the person who created it.
+    $role = Role::query()->create(['name' => 'Scoped creator', 'client_scoped' => true]);
+    RolePermission::query()->insert([
+        ['role_id' => $role->id, 'permission' => Permission::ManageClients->value],
+        ['role_id' => $role->id, 'permission' => Permission::CreateClients->value],
+        ['role_id' => $role->id, 'permission' => Permission::EditClients->value],
+    ]);
+    $creator = User::factory()->create(['role_id' => $role->id]);
+
+    $this->actingAs($creator)->post('/clients', [
+        'name' => 'Brand New',
+        'email' => 'brand-new@example.com',
+        'password' => 'super-secret-password',
+        'password_confirmation' => 'super-secret-password',
+    ])->assertRedirect();
+
+    $client = User::query()->where('email', 'brand-new@example.com')->sole();
+
+    $this->actingAs($creator)->get("/clients/{$client->id}")->assertOk();
+
+    $props = $this->actingAs($creator)->get('/clients')->assertOk()->viewData('page')['props'];
+    expect(collect($props['clients'])->pluck('name')->all())->toContain('Brand New');
+});
+
+test('an unscoped creator gains no roster entry from creating a client', function () {
+    // Nothing to add to: an unscoped staff member sees every client
+    // already, and a roster entry would change what assignedClients means
+    // for them.
+    $this->actingAs($this->admin)->post('/clients', [
+        'name' => 'Also New',
+        'email' => 'also-new@example.com',
+        'password' => 'super-secret-password',
+        'password_confirmation' => 'super-secret-password',
+    ])->assertRedirect();
+
+    expect($this->admin->refresh()->assignedClients()->count())->toBe(0);
 });
 
 test('the index lists clients only — staff never appear', function () {

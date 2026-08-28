@@ -159,6 +159,20 @@ class ClientsController extends Controller
 
         $this->activity->log(Action::UserCreated, subject: $client);
 
+        $creator = $request->user();
+        assert($creator !== null);
+
+        // A client-scoped creator would otherwise lose the client they just
+        // made. guardTarget() answers 404 for anything off their roster, so
+        // the record they created is not theirs to open, and
+        // StaffLibraryScope::clients() leaves it out of their list as well —
+        // the client exists, is welcomed by email, and is invisible to the
+        // person who made it. Their own roster is where a client they
+        // created belongs; an unscoped creator has no roster to add to.
+        if ($creator->isClientScoped()) {
+            $creator->assignedClients()->attach($client->id);
+        }
+
         $this->saveCustomFieldValues($client, $validated['custom_field_values'] ?? []);
 
         if ($this->settings->get(Setting::EmailNotificationsEnabled) === true) {
@@ -171,7 +185,7 @@ class ClientsController extends Controller
         // Fall back to the create form: it shares this route's own gate, so
         // it is reachable by exactly whoever just created the record, and
         // the success toast shows there.
-        $target = $request->user()?->can('edit_clients')
+        $target = $creator->can('edit_clients')
             ? redirect()->route('clients.edit', $client)
             : redirect()->route('clients.create');
 

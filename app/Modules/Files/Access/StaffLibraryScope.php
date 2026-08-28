@@ -268,6 +268,15 @@ class StaffLibraryScope
      * row rather than from the assignment ignores the dead ones by
      * construction, which is also the right answer: a deleted file is
      * not reach, because nobody can reach it.
+     *
+     * An expired file is the same answer for the same reason. Membership
+     * in this group grants nobody access to it — File::scopeVisibleToClient
+     * ends in notExpired(), so it is gone from every member's /my-files and
+     * the download is refused — while its absence from files() otherwise
+     * reads as "outside my library" and locks the group exactly as a
+     * deleted file used to. Expiry is reversible where deletion is not, so
+     * the file counts as reach again the moment it does: this asks what is
+     * reachable now, at the moment somebody is added or removed.
      */
     private function groupReachesNoFurther(User $user, Group $group): bool
     {
@@ -282,6 +291,7 @@ class StaffLibraryScope
 
         $outside = File::query()
             ->whereIn('id', $assignedFiles)
+            ->notExpired()
             ->whereNotIn('id', $this->files($user)->select('id'))
             ->exists();
 

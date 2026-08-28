@@ -76,11 +76,30 @@ class FileComment extends Model
     }
 
     /**
+     * The account that wrote this comment, deleted or not.
+     *
+     * `author_id` is cascadeOnDelete and the cascade never fires, because
+     * a user is soft-deleted: the row behind a deleted commenter is still
+     * there and the column still points at it. Handing back null for one
+     * left every caller to invent a meaning for the absence, and they
+     * invented different ones — the author type became "guest" on two
+     * screens and "client" in the API, while the name beside it stayed
+     * correct, and the author filter and the name search stopped matching
+     * the comment at all.
+     *
+     * Whether a comment is from a guest is decided by `author_id` alone.
+     * isFromGuest() and authorName() already say so; this makes the
+     * relation agree with them.
+     *
+     * Nothing that decides who may *read* a comment goes through here —
+     * VisibleCommentScope and FileCommentPolicy both compare `author_id`
+     * directly — so this widens no visibility.
+     *
      * @return BelongsTo<User, $this>
      */
     public function author(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'author_id');
+        return $this->belongsTo(User::class, 'author_id')->withTrashed();
     }
 
     /**

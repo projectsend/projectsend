@@ -147,15 +147,17 @@ class CommentsController extends Controller
         ];
     }
 
+    /**
+     * See CommentPresenter::authorType(): asked of the column, because
+     * that is what decides whether a comment is a guest's.
+     */
     private function authorType(FileComment $comment): string
     {
-        $author = $comment->author;
-
-        if ($author === null) {
+        if ($comment->isFromGuest()) {
             return 'guest';
         }
 
-        return $author->isStaff() ? 'staff' : 'client';
+        return $comment->author?->isStaff() === true ? 'staff' : 'client';
     }
 
     /**

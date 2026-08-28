@@ -257,6 +257,25 @@ test('provisioning is refused when the provider may not create accounts', functi
     expect(User::query()->where('email', 'new@example.test')->exists())->toBeFalse();
 });
 
+test('an address belonging to a deleted account is refused, not crashed', function () {
+    // The unique index on email spans soft-deleted rows, so the insert used
+    // to raise a QueryException mid-callback. The refusal says no more than
+    // it says for any other address the provider cannot provision: whether
+    // one was once an account here is not the provider's to publish.
+    socialSettings(autoProvision: true, autoApprove: true);
+    fakeProvider(identity(email: 'gone@example.test', verified: true));
+
+    $gone = User::factory()->client()->create(['email' => 'gone@example.test']);
+    $gone->delete();
+
+    signInWith()->assertRedirect(route('login'));
+
+    $this->assertGuest();
+
+    expect(User::query()->where('email', 'gone@example.test')->exists())->toBeFalse()
+        ->and(User::withTrashed()->where('email', 'gone@example.test')->sole()->trashed())->toBeTrue();
+});
+
 test('a provisioned account waits for approval when the provider says so', function () {
     socialSettings(autoProvision: true, autoApprove: false);
     fakeProvider(identity(email: 'new@example.test', verified: true));

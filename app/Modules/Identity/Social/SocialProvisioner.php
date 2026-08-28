@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Clients\ClientProvisioning;
 use App\Modules\Identity\AuthSource;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
@@ -41,6 +42,21 @@ class SocialProvisioner
     public function provision(SocialSettings $settings, SocialIdentity $identity, bool $autoApprove): ?User
     {
         if (! $settings->auto_provision || $identity->email === null) {
+            return null;
+        }
+
+        // A deleted account still holds its address, and the insert below
+        // would hit the unique index — a 500 in the middle of a sign-in.
+        // Refusing here gives the caller the same "there is no account here
+        // for that address" it gives every other unprovisionable identity,
+        // which is also all a stranger should learn: whether an address was
+        // once an account here is not the provider's to publish.
+        if (! $this->clients->addressIsFree($identity->email)) {
+            Log::warning('A provider identity was not provisioned: the address belongs to a deleted account.', [
+                'provider' => $settings->provider->value,
+                'email' => $identity->email,
+            ]);
+
             return null;
         }
 

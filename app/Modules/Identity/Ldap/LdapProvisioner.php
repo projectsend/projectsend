@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Clients\ClientProvisioning;
 use App\Modules\Identity\AuthSource;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
@@ -52,6 +53,19 @@ class LdapProvisioner
         $identity = $this->ldap->attempt($email, $password);
 
         if ($identity === null) {
+            return null;
+        }
+
+        // Same reason as SocialProvisioner: a deleted account keeps its
+        // address until erasure removes the row, so provisioning over one
+        // raises a QueryException at the moment of login. Refused here, the
+        // sign-in fails the ordinary way instead, and a directory identity
+        // does not silently reclaim an account somebody deleted.
+        if (! $this->clients->addressIsFree($identity->email)) {
+            Log::warning('A directory identity was not provisioned: the address belongs to a deleted account.', [
+                'email' => $identity->email,
+            ]);
+
             return null;
         }
 

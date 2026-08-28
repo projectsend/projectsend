@@ -270,6 +270,27 @@ test('auto-provisioning creates a client, never staff, and signs them in', funct
     expect(ActivityLog::query()->where('action', Action::LdapClientProvisioned)->exists())->toBeTrue();
 });
 
+// A deleted account keeps its address: the unique index spans trashed
+// rows, which is what AvailableEmailRule is built on. Provisioning over
+// one used to raise a QueryException in the middle of the sign-in.
+test('a directory identity whose address belongs to a deleted account is refused, not crashed', function () {
+    enableLdap(autoProvision: true, autoApprove: true);
+    fakeDirectory(['gone@example.test' => ['password' => 'directory-pass', 'name' => 'Gone Again']]);
+
+    $gone = User::factory()->client()->create(['email' => 'gone@example.test']);
+    $gone->delete();
+
+    $this->post('/login', ['email' => 'gone@example.test', 'password' => 'directory-pass'])
+        ->assertSessionHasErrors('email');
+
+    $this->assertGuest();
+
+    // Nothing was created, and the deleted account was not resurrected.
+    expect(User::query()->where('email', 'gone@example.test')->exists())->toBeFalse()
+        ->and(User::withTrashed()->where('email', 'gone@example.test')->count())->toBe(1)
+        ->and(User::withTrashed()->where('email', 'gone@example.test')->sole()->trashed())->toBeTrue();
+});
+
 // The directory proves who you are; the installation still decides whether
 // it wants you. This falls out of the phase ordering with no special case.
 test('auto-provisioning honours the directory approval setting', function () {

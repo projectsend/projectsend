@@ -49,6 +49,22 @@ class ClientProvisioning
     }
 
     /**
+     * Whether an address is free for a new account.
+     *
+     * The unique index on `email` spans soft-deleted rows — AvailableEmailRule
+     * is built on exactly that, so a deleted account keeps its address until
+     * erasure takes the row away. The registration form learns this from
+     * validation. The machine paths have no form to validate: a directory or
+     * an identity provider hands over an address and provision() inserts it,
+     * so without asking first the insert raises a QueryException in the
+     * middle of somebody's sign-in.
+     */
+    public function addressIsFree(string $email): bool
+    {
+        return ! User::withTrashed()->where('email', $email)->exists();
+    }
+
+    /**
      * @param  bool|null  $autoApprove  Null asks Setting::ClientsAutoApprove,
      *                                  which is the right question for the
      *                                  public registration form. A caller

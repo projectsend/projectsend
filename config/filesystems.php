@@ -62,12 +62,27 @@ return [
             // umask 0077 still produces 0700 and still cannot be
             // traversed; INSTALL.md covers fixing that, because it cannot
             // be fixed from this file.
+            //
+            // Both directory keys, because which one Flysystem reads is
+            // decided elsewhere: FilesystemManager passes
+            // `directory_visibility ?? visibility ?? private` as the
+            // default visibility for directories, so with `visibility`
+            // public just below, it reads `dir.public` and never looks at
+            // `dir.private`. Naming only the private one asked for 0755
+            // from a key nobody consults, and got 0755 anyway because that
+            // is Flysystem's default for a public directory — the right
+            // answer from the wrong place, which is the kind that stops
+            // being right quietly. Adding `directory_visibility` here, or
+            // a change to that default, would have been enough.
             // Spread rather than two ternaries so that leaving the flag
             // off is not merely equivalent to the old configuration but
             // literally it — no install that does not need this sees its
             // file modes change.
             ...(env('FILES_WEB_SERVER_READABLE', false)
-                ? ['visibility' => 'public', 'permissions' => ['dir' => ['private' => 0755]]]
+                ? [
+                    'visibility' => 'public',
+                    'permissions' => ['dir' => ['public' => 0755, 'private' => 0755]],
+                ]
                 : []),
         ],
 

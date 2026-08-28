@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Comments\FileComments;
 use App\Modules\Comments\Http\Resources\Api\FileCommentResource;
 use App\Modules\Comments\Models\FileComment;
-use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Files\Access\ViewableFileScope;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
@@ -30,16 +30,17 @@ class CommentModerationController extends Controller
 {
     public function __construct(
         private readonly FileComments $comments,
-        private readonly StaffLibraryScope $library,
+        private readonly ViewableFileScope $viewable,
     ) {}
 
     /**
      * List comments awaiting approval.
      *
-     * Scoped by the same library boundary as everything else: a
-     * client-scoped token sees pending comments only on files its owner
-     * could already open. Oldest first, so working through the list means
-     * working through the backlog.
+     * Scoped by the same file boundary as everything else — the whole of
+     * it, not just its library half: a client-scoped token sees pending
+     * comments only on files its owner could already open, and a token
+     * whose owner holds no file key at all sees none. Oldest first, so
+     * working through the list means working through the backlog.
      */
     public function index(Request $request): AnonymousResourceCollection
     {
@@ -49,7 +50,7 @@ class CommentModerationController extends Controller
 
         $pending = FileComment::query()
             ->whereNull('approved_at')
-            ->whereIn('file_id', $this->library->files($viewer)->select('id'))
+            ->whereIn('file_id', $this->viewable->for($viewer)->select('id'))
             ->with(['author', 'clientContext'])
             ->orderBy('created_at')
             ->orderBy('id')

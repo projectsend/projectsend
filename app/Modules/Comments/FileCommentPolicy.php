@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Modules\Comments\Access\VisibleCommentScope;
 use App\Modules\Comments\Models\FileComment;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Files\Access\ViewableFileScope;
 use Illuminate\Support\Facades\Gate;
 
 /**
@@ -22,6 +23,7 @@ class FileCommentPolicy
         private readonly VisibleCommentScope $scope,
         private readonly CommentingRules $rules,
         private readonly StaffLibraryScope $library,
+        private readonly ViewableFileScope $viewable,
     ) {}
 
     public function view(User $user, FileComment $comment): bool
@@ -66,6 +68,15 @@ class FileCommentPolicy
     public function moderate(User $user, ?FileComment $comment = null): bool
     {
         if (! $user->isStaff() || ! $user->can('moderate_comments')) {
+            return false;
+        }
+
+        // Moderating is deciding about comments you can already see, so the
+        // permission half of file reading is part of the answer in both
+        // forms. Without one of the three file keys this user gets a 403 on
+        // every file these comments are about, and approving one hands back
+        // its body — so this is a reading door, not only a writing one.
+        if (! $this->viewable->permitsAnyFile($user)) {
             return false;
         }
 

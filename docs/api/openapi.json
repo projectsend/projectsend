@@ -1068,7 +1068,7 @@
         "/comments/pending": {
             "get": {
                 "operationId": "comments.pending",
-                "description": "Scoped by the same library boundary as everything else: a\nclient-scoped token sees pending comments only on files its owner\ncould already open. Oldest first, so working through the list means\nworking through the backlog.\n\nRequires a token with the ability: `moderate_comments`.",
+                "description": "Scoped by the same file boundary as everything else \u2014 the whole of\nit, not just its library half: a client-scoped token sees pending\ncomments only on files its owner could already open, and a token\nwhose owner holds no file key at all sees none. Oldest first, so\nworking through the list means working through the backlog.\n\nRequires a token with the ability: `moderate_comments`.",
                 "summary": "List comments awaiting approval",
                 "tags": [
                     "CommentModeration"

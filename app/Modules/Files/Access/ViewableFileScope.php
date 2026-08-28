@@ -40,15 +40,25 @@ class ViewableFileScope
             return File::query()->visibleToClient($user);
         }
 
-        // Mirrors FilePolicy::view()'s staff branch: the permission half is
-        // a property of the viewer, not the row, so it either opens the
-        // whole scope or closes it entirely.
-        $permitted = $user->can('upload') || $user->can('edit_files') || $user->can('edit_others_files');
-
-        if (! $permitted) {
+        if (! $this->permitsAnyFile($user)) {
             return File::query()->whereRaw('1 = 0');
         }
 
         return $this->scope->files($user);
+    }
+
+    /**
+     * Whether a staff member holds any of the three keys that open file
+     * reading at all — the permission half of FilePolicy::view()'s staff
+     * branch, named once because more than one module has to ask it.
+     *
+     * It is a property of the viewer rather than of a row, so it either
+     * opens the whole scope or closes it entirely. That is also why a
+     * query narrowed by StaffLibraryScope alone is only half the check:
+     * the library says *which* files, this says *whether any*.
+     */
+    public function permitsAnyFile(User $user): bool
+    {
+        return $user->can('upload') || $user->can('edit_files') || $user->can('edit_others_files');
     }
 }

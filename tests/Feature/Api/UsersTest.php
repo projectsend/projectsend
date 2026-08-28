@@ -351,6 +351,35 @@ test('a caller cannot deactivate or delete their own account', function () {
         ->assertJsonPath('errors.user.0', 'You cannot delete your own account.');
 });
 
+test('self-deactivation is refused however the boolean is written', function (mixed $active) {
+    // A second administrator, so the last-administrator guard is not what
+    // refuses this: with only one, that guard answers first and the refusal
+    // under test here is never reached.
+    User::factory()->create();
+
+    $this->withToken($this->token)->patchJson("/api/v1/users/{$this->admin->id}", ['active' => $active])
+        ->assertStatus(422)
+        ->assertJsonPath('errors.active.0', 'You cannot deactivate your own account.');
+
+    expect($this->admin->refresh()->active)->toBeTrue();
+})->with([
+    'false' => [false],
+    'zero' => [0],
+    'the string zero' => ['0'],
+]);
+
+test('deactivating somebody else still works in every one of those forms', function (mixed $active) {
+    $user = User::factory()->role(SystemRole::Uploader)->create();
+
+    $this->withToken($this->token)->patchJson("/api/v1/users/{$user->id}", ['active' => $active])->assertOk();
+
+    expect($user->refresh()->active)->toBeFalse();
+})->with([
+    'false' => [false],
+    'zero' => [0],
+    'the string zero' => ['0'],
+]);
+
 /*
 |--------------------------------------------------------------------------
 | Deletion and its content

@@ -182,15 +182,27 @@ class UsersController extends Controller
             'assigned_clients.*' => ['integer', Rule::in($this->accounts->assignableClientIds($actor))],
         ]);
 
+        // Read through Request::boolean() rather than off the validated
+        // array, for the reason RolesController::guardScopeRemoval spells
+        // out: the `boolean` rule accepts 0 and "0" as well as false but
+        // does not cast, so a strict comparison lets through a value the
+        // model's own `boolean` cast then stores as false anyway. The same
+        // value goes to the guard and to the write.
+        $deactivating = array_key_exists('active', $validated) && ! $request->boolean('active');
+
         // The same refusal the web screen makes, and for the same reason:
         // locking yourself out is never what was meant.
-        if ($user->is($actor) && ($validated['active'] ?? true) === false) {
+        if ($user->is($actor) && $deactivating) {
             throw ValidationException::withMessages([
                 'active' => __('You cannot deactivate your own account.'),
             ]);
         }
 
-        $attributes = array_intersect_key($validated, array_flip(['name', 'email', 'active', 'password']));
+        $attributes = array_intersect_key($validated, array_flip(['name', 'email', 'password']));
+
+        if (array_key_exists('active', $validated)) {
+            $attributes['active'] = $request->boolean('active');
+        }
 
         if (array_key_exists('role_id', $validated)) {
             $attributes['role_id'] = (int) $validated['role_id'];

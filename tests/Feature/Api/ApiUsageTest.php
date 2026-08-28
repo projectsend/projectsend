@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 use App\Models\User;
 use App\Modules\Api\Models\ApiRequestLog;
+use App\Modules\Audit\Action;
+use App\Modules\Audit\ActivityLog;
+use App\Modules\Audit\ActivityOrigin;
 use App\Modules\Files\Models\File;
+use App\Modules\Identity\Models\Role;
+use App\Modules\Identity\Models\RolePermission;
 use App\Modules\Identity\Permissions\Permission;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -193,6 +198,86 @@ test('request counts follow the same scope', function () {
     $props = $this->actingAs($this->staff)->get('/api')->assertOk()->viewData('page')['props'];
 
     expect($props['summary']['requests_7d'])->toBe(1);
+});
+
+/** An API-origin log entry about $file, shaped as ActivityLogger writes it. */
+function apiActionOn(User $actor, File $file): void
+{
+    ActivityLog::query()->create([
+        'actor_id' => $actor->id,
+        'actor_name' => $actor->name,
+        'actor_type' => $actor->type->value,
+        'origin' => ActivityOrigin::Api,
+        'api_token_name' => 'Zapier',
+        'action' => Action::FileUploaded,
+        'subject_type' => $file->getMorphClass(),
+        'subject_id' => $file->id,
+        'subject_name' => $file->name,
+        'created_at' => now(),
+    ]);
+}
+
+/** A client-scoped viewer holding view_actions_log, as Client Manager ships. */
+function scopedApiLogReader(): array
+{
+    $role = Role::query()->create(['name' => 'Scoped log reader', 'client_scoped' => true]);
+    RolePermission::query()->insert([
+        ['role_id' => $role->id, 'permission' => Permission::ViewActionsLog->value],
+        ['role_id' => $role->id, 'permission' => Permission::Upload->value],
+    ]);
+
+    $viewer = User::factory()->create(['role_id' => $role->id]);
+    $client = User::factory()->client()->create();
+    $viewer->assignedClients()->attach($client->id);
+
+    return [$viewer, $client];
+}
+
+test('the recent actions feed narrows to what the viewer may read', function () {
+    // Tokens are scoped by view_actions_log alone; the activity log is not.
+    // A row carries the subject's name, so an unscoped feed reads out the
+    // name of every file in the installation to a Client Manager who gets a
+    // 403 on the files themselves — the same reasoning /activity, the
+    // download history and the dashboard widget already act on.
+    [$scoped, $client] = scopedApiLogReader();
+
+    $theirs = File::factory()->create(['uploaded_by' => $this->staff->id, 'name' => 'Q3 delinquent accounts']);
+
+    $mine = File::factory()->create(['uploaded_by' => $this->staff->id, 'name' => 'Statement']);
+    shareFileWith($mine, $client);
+
+    apiActionOn($this->staff, $theirs);
+    apiActionOn($this->staff, $mine);
+
+    $props = $this->actingAs($scoped)->get('/api?all=1')->assertOk()->viewData('page')['props'];
+
+    expect($props['scope']['install_wide'])->toBeTrue()
+        ->and(collect($props['recent_actions'])->pluck('replacements.subject')->all())->toBe(['Statement']);
+});
+
+test('a scoped viewer keeps their own actions, even about a file they cannot open', function () {
+    // Guards against narrowing further than /activity does: their own audit
+    // trail stays whole, which is the rule ActivityLogScope states.
+    [$scoped] = scopedApiLogReader();
+
+    $stranger = File::factory()->create(['uploaded_by' => $this->staff->id, 'name' => 'Not in my library']);
+    apiActionOn($scoped, $stranger);
+
+    $props = $this->actingAs($scoped)->get('/api?all=1')->assertOk()->viewData('page')['props'];
+
+    expect(collect($props['recent_actions'])->pluck('replacements.subject')->all())
+        ->toBe(['Not in my library']);
+});
+
+test('an unscoped viewer still sees every API action in the installation', function () {
+    $auditor = staffWithPermissions([Permission::ViewActionsLog->value]);
+    $file = File::factory()->create(['uploaded_by' => $this->staff->id, 'name' => 'Anything']);
+
+    apiActionOn($this->staff, $file);
+
+    $props = $this->actingAs($auditor)->get('/api?all=1')->assertOk()->viewData('page')['props'];
+
+    expect(collect($props['recent_actions'])->pluck('replacements.subject')->all())->toBe(['Anything']);
 });
 
 test('clients cannot reach the dashboard', function () {

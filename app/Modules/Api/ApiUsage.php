@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Modules\Api\Auth\ApiTokens;
 use App\Modules\Api\Models\ApiRequestLog;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Audit\ActivityLogScope;
 use App\Modules\Audit\ActivityOrigin;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
@@ -27,6 +28,7 @@ class ApiUsage
 {
     public function __construct(
         private readonly ApiUsageScope $scope,
+        private readonly ActivityLogScope $activityLog,
     ) {}
 
     /**
@@ -145,7 +147,23 @@ class ApiUsage
      */
     public function recentActions(User $viewer, bool $installWide, int $limit = 15): array
     {
-        $query = ActivityLog::query()->where('origin', ActivityOrigin::Api);
+        // Narrowed through ActivityLogScope, exactly as the activity page,
+        // the download history and the dashboard widget are.
+        // `view_actions_log` decides whether the install-wide view opens at
+        // all, but it is not the whole answer for a client-scoped viewer: a
+        // row carries the subject's name, so an unscoped feed reads out file
+        // and client names to somebody who gets a 403 on the files
+        // themselves. The Client Manager role ships with the permission, so
+        // this is the default configuration, not an exotic one.
+        //
+        // Applied on both sides of the branch rather than only in the
+        // install-wide one: the own-actor filter below already stays inside
+        // what the scope allows, and a boundary that only exists in one arm
+        // of an `if` is one refactor away from not existing.
+        $query = $this->activityLog->apply(
+            ActivityLog::query()->where('origin', ActivityOrigin::Api),
+            $viewer,
+        );
 
         if (! $installWide) {
             $query->where('actor_id', $viewer->id);

@@ -13,11 +13,50 @@ Anything under **Upgrade notes** is something you have to do, not something we d
 This section collects changes as they land; the release process turns it into a numbered entry when
 a version is cut.
 
-**Fixed**
+## 2.2.1 — 28 August 2026
+
+A security release. Most of it closes ways somebody could reach past a boundary the rest of the
+application already enforced — including two that could lock you out of your own installation.
+
+**Merged**
+
+- [#1708](https://github.com/projectsend/projectsend/pull/1708) — Let an enforced user reach the far side of the confirm-password screen
+- [#1716](https://github.com/projectsend/projectsend/pull/1716) — Refuse the last administrator deleting themselves, and keep setup shut
+- [#1710](https://github.com/projectsend/projectsend/pull/1710) — Stop a folder deleting the files inside it that its owner may not delete
+- [#1714](https://github.com/projectsend/projectsend/pull/1714) — Hold the group edit screen to the same library boundary as the rest
+- [#1717](https://github.com/projectsend/projectsend/pull/1717) — Keep a private reply private after the client is deleted
+- [#1713](https://github.com/projectsend/projectsend/pull/1713) — Refuse self-deactivation over the API however the boolean is written
+- [#1709](https://github.com/projectsend/projectsend/pull/1709) — Ask the seat cap where a pending client is approved through edit()
+- [#1715](https://github.com/projectsend/projectsend/pull/1715) — Add a file to a zip once, however many ways the selection reaches it
+- [#1707](https://github.com/projectsend/projectsend/pull/1707) — Leave the test workflow one concurrency block, so it parses again
+- [#1711](https://github.com/projectsend/projectsend/pull/1711) — Stop the update tests emptying bootstrap/cache for every other worker
+- [#1712](https://github.com/projectsend/projectsend/pull/1712) — Make the storage durability dashboard test assert the verdict
+
+**Also fixed**
 
 - The plain-text version of an email no longer shows the link twice, wrapped in brackets.
-- The message you get when an account would exceed your plan no longer reads "limited to 1 staff
+- The message you get when an account would exceed a limit no longer reads "limited to 1 staff
   accounts".
+
+### Upgrade notes
+
+- **Nothing to do.** Drop in the new files and run `php artisan migrate` as usual; this release adds
+  no migrations, no settings and no new environment values.
+
+- **One thing changes behaviour.** If somebody on your team has been deleting a folder as a way of
+  clearing out files other people uploaded, that now refuses and says how many files are in the way.
+  It is the same rule the file list has always applied one screen over — the folder was the way
+  around it, and what it removed was not recoverable.
+
+Thanks to [@denkfabrik-li](https://github.com/denkfabrik-li), who reported, diagnosed and fixed
+every one of the above.
+
+### Issues closed since 2.2.0
+
+The summary above is what changed. This is the paper trail, for anyone who wants to read the
+original report.
+
+- [#1706](https://github.com/projectsend/projectsend/issues/1706) — V1 migration imports $2a$ bcrypt hashes that cause HTTP 500 on login
 
 ## 2.2.0 — 27 August 2026
 

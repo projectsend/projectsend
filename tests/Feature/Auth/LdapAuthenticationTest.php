@@ -15,6 +15,7 @@ use App\Modules\Platform\Capabilities\Edition;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 use Tests\Support\FakeLdapDirectory;
 
 beforeEach(function () {
@@ -418,4 +419,96 @@ test('settings with no host are treated as switched off', function () {
         ->assertSessionHasErrors('email');
 
     expect($fake->calls)->toBe(0);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Re-proving the password, once signed in
+|--------------------------------------------------------------------------
+| The confirm-password screen asked the local hash and nothing else. A
+| directory account's local hash is a Str::password(64) nobody has ever
+| seen, so it refused them the only password they have -- and that screen
+| stands in front of enrolling in two-factor.
+*/
+
+test('a directory account can confirm its password with its directory password', function () {
+    fakeDirectory(['someone@example.test' => ['password' => 'directory-pass']]);
+    enableLdap();
+
+    $client = User::factory()->client()->create([
+        'email' => 'someone@example.test',
+        'auth_source' => AuthSource::Ldap,
+    ]);
+
+    $this->actingAs($client)
+        ->post('/confirm-password', ['password' => 'directory-pass'])
+        ->assertRedirect()
+        ->assertSessionHasNoErrors();
+
+    expect(session()->has('auth.password_confirmed_at'))->toBeTrue();
+});
+
+test('and can therefore enrol in two-factor at all', function () {
+    // The consequence that matters. Under TwoFactorEnforcement this is not
+    // a missing convenience -- EnforceTwoFactor redirects every request to
+    // two-factor.show, and the enrolment behind password.confirm could
+    // never be reached, so the account had nowhere to go.
+    fakeDirectory(['someone@example.test' => ['password' => 'directory-pass']]);
+    enableLdap();
+
+    $client = User::factory()->client()->create([
+        'email' => 'someone@example.test',
+        'auth_source' => AuthSource::Ldap,
+    ]);
+
+    $this->actingAs($client)->post('/confirm-password', ['password' => 'directory-pass']);
+    $this->actingAs($client)->post('/settings/two-factor')->assertRedirect();
+
+    expect($client->refresh()->two_factor_secret)->not->toBeNull();
+});
+
+test('the wrong directory password is still refused', function () {
+    fakeDirectory(['someone@example.test' => ['password' => 'directory-pass']]);
+    enableLdap();
+
+    $client = User::factory()->client()->create([
+        'email' => 'someone@example.test',
+        'auth_source' => AuthSource::Ldap,
+    ]);
+
+    $this->actingAs($client)
+        ->post('/confirm-password', ['password' => 'not-the-directory-pass'])
+        ->assertSessionHasErrors('password');
+
+    expect(session()->has('auth.password_confirmed_at'))->toBeFalse();
+});
+
+test('the local hash of a directory account is still not a way in', function () {
+    // The placeholder must stay unusable: if somebody knew it, confirming
+    // with it would be a second door that keeps working after LDAP is
+    // switched off.
+    fakeDirectory(['someone@example.test' => ['password' => 'directory-pass']]);
+    enableLdap();
+
+    $client = User::factory()->client()->create([
+        'email' => 'someone@example.test',
+        'auth_source' => AuthSource::Ldap,
+        'password' => Hash::make('the-local-placeholder'),
+    ]);
+
+    $this->actingAs($client)
+        ->post('/confirm-password', ['password' => 'the-local-placeholder'])
+        ->assertSessionHasErrors('password');
+});
+
+test('a local account still confirms against its own hash, with LDAP on', function () {
+    fakeDirectory([]);
+    enableLdap();
+
+    $staff = User::factory()->create();
+
+    $this->actingAs($staff)
+        ->post('/confirm-password', ['password' => 'password'])
+        ->assertRedirect()
+        ->assertSessionHasNoErrors();
 });

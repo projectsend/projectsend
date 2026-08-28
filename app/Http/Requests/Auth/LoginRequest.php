@@ -3,13 +3,12 @@
 namespace App\Http\Requests\Auth;
 
 use App\Models\User;
-use App\Modules\Identity\Ldap\LdapAuthenticator;
 use App\Modules\Identity\Ldap\LdapProvisioner;
+use App\Modules\Identity\PasswordVerification;
 use App\Modules\Identity\SignIn;
 use App\Modules\Platform\Captcha\CaptchaForm;
 use App\Support\Rules;
 use Illuminate\Auth\Events\Lockout;
-use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -115,10 +114,9 @@ class LoginRequest extends FormRequest
     /**
      * The account whose password checks out, or null.
      *
-     * The local hash is tried first and the directory only on failure, so
-     * a login that succeeds locally never generates directory traffic.
-     * The exception is an account whose credentials are known to live in
-     * the directory, where the local hash is a placeholder nobody holds.
+     * The rule itself -- local hash first, directory when the credentials
+     * live there -- is PasswordVerification's, because this is no longer
+     * the only screen that has to ask it. See that class.
      */
     private function verifyCredentials(?User $user): ?User
     {
@@ -126,67 +124,9 @@ class LoginRequest extends FormRequest
             return null;
         }
 
-        $ldap = app(LdapAuthenticator::class);
-
-        if (! $ldap->isDirectoryAccount($user)
-            && Auth::validate($this->only('email', 'password'))) {
-            $this->upgradeHashIfStale($user);
-
-            return $user;
-        }
-
-        $identity = $ldap->attempt(
-            (string) $this->string('email'),
-            (string) $this->string('password'),
-            $user,
-        );
-
-        if ($identity === null) {
-            return null;
-        }
-
-        $ldap->stamp($user, $identity);
-
-        return $user;
-    }
-
-    /**
-     * Re-hash a password stored under weaker settings than this
-     * installation now uses.
-     *
-     * Laravel does this for you inside SessionGuard::attempt(), but this
-     * form does not use attempt() — it verifies with Auth::validate() and
-     * hands the account to SignIn, which calls Auth::login(). Neither
-     * re-hashes, so without this an account keeps whatever cost it was
-     * created under forever, and raising BCRYPT_ROUNDS would quietly
-     * apply to new accounts only.
-     *
-     * That is not hypothetical: every account the v1 migration carries
-     * across arrives as `$2y$08$…`, because v1 hashed at cost 8, and
-     * would otherwise stay four times cheaper to attack than an account
-     * created here.
-     *
-     * **Only ever called on the local branch.** On the directory branch
-     * the submitted plaintext is the *LDAP* password and the local hash
-     * is a `Str::password(64)` placeholder nobody holds; writing the
-     * directory credential into it would mint a second way into the
-     * account that keeps working after LDAP is switched off.
-     */
-    private function upgradeHashIfStale(User $user): void
-    {
-        $guard = Auth::guard('web');
-
-        // getProvider() is on SessionGuard rather than on the StatefulGuard
-        // contract. This guard is a SessionGuard in every configuration this
-        // application ships; the check is here so a custom driver degrades
-        // to "no re-hash" instead of a fatal on the login path.
-        if (! $guard instanceof SessionGuard) {
-            return;
-        }
-
-        // No-ops unless the hasher says the stored digest needs it, so
-        // this costs an already-current account nothing.
-        $guard->getProvider()->rehashPasswordIfRequired($user, $this->only('password'));
+        return app(PasswordVerification::class)->verify($user, (string) $this->string('password'))
+            ? $user
+            : null;
     }
 
     /**

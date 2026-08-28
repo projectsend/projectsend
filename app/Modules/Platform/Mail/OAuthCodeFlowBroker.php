@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Platform\Mail;
 
+use Illuminate\Contracts\Cache\Lock;
 use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
@@ -84,6 +85,48 @@ abstract class OAuthCodeFlowBroker implements MailOAuthBroker
         $this->storeTokens($connection, $response);
     }
 
+    /**
+     * The scheduled refresh, holding the same lock a send would.
+     *
+     * freshAccessToken() takes that lock because a refresh token is good
+     * for exactly one use, and it names this command as one of the racers:
+     * "a worker racing the nightly refresh command means the slower one
+     * spends a token the faster one has already replaced", which the
+     * provider answers with an invalid_grant indistinguishable from a
+     * revoked grant. The command was doing its refresh outside the lock,
+     * so it was the other half of that race rather than a party to it.
+     *
+     * Unlike freshAccessToken() this refreshes a token that is still
+     * usable, which is the point of the daily run: a delegated refresh
+     * token dies of disuse, and the refresh keeps the window sliding.
+     *
+     * Taken rather than waited for, unlike the send path: nobody is
+     * standing at a screen here, and a held lock means somebody is
+     * refreshing this very connection right now — which slides the window
+     * and establishes its health just as well as doing it again would.
+     * Spending the token behind them is the false alarm the lock exists to
+     * prevent.
+     */
+    public function refreshSerially(MailOAuthConnection $connection): void
+    {
+        $lock = $this->refreshLock($connection);
+
+        if (! $lock->get()) {
+            return;
+        }
+
+        try {
+            // Re-read first: the winner may have stored tokens while this
+            // call was waiting, and refreshing the copy walked in with
+            // would spend a refresh token that is no longer current.
+            $connection->refresh();
+
+            $this->refresh($connection);
+        } finally {
+            $lock->release();
+        }
+    }
+
     public function freshAccessToken(MailOAuthConnection $connection): string
     {
         if ($this->stillUsable($connection)) {
@@ -104,7 +147,7 @@ abstract class OAuthCodeFlowBroker implements MailOAuthBroker
         // re-read the row instead of trusting the copy it walked in with: by
         // the time the lock is theirs, the winner has already stored a token
         // they can just use.
-        $lock = Cache::lock('mail-oauth-refresh:'.$connection->provider->value, 30);
+        $lock = $this->refreshLock($connection);
 
         try {
             $lock->block(15);
@@ -135,6 +178,16 @@ abstract class OAuthCodeFlowBroker implements MailOAuthBroker
     }
 
     /** Whether the stored access token has enough life left to send with. */
+    /**
+     * One refresh at a time per connection, whoever is asking. The TTL
+     * outlives a token request and releases the claim if the holder dies
+     * mid-flight.
+     */
+    private function refreshLock(MailOAuthConnection $connection): Lock
+    {
+        return Cache::lock('mail-oauth-refresh:'.$connection->provider->value, 30);
+    }
+
     private function stillUsable(MailOAuthConnection $connection): bool
     {
         $token = $connection->access_token;

@@ -38,6 +38,15 @@ interface MailOAuthBroker
     public function refresh(MailOAuthConnection $connection): void;
 
     /**
+     * A refresh that is not racing a send: the scheduled health check's
+     * way in, serialised against freshAccessToken() on the same
+     * connection.
+     *
+     * @throws MailOAuthException
+     */
+    public function refreshSerially(MailOAuthConnection $connection): void;
+
+    /**
      * An access token currently valid for at least a small safety margin,
      * refreshing first when needed — what transports call at send time.
      *

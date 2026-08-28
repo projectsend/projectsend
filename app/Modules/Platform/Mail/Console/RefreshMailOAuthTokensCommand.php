@@ -50,7 +50,10 @@ class RefreshMailOAuthTokensCommand extends Command
             $hadError = $connection->last_error !== null;
 
             try {
-                $brokers->for($connection->provider)->refresh($connection);
+                // Serialised against sends: refresh() on its own is the
+                // other half of the race freshAccessToken()'s lock is
+                // there to stop.
+                $brokers->for($connection->provider)->refreshSerially($connection);
 
                 $this->info("Refreshed {$connection->provider->value} ({$connection->account_email}).");
 

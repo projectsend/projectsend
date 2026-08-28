@@ -10,6 +10,7 @@ use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Validation\ValidationException;
 use Inertia\Testing\AssertableInertia;
+use Laravel\Sanctum\Sanctum;
 
 /**
  * A cap is only a cap if every door asks.
@@ -190,6 +191,53 @@ test('door: approving an account request', function () {
         ->assertSessionHasErrors('email');
 
     expect($pending->refresh()->account_requested)->toBeTrue();
+});
+
+test('door: approving a pending client through the edit screen', function () {
+    seatLimits(clients: 0);
+
+    $pending = User::factory()->client()->create(['account_requested' => true, 'active' => false]);
+
+    $this->actingAs($this->admin)->patch("/clients/{$pending->id}", [
+        'name' => $pending->name,
+        'email' => $pending->email,
+        'active' => true,
+    ])->assertSessionHasErrors('active');
+
+    // Nothing is written: the guard throws before save(), so a refused
+    // approval does not leave the name or the flag half-applied.
+    expect($pending->refresh()->account_requested)->toBeTrue()
+        ->and($pending->active)->toBeFalse();
+});
+
+test('door: approving a pending client through the API', function () {
+    seatLimits(clients: 0);
+
+    $pending = User::factory()->client()->create(['account_requested' => true, 'active' => false]);
+
+    Sanctum::actingAs($this->admin, ['*']);
+
+    $this->patchJson("/api/v1/clients/{$pending->id}", ['active' => true])
+        ->assertStatus(422)
+        ->assertJsonValidationErrors('active');
+
+    expect($pending->refresh()->account_requested)->toBeTrue();
+});
+
+test('the cap does not block editing a client the installation already holds', function () {
+    // The guard sits inside the approval branch. Above it, an installation
+    // sitting at its cap could not rename anybody.
+    seatLimits(clients: 0);
+
+    $client = User::factory()->client()->create(['account_requested' => false, 'active' => true]);
+
+    $this->actingAs($this->admin)->patch("/clients/{$client->id}", [
+        'name' => 'Renamed Ltd',
+        'email' => $client->email,
+        'active' => true,
+    ])->assertSessionHasNoErrors();
+
+    expect($client->refresh()->name)->toBe('Renamed Ltd');
 });
 
 test('door: demoting a staff account to client', function () {

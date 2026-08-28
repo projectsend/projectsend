@@ -191,7 +191,11 @@ class ClientsController extends Controller
             $client->storage_quota_mb = $validated['storage_quota_mb'] ?? 0;
         }
 
+        // Approval, and so the moment the seat is spent — same rule the
+        // web edit screen and approve() answer to. Inside the branch, so a
+        // capped installation can still edit a client it already holds.
         if (($validated['active'] ?? false) && $client->account_requested) {
+            $this->seats->guardClient('active');
             $client->account_requested = false;
         }
 

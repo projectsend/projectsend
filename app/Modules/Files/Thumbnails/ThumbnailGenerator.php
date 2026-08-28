@@ -134,6 +134,31 @@ class ThumbnailGenerator
         // listening the image is written exactly as produced above.
         Event::dispatch(new RenderingImage($image, $mimeType, $audience, $rendition));
 
-        $image->toFile($destinationPath, $mimeType);
+        // Written beside the destination and renamed into place, so the
+        // cached path never exists half-finished. Both callers test only
+        // that the path exists and then serve whatever is there
+        // (FileThumbnailController::render, PublicGroupsController::
+        // thumbnail), and nothing ever invalidates a rendition —
+        // RenderedImageCache::flush() runs on an event no core code raises.
+        // A render that died partway would therefore be served as the
+        // rendition from then on.
+        //
+        // It also settles the race: two requests rendering the same file at
+        // once used to encode into one path together. rename() within a
+        // directory is atomic and replaces what is there, so now the loser
+        // leaves a complete rendition behind rather than a mixture of two.
+        $temporaryPath = $destinationPath.'.'.bin2hex(random_bytes(8)).'.partial';
+
+        try {
+            $image->toFile($temporaryPath, $mimeType);
+
+            if (! rename($temporaryPath, $destinationPath)) {
+                throw new RuntimeException('Could not move the rendered image into place.');
+            }
+        } finally {
+            if (is_file($temporaryPath)) {
+                @unlink($temporaryPath);
+            }
+        }
     }
 }

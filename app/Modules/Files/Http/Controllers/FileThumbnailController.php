@@ -202,8 +202,19 @@ class FileThumbnailController extends Controller
 
         $disk = Storage::disk('files');
 
+        // Existence is the cache, and an empty file is not a rendition: it
+        // is what a render that died before writing anything leaves behind,
+        // and serving it hands the viewer a broken image for as long as the
+        // file lives — nothing invalidates a rendition once it is there.
+        // ThumbnailGenerator writes through a temporary file now, so this
+        // state can no longer be created here; it can still be inherited
+        // from an installation that ran an older version.
         if ($disk->exists($path)) {
-            return $path;
+            if ($disk->size($path) > 0) {
+                return $path;
+            }
+
+            $disk->delete($path);
         }
 
         $disk->makeDirectory(dirname($path));

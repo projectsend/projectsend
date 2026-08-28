@@ -29,6 +29,7 @@ use App\Modules\Identity\UserType;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -206,7 +207,7 @@ class ClientsController extends Controller
         $client->save();
 
         if (array_key_exists('custom_field_values', $validated)) {
-            $this->saveCustomFieldValues($client, $validated['custom_field_values']);
+            $this->patchCustomFieldValues($client, $validated['custom_field_values']);
         }
 
         $this->activity->log(Action::UserUpdated, subject: $client);
@@ -364,11 +365,43 @@ class ClientsController extends Controller
     }
 
     /**
+     * Every field, whether or not the request named it — a new client has
+     * no values yet, and create() is not a partial update.
+     *
      * @param  array<int, mixed>  $values  field id => submitted value
      */
     private function saveCustomFieldValues(User $client, array $values): void
     {
-        foreach (ClientCustomField::query()->get() as $field) {
+        $this->writeCustomFieldValues($client, ClientCustomField::query()->get(), $values);
+    }
+
+    /**
+     * Only the fields the request actually named.
+     *
+     * PATCH semantics, the same rule update() applies to every other
+     * column: an absent key means "leave alone", not "clear". Sharing
+     * create()'s "write every field" pass here emptied every custom field
+     * the caller had not mentioned, which is silent data loss on a request
+     * that looked like it changed one thing.
+     *
+     * @param  array<int, mixed>  $values  field id => submitted value
+     */
+    private function patchCustomFieldValues(User $client, array $values): void
+    {
+        $this->writeCustomFieldValues(
+            $client,
+            ClientCustomField::query()->whereIn('id', array_keys($values))->get(),
+            $values,
+        );
+    }
+
+    /**
+     * @param  Collection<int, ClientCustomField>  $fields
+     * @param  array<int, mixed>  $values  field id => submitted value
+     */
+    private function writeCustomFieldValues(User $client, Collection $fields, array $values): void
+    {
+        foreach ($fields as $field) {
             $submitted = $values[$field->id] ?? null;
             $value = $field->type === ClientCustomFieldType::Checkbox
                 ? ($submitted ? '1' : '0')

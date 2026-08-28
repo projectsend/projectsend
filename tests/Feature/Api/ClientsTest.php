@@ -85,6 +85,76 @@ test('the listing does not hand out every clients custom field data', function (
 |--------------------------------------------------------------------------
 */
 
+test('a PATCH leaves custom fields it does not name alone', function () {
+    // The same rule the rest of update() states: "an absent key means
+    // 'leave alone', not 'clear'". The custom-field pass was create()'s,
+    // which writes every field there is.
+    $name = ClientCustomField::query()->create([
+        'name' => 'contact', 'label' => 'Contact', 'type' => ClientCustomFieldType::Text,
+        'required' => false, 'sort_order' => 1,
+    ]);
+    $vat = ClientCustomField::query()->create([
+        'name' => 'vat', 'label' => 'VAT number', 'type' => ClientCustomFieldType::Text,
+        'required' => false, 'sort_order' => 2,
+    ]);
+
+    $client = User::factory()->client()->create();
+    ClientCustomFieldValue::query()->create([
+        'client_custom_field_id' => $name->id, 'user_id' => $client->id, 'value' => 'Alex',
+    ]);
+    ClientCustomFieldValue::query()->create([
+        'client_custom_field_id' => $vat->id, 'user_id' => $client->id, 'value' => 'ATU12345678',
+    ]);
+
+    $this->withToken($this->token)->patchJson("/api/v1/clients/{$client->id}", [
+        'custom_field_values' => [$name->id => 'Robin'],
+    ])->assertOk();
+
+    $values = ClientCustomFieldValue::query()->where('user_id', $client->id)
+        ->pluck('value', 'client_custom_field_id');
+
+    expect($values[$name->id])->toBe('Robin')
+        ->and($values[$vat->id])->toBe('ATU12345678');
+});
+
+test('a PATCH can still clear a field by naming it', function () {
+    $vat = ClientCustomField::query()->create([
+        'name' => 'vat', 'label' => 'VAT number', 'type' => ClientCustomFieldType::Text,
+        'required' => false, 'sort_order' => 1,
+    ]);
+    $client = User::factory()->client()->create();
+    ClientCustomFieldValue::query()->create([
+        'client_custom_field_id' => $vat->id, 'user_id' => $client->id, 'value' => 'ATU12345678',
+    ]);
+
+    $this->withToken($this->token)->patchJson("/api/v1/clients/{$client->id}", [
+        'custom_field_values' => [$vat->id => ''],
+    ])->assertOk();
+
+    expect(ClientCustomFieldValue::query()
+        ->where('user_id', $client->id)->where('client_custom_field_id', $vat->id)->value('value'))->toBeNull();
+});
+
+test('creating a client still records every field', function () {
+    // create() is not a partial update, and a checkbox nobody ticked is a
+    // recorded "no" rather than an absent row.
+    $optIn = ClientCustomField::query()->create([
+        'name' => 'newsletter', 'label' => 'Newsletter', 'type' => ClientCustomFieldType::Checkbox,
+        'required' => false, 'sort_order' => 1,
+    ]);
+
+    $this->withToken($this->token)->postJson('/api/v1/clients', [
+        'name' => 'Acme Ltd',
+        'email' => 'crud-custom@example.com',
+        'password' => 'super-secret-password',
+    ])->assertCreated();
+
+    $client = User::query()->where('email', 'crud-custom@example.com')->sole();
+
+    expect(ClientCustomFieldValue::query()
+        ->where('user_id', $client->id)->where('client_custom_field_id', $optIn->id)->value('value'))->toBe('0');
+});
+
 test('a client can be created', function () {
     $this->withToken($this->token)->postJson('/api/v1/clients', [
         'name' => 'Acme Ltd',

@@ -1186,6 +1186,7 @@
     ":guest commented on the file \":subject\"": ":guest 评论了文件“:subject”",
     ":name — files": ":name — 文件",
     ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to edit them.": "所选 :requested 个文件中已更新 :updated 个，其余因你没有编辑权限而被跳过。",
+    ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to make those changes.": "所选 :requested 个文件中已更新 :updated 个，其余因你没有进行这些更改的权限而被跳过。",
     "A bold header built around your logo — pairs with the Gallery look for a polished, on-brand inbox.": "以你的标志为核心的醒目页眉——搭配 Gallery 外观，让收件箱显得精致又贴合品牌。",
     "Access": "访问",
     "Access key": "访问密钥",

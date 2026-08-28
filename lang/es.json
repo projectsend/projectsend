@@ -1186,6 +1186,7 @@
     ":guest commented on the file \":subject\"": ":guest comentó en el archivo «:subject»",
     ":name — files": ":name — archivos",
     ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to edit them.": "Se actualizaron :updated de los :requested archivos seleccionados. El resto se omitió porque no tienes permiso para editarlos.",
+    ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to make those changes.": "Se actualizaron :updated de los :requested archivos seleccionados. El resto se omitió porque no tienes permiso para hacer esos cambios.",
     "A bold header built around your logo — pairs with the Gallery look for a polished, on-brand inbox.": "Una cabecera contundente construida alrededor de tu logo: combina con el estilo Galería para una bandeja de entrada cuidada y con tu marca.",
     "Access": "Acceso",
     "Access key": "Clave de acceso",

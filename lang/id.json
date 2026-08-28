@@ -1186,6 +1186,7 @@
     ":guest commented on the file \":subject\"": ":guest berkomentar pada berkas \":subject\"",
     ":name — files": ":name — berkas",
     ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to edit them.": ":updated dari :requested berkas yang dipilih berhasil diperbarui. Sisanya dilewati karena Anda tidak punya izin mengubahnya.",
+    ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to make those changes.": ":updated dari :requested berkas yang dipilih berhasil diperbarui. Sisanya dilewati karena Anda tidak punya izin melakukan perubahan tersebut.",
     "A bold header built around your logo — pairs with the Gallery look for a polished, on-brand inbox.": "Kepala surat yang tegas berpusat pada logo Anda — dipadukan dengan tampilan Gallery, kotak masuk terasa rapi dan sesuai identitas merek.",
     "Access": "Akses",
     "Access key": "Kunci akses",

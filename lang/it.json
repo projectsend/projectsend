@@ -1186,6 +1186,7 @@
     ":guest commented on the file \":subject\"": ":guest ha commentato il file \":subject\"",
     ":name — files": ":name — file",
     ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to edit them.": ":updated file sui :requested selezionati sono stati aggiornati. Gli altri sono stati saltati perché non hai l'autorizzazione per modificarli.",
+    ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to make those changes.": ":updated file sui :requested selezionati sono stati aggiornati. Gli altri sono stati saltati perché non hai l'autorizzazione per apportare queste modifiche.",
     "A bold header built around your logo — pairs with the Gallery look for a polished, on-brand inbox.": "Un'intestazione decisa costruita attorno al tuo logo — si abbina allo stile Gallery per una casella di posta curata e coerente con il tuo marchio.",
     "Access": "Accesso",
     "Access key": "Chiave di accesso",

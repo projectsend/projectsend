@@ -1186,6 +1186,7 @@
     ":guest commented on the file \":subject\"": ":guest ametoa maoni kwenye faili \":subject\"",
     ":name — files": ":name — mafaili",
     ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to edit them.": "Mafaili :updated kati ya :requested uliyochagua yamesasishwa. Mengine yameachwa kwa sababu huna ruhusa ya kuyahariri.",
+    ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to make those changes.": "Mafaili :updated kati ya :requested uliyochagua yamesasishwa. Mengine yameachwa kwa sababu huna ruhusa ya kufanya mabadiliko hayo.",
     "A bold header built around your logo — pairs with the Gallery look for a polished, on-brand inbox.": "Kichwa chenye mvuto kilichojengwa kuzunguka nembo yako — kikiungana na muonekano wa Gallery hutoa kikasha nadhifu chenye sura ya chapa yako.",
     "Access": "Ufikiaji",
     "Access key": "Ufunguo wa ufikiaji",

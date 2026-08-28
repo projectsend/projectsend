@@ -1186,6 +1186,7 @@
     ":guest commented on the file \":subject\"": ":guest đã bình luận về tệp “:subject”",
     ":name — files": ":name — tệp",
     ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to edit them.": "Đã cập nhật :updated trong số :requested tệp đã chọn. Số còn lại bị bỏ qua vì bạn không có quyền chỉnh sửa.",
+    ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to make those changes.": "Đã cập nhật :updated trong số :requested tệp đã chọn. Số còn lại bị bỏ qua vì bạn không có quyền thực hiện những thay đổi này.",
     "A bold header built around your logo — pairs with the Gallery look for a polished, on-brand inbox.": "Phần đầu thư nổi bật lấy logo làm trung tâm — kết hợp với giao diện Gallery để hộp thư trông chỉn chu và đúng nhận diện thương hiệu.",
     "Access": "Truy cập",
     "Access key": "Khóa truy cập",

@@ -1186,6 +1186,7 @@
     ":guest commented on the file \":subject\"": ":guest ha comentat el fitxer \":subject\"",
     ":name — files": ":name — fitxers",
     ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to edit them.": "S'han actualitzat :updated dels :requested fitxers seleccionats. La resta s'han omès perquè no tens permís per editar-los.",
+    ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to make those changes.": "S'han actualitzat :updated dels :requested fitxers seleccionats. La resta s'han omès perquè no tens permís per fer aquests canvis.",
     "A bold header built around your logo — pairs with the Gallery look for a polished, on-brand inbox.": "Una capçalera contundent construïda al voltant del teu logotip; combina amb l'estil Gallery per a una safata d'entrada polida i fidel a la teva marca.",
     "Access": "Accés",
     "Access key": "Clau d'accés",

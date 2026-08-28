@@ -1186,6 +1186,7 @@
     ":guest commented on the file \":subject\"": ":guest がファイル「:subject」にコメントしました",
     ":name — files": ":name — ファイル",
     ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to edit them.": "選択した :requested 件のうち :updated 件を更新しました。残りは編集権限がないためスキップされました。",
+    ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to make those changes.": "選択した :requested 件のうち :updated 件を更新しました。残りはこれらの変更を行う権限がないためスキップされました。",
     "A bold header built around your logo — pairs with the Gallery look for a polished, on-brand inbox.": "ロゴを主役にした力強いヘッダー。Gallery の見た目と組み合わせれば、ブランドらしい洗練された受信トレイになります。",
     "Access": "アクセス",
     "Access key": "アクセスキー",

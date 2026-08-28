@@ -1186,6 +1186,7 @@
     ":guest commented on the file \":subject\"": ":guest, \":subject\" dosyasına yorum yaptı",
     ":name — files": ":name — dosyalar",
     ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to edit them.": "Seçilen :requested dosyadan :updated tanesi güncellendi. Kalanlar, düzenleme izniniz olmadığı için atlandı.",
+    ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to make those changes.": "Seçilen :requested dosyadan :updated tanesi güncellendi. Kalanlar, bu değişiklikleri yapma izniniz olmadığı için atlandı.",
     "A bold header built around your logo — pairs with the Gallery look for a polished, on-brand inbox.": "Logonuzun etrafına kurulmuş iddialı bir başlık — Gallery görünümüyle birlikte, markanıza yakışan özenli bir gelen kutusu sunar.",
     "Access": "Erişim",
     "Access key": "Erişim anahtarı",

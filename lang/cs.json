@@ -1186,6 +1186,7 @@
     ":guest commented on the file \":subject\"": ":guest okomentoval(a) soubor \":subject\"",
     ":name — files": ":name — soubory",
     ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to edit them.": "Aktualizováno :updated z :requested vybraných souborů. Zbytek byl přeskočen, protože k jejich úpravě nemáte oprávnění.",
+    ":updated of :requested selected files were updated. The rest were skipped because you don't have permission to make those changes.": "Aktualizováno :updated z :requested vybraných souborů. Zbytek byl přeskočen, protože k provedení těchto změn nemáte oprávnění.",
     "A bold header built around your logo — pairs with the Gallery look for a polished, on-brand inbox.": "Výrazné záhlaví postavené kolem vašeho loga — ve dvojici se vzhledem Gallery dává vybroušenou schránku věrnou vaší značce.",
     "Access": "Přístup",
     "Access key": "Přístupový klíč",

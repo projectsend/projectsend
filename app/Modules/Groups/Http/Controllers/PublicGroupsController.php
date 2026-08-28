@@ -251,6 +251,13 @@ class PublicGroupsController extends Controller
 
         $disk = Storage::disk('files');
 
+        // An empty file is not a rendition — same rule as the signed-in
+        // twin in FileThumbnailController::render(), and the same reason:
+        // nothing invalidates one once it is cached.
+        if ($disk->exists($thumbnailPath) && $disk->size($thumbnailPath) === 0) {
+            $disk->delete($thumbnailPath);
+        }
+
         if (! $disk->exists($thumbnailPath)) {
             $disk->makeDirectory(dirname($thumbnailPath));
 

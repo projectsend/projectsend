@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
 use App\Modules\Files\Models\File;
+use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -48,6 +50,47 @@ test('a second request reuses the cached thumbnail instead of regenerating it', 
     Storage::disk('files')->delete($file->path);
 
     $this->actingAs($this->admin)->get("/files/{$file->id}/thumbnail")->assertOk();
+});
+
+// Existence is the whole cache test, and nothing invalidates a rendition
+// once it is there: RenderedImageCache::flush() runs on an event no core
+// code raises. So an empty file left by a render that died before writing
+// anything was served as the thumbnail from then on.
+test('an empty cached rendition is replaced rather than served', function () {
+    $file = uploadImageFile($this->admin);
+    $path = "thumbnails/{$file->id}.jpg";
+
+    Storage::disk('files')->put($path, '');
+
+    $this->actingAs($this->admin)->get("/files/{$file->id}/thumbnail")->assertOk();
+
+    expect(Storage::disk('files')->size($path))->toBeGreaterThan(0);
+});
+
+test('the public thumbnail route replaces an empty rendition too', function () {
+    $file = publicListingImageFile($this->admin);
+    $path = "thumbnails/external/{$file->id}.jpg";
+
+    app(Settings::class)->set(Setting::PublicListingEnabled, true);
+    app(Settings::class)->set(Setting::PublicListingSlug, 'public');
+
+    Storage::disk('files')->put($path, '');
+
+    $this->get(route('public.thumbnail', ['public', $file->slug]))->assertOk();
+
+    expect(Storage::disk('files')->size($path))->toBeGreaterThan(0);
+});
+
+test('a generated rendition leaves nothing half-written beside it', function () {
+    // The temporary file the generator renames into place is its own, and
+    // it does not outlive the request that made it.
+    $file = uploadImageFile($this->admin);
+
+    $this->actingAs($this->admin)->get("/files/{$file->id}/thumbnail")->assertOk();
+
+    expect(collect(Storage::disk('files')->files('thumbnails'))
+        ->filter(fn (string $path): bool => str_contains($path, '.partial'))
+        ->all())->toBe([]);
 });
 
 test('a non-image file 404s when a thumbnail is requested', function () {

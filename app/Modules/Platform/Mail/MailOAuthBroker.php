@@ -42,9 +42,13 @@ interface MailOAuthBroker
      * way in, serialised against freshAccessToken() on the same
      * connection.
      *
+     * False when it stood aside because somebody else holds the lock, so
+     * a caller reporting to a human can say that rather than claim a
+     * refresh it did not do.
+     *
      * @throws MailOAuthException
      */
-    public function refreshSerially(MailOAuthConnection $connection): void;
+    public function refreshSerially(MailOAuthConnection $connection): bool;
 
     /**
      * An access token currently valid for at least a small safety margin,

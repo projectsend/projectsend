@@ -53,9 +53,15 @@ class RefreshMailOAuthTokensCommand extends Command
                 // Serialised against sends: refresh() on its own is the
                 // other half of the race freshAccessToken()'s lock is
                 // there to stop.
-                $brokers->for($connection->provider)->refreshSerially($connection);
+                $refreshed = $brokers->for($connection->provider)->refreshSerially($connection);
 
-                $this->info("Refreshed {$connection->provider->value} ({$connection->account_email}).");
+                // Standing aside is a healthy outcome, not a silent one:
+                // somebody else is refreshing this very connection, which
+                // slides the window just as well. Saying "Refreshed" for
+                // it would describe a token request that never happened.
+                $this->info($refreshed
+                    ? "Refreshed {$connection->provider->value} ({$connection->account_email})."
+                    : "Skipped {$connection->provider->value} ({$connection->account_email}): a refresh is already in progress.");
 
                 // Back from the dead (an admin fixed things upstream
                 // without reconnecting): the applier may have been

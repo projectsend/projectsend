@@ -456,6 +456,12 @@ test('the scheduled refresh stands aside for a send that is already refreshing',
         ->and($after->refresh_token)->toBe($before->refresh_token)
         ->and($after->last_error)->toBeNull();
 
+    // And it says so. Standing aside is the healthy outcome here, but
+    // reporting it as a refresh describes a token request that never
+    // happened, which is the one thing scheduler output must not do.
+    expect(Artisan::output())->toContain('a refresh is already in progress')
+        ->and(Artisan::output())->not->toContain('Refreshed microsoft365');
+
     $held->release();
 });
 

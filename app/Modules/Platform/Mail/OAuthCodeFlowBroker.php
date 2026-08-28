@@ -106,13 +106,16 @@ abstract class OAuthCodeFlowBroker implements MailOAuthBroker
      * and establishes its health just as well as doing it again would.
      * Spending the token behind them is the false alarm the lock exists to
      * prevent.
+     *
+     * Returns false in that case, so the scheduled command can report
+     * standing aside instead of announcing a refresh that never happened.
      */
-    public function refreshSerially(MailOAuthConnection $connection): void
+    public function refreshSerially(MailOAuthConnection $connection): bool
     {
         $lock = $this->refreshLock($connection);
 
         if (! $lock->get()) {
-            return;
+            return false;
         }
 
         try {
@@ -122,6 +125,8 @@ abstract class OAuthCodeFlowBroker implements MailOAuthBroker
             $connection->refresh();
 
             $this->refresh($connection);
+
+            return true;
         } finally {
             $lock->release();
         }

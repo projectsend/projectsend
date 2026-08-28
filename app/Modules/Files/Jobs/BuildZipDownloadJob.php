@@ -135,7 +135,14 @@ class BuildZipDownloadJob implements ShouldQueue
             // count, is what lets the download action log exactly what it
             // hands over instead of resolving the selection a second time
             // against a scope that may have moved since.
-            $addedIds = [];
+            //
+            // Keyed by id rather than appended to a list, because it is
+            // also what keeps a file out of the archive twice. The loose
+            // selection cannot repeat itself — one whereIn on the primary
+            // key — but a selected folder can hold a file that was also
+            // named loosely, and the cap is 10000 sources, so the check
+            // has to be a lookup rather than a scan.
+            $added = [];
 
             foreach ((clone $visible)->whereIn('id', $zipDownload->file_ids)->get() as $file) {
                 // Re-checked here for the same reason visibility is: the
@@ -150,11 +157,11 @@ class BuildZipDownloadJob implements ShouldQueue
                 $entryName = $this->dedupeName($usedNames, $this->entrySegment($file->original_name));
                 $zip->addFile($this->localPathFor($file, $tempFiles), $entryName);
                 $totalSize += $file->size;
-                $addedIds[] = $file->id;
+                $added[$file->id] = true;
             }
 
-            foreach (Folder::query()->whereIn('id', $zipDownload->folder_ids)->get() as $folder) {
-                $totalSize += $this->addFolder($zip, $folder, $requester, $usedNames, $tempFiles, $visible, $skipped, $addedIds);
+            foreach ($this->outermostFolders($zipDownload->folder_ids) as $folder) {
+                $totalSize += $this->addFolder($zip, $folder, $requester, $usedNames, $tempFiles, $visible, $skipped, $added);
             }
 
             // Re-checked here, not only in ZipDownloadsController: the
@@ -197,7 +204,7 @@ class BuildZipDownloadJob implements ShouldQueue
                 @unlink($tempFile);
             }
 
-            if ($written !== true || $addedIds === []) {
+            if ($written !== true || $added === []) {
                 if ($written !== true) {
                     // What the requester sees stays generic: a libzip
                     // string means nothing to them and can name a server
@@ -229,8 +236,8 @@ class BuildZipDownloadJob implements ShouldQueue
                 'status' => ZipDownload::STATUS_READY,
                 'path' => $relativePath,
                 'total_size' => $totalSize,
-                'file_count' => count($addedIds),
-                'contained_file_ids' => $addedIds,
+                'file_count' => count($added),
+                'contained_file_ids' => array_keys($added),
                 'skipped_files' => $skipped === [] ? null : $skipped,
             ]);
         } catch (Throwable $e) {
@@ -329,9 +336,9 @@ class BuildZipDownloadJob implements ShouldQueue
      * @param  array<int, string>  $tempFiles
      * @param  Builder<File>  $visible  every file the requester may read
      * @param  list<array{id: int, name: string}>  $skipped
-     * @param  list<int>  $addedIds  every file really written into the archive
+     * @param  array<int, true>  $added  every file really written into the archive, keyed by id
      */
-    private function addFolder(ZipArchive $zip, Folder $folder, User $requester, array &$usedNames, array &$tempFiles, Builder $visible, array &$skipped, array &$addedIds): int
+    private function addFolder(ZipArchive $zip, Folder $folder, User $requester, array &$usedNames, array &$tempFiles, Builder $visible, array &$skipped, array &$added): int
     {
         $allowance = app(DownloadAllowance::class);
 
@@ -342,6 +349,15 @@ class BuildZipDownloadJob implements ShouldQueue
         $totalSize = 0;
 
         foreach ((clone $visible)->whereIn('folder_id', $subtreeIds)->get() as $file) {
+            // Already in the archive under another part of the selection —
+            // named loosely, or inside a folder selected before this one.
+            // Skipped rather than added again: a second entry is a second
+            // copy of the same bytes, and delivery charges one download
+            // however many copies went out.
+            if (isset($added[$file->id])) {
+                continue;
+            }
+
             // Holding the folder does not entitle the requester to a file
             // inside it whose own allowance is spent — same reason the
             // per-file visibility filter is re-derived rather than
@@ -357,10 +373,36 @@ class BuildZipDownloadJob implements ShouldQueue
             $entryPath = $this->dedupeName($usedNames, $entryPath);
             $zip->addFile($this->localPathFor($file, $tempFiles), $entryPath);
             $totalSize += $file->size;
-            $addedIds[] = $file->id;
+            $added[$file->id] = true;
         }
 
         return $totalSize;
+    }
+
+    /**
+     * The selected folders with the redundant ones dropped: one that sits
+     * inside another selected folder is already covered by it.
+     *
+     * Zipping both would reach the same file twice, and which of the two
+     * paths the surviving entry ended up under would be decided by
+     * whatever order the database returned the rows in. Keeping the outer
+     * folder keeps the fuller path — Reports/Q1/report.pdf rather than
+     * Q1/report.pdf — and gives the same archive on every run.
+     *
+     * @param  list<int>  $folderIds
+     * @return Collection<int, Folder>
+     */
+    private function outermostFolders(array $folderIds): Collection
+    {
+        /** @var Collection<int, Folder> $folders */
+        $folders = Folder::query()->whereIn('id', $folderIds)->orderBy('id')->get();
+
+        return $folders
+            ->reject(fn (Folder $folder): bool => $folders->contains(
+                fn (Folder $other): bool => $other->id !== $folder->id
+                    && str_starts_with($folder->path, $other->subtreePathPrefix()),
+            ))
+            ->values();
     }
 
     /**

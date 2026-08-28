@@ -26,10 +26,12 @@ use Inertia\Response;
 /**
  * Moving an account between staff and clients.
  *
- * Community edition only, by the same route group as every other
- * staff-account screen — managed installations create staff accounts
- * outside the application, so a converter there would be a second,
- * unmanaged way to create one.
+ * Both editions since 2.2.0, by the same route group as every other
+ * staff-account screen: whoever may create a staff account may promote
+ * one, and a managed installation limits that by seats rather than by
+ * closing the screen — AccountConversion asks SeatAllowance on both
+ * directions, because a promotion spends a staff seat and a demotion
+ * spends a client one.
  *
  * The rules live in AccountConversion, which calls StaffAccounts for the
  * authority questions. This controller is the request shape and the

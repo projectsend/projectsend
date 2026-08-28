@@ -26,12 +26,18 @@ use Illuminate\Validation\ValidationException;
 /**
  * Staff accounts over the API — the API twin of the /users screens.
  *
- * **Community only.** Every route is behind `capability:users.manage`, so
- * a cloud install answers 403 `capability_unavailable`: managed
- * installations create staff accounts outside the application, and an API
- * that could mint them there would be a second, unmanaged door into the
- * same thing.
- * The routes are still registered in every edition so the committed
+ * Both editions since 2.2.0. Every route is behind
+ * `capability:users.manage`, which cloud installations now hold as well:
+ * a platform sells staff seats and the tenant fills them, so an API that
+ * creates one is the same door the screen is, not a second unmanaged one
+ * (see Capability::UsersManage). How many it may create is
+ * SeatAllowance's question, asked here through StaffAccounts, and an
+ * installation at its limit answers 422 rather than 403.
+ *
+ * The capability stays in front of the routes rather than being dropped:
+ * it is the seam an edition difference would have to travel through, and
+ * an installation without it answers 403 `capability_unavailable`. The
+ * routes are registered in every edition either way, so the committed
  * OpenAPI document is identical everywhere — the middleware refuses, the
  * route table does not lie.
  *

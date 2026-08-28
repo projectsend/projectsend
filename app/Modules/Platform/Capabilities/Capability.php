@@ -73,10 +73,14 @@ enum Capability: string
     // package is installed, not a flag an installation can set. Present
     // in this enum even so, because a package cannot extend a closed one
     // — core has to publish the key before anything can gate on it.
-    // Cloud-only — staff seats on a managed instance belong to the
-    // platform that sold them rather than to the instance, so the tenant's
-    // own /users screens stay closed (see UsersManage above) and a control
-    // plane creates, deactivates and password-resets them from outside.
+    // Cloud-only — marks an installation that a platform provisioned and
+    // looks after, for the screens that have to know the difference.
+    //
+    // It does not close the tenant's own /users screens. It used to say
+    // so, and that stopped being true when UsersManage opened on both
+    // editions: a platform sells the seats, the tenant decides who sits
+    // in them. Capacity is the platform's, and it arrives as
+    // PROJECTSEND_PLATFORM_MAX_STAFF_USERS rather than as a shut door.
     //
     // The seat *number* deliberately does not live here. There are no
     // billing or plan tiers in this application to key off — the same

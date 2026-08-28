@@ -44,12 +44,6 @@ on:
       - 'docker/production/dockerhub-overview.md'
       - '.github/screenshots/**'
 
-# A second push supersedes the first: there is no value in finishing a run
-# for a commit nobody will look at again.
-concurrency:
-  group: tests-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 # A second push supersedes the first — the later run covers a superset of
 # what the earlier one was checking, so finishing both buys nothing and
 # costs a runner.

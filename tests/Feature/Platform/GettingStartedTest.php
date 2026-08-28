@@ -111,7 +111,11 @@ test('installing wins over updating', function () {
 });
 
 test('completing setup raises the greeting', function () {
-    User::query()->delete();
+    // forceDelete, not delete: "a fresh installation" means no staff row
+    // at all. A soft-deleted one is evidence that setup already happened,
+    // and EnsureSetupIsComplete counts it as such so that losing the last
+    // administrator cannot reopen the first-run form to a stranger.
+    User::query()->forceDelete();
 
     $this->post('/setup', [
         'site_name' => 'Acme Files',
@@ -127,7 +131,7 @@ test('completing setup raises the greeting', function () {
 // Unattended provisioning skips the setup screen entirely, and is how
 // every container that came up from environment variables was installed.
 test('provisioning from the command line raises it too', function () {
-    User::query()->delete();
+    User::query()->forceDelete();
 
     $this->artisan('projectsend:admin', [
         '--name' => 'Ada',

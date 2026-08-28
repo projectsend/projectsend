@@ -67,6 +67,12 @@ class ProfileUpdateTest extends TestCase
     {
         $user = User::factory()->create();
 
+        // A second administrator, so what is under test is self-deletion
+        // and not the last-administrator refusal: the factory makes an
+        // administrator, and one on their own may no longer remove
+        // themselves — see SoleAdministratorSelfDeletionTest.
+        User::factory()->create();
+
         $response = $this
             ->actingAs($user)
             ->delete('/settings/profile', [
@@ -106,6 +112,10 @@ class ProfileUpdateTest extends TestCase
         app(Settings::class)->set(Setting::AccountErasureGraceDays, 5);
 
         $user = User::factory()->create();
+
+        // Same reason as above: this is about the grace period, not about
+        // who is allowed to go.
+        User::factory()->create();
 
         // Deleting your account has its own screen; the profile form no
         // longer carries the block or the grace period behind it.

@@ -245,9 +245,21 @@ class BuildZipDownloadJob implements ShouldQueue
                 @unlink($tempFile);
             }
 
+            // Same division as the write failure above: the reason is the
+            // operator's, the sentence is the requester's. An exception
+            // message here has already named a disk in practice — "Disk
+            // [x] does not have a configured driver." — and can name a
+            // server path, and this column is shown to whoever asked for
+            // the archive, including clients.
+            Log::error('A zip download could not be built.', [
+                'zip_download_id' => $zipDownload->id,
+                'exception' => $e::class,
+                'reason' => $e->getMessage(),
+            ]);
+
             $zipDownload->update([
                 'status' => ZipDownload::STATUS_FAILED,
-                'error' => $e->getMessage(),
+                'error' => 'The zip archive could not be built.',
             ]);
         }
     }
@@ -312,21 +324,50 @@ class BuildZipDownloadJob implements ShouldQueue
             throw new \RuntimeException('Could not create a temp file for '.$file->original_name);
         }
 
+        // Registered before anything else can fail. tempnam() has already
+        // created the file, and the caller's cleanup only knows the paths
+        // it was told about — so every throw between here and the end of
+        // the copy used to leave a zip-src- file behind for good.
+        $tempFiles[] = $tempPath;
+
         $stream = Storage::disk($file->disk)->readStream($file->path);
         $out = fopen($tempPath, 'wb');
 
         if ($stream === null || $out === false) {
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
+
+            if ($out !== false) {
+                fclose($out);
+            }
+
             throw new \RuntimeException('Could not read '.$file->original_name.' from its storage disk.');
         }
 
-        stream_copy_to_stream($stream, $out);
-        fclose($out);
+        try {
+            // A copy that stops early is a truncated member added to the
+            // archive as though it were the file: the build reports ready,
+            // and the recipient gets something that opens and is wrong.
+            // fclose is checked for the same reason it is in
+            // LocalPartStore: it flushes, so a volume that filled on the
+            // last buffer fails there rather than here.
+            $copied = stream_copy_to_stream($stream, $out);
+            $flushed = fclose($out);
+            $out = false;
 
-        if (is_resource($stream)) {
-            fclose($stream);
+            if ($copied === false || ! $flushed) {
+                throw new \RuntimeException('Could not copy '.$file->original_name.' from its storage disk.');
+            }
+        } finally {
+            if ($out !== false) {
+                fclose($out);
+            }
+
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
         }
-
-        $tempFiles[] = $tempPath;
 
         return $tempPath;
     }

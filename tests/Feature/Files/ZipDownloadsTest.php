@@ -338,6 +338,58 @@ test('a source file deleted after it was queued fails the build instead of servi
         ->and(Storage::disk('files')->exists("zips/{$zipDownload->id}.zip"))->toBeFalse();
 });
 
+// The write failure a few lines above it already keeps libzip's string out
+// of the requester's view, "a libzip string means nothing to them and can
+// name a server path". The catch-all around the whole build did the
+// opposite and stored the exception message.
+test('a build that throws tells the requester nothing about the server', function () {
+    $file = zipUploadFile($this->admin, 'contract.pdf');
+
+    // A disk name with no configured driver: Storage::disk() throws on
+    // resolution, and the message names the disk.
+    $file->update(['disk' => 'a-disk-that-is-not-configured']);
+
+    $zipDownload = ZipDownload::query()->create([
+        'requested_by' => $this->admin->id,
+        'status' => ZipDownload::STATUS_PENDING,
+        'file_ids' => [$file->id],
+        'folder_ids' => [],
+    ]);
+
+    (new BuildZipDownloadJob($zipDownload->id))->handle();
+
+    $zipDownload->refresh();
+
+    expect($zipDownload->status)->toBe(ZipDownload::STATUS_FAILED)
+        ->and($zipDownload->error)->toBe('The zip archive could not be built.')
+        ->and($zipDownload->error)->not->toContain('a-disk-that-is-not-configured');
+});
+
+test('a build that throws mid-copy leaves no temp file behind', function () {
+    // tempnam() creates the file before anything is copied into it, and the
+    // cleanup loop only knows the paths it was told about — so a throw
+    // between the two left a zip-src- file in the system temp directory for
+    // good.
+    $file = zipUploadFile($this->admin, 'contract.pdf');
+    $file->update(['disk' => 'files_external', 'path' => 'nowhere/contract.pdf']);
+
+    $zipDownload = ZipDownload::query()->create([
+        'requested_by' => $this->admin->id,
+        'status' => ZipDownload::STATUS_PENDING,
+        'file_ids' => [$file->id],
+        'folder_ids' => [],
+    ]);
+
+    $before = glob(sys_get_temp_dir().'/zip-src-*') ?: [];
+
+    (new BuildZipDownloadJob($zipDownload->id))->handle();
+
+    $after = glob(sys_get_temp_dir().'/zip-src-*') ?: [];
+
+    expect($zipDownload->refresh()->status)->toBe(ZipDownload::STATUS_FAILED)
+        ->and(array_diff($after, $before))->toBe([]);
+});
+
 // A build that blows the worker timeout is killed mid-run: handle()'s own
 // catch never executes, so without this hook the row would poll as pending
 // forever and the frontend would never stop.

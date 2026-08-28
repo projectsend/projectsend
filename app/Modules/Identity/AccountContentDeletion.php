@@ -7,6 +7,7 @@ namespace App\Modules\Identity;
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\DeletedAccountContent;
 use App\Modules\Identity\Models\Role;
 use Illuminate\Database\Eloquent\Builder;
@@ -32,20 +33,39 @@ class AccountContentDeletion
     public function __construct(
         private readonly DeletedAccountContent $content,
         private readonly ActivityLogger $activity,
+        private readonly StaffLibraryScope $scope,
     ) {}
 
     /**
-     * Every other active account, for the reassignment-target picker.
-     * $excludeId is omitted on index pages, where one candidate list is
-     * shared across every row and each row's own id is filtered out
-     * client-side instead.
+     * Every other active account this viewer may be shown, for the
+     * reassignment-target picker. $excludeId is omitted on index pages,
+     * where one candidate list is shared across every row and each row's
+     * own id is filtered out client-side instead.
+     *
+     * The client half is narrowed by StaffLibraryScope, the same rule that
+     * narrows the list this picker sits next to: a client-scoped staff
+     * member is not shown the name of somebody they can reach nothing of,
+     * and a picker is no more a reason to hand one over than a listing is.
+     * Staff accounts are not narrowed anywhere in the application and are
+     * not narrowed here.
+     *
+     * An unscoped viewer's list is unchanged — StaffLibraryScope::clients()
+     * returns every client for them.
+     *
+     * $viewer is null only where the picker is about the installation
+     * rather than about a screen: the erasure default in privacy settings
+     * is stored once for everybody, behind edit_settings, so narrowing it
+     * by whoever happens to be editing would store the wrong answer.
      *
      * @return array<int, array{id: int, name: string, role: string}>
      */
-    public function candidates(?int $excludeId = null): array
+    public function candidates(?User $viewer, ?int $excludeId = null): array
     {
         return User::query()
             ->when($excludeId, fn (Builder $query, int $id) => $query->whereKeyNot($id))
+            ->when($viewer, fn (Builder $query, User $for) => $query->where(fn (Builder $reachable) => $reachable
+                ->where('type', UserType::Staff)
+                ->orWhereIn('id', $this->scope->clients($for)->select('users.id'))))
             ->where('active', true)
             ->with('role')
             ->orderBy('name')

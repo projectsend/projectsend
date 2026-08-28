@@ -173,7 +173,7 @@ class FilesController extends Controller
                 // calendar date the editor typed — read back in their
                 // zone, not the server's, or a file set to expire on the
                 // 12th reopens showing the 11th.
-                'expires_at' => $file->expires_at?->copy()->setTimezone($this->timezones->resolve($request->user()))->toDateString(),
+                'expires_at' => $this->expiryDateFor($file, $request->user()),
                 'expired' => $file->isExpired(),
                 'download_limit' => $file->download_limit,
                 'download_limit_scope' => ($file->download_limit_scope ?? DownloadLimitScope::Total)->value,
@@ -303,7 +303,19 @@ class FilesController extends Controller
         // own expiry — same "leave it alone if you lack the permission"
         // rule as the upload_public gate below.
         if ($request->user()?->can('set_file_expiration_date') === true) {
-            $attributes['expires_at'] = $this->expiryInstant($validated['expires_at'] ?? null, $request->user());
+            $posted = $validated['expires_at'] ?? null;
+
+            // Re-derived only when the date actually changed. The form was
+            // rendered with the stored instant read back as a date in *this*
+            // viewer's zone, and posts it again untouched with every other
+            // edit — so deriving it unconditionally moves the expiry by the
+            // difference between two people's zones each time somebody
+            // merely renames the file. Compared against the same string the
+            // form was given, above, so "unchanged" means what the editor
+            // saw.
+            if ($posted !== $this->expiryDateFor($file, $request->user())) {
+                $attributes['expires_at'] = $this->expiryInstant($posted, $request->user());
+            }
         }
 
         // Same rule again for the download cap, behind its own
@@ -539,5 +551,17 @@ class FilesController extends Controller
         return $date === null
             ? null
             : LocalDay::end($date, $this->timezones->resolve($setter));
+    }
+
+    /**
+     * The inverse: the calendar date a stored expiry falls on for this
+     * viewer, which is what the date input is given and what it posts back.
+     *
+     * The pair has to agree, or a re-save reads one date and writes
+     * another.
+     */
+    private function expiryDateFor(File $file, ?User $viewer): ?string
+    {
+        return $file->expires_at?->copy()->setTimezone($this->timezones->resolve($viewer))->toDateString();
     }
 }

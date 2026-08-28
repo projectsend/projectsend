@@ -246,6 +246,76 @@ test('a file expiry set as a date means the end of that day where it was set', f
     expect($file->fresh()->expires_at->toIso8601String())->toBe('2026-08-13T02:59:59+00:00');
 });
 
+test('a re-save from another timezone does not move an expiry nobody touched', function () {
+    // The form is given the stored instant read back as a date in *this*
+    // viewer's zone, and posts it again untouched with every other edit.
+    // Deriving the instant from it unconditionally moved the expiry by the
+    // difference between the two zones -- 19 hours here -- for the price of
+    // a rename.
+    $setter = User::factory()->create(['timezone' => 'Pacific/Auckland']);
+    $other = User::factory()->create(['timezone' => 'America/Argentina/Buenos_Aires']);
+    $file = File::factory()->create(['uploaded_by' => $setter->id]);
+
+    $this->actingAs($setter)->patch("/files/{$file->id}", [
+        'name' => $file->name,
+        'expires_at' => '2026-09-12',
+    ])->assertRedirect();
+
+    $stored = $file->fresh()->expires_at->toIso8601String();
+
+    // Both see the same calendar date, which is why the rename posts it back.
+    $shown = $this->actingAs($other)->get("/files/{$file->id}")
+        ->viewData('page')['props']['file']['expires_at'];
+    expect($shown)->toBe('2026-09-12');
+
+    $this->actingAs($other)->patch("/files/{$file->id}", [
+        'name' => 'Renamed by somebody else',
+        'expires_at' => $shown,
+    ])->assertRedirect();
+
+    expect($file->fresh()->name)->toBe('Renamed by somebody else')
+        ->and($file->fresh()->expires_at->toIso8601String())->toBe($stored);
+});
+
+test('changing the date really does set it, in the zone of whoever changed it', function () {
+    // The half that must not stop working: a genuine change is still read
+    // as a day in the editor's own zone.
+    $setter = User::factory()->create(['timezone' => 'Pacific/Auckland']);
+    $other = User::factory()->create(['timezone' => 'America/Argentina/Buenos_Aires']);
+    $file = File::factory()->create(['uploaded_by' => $setter->id]);
+
+    $this->actingAs($setter)->patch("/files/{$file->id}", [
+        'name' => $file->name,
+        'expires_at' => '2026-09-12',
+    ])->assertRedirect();
+
+    $this->actingAs($other)->patch("/files/{$file->id}", [
+        'name' => $file->name,
+        'expires_at' => '2026-09-13',
+    ])->assertRedirect();
+
+    // 23:59:59 on the 13th in UTC-3.
+    expect($file->fresh()->expires_at->toIso8601String())->toBe('2026-09-14T02:59:59+00:00');
+});
+
+test('clearing the date from another timezone still clears it', function () {
+    $setter = User::factory()->create(['timezone' => 'Pacific/Auckland']);
+    $other = User::factory()->create(['timezone' => 'America/Argentina/Buenos_Aires']);
+    $file = File::factory()->create(['uploaded_by' => $setter->id]);
+
+    $this->actingAs($setter)->patch("/files/{$file->id}", [
+        'name' => $file->name,
+        'expires_at' => '2026-09-12',
+    ])->assertRedirect();
+
+    $this->actingAs($other)->patch("/files/{$file->id}", [
+        'name' => $file->name,
+        'expires_at' => null,
+    ])->assertRedirect();
+
+    expect($file->fresh()->expires_at)->toBeNull();
+});
+
 test('an expiry date comes back out of the form as the date that went in', function () {
     $staff = User::factory()->create(['timezone' => 'America/Argentina/Buenos_Aires']);
     $file = File::factory()->create(['uploaded_by' => $staff->id]);

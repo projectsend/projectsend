@@ -1902,5 +1902,8 @@
     "A zip download has been waiting since :date and no background worker has picked it up. Zip downloads run on their own queue now, so a worker started before this version watches the wrong one — everything else, including email, keeps working.": "Een ZIP-download wacht al sinds :date en geen enkel achtergrondproces heeft hem opgepakt. ZIP-downloads gebruiken nu een eigen wachtrij, dus een proces dat vóór deze versie is gestart kijkt naar de verkeerde — al het andere, e-mail inbegrepen, werkt gewoon door.",
     "Your worker command needs --queue=default,zips. INSTALL.md has the full service file.": "Het commando van je achtergrondproces heeft --queue=default,zips nodig. In INSTALL.md staat het volledige servicebestand.",
     "Staff accounts on this installation are limited to :count. Remove one, or ask for a larger plan.": "De systeemaccounts van deze installatie zijn beperkt tot :count. Verwijder er een of vraag om een groter abonnement.",
-    "Clients on this installation are limited to :count. Remove one, or ask for a larger plan.": "De klanten van deze installatie zijn beperkt tot :count. Verwijder er een of vraag om een groter abonnement."
+    "Clients on this installation are limited to :count. Remove one, or ask for a larger plan.": "De klanten van deze installatie zijn beperkt tot :count. Verwijder er een of vraag om een groter abonnement.",
+    ":used of :limit staff seats used": ":used van :limit systeemaccounts in gebruik",
+    ":used of :limit client accounts used": ":used van :limit klantaccounts in gebruik",
+    "This folder cannot be deleted: it holds :count file you may not delete.|This folder cannot be deleted: it holds :count files you may not delete.": "Deze map kan niet worden verwijderd: er staat :count bestand in dat je niet mag verwijderen.|Deze map kan niet worden verwijderd: er staan :count bestanden in die je niet mag verwijderen."
 }

@@ -1902,5 +1902,8 @@
     "A zip download has been waiting since :date and no background worker has picked it up. Zip downloads run on their own queue now, so a worker started before this version watches the wrong one — everything else, including email, keeps working.": "Un download ZIP è in attesa dal :date e nessun processo in background lo ha preso in carico. I download ZIP ora usano una coda propria, quindi un processo avviato prima di questa versione sta guardando la coda sbagliata — tutto il resto, email compresa, continua a funzionare.",
     "Your worker command needs --queue=default,zips. INSTALL.md has the full service file.": "Il comando del tuo processo in background ha bisogno di --queue=default,zips. In INSTALL.md c’è il file di servizio completo.",
     "Staff accounts on this installation are limited to :count. Remove one, or ask for a larger plan.": "Gli account di sistema di questa installazione sono limitati a :count. Rimuovine uno o chiedi un piano più grande.",
-    "Clients on this installation are limited to :count. Remove one, or ask for a larger plan.": "I clienti di questa installazione sono limitati a :count. Rimuovine uno o chiedi un piano più grande."
+    "Clients on this installation are limited to :count. Remove one, or ask for a larger plan.": "I clienti di questa installazione sono limitati a :count. Rimuovine uno o chiedi un piano più grande.",
+    ":used of :limit staff seats used": "Usati :used di :limit account di sistema",
+    ":used of :limit client accounts used": "Usati :used di :limit account cliente",
+    "This folder cannot be deleted: it holds :count file you may not delete.|This folder cannot be deleted: it holds :count files you may not delete.": "Questa cartella non può essere eliminata: contiene :count file che non puoi eliminare.|Questa cartella non può essere eliminata: contiene :count file che non puoi eliminare."
 }

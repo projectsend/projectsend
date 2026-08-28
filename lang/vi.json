@@ -1902,5 +1902,8 @@
     "A zip download has been waiting since :date and no background worker has picked it up. Zip downloads run on their own queue now, so a worker started before this version watches the wrong one — everything else, including email, keeps working.": "Một bản tải ZIP đã chờ từ :date mà không tiến trình nền nào nhận. Việc tạo ZIP giờ chạy trên hàng đợi riêng, nên tiến trình khởi động trước phiên bản này đang theo dõi nhầm hàng đợi — mọi thứ khác, kể cả email, vẫn chạy bình thường.",
     "Your worker command needs --queue=default,zips. INSTALL.md has the full service file.": "Lệnh chạy tiến trình nền của bạn cần --queue=default,zips. Tệp dịch vụ đầy đủ có trong INSTALL.md.",
     "Staff accounts on this installation are limited to :count. Remove one, or ask for a larger plan.": "Số tài khoản hệ thống của bản cài đặt này giới hạn ở :count. Hãy xoá bớt một tài khoản, hoặc yêu cầu gói lớn hơn.",
-    "Clients on this installation are limited to :count. Remove one, or ask for a larger plan.": "Số khách hàng của bản cài đặt này giới hạn ở :count. Hãy xoá bớt một khách hàng, hoặc yêu cầu gói lớn hơn."
+    "Clients on this installation are limited to :count. Remove one, or ask for a larger plan.": "Số khách hàng của bản cài đặt này giới hạn ở :count. Hãy xoá bớt một khách hàng, hoặc yêu cầu gói lớn hơn.",
+    ":used of :limit staff seats used": "Đã dùng :used trong :limit tài khoản hệ thống",
+    ":used of :limit client accounts used": "Đã dùng :used trong :limit tài khoản khách hàng",
+    "This folder cannot be deleted: it holds :count file you may not delete.|This folder cannot be deleted: it holds :count files you may not delete.": "Không thể xoá thư mục này: nó chứa :count tệp mà bạn không được phép xoá.|Không thể xoá thư mục này: nó chứa :count tệp mà bạn không được phép xoá."
 }

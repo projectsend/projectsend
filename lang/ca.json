@@ -1902,5 +1902,8 @@
     "A zip download has been waiting since :date and no background worker has picked it up. Zip downloads run on their own queue now, so a worker started before this version watches the wrong one — everything else, including email, keeps working.": "Hi ha una descàrrega en zip esperant des del :date i cap procés en segon pla no l’ha recollida. Les descàrregues en zip ara fan servir una cua pròpia, així que un procés iniciat abans d’aquesta versió mira la cua equivocada — tota la resta, correu inclòs, continua funcionant.",
     "Your worker command needs --queue=default,zips. INSTALL.md has the full service file.": "L’ordre del teu procés en segon pla necessita --queue=default,zips. A INSTALL.md hi ha el fitxer de servei complet.",
     "Staff accounts on this installation are limited to :count. Remove one, or ask for a larger plan.": "Els comptes de sistema d'aquesta instal·lació estan limitats a :count. Elimina'n un o demana un pla més gran.",
-    "Clients on this installation are limited to :count. Remove one, or ask for a larger plan.": "Els clients d'aquesta instal·lació estan limitats a :count. Elimina'n un o demana un pla més gran."
+    "Clients on this installation are limited to :count. Remove one, or ask for a larger plan.": "Els clients d'aquesta instal·lació estan limitats a :count. Elimina'n un o demana un pla més gran.",
+    ":used of :limit staff seats used": "Usats :used de :limit comptes de sistema",
+    ":used of :limit client accounts used": "Usats :used de :limit comptes de client",
+    "This folder cannot be deleted: it holds :count file you may not delete.|This folder cannot be deleted: it holds :count files you may not delete.": "Aquesta carpeta no es pot eliminar: conté :count fitxer que no pots eliminar.|Aquesta carpeta no es pot eliminar: conté :count fitxers que no pots eliminar."
 }

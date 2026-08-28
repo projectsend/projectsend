@@ -1902,5 +1902,8 @@
     "A zip download has been waiting since :date and no background worker has picked it up. Zip downloads run on their own queue now, so a worker started before this version watches the wrong one — everything else, including email, keeps working.": "Upakuaji wa ZIP umesubiri tangu :date na hakuna mchakato wa nyuma uliouchukua. Utengenezaji wa ZIP sasa unaendeshwa kwenye foleni yake yenyewe, hivyo mchakato ulioanzishwa kabla ya toleo hili unaangalia foleni isiyo sahihi — kila kitu kingine, pamoja na barua pepe, kinaendelea kufanya kazi.",
     "Your worker command needs --queue=default,zips. INSTALL.md has the full service file.": "Amri ya mchakato wako wa nyuma inahitaji --queue=default,zips. Faili kamili ya huduma ipo katika INSTALL.md.",
     "Staff accounts on this installation are limited to :count. Remove one, or ask for a larger plan.": "Akaunti za mfumo katika usakinishaji huu zimewekewa kikomo cha :count. Ondoa moja, au omba mpango mkubwa zaidi.",
-    "Clients on this installation are limited to :count. Remove one, or ask for a larger plan.": "Wateja katika usakinishaji huu wamewekewa kikomo cha :count. Ondoa mmoja, au omba mpango mkubwa zaidi."
+    "Clients on this installation are limited to :count. Remove one, or ask for a larger plan.": "Wateja katika usakinishaji huu wamewekewa kikomo cha :count. Ondoa mmoja, au omba mpango mkubwa zaidi.",
+    ":used of :limit staff seats used": "Zimetumika :used kati ya :limit akaunti za mfumo",
+    ":used of :limit client accounts used": "Zimetumika :used kati ya :limit akaunti za wateja",
+    "This folder cannot be deleted: it holds :count file you may not delete.|This folder cannot be deleted: it holds :count files you may not delete.": "Folda hii haiwezi kufutwa: ina faili :count ambalo huruhusiwi kulifuta.|Folda hii haiwezi kufutwa: ina faili :count ambazo huruhusiwi kuzifuta."
 }

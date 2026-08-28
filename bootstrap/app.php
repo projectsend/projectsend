@@ -104,6 +104,33 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
+        // Every credential this application stores encrypted, named again
+        // here so a failed validation does not write it back out in clear.
+        //
+        // A ValidationException flashes the request's input into the
+        // session so the form can be repopulated, minus this list. The
+        // framework's own three cover the login and password forms; none
+        // of the settings screens' credentials were on it, and
+        // config/session.php stores sessions in the database by default
+        // with `encrypt => false`. So a mistyped storage form put the
+        // secret access key in clear into the same database whose dump the
+        // `encrypted` cast exists to survive — and a service account key
+        // file, which is most likely to fail validation exactly when it
+        // was pasted incompletely, put a private key there.
+        //
+        // Merged with the framework's defaults rather than replacing them.
+        // The cost is that these fields come back blank after a failed
+        // save, which is what every one of these screens already does on a
+        // successful one: they are write-only, and a blank means "keep
+        // what is stored".
+        $exceptions->dontFlash([
+            'secret',           // ExternalStorageSettingsController (S3)
+            'key_file',         // ExternalStorageSettingsController (GCS)
+            'bind_password',    // LdapSettingsController
+            'client_secret',    // SocialLoginSettingsController, EmailSettingsController
+            'secret_key',       // CaptchaSettingsController
+        ]);
+
         // RFC 7807 for /api/* only. Everything else — web pages, Inertia
         // requests, the public share links — keeps Laravel's own handling
         // untouched, which is why this is scoped by path rather than by

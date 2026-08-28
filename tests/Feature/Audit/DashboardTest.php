@@ -17,6 +17,7 @@ use App\Modules\Platform\Capabilities\Edition;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Testing\AssertableInertia;
@@ -151,6 +152,36 @@ test('the transfers widget honors the range selector', function () {
             ->has('transfers', 7)
             ->where('transfers_range.preset', 'last_week'),
     );
+});
+
+test('the transfers window is read in UTC, whatever zone the viewer is in', function () {
+    // The boundaries are built in the viewer's zone on purpose, but the
+    // column is UTC and the query builder formats a Carbon in its own zone
+    // with the offset thrown away. For Asia/Tokyo that asks for
+    // "2026-08-16 00:00:00" where the viewer's window really begins at
+    // 2026-08-15 15:00:00Z — the first nine hours of their week are
+    // missing from the chart.
+    $viewer = User::factory()->create(['timezone' => 'Asia/Tokyo']);
+    $file = File::factory()->create(['uploaded_by' => $viewer->id, 'name' => 'early upload']);
+
+    // 11:00 on the 22nd in Tokyo. "Last week" is their 16th to their 22nd.
+    $this->travelTo(Carbon::parse('2026-08-22 02:00:00', 'UTC'));
+
+    // 01:00 on the 16th in Tokyo: the first hour of the window, and before
+    // "2026-08-16 00:00:00" read as UTC.
+    ActivityLog::query()->create([
+        'actor_id' => $viewer->id, 'actor_name' => $viewer->name, 'actor_type' => 'staff',
+        'action' => Action::FileUploaded, 'subject_type' => $file->getMorphClass(),
+        'subject_id' => $file->id, 'subject_name' => $file->name,
+        'created_at' => Carbon::parse('2026-08-15 16:00:00', 'UTC'),
+    ]);
+
+    $props = $this->actingAs($viewer)->get('/dashboard?range=last_week')->assertOk()->viewData('page')['props'];
+
+    expect(collect($props['transfers'])->sum('uploads'))->toBe(1)
+        ->and(collect($props['transfers'])->firstWhere('date', '2026-08-16')['uploads'])->toBe(1);
+
+    $this->travelBack();
 });
 
 test('the top-clients-by-storage widget ranks clients by usage against their effective quota', function () {

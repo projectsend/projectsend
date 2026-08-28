@@ -155,8 +155,12 @@ class DashboardController extends Controller
      *
      * Every boundary is built in the viewer's zone, so "last week" ends
      * when their evening does and not at whatever hour UTC midnight falls
-     * on for them. The returned instants are still absolute — only the
-     * day edges moved — so they compare against the UTC column directly.
+     * on for them. The instants are absolute, but they carry that zone —
+     * and a Carbon handed to the query builder is formatted in its own
+     * zone, offset discarded, so comparing one against a UTC column asks
+     * a question nine hours out for a viewer in Tokyo. transferSeries()
+     * converts before it compares; the day cursor there keeps them as
+     * they are, because that half really is about the viewer's calendar.
      *
      * @return array{0: Carbon, 1: Carbon, 2: string}
      */
@@ -248,7 +252,13 @@ class DashboardController extends Controller
 
         $rows = ActivityLog::query()
             ->whereIn('action', [Action::FileUploaded->value, ...array_map(fn (Action $a): string => $a->value, $downloadActions)])
-            ->whereBetween('created_at', [$from, $to])
+            // In UTC, because that is what the column is. The query
+            // builder formats a Carbon in whatever zone the object holds
+            // and drops the offset, so passing the viewer's midnight
+            // straight in compares "2026-08-22 00:00:00" against a UTC
+            // column — nine hours of somebody else's day, at both ends,
+            // for a viewer in Tokyo.
+            ->whereBetween('created_at', [$from->copy()->utc(), $to->copy()->utc()])
             ->get(['action', 'actor_type', 'created_at'])
             // Bucketed by the viewer's calendar day. Grouping on the UTC
             // one puts an evening upload from anywhere west of Greenwich

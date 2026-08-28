@@ -98,7 +98,14 @@ class ChunkedUploadsController extends Controller
 
             if ($quotaBytes > 0 && $this->storageUsage->usedBytes($user) + (int) $validated['size'] > $quotaBytes) {
                 throw ValidationException::withMessages([
-                    'size' => __('This upload would exceed your storage quota of :quota MB.', ['quota' => (string) $user->storage_quota_mb]),
+                    'size' => __('This upload would exceed your storage quota of :quota MB.', [
+                        // The resolved quota, not the column: a client who
+                        // was never given one of their own carries 0 there
+                        // and inherits the site default, so printing the
+                        // column reads "your storage quota of 0 MB" at the
+                        // moment somebody is asking what their limit is.
+                        'quota' => (string) $this->storageUsage->quotaMb($user),
+                    ]),
                 ]);
             }
         }
@@ -306,7 +313,9 @@ class ChunkedUploadsController extends Controller
                 $session->delete();
 
                 throw ValidationException::withMessages([
-                    'size' => __('This upload would exceed your storage quota of :quota MB.', ['quota' => (string) $user->storage_quota_mb]),
+                    'size' => __('This upload would exceed your storage quota of :quota MB.', [
+                        'quota' => (string) $this->storageUsage->quotaMb($user),
+                    ]),
                 ]);
             }
         }

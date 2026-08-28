@@ -191,6 +191,58 @@ test('a client with no custom quota is limited by the site default once one is s
     ])->assertJsonValidationErrors('size');
 });
 
+test('the rejection names the quota the client is actually held to', function () {
+    // storage_quota_mb of 0 means "no quota of their own", and the site
+    // default is what is then enforced — so the column is the one number
+    // the message must not print.
+    app(Settings::class)->set(Setting::DefaultClientStorageQuotaMb, 1);
+    $client = User::factory()->client()->create(['storage_quota_mb' => 0]);
+    grantUploadPermission($client);
+    makeClientFile($client, 1000 * 1024);
+    $this->actingAs($client);
+
+    $response = $this->postJson('/uploads', [
+        'filename' => 'over-the-default.pdf',
+        'size' => 200 * 1024,
+        'type' => 'application/pdf',
+    ])->assertJsonValidationErrors('size');
+
+    expect($response->json('errors.size.0'))->toBe('This upload would exceed your storage quota of 1 MB.');
+});
+
+test('the same is true when the real byte count is what pushes them over', function () {
+    // The completion check is a second copy of the same sentence, and had
+    // the same bug.
+    app(Settings::class)->set(Setting::DefaultClientStorageQuotaMb, 1);
+    $client = User::factory()->client()->create(['storage_quota_mb' => 0]);
+    grantUploadPermission($client);
+    makeClientFile($client, 1000 * 1024);
+    $this->actingAs($client);
+
+    $sessionId = createChunkedSession(11, 'lied-about-size.txt');
+    putChunkedPart($sessionId, 1, str_repeat('a', 50 * 1024));
+
+    $response = $this->postJson("/uploads/{$sessionId}/complete")->assertJsonValidationErrors('size');
+
+    expect($response->json('errors.size.0'))->toBe('This upload would exceed your storage quota of 1 MB.');
+});
+
+test('a client with a quota of their own still sees their own number', function () {
+    app(Settings::class)->set(Setting::DefaultClientStorageQuotaMb, 250);
+    $client = User::factory()->client()->create(['storage_quota_mb' => 1]);
+    grantUploadPermission($client);
+    makeClientFile($client, 1000 * 1024);
+    $this->actingAs($client);
+
+    $response = $this->postJson('/uploads', [
+        'filename' => 'over-their-own.pdf',
+        'size' => 200 * 1024,
+        'type' => 'application/pdf',
+    ])->assertJsonValidationErrors('size');
+
+    expect($response->json('errors.size.0'))->toBe('This upload would exceed your storage quota of 1 MB.');
+});
+
 test('a client\'s own custom quota is unaffected by later changes to the site default', function () {
     app(Settings::class)->set(Setting::DefaultClientStorageQuotaMb, 1);
     $client = User::factory()->client()->create(['storage_quota_mb' => 500]); // an explicit, much larger override

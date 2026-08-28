@@ -6,11 +6,11 @@ namespace App\Modules\Files\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
-use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\DownloadAllowance;
 use App\Modules\Files\Delivery\StoredFileResponse;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Preview\PreviewKind;
+use App\Modules\Files\Preview\PreviewLog;
 use App\Modules\Files\Thumbnails\Events\ResolvingImageRendering;
 use App\Modules\Files\Thumbnails\ImageAudience;
 use App\Modules\Files\Thumbnails\ImageRendition;
@@ -22,7 +22,6 @@ use App\Support\ContentDisposition;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -72,7 +71,7 @@ class FileThumbnailController extends Controller
 {
     public function __construct(
         private readonly ThumbnailGenerator $thumbnails,
-        private readonly ActivityLogger $activity,
+        private readonly PreviewLog $previews,
         private readonly DownloadAllowance $allowance,
         private readonly StoredFileResponse $bytes,
         private readonly LocalSourceFile $source,
@@ -144,7 +143,10 @@ class FileThumbnailController extends Controller
         // file.
         abort_unless($this->allowance->allows($file, $request->user()), 403);
 
-        $this->logPreview($file, $request);
+        // Debounced, because a browser turns one video into dozens of
+        // Range requests — see PreviewLog, which the anonymous twin in
+        // PublicGroupsController::preview shares.
+        $this->previews->record(Action::FilePreviewed, $file, $request->user());
 
         if ($kind === PreviewKind::Image) {
             $audience = ImageAudience::forViewer($request->user());
@@ -162,29 +164,6 @@ class FileThumbnailController extends Controller
         }
 
         return $this->bytes->inline($file);
-    }
-
-    /**
-     * One log row per viewer per file per five minutes.
-     *
-     * Watching a video is a single deliberate act that the browser turns
-     * into dozens of Range requests against this route, and each one
-     * arrives here indistinguishable from someone clicking preview again.
-     * Cache::add is the whole mechanism: it writes only if the key is
-     * absent, so the first request through the window logs and the rest
-     * are silent, without a read-then-write race between two of them.
-     *
-     * Keyed by viewer, so one client's playback never suppresses another
-     * person's preview of the same file. Anonymous viewers do not reach
-     * this route at all — see PublicGroupsController::preview.
-     */
-    private function logPreview(File $file, Request $request): void
-    {
-        $key = 'file-preview-logged:'.$file->id.':'.($request->user()->id ?? 'guest');
-
-        if (Cache::add($key, true, now()->addMinutes(5))) {
-            $this->activity->log(Action::FilePreviewed, subject: $file);
-        }
     }
 
     /**

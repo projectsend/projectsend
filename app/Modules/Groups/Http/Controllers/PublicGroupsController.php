@@ -14,6 +14,7 @@ use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Preview\PreviewKind;
+use App\Modules\Files\Preview\PreviewLog;
 use App\Modules\Files\Thumbnails\ImageAudience;
 use App\Modules\Files\Thumbnails\ImageRendition;
 use App\Modules\Files\Thumbnails\LocalSourceFile;
@@ -77,6 +78,7 @@ class PublicGroupsController extends Controller
     public function __construct(
         private readonly Settings $settings,
         private readonly ActivityLogger $activity,
+        private readonly PreviewLog $previews,
         private readonly DownloadAllowance $allowance,
         private readonly ThumbnailGenerator $thumbnails,
         private readonly PublicThemeRegistry $themes,
@@ -298,7 +300,11 @@ class PublicGroupsController extends Controller
         // nothing.
         abort_unless($this->allowance->allows($file, null), 403);
 
-        $this->activity->log(Action::PublicFilePreviewed, subject: $file);
+        // Debounced exactly as the signed-in twin is, and for the same
+        // reason: a single visitor watching one video arrives here dozens
+        // of times. Without a viewer to key on, PreviewLog keys on the
+        // request IP.
+        $this->previews->record(Action::PublicFilePreviewed, $file, null);
 
         return $this->bytes->inline($file);
     }

@@ -45,6 +45,45 @@ test('a visitor can preview a public file, and it is logged as a public preview'
         ->and(ActivityLog::query()->where('action', Action::PublicFileDownloaded)->where('subject_id', $file->id)->exists())->toBeFalse();
 });
 
+// The same deliberate act, and the same long tail of Range requests a
+// browser makes of it. The signed-in twin has debounced this since it was
+// written; the anonymous one wrote a row per request.
+test('replaying a public preview logs it once, not once per request', function () {
+    $file = publicListingFile();
+
+    foreach (range(1, 5) as $ignored) {
+        $this->get(route('public.preview', ['public', $file->slug]))->assertOk();
+    }
+
+    expect(ActivityLog::query()->where('action', Action::PublicFilePreviewed)->where('subject_id', $file->id)->count())
+        ->toBe(1);
+});
+
+test('two visitors of the same file are each logged', function () {
+    // Keyed by viewer, and an anonymous visitor's stand-in is their IP —
+    // so one visitor's playback cannot swallow the record of somebody else
+    // looking at the same file.
+    $file = publicListingFile();
+
+    $this->get(route('public.preview', ['public', $file->slug]))->assertOk();
+
+    $this->withServerVariables(['REMOTE_ADDR' => '198.51.100.7'])
+        ->get(route('public.preview', ['public', $file->slug]))->assertOk();
+
+    expect(ActivityLog::query()->where('action', Action::PublicFilePreviewed)->where('subject_id', $file->id)->count())
+        ->toBe(2);
+});
+
+test('the window is per file, so a second public file is still logged', function () {
+    $first = publicListingFile();
+    $second = publicListingFile(['name' => 'second', 'slug' => 'second-report']);
+
+    $this->get(route('public.preview', ['public', $first->slug]))->assertOk();
+    $this->get(route('public.preview', ['public', $second->slug]))->assertOk();
+
+    expect(ActivityLog::query()->where('action', Action::PublicFilePreviewed)->count())->toBe(2);
+});
+
 test('a file that is not public, or has expired, has no preview', function () {
     $private = publicListingFile(['public' => false]);
     $expired = publicListingFile(['expires_at' => now()->subDay()]);

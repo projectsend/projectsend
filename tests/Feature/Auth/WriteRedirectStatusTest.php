@@ -77,11 +77,43 @@ it('answers a write with 303 when two-factor enrolment is being enforced', funct
         ->assertRedirect(route('two-factor.show'));
 });
 
-it('leaves a read alone in every one of those cases', function () {
-    $user = User::factory()->create();
-    $user->update(['active' => false]);
+// The other half of the rule, and the half that says the upgrade is
+// targeted: a read still gets the plain 302. Once per door, because "every
+// one of those cases" was one of them — the deactivation — and a change
+// that upgraded reads at either of the other two would have been invisible
+// here while this name said otherwise.
+it('leaves a read alone at every one of those doors', function (Closure $arrange, string $read, Closure $target) {
+    $arrange();
 
-    $this->actingAs($user)->get(route('dashboard'))
+    $this->get($read)
         ->assertStatus(302)
-        ->assertRedirect(route('login'));
-});
+        ->assertRedirect($target());
+})->with([
+    // A guest-reachable GET, for the same reason the write case uses
+    // PUT /timezone: anything behind `auth` is answered by the guest
+    // redirect before EnsureSetupIsComplete ever sees it.
+    'no administrator yet' => [
+        fn () => User::query()->delete(),
+        '/login',
+        fn () => route('setup'),
+    ],
+    'deactivated mid-session' => [
+        function (): void {
+            $user = User::factory()->create();
+            $user->update(['active' => false]);
+            test()->actingAs($user);
+        },
+        '/dashboard',
+        fn () => route('login'),
+    ],
+    'two-factor enrolment enforced' => [
+        function (): void {
+            // Set explicitly rather than relying on the default: the
+            // settings cache outlives a database rollback in this suite.
+            app(Settings::class)->set(Setting::TwoFactorEnforcement, TwoFactorEnforcement::All->value);
+            test()->actingAs(User::factory()->create());
+        },
+        '/dashboard',
+        fn () => route('two-factor.show'),
+    ],
+]);

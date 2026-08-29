@@ -1,5 +1,21 @@
 @import 'tailwindcss';
 
+/*
+ * Instrument Sans, served by this installation rather than by a font CDN.
+ *
+ * The three weights the design uses, which is what the stylesheet this
+ * replaces asked for. Every visitor to /login, /register, /forgot-password
+ * and every public share link used to make a request to a third party
+ * before they had done anything, handing it their IP, their user agent and
+ * the hostname of the installation they were visiting — on the signed-out
+ * pages, where the visitor has not agreed to anything and the operator
+ * never chose the recipient. Bundling it makes those pages talk only to
+ * the server they were asked for.
+ */
+@import '@fontsource/instrument-sans/400.css';
+@import '@fontsource/instrument-sans/500.css';
+@import '@fontsource/instrument-sans/600.css';
+
 @plugin 'tailwindcss-animate';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';

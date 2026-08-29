@@ -29,6 +29,25 @@ a version is cut.
   moderate — give it one of the file permissions (upload, edit files, or edit other people's files)
   and it works again, now seeing only the comments on files it can actually open.
 
+- [#1759](https://github.com/projectsend/projectsend/pull/1759) — Publish the example Docker
+  quickstart on the loopback address instead of every network interface. The example set
+  `TRUSTED_PROXIES: "*"`, which tells ProjectSend to believe the client address forwarded by
+  whoever connects to it. That is right behind a reverse proxy and wrong when anyone can reach the
+  container directly, because then anyone can claim any address: enough to walk past the login
+  lockout, every rate limit, and the address written to the download log and to guest comments.
+
+  **Who this affected.** Installations started from `compose.example.yaml` or from the Docker Hub
+  page, where port 8080 was reachable from outside the machine. A published Docker port is not
+  covered by a host firewall such as `ufw`, so this was often open without anyone intending it.
+
+### Upgrade notes
+
+- **If you copied the example Docker file, `http://<your-server-ip>:8080` will stop answering.**
+  That is the change. Reach the application through your reverse proxy, as `APP_URL` describes. If
+  your proxy runs on a different machine, publish the port on the interface it arrives from and
+  replace `TRUSTED_PROXIES: "*"` with that address or subnet — the two settings only make sense
+  together.
+
 ## 2.2.1 — 28 August 2026
 
 A security release. Most of it closes ways somebody could reach past a boundary the rest of the

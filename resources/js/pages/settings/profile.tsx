@@ -13,13 +13,6 @@ import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Profile settings',
-        href: '/settings/profile',
-    },
-];
-
 export default function Profile({
     mustVerifyEmail,
     status,
@@ -38,6 +31,13 @@ export default function Profile({
     const { t } = useTranslation();
     const { auth } = usePage<SharedData>().props;
 
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: t('Profile settings'),
+            href: '/settings/profile',
+        },
+    ];
+
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         name: auth.user.name,
         email: auth.user.email,
@@ -53,15 +53,15 @@ export default function Profile({
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Profile settings" />
+            <Head title={t('Profile settings')} />
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="Profile information" description="Update your name and email address" />
+                    <HeadingSmall title={t('Profile information')} description={t('Update your name and email address')} />
 
                     <form onSubmit={submit} className="space-y-6">
                         <div className="grid gap-2">
-                            <Label htmlFor="name">Name</Label>
+                            <Label htmlFor="name">{t('Name')}</Label>
 
                             <Input
                                 id="name"
@@ -70,14 +70,14 @@ export default function Profile({
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
                                 autoComplete="name"
-                                placeholder="Full name"
+                                placeholder={t('Full name')}
                             />
 
                             <InputError className="mt-2" message={errors.name} />
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email address</Label>
+                            <Label htmlFor="email">{t('Email address')}</Label>
 
                             <Input
                                 id="email"
@@ -87,7 +87,7 @@ export default function Profile({
                                 onChange={(e) => setData('email', e.target.value)}
                                 required
                                 autoComplete="username"
-                                placeholder="Email address"
+                                placeholder={t('Email address')}
                             />
 
                             <InputError className="mt-2" message={errors.email} />
@@ -115,20 +115,20 @@ export default function Profile({
                         {mustVerifyEmail && auth.user.email_verified_at === null && (
                             <div>
                                 <p className="mt-2 text-sm text-neutral-800">
-                                    Your email address is unverified.
+                                    {t('Your email address is unverified.')}
                                     <Link
                                         href={route('verification.send')}
                                         method="post"
                                         as="button"
                                         className="rounded-md text-sm text-neutral-600 underline hover:text-neutral-900 focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
                                     >
-                                        Click here to re-send the verification email.
+                                        {t('Click here to re-send the verification email.')}
                                     </Link>
                                 </p>
 
                                 {status === 'verification-link-sent' && (
                                     <div className="mt-2 text-sm font-medium text-green-600">
-                                        A new verification link has been sent to your email address.
+                                        {t('A new verification link has been sent to your email address.')}
                                     </div>
                                 )}
                             </div>

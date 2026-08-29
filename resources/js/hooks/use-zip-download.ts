@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { xsrfToken } from '@/lib/xsrf';
 
@@ -22,6 +22,7 @@ export function useZipDownload() {
     const [status, setStatus] = useState<ZipDownloadStatus>('idle');
     const [error, setError] = useState<string | null>(null);
     const pollRef = useRef<number | null>(null);
+    const unmountedRef = useRef(false);
 
     const stopPolling = useCallback(() => {
         if (pollRef.current !== null) {
@@ -36,8 +37,25 @@ export function useZipDownload() {
         setError(null);
     }, [stopPolling]);
 
+    // The poll must not outlive the page: an Inertia visit unmounts the
+    // component mid-build, nothing calls close(), and the interval would
+    // keep hitting zip-downloads/{id} every two seconds for as long as
+    // the tab lives — the server keeps answering "pending" to nobody.
+    // The flag covers the gap the cleanup alone leaves open: an unmount
+    // while the store POST is still in flight, whose then() would set a
+    // fresh interval after the cleanup already ran.
+    useEffect(() => {
+        return () => {
+            unmountedRef.current = true;
+            stopPolling();
+        };
+    }, [stopPolling]);
+
     const start = useCallback(
         (selection: ZipSelection) => {
+            // A second start while a poll is running would overwrite
+            // pollRef and orphan the first interval the same way.
+            stopPolling();
             setStatus('preparing');
             setError(null);
 
@@ -59,6 +77,9 @@ export function useZipDownload() {
                     return response.json() as Promise<{ id: number }>;
                 })
                 .then(({ id }) => {
+                    if (unmountedRef.current) {
+                        return;
+                    }
                     pollRef.current = window.setInterval(() => {
                         fetch(route('zip-downloads.show', id), {
                             credentials: 'same-origin',

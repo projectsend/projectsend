@@ -68,9 +68,27 @@ Route::middleware('auth')->group(function () {
     // property of your account, not of your role.
     Route::get('settings/connected-accounts', [ConnectedAccountsController::class, 'edit'])
         ->name('connected-accounts.edit');
+    // Behind password.confirm for the same reason as the two-factor block
+    // and the API tokens below: a SocialAccount row "*is* the
+    // authorization to sign in as that account", so it outlives the
+    // session that created it. It survives a password change, it survives
+    // Auth::logoutOtherDevices(), and it survives every session being
+    // invalidated -- which makes "attach my provider identity to your
+    // account" the most durable thing a stolen session can do. Starting
+    // the flow is what binds it, because the callback finishes with
+    // whichever provider account signed in at the other end, not
+    // necessarily the victim's.
     Route::post('settings/connected-accounts/{provider}', [SocialLoginController::class, 'connect'])
-        ->middleware('throttle:20,1,social-connect')
+        ->middleware(['password.confirm', 'throttle:20,1,social-connect'])
         ->name('connected-accounts.connect');
+
+    // Deliberately without it. Disconnecting removes a way in
+    // rather than adding one, and destroy() already refuses to remove the
+    // last one ("This is the only way you can sign in"). Requiring a
+    // password confirmation here would fall hardest on exactly the
+    // accounts that have no local password to confirm with -- the ones
+    // provisioned by a provider -- and leave them unable to disconnect
+    // anything.
     Route::delete('settings/connected-accounts/{provider}', [ConnectedAccountsController::class, 'destroy'])
         ->name('connected-accounts.destroy');
 

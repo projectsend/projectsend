@@ -31,6 +31,10 @@ function connect(User $user, SocialIdentity $identity): TestResponse
 {
     test()->swap(SocialGateway::class, new FakeSocialGateway($identity));
 
+    // Starting the flow is behind password.confirm -- see the route, and
+    // the test below that pins it.
+    confirmPassword($user);
+
     test()->actingAs($user)->post(route('connected-accounts.connect', ['provider' => $identity->provider->value]));
 
     return test()->actingAs($user)->get(route('social.callback', ['provider' => $identity->provider->value]));
@@ -101,6 +105,7 @@ test('reconnecting a different account at the same provider replaces the link', 
 
 test('connecting from the settings screen navigates the browser, not the XHR', function () {
     test()->swap(SocialGateway::class, new FakeSocialGateway);
+    confirmPassword($this->staff);
 
     $this->actingAs($this->staff)
         ->post(route('connected-accounts.connect', ['provider' => 'google']), [], ['X-Inertia' => 'true'])
@@ -110,6 +115,7 @@ test('connecting from the settings screen navigates the browser, not the XHR', f
 
 test('a plain request is still given the provider redirect itself', function () {
     test()->swap(SocialGateway::class, new FakeSocialGateway);
+    confirmPassword($this->staff);
 
     $this->actingAs($this->staff)
         ->post(route('connected-accounts.connect', ['provider' => 'google']))
@@ -214,4 +220,56 @@ test('a guest is sent to the login page', function () {
 test('only usable providers are listed', function () {
     $this->actingAs($this->staff)->get('/settings/connected-accounts')
         ->assertInertia(fn ($page) => $page->has('providers', 1)->where('providers.0.provider', 'google'));
+});
+
+// A SocialAccount row "*is* the authorization to sign in as that account",
+// so binding one is exactly the kind of thing a stolen session must not be
+// enough to do -- the same argument routes/settings.php already makes for
+// the two-factor block and for minting an API token.
+test('connecting a provider requires a fresh password confirmation', function () {
+    $this->withSession(['auth.password_confirmed_at' => null]);
+
+    $this->actingAs($this->staff)
+        ->post(route('connected-accounts.connect', ['provider' => 'google']))
+        ->assertRedirect(route('password.confirm'));
+
+    expect(SocialAccount::query()->where('user_id', $this->staff->id)->exists())->toBeFalse();
+});
+
+test('a session that never proved the password cannot bind a stranger identity', function () {
+    // The whole attack in one test: the flow is never started, so the
+    // callback has no intent in the session to complete, and nothing is
+    // bound to the victim's account.
+    $attacker = new SocialIdentity(SocialProvider::Google, 'attacker-sub', 'attacker@evil.test', true, 'Attacker');
+    $this->swap(SocialGateway::class, new FakeSocialGateway($attacker));
+
+    $this->withSession(['auth.password_confirmed_at' => null]);
+
+    $this->actingAs($this->staff)
+        ->post(route('connected-accounts.connect', ['provider' => 'google']))
+        ->assertRedirect(route('password.confirm'));
+
+    $this->actingAs($this->staff)->get(route('social.callback', ['provider' => 'google']));
+
+    expect(SocialAccount::query()
+        ->where('user_id', $this->staff->id)
+        ->where('provider_user_id', 'attacker-sub')
+        ->exists())->toBeFalse();
+});
+
+test('disconnecting stays reachable without one', function () {
+    // Deliberately outside the gate: it removes a way in rather than
+    // adding one, and destroy() already refuses to remove the last. An
+    // account provisioned by a provider has no password to confirm with,
+    // so requiring one here would strand exactly them.
+    linkRow($this->staff, 'google-sub');
+
+    $this->withSession(['auth.password_confirmed_at' => null]);
+
+    $this->actingAs($this->staff)
+        ->delete(route('connected-accounts.destroy', ['provider' => 'google']))
+        ->assertRedirect()
+        ->assertSessionHasNoErrors();
+
+    expect(SocialAccount::query()->where('user_id', $this->staff->id)->exists())->toBeFalse();
 });

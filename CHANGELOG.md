@@ -40,6 +40,18 @@ a version is cut.
   page, where port 8080 was reachable from outside the machine. A published Docker port is not
   covered by a host firewall such as `ufw`, so this was often open without anyone intending it.
 
+- [#1760](https://github.com/projectsend/projectsend/pull/1760) — Have the Docker image default to
+  production. On first boot the image copied its settings from the development template, which sets
+  `APP_ENV=local` and `APP_DEBUG=true`. Two things followed that you could not see from inside the
+  application: every server error showed its stack trace — file, line and surrounding source — to
+  whoever triggered it, signed in or not; and **"reject known-breached passwords" never actually
+  ran**, while the security settings screen went on reporting it as switched on.
+
+  **Who this affected.** Anyone who started the container without setting those two values: a plain
+  `docker run` with a database address, the Portainer, unRAID and TrueNAS templates, or a Kubernetes
+  manifest naming only the database and `APP_URL`. Installations using `compose.example.yaml`, which
+  sets both correctly, were never affected.
+
 ### Upgrade notes
 
 - **If you copied the example Docker file, `http://<your-server-ip>:8080` will stop answering.**
@@ -47,6 +59,11 @@ a version is cut.
   your proxy runs on a different machine, publish the port on the interface it arrives from and
   replace `TRUSTED_PROXIES: "*"` with that address or subnet — the two settings only make sense
   together.
+
+- **Docker: `APP_ENV` and `APP_DEBUG` set inside `storage/.env` no longer take effect.** The image
+  now sets them itself, and a real environment variable always beats that file. If you had turned
+  debug on by editing `storage/.env`, pass `-e APP_DEBUG=true` (or `environment:` in compose)
+  instead. Anything you already set that way keeps working unchanged.
 
 ## 2.2.1 — 28 August 2026
 

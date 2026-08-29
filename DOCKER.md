@@ -121,6 +121,13 @@ Without it every visitor appears to come from the proxy. The login rate limiter 
 your users as one attacker, and the download log records the proxy's address instead of the
 person's. `compose.example.yaml` already sets this.
 
+`"*"` means "trust whoever connected to me", so it belongs with a published port only the proxy can
+reach — which is why `compose.example.yaml` publishes on `127.0.0.1`. If anybody can open the
+container's port directly, they are the proxy as far as this setting is concerned, and the
+`X-Forwarded-For` they send is the address the rate limiters and the download log will use. Where
+the proxy runs on another host, publish on the interface it arrives from and name that address or
+subnet here instead of `"*"`.
+
 Leaving it unset does not cause a `502` — that means your proxy could not get a usable response out
 of the container at all, which is a different problem with a different fix. It does cause a **419
 "page expired"**. Without it the application never learns the proxy terminated TLS, so it builds
@@ -177,7 +184,7 @@ is the quickest way to separate "the app is down" from "the proxy cannot reach t
 during an outage, from the same machine:
 
 ```sh
-curl -s -o /dev/null -w '%{http_code}\n' http://<host-ip>:8080/up   # straight at the container
+curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8080/up   # straight at the container
 curl -s -o /dev/null -w '%{http_code}\n' https://files.example.com/up
 ```
 

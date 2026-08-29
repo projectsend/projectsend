@@ -17,7 +17,23 @@ services:
       # Put a TLS-terminating proxy in front of this in any real install.
       # ProjectSend issues download links and password-reset emails using
       # APP_URL, so that value — not this port — is what users must reach.
-      - "8080:80"
+      #
+      # Bound to the loopback address, not to every interface, because
+      # TRUSTED_PROXIES below is "*". That setting tells the application to
+      # believe the X-Forwarded-For header of whoever connects to it, which
+      # is correct behind a proxy and catastrophic when anybody can connect
+      # directly: a visitor who reaches this port themselves is then the
+      # "proxy", and can hand the application any client IP they like —
+      # which is enough to walk straight through the login lockout, every
+      # named rate limit, and the address recorded in the download log.
+      #
+      # Publishing on the loopback address keeps the proxy (on this host,
+      # or in this compose file) able to reach it while nothing off the
+      # machine can. If you move the proxy to another host, publish on the
+      # interface it comes from and narrow TRUSTED_PROXIES to that address
+      # or subnet at the same time — the two settings only make sense
+      # together.
+      - "127.0.0.1:8080:80"
     environment:
       APP_URL: https://files.example.com
       APP_ENV: production
@@ -55,6 +71,10 @@ services:
       # Without it every visitor appears to come from the proxy: the login
       # rate limiter treats all of your users as one attacker, and the
       # download log records the proxy's address.
+      #
+      # "*" means "trust whoever connects to me", which is only safe when
+      # nothing but the proxy can — which is what the loopback binding
+      # above is for. Change one and you have to change the other.
       TRUSTED_PROXIES: "*"
 
       # Optional: uncomment these — with a password of your own — to create

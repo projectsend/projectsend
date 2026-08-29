@@ -42,7 +42,13 @@ class MailConfigApplier
     // connection row at send time — only readiness and the connected
     // address are cheap enough to be worth caching, and neither is a
     // credential.
-    private const CACHE_KEY = 'platform.mail_provider_settings.v3';
+    // v4: the SMTP password left for the same reason the tokens never
+    // arrived. The cache store encrypts nothing and rememberForever never
+    // expires, so on the documented CACHE_STORE=database it wrote the
+    // password in clear into the same database whose dump the `encrypted`
+    // cast exists to survive. It is now read straight from the row, and
+    // only on the boot that actually configures an SMTP transport.
+    private const CACHE_KEY = 'platform.mail_provider_settings.v4';
 
     public function __construct(
         private readonly CapabilityRegistry $capabilities,
@@ -67,7 +73,7 @@ class MailConfigApplier
             Config::set('mail.mailers.smtp.host', $resolved['host']);
             Config::set('mail.mailers.smtp.port', $resolved['port']);
             Config::set('mail.mailers.smtp.username', $resolved['username']);
-            Config::set('mail.mailers.smtp.password', $resolved['password']);
+            Config::set('mail.mailers.smtp.password', $this->password());
             Config::set('mail.mailers.smtp.encryption', $resolved['encryption']);
         }
 
@@ -86,13 +92,33 @@ class MailConfigApplier
     }
 
     /**
-     * @return array{transport_configured: bool, host: string|null, port: int|null, username: string|null, password: string|null, encryption: string|null, from_address: string|null, from_name: string|null, oauth_mailer: string|null, oauth_ready: bool, oauth_account: string|null}
+     * The SMTP password, read from the row rather than from the cache.
+     *
+     * The same rule MailOAuthConnection states for tokens — "must never
+     * travel through the boot-config cache" — applied to the credential
+     * this class configures itself. Reached only from the SMTP branch of
+     * apply(), so an installation using OAuth, or one that has never
+     * opened the Email screen, still boots without touching the table.
+     *
+     * Guarded like the cached read beside it: resolve() can hand back a
+     * warm "transport_configured" from a database that has since stopped
+     * answering, and booting must survive that.
+     */
+    private function password(): ?string
+    {
+        return BootSettingsCache::read(
+            fn (): ?string => MailProviderSettings::current()->password,
+        );
+    }
+
+    /**
+     * @return array{transport_configured: bool, host: string|null, port: int|null, username: string|null, encryption: string|null, from_address: string|null, from_name: string|null, oauth_mailer: string|null, oauth_ready: bool, oauth_account: string|null}
      */
     private function resolve(): array
     {
         $blank = [
             'transport_configured' => false,
-            'host' => null, 'port' => null, 'username' => null, 'password' => null, 'encryption' => null,
+            'host' => null, 'port' => null, 'username' => null, 'encryption' => null,
             'from_address' => null, 'from_name' => null,
             'oauth_mailer' => null, 'oauth_ready' => false, 'oauth_account' => null,
         ];
@@ -130,7 +156,6 @@ class MailConfigApplier
                 'host' => $settings->host,
                 'port' => $settings->port,
                 'username' => $settings->username,
-                'password' => $settings->password,
                 'encryption' => $settings->encryption === 'none' ? null : $settings->encryption,
                 'from_address' => $settings->from_address,
                 'from_name' => $settings->from_name,

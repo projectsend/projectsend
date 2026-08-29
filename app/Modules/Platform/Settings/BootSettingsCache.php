@@ -35,6 +35,11 @@ use PDOException;
  * EmailTemplateResolver). A database failure there should stay loud: those
  * run long after the install, where "quietly fell back to defaults" hides a
  * real outage instead of enabling a legitimate first run.
+ *
+ * Two entry points, same rule. rememberForever() is for values worth
+ * keeping; read() is for the ones that must not be kept — a credential
+ * read on the boot path needs the identical "the database may not answer
+ * yet" guarantee, and stating it twice is how the two drift apart.
  */
 final class BootSettingsCache
 {
@@ -55,6 +60,33 @@ final class BootSettingsCache
             // QueryException extends PDOException, so this covers both a
             // missing table and a connection that could not be opened.
             self::warnOnce($key, $e);
+
+            return $whenUnavailable;
+        }
+    }
+
+    /**
+     * The same protection for a value that is deliberately *not* cached.
+     *
+     * A credential must not sit in the cache store, so it is read on each
+     * boot that actually needs it — but that read lands on the same path
+     * as the cached ones and must survive the same missing database. The
+     * caller has already been handed a cached array saying the feature is
+     * configured; that array can be warm while the database is, right now,
+     * unreachable.
+     *
+     * @template TValue
+     *
+     * @param  Closure(): TValue  $read  Reads the real value from the database.
+     * @param  TValue  $whenUnavailable  Returned as-is when the database cannot answer.
+     * @return TValue
+     */
+    public static function read(Closure $read, mixed $whenUnavailable = null): mixed
+    {
+        try {
+            return $read();
+        } catch (PDOException $e) {
+            self::warnOnce('(uncached credential read)', $e);
 
             return $whenUnavailable;
         }

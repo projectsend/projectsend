@@ -44,7 +44,13 @@ class ExternalStorageConfigApplier
     // Bumped on any shape change to the resolved array below — a stale
     // rememberForever value under an old key would otherwise crash every
     // boot with "Undefined array key" (apply() calls resolve() unconditionally).
-    private const CACHE_KEY = 'platform.external_storage_settings.v2';
+    // v3: the S3 secret and the GCS key file left the shape. The cache
+    // store encrypts nothing and rememberForever never expires, so on the
+    // documented CACHE_STORE=database they sat in clear — the service
+    // account's private key included — in the same database whose dump
+    // the `encrypted` cast exists to survive. Both are now read straight
+    // from the row, by the provider branch that uses them.
+    private const CACHE_KEY = 'platform.external_storage_settings.v3';
 
     public function __construct(
         private readonly CapabilityRegistry $capabilities,
@@ -67,7 +73,9 @@ class ExternalStorageConfigApplier
 
         match ($provider) {
             StorageProvider::S3 => $this->applyS3($resolved),
-            StorageProvider::Gcs => $this->applyGcs($resolved),
+            // No $resolved: everything GCS needs from the row is the key
+            // file, and that is a credential the cache no longer holds.
+            StorageProvider::Gcs => $this->applyGcs(),
         };
 
         if ($resolved['root'] !== null) {
@@ -86,22 +94,22 @@ class ExternalStorageConfigApplier
     private function applyS3(array $resolved): void
     {
         Config::set('filesystems.disks.files_external.key', $resolved['key']);
-        Config::set('filesystems.disks.files_external.secret', $resolved['secret']);
+        Config::set('filesystems.disks.files_external.secret', $this->credential('secret'));
         Config::set('filesystems.disks.files_external.region', $resolved['region']);
         Config::set('filesystems.disks.files_external.endpoint', $resolved['endpoint']);
         Config::set('filesystems.disks.files_external.use_path_style_endpoint', $resolved['use_path_style']);
     }
 
-    /**
-     * @param  array<string, mixed>  $resolved
-     */
-    private function applyGcs(array $resolved): void
+    private function applyGcs(): void
     {
         // Decoded here rather than stored decoded: the column holds the
         // key file verbatim, exactly as Google issued it, so that what an
         // administrator pasted is what can be handed back to them and
         // compared against the console.
-        $keyFile = json_decode((string) $resolved['key_file'], true);
+        //
+        // Read from the row rather than from $resolved: it is a private
+        // key, and the cached array no longer carries one.
+        $keyFile = json_decode((string) $this->credential('key_file'), true);
 
         Config::set('filesystems.disks.files_external.key_file', is_array($keyFile) ? $keyFile : null);
 
@@ -116,6 +124,28 @@ class ExternalStorageConfigApplier
     public function flush(): void
     {
         Cache::forget(self::CACHE_KEY);
+    }
+
+    /**
+     * One credential column, read from the row rather than from the cache.
+     *
+     * The same rule MailOAuthConnection states for tokens — "must never
+     * travel through the boot-config cache" — applied to the two columns
+     * on this row that are credentials: the S3 secret access key and the
+     * GCS service account key file. Reached only from the provider branch
+     * that uses one, and only when isActive() has already said the disk is
+     * configured and permitted, so nothing is read on an installation that
+     * stores files locally.
+     *
+     * Guarded like the cached read beside it: resolve() can hand back a
+     * warm "configured" from a database that has since stopped answering,
+     * and booting must survive that.
+     */
+    private function credential(string $column): ?string
+    {
+        return BootSettingsCache::read(
+            fn (): ?string => ExternalStorageSettings::current()->{$column},
+        );
     }
 
     public function resolveDisk(ResolvingUploadDisk $event): void
@@ -142,14 +172,14 @@ class ExternalStorageConfigApplier
      * filled in and active, nothing more. Callers AND the capability check
      * live and uncached — see class docblock.
      *
-     * @return array{configured: bool, provider: string, key: string|null, secret: string|null, key_file: string|null, region: string|null, bucket: string|null, endpoint: string|null, use_path_style: bool, root: string|null}
+     * @return array{configured: bool, provider: string, key: string|null, region: string|null, bucket: string|null, endpoint: string|null, use_path_style: bool, root: string|null}
      */
     private function resolve(): array
     {
         $blank = [
             'configured' => false,
             'provider' => StorageProvider::S3->value,
-            'key' => null, 'secret' => null, 'key_file' => null,
+            'key' => null,
             'region' => null, 'bucket' => null,
             'endpoint' => null, 'use_path_style' => false, 'root' => null,
         ];
@@ -173,8 +203,6 @@ class ExternalStorageConfigApplier
                 'configured' => true,
                 'provider' => $settings->provider->value,
                 'key' => $settings->key,
-                'secret' => $settings->secret,
-                'key_file' => $settings->key_file,
                 'region' => $settings->region,
                 'bucket' => $settings->bucket,
                 'endpoint' => $settings->endpoint,

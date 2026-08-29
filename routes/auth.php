@@ -99,7 +99,19 @@ Route::middleware('auth')->group(function () {
     // on route names, and an unnamed route matches nothing -- which left
     // the form reachable and its submission not, closing the enrolment
     // path enforcement depends on.
+    //
+    // Throttled because it checks a password. It was the one credential
+    // check in this file with no bucket at all: not the per-email-and-IP
+    // limiter POST login has, not a named `throttle:` like the rest --
+    // nothing, so an attacker holding a stolen session could sit on it
+    // and guess. That is the wrong door to leave open, because passing it
+    // is exactly what re-proving the password is meant to make expensive:
+    // beyond it lie disabling two-factor, regenerating recovery codes and
+    // minting an API token, and the password is then known for everything
+    // else too. Six a minute, matching the other credential-facing
+    // buckets here.
     Route::post('confirm-password', [ConfirmablePasswordController::class, 'store'])
+        ->middleware('throttle:6,1,password-confirm')
         ->name('password.confirm.store');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])

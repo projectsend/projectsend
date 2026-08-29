@@ -46,10 +46,21 @@ Route::middleware('auth')->group(function () {
     Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('settings/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('settings/delete-account', [ProfileController::class, 'deleteAccount'])->name('profile.delete-account');
-    Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Throttled for the same reason as confirm-password in routes/auth.php:
+    // destroy() verifies the account's password (`current_password`), and a
+    // credential check without a bucket is a credential check somebody can
+    // sit on. Named buckets, per the note at the top of routes/auth.php --
+    // a bare `throttle:` would share one counter with the public share
+    // links.
+    Route::delete('settings/profile', [ProfileController::class, 'destroy'])
+        ->middleware('throttle:6,1,account-delete')
+        ->name('profile.destroy');
 
     Route::get('settings/password', [PasswordController::class, 'edit'])->name('password.edit');
-    Route::put('settings/password', [PasswordController::class, 'update'])->name('password.update');
+    // Same again: update() verifies `current_password` before it writes.
+    Route::put('settings/password', [PasswordController::class, 'update'])
+        ->middleware('throttle:6,1,password-update')
+        ->name('password.update');
 
     Route::get('settings/two-factor', [TwoFactorEnrollmentController::class, 'show'])->name('two-factor.show');
 

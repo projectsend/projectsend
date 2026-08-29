@@ -45,8 +45,14 @@ class DashboardWidgetPreferencesController extends Controller
 
         $validated = $request->validate([
             'columns' => ['required', 'integer', 'between:1,4'],
-            'widgets' => ['required', 'array'],
-            'widgets.*.widget_key' => ['required', 'string', Rule::in(self::WIDGET_KEYS)],
+            // Bounded by the allowlist itself, and unique on the key. The
+            // Rule::in below checks each value; it says nothing about how
+            // many there are or whether they repeat, and the loop writes
+            // one row per element. A layout has at most one entry per
+            // widget, so anything longer than the registry is not a layout
+            // this screen could have produced.
+            'widgets' => ['required', 'array', 'max:'.count(self::WIDGET_KEYS)],
+            'widgets.*.widget_key' => ['required', 'string', 'distinct', Rule::in(self::WIDGET_KEYS)],
             'widgets.*.enabled' => ['required', 'boolean'],
             'widgets.*.column_index' => ['required', 'integer', 'between:0,3'],
             'widgets.*.position' => ['required', 'integer', 'min:0'],

@@ -46,13 +46,22 @@ class NotificationPreferencesController extends Controller
         $user = $request->user();
         assert($user !== null);
 
+        $keys = $this->emailableKeys();
+
         $validated = $request->validate([
-            'preferences' => ['required', 'array'],
+            // Bounded by the registry, and unique on the type. The
+            // Rule::in below checks each value; it says nothing about how
+            // many there are or whether they repeat, and the loop writes
+            // one row per element. The count comes from the registry
+            // rather than a literal because the registry is open --
+            // modules register their own types into it, so a number here
+            // would be wrong the moment one does.
+            'preferences' => ['required', 'array', 'max:'.count($keys)],
             // Against the registry, not merely "a string": a preference row
             // for a type nothing can send is a row that will never be read
             // again, and the screen only ever offers back what edit() gave
             // it.
-            'preferences.*.type' => ['required', 'string', Rule::in($this->emailableKeys())],
+            'preferences.*.type' => ['required', 'string', 'distinct', Rule::in($keys)],
             'preferences.*.email_enabled' => ['required', 'boolean'],
         ]);
 

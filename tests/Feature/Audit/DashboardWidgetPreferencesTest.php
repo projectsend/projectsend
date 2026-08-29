@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Modules\Audit\Models\DashboardWidgetPreference;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Models\RolePermission;
+use Illuminate\Support\Facades\DB;
 use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
@@ -116,4 +117,65 @@ test('saving rejects an unknown widget key', function () {
             ['widget_key' => 'not_a_real_widget', 'enabled' => true, 'column_index' => 0, 'position' => 0],
         ],
     ])->assertSessionHasErrors(['widgets.0.widget_key']);
+});
+
+test('saving rejects a layout longer than the widget list', function () {
+    // The allowlist checks each value, not how many there are, and the
+    // loop wrote a row per element -- so one request could be made to
+    // cost a query per entry with nothing to show for it. Sent as JSON:
+    // a form-encoded array this large is truncated by max_input_vars long
+    // before it reaches the rule under test.
+    $widgets = [];
+
+    for ($i = 0; $i < 3000; $i++) {
+        $widgets[] = ['widget_key' => 'counters', 'enabled' => true, 'column_index' => 0, 'position' => $i];
+    }
+
+    DB::enableQueryLog();
+
+    $this->actingAs($this->admin)
+        ->putJson('/dashboard/widgets', ['columns' => 2, 'widgets' => $widgets])
+        ->assertJsonValidationErrors(['widgets']);
+
+    $queries = count(DB::getQueryLog());
+    DB::disableQueryLog();
+
+    // Refused before the loop, so the cost is the session's own reads
+    // rather than one write per element.
+    expect($queries)->toBeLessThan(20)
+        ->and(DashboardWidgetPreference::query()->count())->toBe(0);
+});
+
+test('saving rejects the same widget key twice', function () {
+    // Rule::in passes on both, and updateOrCreate made the second a
+    // pointless rewrite of the row the first had just created.
+    $this->actingAs($this->admin)->putJson('/dashboard/widgets', [
+        'columns' => 2,
+        'widgets' => [
+            ['widget_key' => 'counters', 'enabled' => true, 'column_index' => 0, 'position' => 0],
+            ['widget_key' => 'counters', 'enabled' => false, 'column_index' => 1, 'position' => 1],
+        ],
+    ])->assertJsonValidationErrors(['widgets.0.widget_key']);
+
+    expect(DashboardWidgetPreference::query()->count())->toBe(0);
+});
+
+test('a full layout of every widget still saves', function () {
+    // The bound is the allowlist, so the largest legitimate layout -- one
+    // entry per widget this screen knows -- has to pass.
+    $keys = ['counters', 'transfers', 'top_clients_by_storage', 'largest_files',
+        'recent', 'system', 'news', 'expired_files', 'api'];
+
+    $widgets = [];
+
+    foreach ($keys as $index => $key) {
+        $widgets[] = ['widget_key' => $key, 'enabled' => true, 'column_index' => 0, 'position' => $index];
+    }
+
+    $this->actingAs($this->admin)
+        ->put('/dashboard/widgets', ['columns' => 2, 'widgets' => $widgets])
+        ->assertSessionHasNoErrors();
+
+    expect(DashboardWidgetPreference::query()->where('user_id', $this->admin->id)->count())
+        ->toBe(count($keys));
 });

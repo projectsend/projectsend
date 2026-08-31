@@ -11,6 +11,8 @@ use App\Modules\Identity\TwoFactor\TwoFactorEnforcement;
 use App\Modules\Identity\UserType;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Installation\Events\ResolvingInstallationStatus;
+use App\Modules\Platform\Scheduling\ScheduledTaskRun;
+use App\Modules\Platform\Scheduling\TaskRunStatus;
 use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -113,6 +115,40 @@ use Throwable;
  * that comparison while every test here keeps passing. A key that changes
  * meaning needs a new key, not an edit.
  *
+ * ### `usage` and `health.scheduler` are charted, so their keys are a promise
+ *
+ * The hosted platform's customer dashboard plots these over time. That
+ * makes the key names a contract in the same way `capabilities` is one,
+ * and it fails in a nastier way: a renamed capability key breaks a
+ * comparison that somebody is watching, while a renamed `usage` key
+ * produces a chart that is silently *empty* rather than an error. Nobody
+ * gets paged for a flat line.
+ *
+ * So: add keys freely, and never rename or repurpose one. A key whose
+ * meaning changes needs a new key, not a new value — "downloads" that
+ * quietly starts excluding staff is worse than "downloads" disappearing,
+ * because the second is noticed.
+ *
+ * `usage` is a **rolling window, deliberately, and has no lifetime
+ * totals**. Not a presentation choice: `activity_log` is never pruned
+ * (see above), so a lifetime count over it gets slower every day of the
+ * installation's life, while a windowed one stays flat forever. The
+ * window is stated in the document as `window_days` rather than assumed
+ * by the reader, so changing it is visible to whoever is plotting it.
+ *
+ * Every count here rides one of the two composite indexes added for it —
+ * see the migration adding them, which also records why they have to
+ * ship as a pair.
+ *
+ * ### The scheduler is the one thing nothing else can see
+ *
+ * `health.queues` catches a dead worker. Nothing catches a dead
+ * *scheduler*, and its symptom is not a stalled feature: expired files
+ * stop being purged, so content that was supposed to become unreachable
+ * stays reachable, and orphans and stale uploads accumulate against a
+ * quota nobody is watching. The installation looks completely healthy
+ * while it happens, to its operator and to its administrator alike.
+ *
  * ### A version is a decision, a commit is a fact
  *
  * `build` says which commit this installation was built from. A version
@@ -129,6 +165,43 @@ use Throwable;
  */
 class StatusCommand extends Command
 {
+    /**
+     * The rolling window every `usage` count is measured over.
+     *
+     * Emitted in the document as `window_days` rather than left for the
+     * reader to know, because a number that is charted and a number that
+     * is assumed diverge exactly once and silently.
+     */
+    private const USAGE_WINDOW_DAYS = 30;
+
+    /**
+     * The actions `usage.actions` counts, and the whole of it.
+     *
+     * An allowlist rather than a `group by action`, for two reasons that
+     * happen to agree. Privacy: this document leaves the installation, and
+     * cases land in Action most weeks — an open group-by would start
+     * shipping new action names outward with nobody having decided that
+     * they should go, and some of them (`account.erased`,
+     * `two_factor.reset`, `password.updated`) are somebody's compliance
+     * event rather than a business metric. Cost: five keyed counts measure
+     * ~30x cheaper than one `group by action` over the same window,
+     * because each rides (action, created_at) while the group-by starts
+     * from created_at and reads rows.
+     *
+     * These five answer "is my library growing, are people being added, is
+     * anything being shared" and nothing else. Uploads and downloads are
+     * their own fields; none of these names a person.
+     *
+     * @var list<Action>
+     */
+    private const USAGE_ACTIONS = [
+        Action::UserCreated,
+        Action::ClientSelfRegistered,
+        Action::FileAssigned,
+        Action::ShareLinkCreated,
+        Action::GroupCreated,
+    ];
+
     protected $signature = 'projectsend:status {--json : Emit machine-readable JSON on stdout}';
 
     protected $description = 'Report this installation\'s version, edition, capabilities and seat usage';
@@ -159,9 +232,16 @@ class StatusCommand extends Command
                 // an unlimited seat count is: a watcher has to be able to
                 // tell that apart from "we got no answer". Collapsing the
                 // two is how a broken probe reads as a dormant fleet.
-                'last_staff_login_at' => $this->lastStaffLoginAt(),
+                'last_staff_login_at' => $this->lastLoginAt(UserType::Staff),
+                // The staff timestamp says the administrator still shows
+                // up. This one says their customers do, which is a
+                // different question and the more interesting half: an
+                // installation whose only visitor is the person paying
+                // for it is one nobody is getting value from.
+                'last_client_login_at' => $this->lastLoginAt(UserType::Client),
             ],
             'storage' => $this->storage(),
+            'usage' => $this->usage(),
             'health' => $this->health(),
             'settings' => [
                 // Echoed back rather than assumed: an operator writes the
@@ -207,6 +287,11 @@ class StatusCommand extends Command
         $this->line('Health:       '.$status['health']['pending_migrations'].' migrations pending, '
             .$status['health']['failed_jobs'].' failed jobs, '
             .array_sum(array_filter($status['health']['queues'], 'is_int')).' queued');
+        $this->line('Scheduler:    '.($status['health']['scheduler']['last_run_at'] ?? 'never run')
+            .' ('.$status['health']['scheduler']['failing'].' failing)');
+        $this->line('Last '.self::USAGE_WINDOW_DAYS.'d:     '
+            .array_sum($status['usage']['downloads']).' downloads, '
+            .$status['usage']['uploads'].' uploads');
 
         return self::SUCCESS;
     }
@@ -259,13 +344,14 @@ class StatusCommand extends Command
     }
 
     /**
-     * @return array{pending_migrations: int, failed_jobs: int, queues: array<string, int|null>}
+     * @return array{pending_migrations: int, failed_jobs: int, failed_jobs_latest_at: string|null, queues: array<string, int|null>, scheduler: array{last_run_at: string|null, failing: int}}
      */
     private function health(): array
     {
         return [
             'pending_migrations' => $this->pendingMigrations(),
             'failed_jobs' => $this->failedJobs(),
+            'failed_jobs_latest_at' => $this->latestFailureAt(),
             // The two this application actually runs workers for. A depth
             // is not a fault on its own -- a busy installation has one --
             // but a depth that only ever grows is a worker that died, and
@@ -274,7 +360,156 @@ class StatusCommand extends Command
                 'default' => $this->queueDepth('default'),
                 'zips' => $this->queueDepth('zips'),
             ],
+            'scheduler' => $this->scheduler(),
         ];
+    }
+
+    /**
+     * Whether the scheduler is running, and whether what it runs works.
+     *
+     * One row per known command, upserted on every run, so this is a
+     * dozen rows however old the installation is.
+     *
+     * `last_run_at` is null when nothing has ever run — a brand new
+     * installation, or one whose scheduler has never been wired up at
+     * all — and those are different from "ran, a long time ago", which
+     * is a timestamp. The reader decides what counts as too old; every
+     * task in routes/console.php is daily, so anything past about a day
+     * means nobody is running it. Deliberately not judged here: a
+     * threshold belongs to whoever is watching, and baking one in would
+     * make the answer wrong for anyone whose schedule is not ours.
+     *
+     * The failure *message* is deliberately not reported. This document
+     * leaves the installation, and a task's error text is the one field
+     * here that can carry a filesystem path, a hostname or an exception
+     * from somebody's storage backend. A count says "go and look",
+     * which is all a watcher needs and all it is owed.
+     *
+     * `failing` counts commands whose *most recent* run failed, not
+     * failures over time — the row is upserted, so a task that failed
+     * last night and succeeded this morning is not failing. A task that
+     * has never run is not counted here either; it is absent from the
+     * table, which is what `last_run_at` is for.
+     *
+     * @return array{last_run_at: string|null, failing: int}
+     */
+    private function scheduler(): array
+    {
+        $lastRun = ScheduledTaskRun::query()->max('ran_at');
+
+        return [
+            'last_run_at' => $lastRun === null ? null : Carbon::parse($lastRun)->toIso8601String(),
+            'failing' => ScheduledTaskRun::query()
+                ->where('status', TaskRunStatus::Failed)
+                ->count(),
+        ];
+    }
+
+    /**
+     * What has been happening here lately.
+     *
+     * Every figure is a count over the same rolling window and there are
+     * no lifetime totals — see the class docblock for why that is a
+     * correctness decision rather than a presentational one.
+     *
+     * Downloads are split the way the installation's own dashboard
+     * splits them (DashboardController::transferSeries), on purpose: the
+     * administrator and whatever is reading this document have to be able
+     * to agree about a number they can both see. Staff downloads are
+     * reported rather than dropped so a reader can choose, but they are
+     * their own key precisely because they are not audience traffic — an
+     * administrator opening their own upload to check it is not somebody
+     * receiving a file.
+     *
+     * @return array{window_days: int, downloads: array{staff: int, clients: int, anonymous: int}, uploads: int, actions: object}
+     */
+    private function usage(): array
+    {
+        $since = now()->subDays(self::USAGE_WINDOW_DAYS);
+
+        $downloads = [
+            Action::FileDownloaded->value,
+            Action::ShareLinkDownloaded->value,
+            Action::PublicFileDownloaded->value,
+        ];
+
+        return [
+            'window_days' => self::USAGE_WINDOW_DAYS,
+            'downloads' => [
+                'staff' => $this->countActionsByActor($downloads, $since, UserType::Staff->value),
+                'clients' => $this->countActionsByActor($downloads, $since, UserType::Client->value),
+                // Null actor_type is the anonymous case: a share link or
+                // the public listing, served to somebody with no account
+                // at all. It is the traffic an administrator has no other
+                // way to see.
+                'anonymous' => $this->countActionsByActor($downloads, $since, null),
+            ],
+            'uploads' => $this->countActions([Action::FileUploaded->value], $since),
+            // Cast for the reason `modules` is: an empty PHP array
+            // encodes as a list, and a reader unmarshalling a map breaks
+            // on the day it happens to be empty rather than on the day it
+            // is written. It cannot be empty today, but the allowlist is
+            // meant to be edited.
+            'actions' => (object) $this->usageActions($since),
+        ];
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    private function usageActions(Carbon $since): array
+    {
+        $counts = [];
+
+        // One keyed count each rather than a single grouped query: this
+        // is both the cheaper shape (each rides (action, created_at);
+        // a group-by starts from created_at and reads rows) and the one
+        // that can only ever emit keys somebody chose. See USAGE_ACTIONS.
+        foreach (self::USAGE_ACTIONS as $action) {
+            $counts[$action->value] = $this->countActions([$action->value], $since);
+        }
+
+        return $counts;
+    }
+
+    /**
+     * How many of these actions happened in the window, by anyone.
+     *
+     * @param  list<string>  $actions
+     */
+    private function countActions(array $actions, Carbon $since): int
+    {
+        return ActivityLog::query()
+            ->whereIn('action', $actions)
+            ->where('created_at', '>=', $since)
+            ->count();
+    }
+
+    /**
+     * The same count, narrowed to one kind of actor.
+     *
+     * Separate from countActions() rather than an optional argument on
+     * it, because the argument would have to carry three states — staff,
+     * client, and *nobody at all* — and null already means the third.
+     * An optional `?string $actorType = null` reads as "no filter" at
+     * every call site and would have silently reported the installation's
+     * whole download total in the anonymous column.
+     *
+     * @param  list<string>  $actions
+     * @param  string|null  $actorType  null is the anonymous case: a share
+     *                                  link or the public listing, served
+     *                                  to somebody with no account
+     */
+    private function countActionsByActor(array $actions, Carbon $since, ?string $actorType): int
+    {
+        $query = ActivityLog::query()
+            ->whereIn('action', $actions)
+            ->where('created_at', '>=', $since);
+
+        return ($actorType === null
+            ? $query->whereNull('actor_type')
+            : $query->where('actor_type', $actorType)
+        )->count();
     }
 
     private function pendingMigrations(): int
@@ -299,6 +534,46 @@ class StatusCommand extends Command
         }
 
         return DB::table($table)->count();
+    }
+
+    /**
+     * When the most recent job failed, or null if none has.
+     *
+     * `failed_jobs` on its own cannot answer whether anything is wrong
+     * *now*, and reading it as though it could is a category error rather
+     * than a threshold that needs tuning. It is a history: the table is
+     * swept daily by projectsend:purge-failed-jobs, so the count spans a
+     * retention window — one whose length the installation chooses on the
+     * Scheduler Monitoring screen, and which can be set to 0 for "keep
+     * forever" by somebody who treats a failed job as evidence rather
+     * than as debris.
+     *
+     * So the same number means different things on two identical
+     * installations, and on a keep-forever one it grows without bound
+     * until any fixed threshold trips. A fleet comparing tenants on the
+     * count alone is comparing their retention settings.
+     *
+     * This is the field that answers the question actually being asked —
+     * "has anything failed lately" — because a timestamp is independent
+     * of how long the rows are kept. A count of 27 whose newest entry is
+     * three weeks old is an installation that has been healthy for three
+     * weeks and has not been swept yet.
+     *
+     * The exception text stays out, for the reason the scheduler's
+     * message does: it carries paths, hostnames and stack traces, and
+     * this document leaves the installation.
+     */
+    private function latestFailureAt(): ?string
+    {
+        $table = config('queue.failed.table');
+
+        if (! is_string($table) || $table === '') {
+            return null;
+        }
+
+        $latest = DB::table($table)->max('failed_at');
+
+        return $latest === null ? null : Carbon::parse($latest)->toIso8601String();
     }
 
     /**
@@ -333,18 +608,21 @@ class StatusCommand extends Command
     }
 
     /**
-     * The most recent interactive staff sign-in, or null if there has
-     * never been one.
+     * The most recent interactive sign-in by this kind of account, or
+     * null if there has never been one.
      */
-    private function lastStaffLoginAt(): ?string
+    private function lastLoginAt(UserType $type): ?string
     {
         $latest = ActivityLog::query()
             ->where('action', Action::Login->value)
-            ->where('actor_type', UserType::Staff->value)
+            ->where('actor_type', $type->value)
             ->max('created_at');
 
-        // `action` and `actor_type` carry an index each, so this narrows
-        // on one of them rather than reading the log.
+        // Answered out of (action, actor_type, created_at) without
+        // reading a row: the two equalities are that index's prefix and
+        // the MAX is the last entry under them. Before that index existed
+        // this was a scan of every login the installation had ever
+        // recorded, with a primary-key lookup per row to check the actor.
         return $latest === null ? null : Carbon::parse($latest)->toIso8601String();
     }
 

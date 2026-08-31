@@ -5,12 +5,17 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Files\Models\File;
 use App\Modules\Platform\Capabilities\Edition;
+use App\Modules\Audit\Action;
 use App\Modules\Platform\Installation\Events\ResolvingInstallationStatus;
+use App\Modules\Platform\Scheduling\ScheduledTaskRun;
+use App\Modules\Platform\Scheduling\TaskRunStatus;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Str;
 
 /**
  * The probe a reconciler reads instead of being given a shell one-liner
@@ -192,10 +197,43 @@ test('it reports the health a container cannot show from outside', function () {
     // container: it is still up, and zips quietly stop building.
     $health = statusJson()['health'];
 
-    expect($health)->toHaveKeys(['pending_migrations', 'failed_jobs', 'queues'])
+    expect($health)->toHaveKeys(['pending_migrations', 'failed_jobs', 'failed_jobs_latest_at', 'queues'])
         ->and($health['pending_migrations'])->toBe(0)
         ->and($health['failed_jobs'])->toBe(0)
         ->and($health['queues'])->toHaveKeys(['default', 'zips']);
+});
+
+test('it says when the most recent job failed, not just how many have', function () {
+    // The count is a history over a retention window the installation
+    // chooses, so it cannot say whether anything is wrong now. A count of
+    // two whose newest entry is three weeks old is an installation that
+    // has been healthy for three weeks and has not been swept yet.
+    DB::table('failed_jobs')->insert([
+        [
+            'uuid' => (string) Str::uuid(), 'connection' => 'redis', 'queue' => 'default',
+            'payload' => '{}', 'exception' => 'Connection refused',
+            'failed_at' => '2026-08-07 12:59:19',
+        ],
+        [
+            'uuid' => (string) Str::uuid(), 'connection' => 'redis', 'queue' => 'default',
+            'payload' => '{}', 'exception' => 'Connection refused',
+            'failed_at' => '2026-08-24 02:43:50',
+        ],
+    ]);
+
+    $health = statusJson()['health'];
+
+    expect($health['failed_jobs'])->toBe(2)
+        ->and($health['failed_jobs_latest_at'])->toBe('2026-08-24T02:43:50+00:00');
+});
+
+test('nothing has ever failed is null, with the key there to say so', function () {
+    // Distinguishable from "we got no answer", the same way every other
+    // null in this document is.
+    $health = statusJson()['health'];
+
+    expect($health)->toHaveKey('failed_jobs_latest_at')
+        ->and($health['failed_jobs_latest_at'])->toBeNull();
 });
 
 test('the enforcement setting is echoed back as applied', function () {
@@ -284,4 +322,205 @@ test('an empty string is not an answer', function () {
     config(['build.commit' => '']);
 
     expect(statusJson()['build']['commit'])->toBeNull();
+});
+
+// ------------------------------------------------------------ the scheduler
+
+/**
+ * A dead queue worker is caught by `health.queues`. Nothing caught a dead
+ * scheduler, and the first symptom of one is not a stalled feature: expired
+ * files stop being purged, so content that was meant to become unreachable
+ * stays reachable while the installation looks perfectly healthy.
+ */
+test('it reports when the scheduler last ran and how much of it is failing', function () {
+    ScheduledTaskRun::create([
+        'command' => 'projectsend:purge-expired-files',
+        'status' => TaskRunStatus::Success,
+        'ran_at' => '2026-08-30 03:00:00',
+    ]);
+    ScheduledTaskRun::create([
+        'command' => 'projectsend:purge-orphan-files',
+        'status' => TaskRunStatus::Failed,
+        'ran_at' => '2026-08-31 03:00:00',
+    ]);
+
+    expect(statusJson()['health']['scheduler'])->toBe([
+        'last_run_at' => '2026-08-31T03:00:00+00:00',
+        'failing' => 1,
+    ]);
+});
+
+test('a scheduler that has never run says so with null, not with a zero timestamp', function () {
+    // "Never wired up" and "ran, a long time ago" are different facts and
+    // the reader acts differently on them. Nothing has run here.
+    $status = statusJson();
+
+    expect($status['health']['scheduler'])->toHaveKey('last_run_at')
+        ->and($status['health']['scheduler']['last_run_at'])->toBeNull()
+        ->and($status['health']['scheduler']['failing'])->toBe(0);
+});
+
+test('a task that failed last night and succeeded this morning is not failing', function () {
+    // The row is upserted per command, so this counts commands whose most
+    // recent run failed — not failures over time.
+    $run = ScheduledTaskRun::create([
+        'command' => 'projectsend:purge-expired-files',
+        'status' => TaskRunStatus::Failed,
+        'ran_at' => '2026-08-30 03:00:00',
+    ]);
+
+    $run->update(['status' => TaskRunStatus::Success, 'ran_at' => '2026-08-31 03:00:00']);
+
+    expect(statusJson()['health']['scheduler']['failing'])->toBe(0);
+});
+
+// ----------------------------------------------------------------- usage
+
+/**
+ * What has been happening here lately.
+ *
+ * Written through ActivityLogger rather than by inserting rows, because
+ * the thing under test is a split by `actor_type` and that column is the
+ * logger's decision, not the caller's. A test that wrote its own rows
+ * would keep passing after the logger stopped stamping them.
+ */
+function logDownload(App\Modules\Audit\Action $action, ?User $actor, App\Modules\Files\Models\File $file): void
+{
+    app(App\Modules\Audit\ActivityLogger::class)->log($action, $actor, $file);
+}
+
+test('it splits downloads the way the installation own dashboard splits them', function () {
+    $file = File::factory()->create();
+    $client = User::factory()->client()->create();
+
+    logDownload(Action::FileDownloaded, $this->admin, $file);
+    logDownload(Action::FileDownloaded, $client, $file);
+    logDownload(Action::FileDownloaded, $client, $file);
+    // No actor at all: a share link or the public listing, served to
+    // somebody with no account.
+    logDownload(Action::ShareLinkDownloaded, null, $file);
+    logDownload(Action::PublicFileDownloaded, null, $file);
+
+    expect(statusJson()['usage']['downloads'])->toBe([
+        'staff' => 1,
+        'clients' => 2,
+        'anonymous' => 2,
+    ]);
+});
+
+test('the three download buckets are actually filtered, not three copies of the total', function () {
+    // The shape invites a bug where the actor filter is skipped and every
+    // bucket reports the installation's whole download total. Asserting
+    // each is smaller than the sum is what catches that.
+    $file = File::factory()->create();
+
+    logDownload(Action::FileDownloaded, $this->admin, $file);
+    logDownload(Action::ShareLinkDownloaded, null, $file);
+
+    $downloads = statusJson()['usage']['downloads'];
+
+    expect($downloads['staff'])->toBe(1)
+        ->and($downloads['clients'])->toBe(0)
+        ->and($downloads['anonymous'])->toBe(1)
+        ->and(array_sum($downloads))->toBe(2);
+});
+
+test('it counts uploads and the handful of actions it was asked for', function () {
+    $file = File::factory()->create();
+    $logger = app(App\Modules\Audit\ActivityLogger::class);
+
+    $logger->log(Action::FileUploaded, $this->admin, $file);
+    $logger->log(Action::FileUploaded, $this->admin, $file);
+    $logger->log(Action::UserCreated, $this->admin);
+    $logger->log(Action::ShareLinkCreated, $this->admin, $file);
+
+    $usage = statusJson()['usage'];
+
+    expect($usage['uploads'])->toBe(2)
+        ->and($usage['actions']['user.created'])->toBe(1)
+        ->and($usage['actions']['share_link.created'])->toBe(1)
+        ->and($usage['actions']['group.created'])->toBe(0);
+});
+
+test('it reports only the allowlisted actions, never whatever happens to be in the log', function () {
+    // This document leaves the installation. Action gains cases most
+    // weeks and some of them are somebody's compliance event rather than
+    // a business metric, so the block emits keys that were chosen and
+    // nothing else.
+    $logger = app(App\Modules\Audit\ActivityLogger::class);
+
+    $logger->log(Action::AccountErased, $this->admin);
+    $logger->log(Action::TwoFactorReset, $this->admin, $this->admin);
+    $logger->log(Action::PasswordUpdated, $this->admin);
+
+    $actions = statusJson()['usage']['actions'];
+
+    expect($actions)->not->toHaveKey('account.erased')
+        ->and($actions)->not->toHaveKey('two_factor.reset')
+        ->and($actions)->not->toHaveKey('password.updated')
+        ->and(array_keys($actions))->toBe([
+            'user.created',
+            'client.self_registered',
+            'file.assigned',
+            'share_link.created',
+            'group.created',
+        ]);
+});
+
+test('it counts the window and not the whole history', function () {
+    $file = File::factory()->create();
+
+    $this->travelTo(now()->subDays(45));
+    logDownload(Action::FileDownloaded, $this->admin, $file);
+
+    $this->travelBack();
+    logDownload(Action::FileDownloaded, $this->admin, $file);
+
+    $usage = statusJson()['usage'];
+
+    // The older one is outside the window. Reporting it would make the
+    // figure a lifetime total that only looks like a rate.
+    expect($usage['window_days'])->toBe(30)
+        ->and($usage['downloads']['staff'])->toBe(1);
+});
+
+test('it says how long the window is, rather than leaving the reader to assume', function () {
+    // A number that is charted and a number that is assumed diverge
+    // exactly once, silently, on the day the window changes.
+    expect(statusJson()['usage'])->toHaveKey('window_days');
+});
+
+test('an installation where nothing has happened reports zeroes, not a missing block', function () {
+    $usage = statusJson()['usage'];
+
+    expect($usage['downloads'])->toBe(['staff' => 0, 'clients' => 0, 'anonymous' => 0])
+        ->and($usage['uploads'])->toBe(0)
+        ->and($usage['actions']['user.created'])->toBe(0);
+});
+
+test('it reports when a client last signed in, separately from staff', function () {
+    // Staff says the administrator still shows up; this says their
+    // customers do, which is the more interesting half.
+    $this->travelTo('2026-08-24 21:13:32');
+    Auth::login(User::factory()->client()->create());
+
+    $status = statusJson();
+
+    expect($status['activity']['last_client_login_at'])->toBe('2026-08-24T21:13:32+00:00')
+        ->and($status['activity']['last_staff_login_at'])->toBeNull();
+});
+
+test('no client has ever signed in is null with the key present', function () {
+    $status = statusJson();
+
+    expect($status['activity'])->toHaveKey('last_client_login_at')
+        ->and($status['activity']['last_client_login_at'])->toBeNull();
+});
+
+test('the actions block stays a map when it is emitted as JSON', function () {
+    // Same reason `modules` is cast: a reader unmarshalling a map must
+    // not break on the day the allowlist is empty.
+    $status = statusJson(assoc: false);
+
+    expect($status['usage']->actions)->toBeObject();
 });

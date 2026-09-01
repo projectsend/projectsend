@@ -160,6 +160,26 @@ test('a path trying to climb out of the storage directory is refused', function 
     $this->actingAs($this->admin)->get("/files/{$file->id}/download")->assertNotFound();
 });
 
+test('a path carrying a control character is refused, on every method', function () {
+    // Not traversal -- header injection. The path is written into
+    // X-Accel-Redirect or X-Sendfile, and a CR or LF in a header value
+    // splits the response. PHP's header() refuses to emit one, so the real
+    // effect is a 500 on every download, preview and thumbnail of that
+    // file: a file permanently broken by its own name.
+    //
+    // Paths are generated here as Y/m/{uuid}.{ext} -- but the extension is
+    // not generated, it comes from the uploader's filename, and on a
+    // migrated installation from a v1 database.
+    $file = storedFile();
+    $file->forceFill(['path' => "2026/08/x.pd\r\nX-Injected: yes"])->save();
+
+    foreach (['nginx', 'xsendfile', 'php'] as $method) {
+        deliverAs($method);
+
+        $this->actingAs($this->admin)->get("/files/{$file->id}/download")->assertNotFound();
+    }
+});
+
 test('PHP streaming reports a missing file as missing rather than failing', function () {
     deliverAs('php');
     $file = File::factory()->create();

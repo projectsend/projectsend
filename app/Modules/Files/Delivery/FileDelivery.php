@@ -191,7 +191,8 @@ class FileDelivery
      *
      * Checked for every method, and without touching the filesystem,
      * because nginx resolves `..` in the URL it is handed just as
-     * happily as a filesystem call would. Callers pass paths from rows
+     * happily as a filesystem call would -- and because every method
+     * puts this value into a response header. Callers pass paths from rows
      * they authorized rather than from the request, so this is a
      * backstop; it is here because the cost of being wrong about that,
      * once, is handing over any file the web server can read.
@@ -201,7 +202,21 @@ class FileDelivery
         abort_if(
             $path === ''
                 || str_starts_with($path, '/')
-                || preg_match('#(^|/)\.\.(/|$)#', $path) === 1,
+                || preg_match('#(^|/)\.\.(/|$)#', $path) === 1
+                // A control character in the path is header injection, not
+                // traversal: this value is written into X-Accel-Redirect or
+                // X-Sendfile, and a CR or LF in a header value splits the
+                // response. PHP's header() refuses to emit one, so the real
+                // effect is a 500 on every download, preview and thumbnail
+                // of that file rather than a split -- a file permanently
+                // broken by its own name.
+                //
+                // Paths are `Y/m/{uuid}.{ext}` and generated here, so this
+                // should be unreachable. It is checked because the
+                // extension is not: it is taken from the uploader's
+                // filename, and on a migrated installation from a v1
+                // database, which is somebody else's data.
+                || preg_match('/[\x00-\x1F\x7F]/', $path) === 1,
             404,
         );
     }

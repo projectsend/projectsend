@@ -10,10 +10,46 @@ Anything under **Upgrade notes** is something you have to do, not something we d
 
 ## Unreleased
 
-This section collects changes as they land; the release process turns it into a numbered entry when
-a version is cut.
+This section collects changes as they land; the release process turns it into a numbered entry
+when a version is cut.
 
-**Security**
+## 2.3.0 — 1 September 2026
+
+If you run ProjectSend on Apache or LiteSpeed, this is the release to take. It installed fine on
+both before. Then every download arrived empty and every thumbnail was broken. That is fixed, and
+you do not have to configure anything. Installations on nginx were never affected and nothing
+changes for them.
+
+The rest is mostly security work. Most of it is the same kind of thing: a screen or an API endpoint
+that showed a little more than the person asking was allowed to see.
+
+**New**
+
+- **Downloads work on any web server.** Your files sit outside the web root, so ProjectSend checks
+  permission on every download before anything is sent. The fast way to finish is to hand the file
+  to the web server. Each web server wants that asked for differently, and until now ProjectSend
+  only knew how to ask nginx. On Apache and LiteSpeed it asked anyway, nothing answered, and the
+  visitor got an empty file. Now it works out what it is talking to. If it cannot hand the file
+  over, it sends the file itself, which is slower under load but works everywhere.
+- **Apache and LiteSpeed can still have the fast version.** Install `mod_xsendfile` (LiteSpeed
+  needs no module), point `XSendFilePath` at your storage directory, and set
+  `PROJECTSEND_FILE_DELIVERY=xsendfile`. See the upgrade notes.
+- **The dashboard tells you which way downloads are going out.** If PHP is sending them, there is a
+  warning next to it and a short explanation of what that costs you and how to change it. This is
+  the kind of thing that is invisible until the day the site falls over, so it says so up front.
+- **Your logo and your watermark, on every installation.** Upload a logo and it replaces ours in
+  the sidebar and on your public pages. Add a watermark and it goes on the thumbnails and previews
+  your clients and visitors see. Staff still see the originals, and the watermark is never written
+  into the stored file, so you can turn it off again.
+- **You can find out which build you are running.** Two images can say "2.2.1" and contain
+  different code. `projectsend:status` now reports the commit it was built from.
+- **You will know if the nightly jobs stop running.** When the scheduler dies, nothing looks wrong.
+  You find out weeks later, when a file you expired is still downloadable. ProjectSend now reports
+  when its scheduled work last ran and whether any of it failed.
+- **You get told when the mailbox stops working**, even when a send noticed the problem before the
+  scheduled check did.
+
+**Closed holes in who can see what**
 
 - [#1745](https://github.com/projectsend/projectsend/pull/1745) — Gate the comment moderation
   surfaces on reading, not just on the library. Permission to moderate comments was letting somebody
@@ -52,7 +88,57 @@ a version is cut.
   manifest naming only the database and `APP_URL`. Installations using `compose.example.yaml`, which
   sets both correctly, were never affected.
 
+- The client portal dashboard lists only files that client can open. The API dashboard's recent
+  activity is cut the same way.
+- Three lists were showing more than the viewer was allowed to see: the reassignment picker, the
+  account conversion list, and the membership an API member write handed back.
+- Mail and storage credentials no longer end up in the boot configuration cache. A settings form
+  that gets rejected no longer sends the credential back to the browser.
+- Connecting a sign-in provider asks for your password again. Every password prompt in front of an
+  account now has its own rate limit instead of sharing one. A two-factor code is claimed in a
+  single step, so the same code cannot be used twice.
+- An expired file no longer locks a whole group shut for staff assigned to particular clients. A
+  shared folder's contents count towards what a client can reach. A client is added to the roster
+  of the staff member who created them.
+- Whether something is an API request is decided by the route, not by a header the caller sets.
+- The interface font is served from your own installation. Loading a page no longer tells a font
+  CDN who is reading it.
+- A stored filename can no longer push a control character into a response header.
+
+**Fixed**
+
+- The zip progress bar stops polling when you leave the page.
+- A zip that fails to build no longer tells the person who asked for it why, in the server's words.
+- Previews are written to a temporary file first, so a half-written one is never served. A file's
+  previews are deleted even when its storage cannot be reached.
+- An expiry date no longer moves because somebody else saved the file at the same time. Setting one
+  through the API means what it means on the web form.
+- Updating a client through the API no longer wipes custom fields the request never mentioned.
+- The transfers chart lines up with the timezone its data is stored in.
+- Creating an account over a deleted one's email address is refused instead of crashing.
+- A comment still shows who wrote it after that account is deleted.
+- Marking a file as a new version no longer emails people about a file they already had.
+- The password reset and confirm-password screens say where the account's password actually lives,
+  which matters if you use LDAP or a sign-in provider.
+- A refused upload names the quota you are actually up against. A bulk edit that is refused says
+  which permission was missing.
+- Uploaded folders get the permissions the storage library actually asks for.
+- The public preview log no longer records the same view repeatedly.
+- Every new screen in this release is translated into all sixteen languages.
+
+**Before you upgrade, read the notes below.**
+
 ### Upgrade notes
+
+- **This upgrade adds two indexes to the activity log, and on a big installation that takes
+  minutes.** It is the slowest part. Nothing goes offline while it runs — the application keeps
+  answering — but do not expect the migration to finish in seconds.
+- **On Apache or LiteSpeed you need to do nothing, but there is something worth doing.** Downloads
+  will start working on their own. PHP will be sending them, which ties up a worker process for the
+  whole of each download. That is fine on a quiet site and not fine on a busy one. To move to the
+  fast path: install `mod_xsendfile` (LiteSpeed needs no module), allow your storage directory with
+  `XSendFilePath`, then set `PROJECTSEND_FILE_DELIVERY=xsendfile` in `.env`. The dashboard will
+  confirm the change.
 
 - **If you copied the example Docker file, `http://<your-server-ip>:8080` will stop answering.**
   That is the change. Reach the application through your reverse proxy, as `APP_URL` describes. If
@@ -64,6 +150,10 @@ a version is cut.
   now sets them itself, and a real environment variable always beats that file. If you had turned
   debug on by editing `storage/.env`, pass `-e APP_DEBUG=true` (or `environment:` in compose)
   instead. Anything you already set that way keeps working unchanged.
+
+Thanks to [@denkfabrik-li](https://github.com/denkfabrik-li), who wrote all forty-four pull
+requests in this release, and to [@prbt2016](https://github.com/prbt2016), who reported the Apache
+download failure that started the delivery work.
 
 ## 2.2.1 — 28 August 2026
 

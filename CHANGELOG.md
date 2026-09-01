@@ -124,6 +124,10 @@ that showed a little more than the person asking was allowed to see.
   which permission was missing.
 - Uploaded folders get the permissions the storage library actually asks for.
 - The public preview log no longer records the same view repeatedly.
+- Updating with `update.sh` no longer silently switches off route, event and view caching. The
+  script wiped the compiled caches while replacing the files, which is also how ProjectSend
+  recognised that you had cached them in the first place — so it rebuilt nothing, and every update
+  quietly left the site slower than the install instructions promised.
 - Every new screen in this release is translated into all sixteen languages.
 
 **Before you upgrade, read the notes below.**
@@ -154,6 +158,57 @@ that showed a little more than the person asking was allowed to see.
 Thanks to [@denkfabrik-li](https://github.com/denkfabrik-li), who wrote all forty-four pull
 requests in this release, and to [@prbt2016](https://github.com/prbt2016), who reported the Apache
 download failure that started the delivery work.
+
+### Pull requests merged since 2.2.1
+
+The summary above is what changed. This is the paper trail, for anyone who wants to read the
+original change. No issues were closed in this cycle — the work arrived as pull requests.
+
+- [#1718](https://github.com/projectsend/projectsend/pull/1718) — Narrow the reassignment picker to what a viewer may see
+- [#1719](https://github.com/projectsend/projectsend/pull/1719) — Count a shared folder's contents as reach, not just the folder
+- [#1720](https://github.com/projectsend/projectsend/pull/1720) — Stop an expired file locking a group shut for a scoped staff member
+- [#1721](https://github.com/projectsend/projectsend/pull/1721) — Scope the API dashboard's recent actions to what the viewer may read
+- [#1722](https://github.com/projectsend/projectsend/pull/1722) — Show the portal dashboard the files a client can actually open
+- [#1723](https://github.com/projectsend/projectsend/pull/1723) — Stop a client PATCH clearing custom fields it never mentioned
+- [#1725](https://github.com/projectsend/projectsend/pull/1725) — Write a rendition through a temporary file, and never serve an empty one
+- [#1726](https://github.com/projectsend/projectsend/pull/1726) — Delete a file's renditions even when its own disk cannot be resolved
+- [#1727](https://github.com/projectsend/projectsend/pull/1727) — Give an API expiry date the same meaning the web gives it
+- [#1728](https://github.com/projectsend/projectsend/pull/1728) — Stop an expiry moving because somebody else saved the file
+- [#1729](https://github.com/projectsend/projectsend/pull/1729) — Decide what is an API request from the route, not from the caller's headers
+- [#1730](https://github.com/projectsend/projectsend/pull/1730) — Refuse to provision over a deleted account's address instead of crashing
+- [#1731](https://github.com/projectsend/projectsend/pull/1731) — Fail a zip build without handing the requester the server's reason
+- [#1732](https://github.com/projectsend/projectsend/pull/1732) — Debounce the public preview log the way the signed-in one already is
+- [#1734](https://github.com/projectsend/projectsend/pull/1734) — Name the quota a client is actually held to when an upload is refused
+- [#1735](https://github.com/projectsend/projectsend/pull/1735) — Stop an editable-once checkbox locking before anybody ticks it
+- [#1736](https://github.com/projectsend/projectsend/pull/1736) — Put a client on the roster of the scoped staff member who created them
+- [#1737](https://github.com/projectsend/projectsend/pull/1737) — Compare the transfers window against the column's own timezone
+- [#1738](https://github.com/projectsend/projectsend/pull/1738) — Claim a TOTP code atomically instead of checking then writing
+- [#1739](https://github.com/projectsend/projectsend/pull/1739) — Refresh a mailbox on the schedule under the lock a send would hold
+- [#1740](https://github.com/projectsend/projectsend/pull/1740) — Leave the caches update.sh's own update command needs to see
+- [#1741](https://github.com/projectsend/projectsend/pull/1741) — Ask about the zips queue on every path that could answer it
+- [#1742](https://github.com/projectsend/projectsend/pull/1742) — Set the directory permission Flysystem actually reads
+- [#1743](https://github.com/projectsend/projectsend/pull/1743) — Check the read half of the redirect rule at every door, not one
+- [#1744](https://github.com/projectsend/projectsend/pull/1744) — Stop a version link telling people about a file they already had
+- [#1745](https://github.com/projectsend/projectsend/pull/1745) — Gate the comment moderation surfaces on reading, not just on the library
+- [#1746](https://github.com/projectsend/projectsend/pull/1746) — Say what expiry does to a client-scoped staff member's library
+- [#1747](https://github.com/projectsend/projectsend/pull/1747) — Say which permission a bulk edit was actually missing
+- [#1748](https://github.com/projectsend/projectsend/pull/1748) — Let a password reset know where the account's credentials live
+- [#1749](https://github.com/projectsend/projectsend/pull/1749) — A deleted account is still the person who wrote the comment
+- [#1750](https://github.com/projectsend/projectsend/pull/1750) — Tell the admins the mailbox is dead, even when a send noticed first
+- [#1751](https://github.com/projectsend/projectsend/pull/1751) — Keep the mail and storage credentials out of the boot-config cache
+- [#1752](https://github.com/projectsend/projectsend/pull/1752) — Bound the two preference endpoints by their own registries
+- [#1753](https://github.com/projectsend/projectsend/pull/1753) — Narrow the conversion list to the clients its own refusal allows
+- [#1754](https://github.com/projectsend/projectsend/pull/1754) — Narrow the membership an API member write hands back
+- [#1755](https://github.com/projectsend/projectsend/pull/1755) — Give every password check in front of an account its own bucket
+- [#1756](https://github.com/projectsend/projectsend/pull/1756) — Make linking a provider re-prove the password
+- [#1757](https://github.com/projectsend/projectsend/pull/1757) — Stop a rejected settings form flashing the credential it carried
+- [#1758](https://github.com/projectsend/projectsend/pull/1758) — Let the confirm-password screen ask where the password lives
+- [#1759](https://github.com/projectsend/projectsend/pull/1759) — Publish the quickstart on loopback, since it trusts any proxy
+- [#1760](https://github.com/projectsend/projectsend/pull/1760) — Have the production image default to production
+- [#1761](https://github.com/projectsend/projectsend/pull/1761) — Serve the interface font from the installation, not from a font CDN
+- [#1762](https://github.com/projectsend/projectsend/pull/1762) — Run the auth and settings screens through the translator
+- [#1763](https://github.com/projectsend/projectsend/pull/1763) — Stop the zip poll when its page goes away
+- [#1764](https://github.com/projectsend/projectsend/pull/1764) — Honour Laravel's placeholder case convention in t()
 
 ## 2.2.1 — 28 August 2026
 

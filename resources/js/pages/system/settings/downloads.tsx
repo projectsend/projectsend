@@ -1,5 +1,6 @@
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
+import { AlertTriangle } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
 import { FileDeliveryDialog, type FileDelivery } from '@/components/file-delivery-dialog';
@@ -84,8 +85,9 @@ export default function DownloadSettings({ max_zip_download_size_mb, file_delive
                         <button
                             type="button"
                             onClick={() => setDeliveryOpen(true)}
-                            className="mt-2 text-sm underline hover:no-underline"
+                            className="mt-2 flex items-center gap-1.5 text-sm font-medium text-amber-600 underline underline-offset-2 hover:no-underline dark:text-amber-500"
                         >
+                            <AlertTriangle className="size-4 shrink-0" />
                             {t('Why this matters, and how to change it')}
                         </button>
                     )}

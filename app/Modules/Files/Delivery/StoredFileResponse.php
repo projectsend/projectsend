@@ -7,8 +7,8 @@ namespace App\Modules\Files\Delivery;
 use App\Modules\Files\Models\File;
 use App\Support\ContentDisposition;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * A stored file's own bytes, put on the wire for whichever disk it lives
@@ -20,15 +20,16 @@ use Illuminate\Support\Facades\Storage;
  * asking. The one thing it knows is the thing each caller kept getting
  * wrong on its own: that `$file->disk` decides how the bytes travel.
  *
- * Local disk: X-Accel-Redirect, so nginx streams the file and PHP never
- * touches the bytes. Anything else — S3, GCS and friends — gets a
- * short-lived presigned URL carrying the disposition, which an object
- * store ranges just as well.
+ * Local disk: handed to FileDelivery, which decides whether the web
+ * server sends the bytes or PHP does. Anything else — S3, GCS and
+ * friends — gets a short-lived presigned URL carrying the disposition,
+ * which an object store ranges just as well.
  *
  * That distinction matters most for inline(): a <video> seeking through
- * an hour of footage issues a long tail of Range requests, and nginx's
- * static handler answers those with 206s on its own, dropping the
- * Content-Length below in favour of the range it actually served.
+ * an hour of footage issues a long tail of Range requests. Every local
+ * delivery method answers those — nginx's static handler on the fast
+ * path, BinaryFileResponse when PHP is streaming — each dropping the
+ * Content-Length passed here in favour of the range actually served.
  *
  * Callers of inline() must have established that the mime type is
  * inline-safe first; PreviewKind is the allowlist, and the reason there
@@ -36,6 +37,8 @@ use Illuminate\Support\Facades\Storage;
  */
 class StoredFileResponse
 {
+    public function __construct(private readonly FileDelivery $delivery) {}
+
     /** Shown in place — a preview. */
     public function inline(File $file): Response|RedirectResponse
     {
@@ -60,11 +63,6 @@ class StoredFileResponse
             return redirect()->away($url);
         }
 
-        return response('', 200, [
-            'X-Accel-Redirect' => '/protected-files/'.$file->path,
-            'Content-Type' => $file->mime_type,
-            'Content-Disposition' => $disposition,
-            'Content-Length' => (string) $file->size,
-        ]);
+        return $this->delivery->serve($file->path, $file->mime_type, $disposition, $file->size);
     }
 }

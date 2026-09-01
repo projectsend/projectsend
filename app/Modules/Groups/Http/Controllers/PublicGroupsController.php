@@ -9,6 +9,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Comments\CommentingRules;
 use App\Modules\Files\Access\DownloadAllowance;
+use App\Modules\Files\Delivery\FileDelivery;
 use App\Modules\Files\Delivery\StoredFileResponse;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
@@ -33,12 +34,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * The guest-facing side of a public group: no Gate/policy involved (same
@@ -86,6 +87,7 @@ class PublicGroupsController extends Controller
         private readonly CommentingRules $commenting,
         private readonly StoredFileResponse $bytes,
         private readonly LocalSourceFile $source,
+        private readonly FileDelivery $delivery,
     ) {}
 
     public function index(Request $request, string $publicSlug): InertiaResponse|RedirectResponse
@@ -276,11 +278,11 @@ class PublicGroupsController extends Controller
             ));
         }
 
-        return response('', 200, [
-            'X-Accel-Redirect' => '/protected-files/'.$thumbnailPath,
-            'Content-Type' => $file->mime_type,
-            'Content-Disposition' => ContentDisposition::inline($file->original_name),
-        ]);
+        return $this->delivery->serve(
+            $thumbnailPath,
+            $file->mime_type,
+            ContentDisposition::inline($file->original_name),
+        );
     }
 
     /**

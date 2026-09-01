@@ -14,6 +14,7 @@ use App\Modules\Audit\ActivityPresenter;
 use App\Modules\Audit\DashboardWidgetPreferences;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Files\Delivery\FileDelivery;
 use App\Modules\Files\Models\File;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Identity\UserType;
@@ -51,6 +52,7 @@ class DashboardController extends Controller
         private readonly Settings $settings,
         private readonly ApiUsage $apiUsage,
         private readonly StorageDurability $storageDurability,
+        private readonly FileDelivery $fileDelivery,
         private readonly Installation $installation,
         private readonly TimezoneRegistry $timezones,
         private readonly SystemEnvironment $environment,
@@ -477,7 +479,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * @return array<string, string|int|bool|array<string, string|null>|null>
+     * @return array<string, array<string, bool|string|null>|bool|int|string|null>
      */
     private function systemInfo(): array
     {
@@ -502,6 +504,12 @@ class DashboardController extends Controller
             // Installation. Always present, unlike storage_durability, which
             // is null whenever the durability question does not apply.
             'install_kind' => $this->installation->kind()->value,
+            // How downloads leave the server, and whether that was
+            // detected or stated. Reported even when it is the fast path:
+            // "my downloads are handed to the web server" is worth being
+            // able to confirm at a glance, not only worth warning about
+            // when it is false — the same reasoning as storage_durability.
+            'file_delivery' => $this->fileDelivery->describe(),
         ];
     }
 

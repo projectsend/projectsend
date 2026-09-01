@@ -26,6 +26,13 @@
         <env name="DB_DATABASE" value=":memory:"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="PROJECTSEND_EDITION" value="community"/>
+        <!-- The suite describes the nginx fast path, which is what Docker
+             and every documented install runs. Left at "auto" the tests
+             would detect no web server at all and fall back to PHP
+             streaming, quietly retiring the coverage of the mechanism
+             most installations actually use. Tests for the other methods
+             set the config themselves. -->
+        <env name="PROJECTSEND_FILE_DELIVERY" value="nginx"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>

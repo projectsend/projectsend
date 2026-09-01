@@ -88,6 +88,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | How downloads leave the server
+    |--------------------------------------------------------------------------
+    |
+    | Uploads live outside the web root, so PHP authorizes every download
+    | before any byte moves. What differs is what happens next: PHP can
+    | stream the file itself, or hand the web server a header naming the
+    | file and let it do the work. The header is faster and each server
+    | spells it differently — a server that does not recognise the one it
+    | is sent serves the empty body instead, which is a 0-byte download.
+    |
+    | 'auto' (the default) uses nginx's X-Accel-Redirect when the server
+    | says it is nginx, and PHP streaming otherwise. 'nginx', 'xsendfile'
+    | (Apache with mod_xsendfile, or LiteSpeed) and 'php' state it
+    | outright. Read here rather than through env() elsewhere, so that
+    | `php artisan config:cache` does not silently blank it.
+    |
+    */
+
+    'file_delivery' => env('PROJECTSEND_FILE_DELIVERY', 'auto'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Chunked upload part size (MB)
     |--------------------------------------------------------------------------
     |

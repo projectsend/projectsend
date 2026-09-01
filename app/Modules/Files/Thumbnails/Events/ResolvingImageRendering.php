@@ -14,9 +14,10 @@ use App\Modules\Files\Thumbnails\ImageRendition;
  *
  * A thumbnail never asks: it is a rendering by definition, nothing else
  * would fit in a listing row. A preview is the case with two valid
- * answers. Serving the stored file is far cheaper — an X-Accel-Redirect
- * with no PHP in the path at all, or a redirect straight to external
- * storage — and it is what this app has always done. Decoding and
+ * answers. Serving the stored file is far cheaper — handed to the web
+ * server with no PHP in the path at all where that is possible, or a
+ * redirect straight to external storage — and it is what this app has
+ * always done. Decoding and
  * re-encoding a full-size photograph instead is only worth it when
  * something actually intends to change what the viewer sees.
  *

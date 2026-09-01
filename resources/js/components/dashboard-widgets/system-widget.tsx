@@ -1,11 +1,14 @@
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { AlertTriangle, ArrowUpCircle, HardDrive } from 'lucide-react';
+import { useState } from 'react';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { FileDeliveryDialog, type FileDelivery } from '@/components/file-delivery-dialog';
 import { UpdateInstructions, type InstallKind } from '@/components/update-instructions';
 import { useTranslation } from '@/hooks/use-translation';
 import { formatBytes } from '@/lib/format-bytes';
+import { cn } from '@/lib/utils';
 
 export interface StorageDurability {
     level: 'durable' | 'docker_volume' | 'ephemeral' | 'unknown';
@@ -29,6 +32,22 @@ export interface SystemInfo {
     storage_durability: StorageDurability | null;
     /** Decides which upgrade instructions this card prints. */
     install_kind: InstallKind;
+    /** How downloads leave the server — see FileDeliveryDialog. */
+    file_delivery: FileDelivery;
+}
+
+/**
+ * What the delivery row says, per method.
+ *
+ * Named after the mechanism rather than graded good/bad: an administrator
+ * reading "Web server (nginx)" can check it against what they configured,
+ * which "Optimized" would not let them do.
+ */
+function deliveryLabel(method: FileDelivery['method'], t: (key: string) => string): string {
+    if (method === 'nginx') return t('Web server (nginx)');
+    if (method === 'xsendfile') return t('Web server (X-Sendfile)');
+
+    return t('PHP');
 }
 
 /**
@@ -87,6 +106,10 @@ export function SystemWidget({ system, onViewReleaseNotes }: { system: SystemInf
     const { t } = useTranslation();
     const { update_notice } = usePage<SharedData>().props;
     const durability = system.storage_durability;
+    const [deliveryOpen, setDeliveryOpen] = useState(false);
+    // Only PHP is worth flagging. The other two are the file being handed
+    // to the web server, which is the outcome this is watching for.
+    const deliveryNeedsAttention = system.file_delivery.method === 'php';
 
     return (
         <div>
@@ -149,6 +172,39 @@ export function SystemWidget({ system, onViewReleaseNotes }: { system: SystemInf
                         <dd>{formatBytes(system.storage_free_bytes)}</dd>
                     </div>
                 )}
+                {/* Same reasoning as the durability row below: stated
+                    always, flagged only when it is the slow one. The icon
+                    is a button rather than a tooltip because the
+                    explanation does not fit in one, and "not optimized"
+                    without the why is not worth putting on a dashboard. */}
+                <div className="flex justify-between gap-2">
+                    {/* The label carries the colour too, not just the icon.
+                        A muted label beside a small amber triangle reads as
+                        decoration; the row has to look different from the
+                        five plain facts above it to be worth a second
+                        glance. */}
+                    <dt
+                        className={cn(
+                            deliveryNeedsAttention ? 'font-medium text-amber-600 dark:text-amber-500' : 'text-muted-foreground',
+                        )}
+                    >
+                        {t('Downloads sent by')}
+                    </dt>
+                    <dd className="flex items-center gap-1.5">
+                        {deliveryLabel(system.file_delivery.method, t)}
+                        {deliveryNeedsAttention && (
+                            <button
+                                type="button"
+                                onClick={() => setDeliveryOpen(true)}
+                                className="text-amber-600 hover:text-amber-700 dark:text-amber-500 dark:hover:text-amber-400"
+                                aria-label={t('Why downloads are not being handed to the web server')}
+                                title={t('Downloads are not being handed to the web server')}
+                            >
+                                <AlertTriangle className="size-4" />
+                            </button>
+                        )}
+                    </dd>
+                </div>
                 {/* Stated even when everything is correct: "my files are on a
                     host directory" is worth being able to confirm at a glance,
                     not only worth warning about when it is false. */}
@@ -163,6 +219,7 @@ export function SystemWidget({ system, onViewReleaseNotes }: { system: SystemInf
                     </div>
                 )}
             </dl>
+            <FileDeliveryDialog delivery={system.file_delivery} open={deliveryOpen} onOpenChange={setDeliveryOpen} />
         </div>
     );
 }

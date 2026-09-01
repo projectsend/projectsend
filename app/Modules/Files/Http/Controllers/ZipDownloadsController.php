@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Files\Delivery\FileDelivery;
 use App\Modules\Files\Access\DownloadAllowance;
 use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\Jobs\BuildZipDownloadJob;
@@ -21,10 +22,10 @@ use App\Support\ContentDisposition;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * A folder's "Download as zip" button and the file listing's multi-select
@@ -45,6 +46,7 @@ class ZipDownloadsController extends Controller
         private readonly ViewableFileScope $viewable,
         private readonly DownloadAllowance $allowance,
         private readonly Settings $settings,
+        private readonly FileDelivery $delivery,
     ) {}
 
     public function store(Request $request): JsonResponse
@@ -186,12 +188,12 @@ class ZipDownloadsController extends Controller
 
         $size = Storage::disk('files')->size($path);
 
-        return response('', 200, [
-            'X-Accel-Redirect' => '/protected-files/'.$path,
-            'Content-Type' => 'application/zip',
-            'Content-Disposition' => ContentDisposition::attachment($this->filenameFor($zipDownload)),
-            'Content-Length' => (string) $size,
-        ]);
+        return $this->delivery->serve(
+            $path,
+            'application/zip',
+            ContentDisposition::attachment($this->filenameFor($zipDownload)),
+            $size,
+        );
     }
 
     /**

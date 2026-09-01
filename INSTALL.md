@@ -21,7 +21,7 @@ to create a database — this is not an install you can do over FTP alone.
 | **PHP** | 8.4 or newer, both the command-line PHP and PHP-FPM |
 | **PHP extensions** | `bcmath` `ctype` `curl` `dom` `fileinfo` `filter` `gd` `iconv` `intl` `json` `ldap` `mbstring` `openssl` `pcntl` `pdo_mysql` `session` `simplexml` `tokenizer` `zip` |
 | **Database** | MySQL 8.0 or newer (we test on 8.4 LTS) |
-| **Web server** | **nginx**, with PHP-FPM — see the note below |
+| **Web server** | Any, with PHP-FPM. **nginx is strongly recommended** — see the note below |
 | **Disk space** | The app itself is small; plan for whatever your users will upload |
 
 A few notes on that list:
@@ -29,66 +29,113 @@ A few notes on that list:
 - **`ldap` is required even if you never use LDAP.** One of the libraries ProjectSend depends on
   declares it, so PHP will refuse to start the app without it. On Debian/Ubuntu it is
   `php8.4-ldap`; on RHEL-family systems, `php-ldap`.
-- **nginx is not a preference, it is a requirement.** See [Why nginx](#why-nginx) — it is worth
-  two minutes of reading before you commit to a server, because Apache cannot be made to work by
-  configuring it differently.
+- **nginx is recommended, not required.** ProjectSend runs on Apache and LiteSpeed too, and
+  downloads work on them out of the box. What differs is *how* the bytes are sent: on nginx the
+  web server sends them, and everywhere else PHP does, which costs a worker process for the
+  duration of every download. See [How downloads are sent](#how-downloads-are-sent) before you
+  commit to a server — it is a capacity decision, not a compatibility one.
 - **Redis is optional.** The Docker setup uses it, but a manual install works fine with the
   database for sessions, cache and queues. If you already have Redis, see
   [Optional extras](#optional-extras) below.
 
-### Why nginx
+### How downloads are sent
 
 Your uploaded files do not live under `public/`. They sit in `storage/app/files/`, outside the web
 root, where no URL can reach them — which is the whole point: a file is only yours to download if
 ProjectSend says so, and a file sitting in a guessable public folder has already lost that
 argument.
 
-So every download has to pass through a permission check. The obvious way to do that is to let PHP
-read the file and echo it back to the browser, and that is what most PHP applications do. It works,
-and it is a bad idea at any real size: a single 5 GB download occupies a PHP process for its entire
-duration, so a handful of people downloading at once can exhaust every worker your server has while
-the CPU sits idle. Resumable downloads, byte ranges and progress bars all have to be reimplemented
-by hand, usually incorrectly.
+So every download has to pass through a permission check in PHP first. What happens *after* that
+check passes is the thing this section is about, and ProjectSend can do it two ways.
 
-ProjectSend does the other thing. PHP checks permissions, logs the download, and then answers with
-an empty response carrying a header that says *"nginx, please send this file."* nginx streams the
-bytes with the same code it uses for any static file — sendfile, byte ranges, resume support, no
-PHP process held open — and the visitor never sees the real path. The header is
-`X-Accel-Redirect`, and the matching `location /protected-files/` block in
-[step 6](#step-6--point-your-web-server-at-it) is marked `internal`, which is what stops anyone
-from requesting that path directly.
+**PHP sends the file.** It opens the file and writes it out to the visitor. This works on every
+web server and needs no configuration, which is why it is what ProjectSend falls back to. The cost
+is that one PHP worker process is occupied for the whole of each download — three minutes for a
+large file on a slow connection is three minutes that worker cannot answer anything else. A
+handful of concurrent large downloads can therefore occupy every worker you have and the site
+stops responding, with the processor idle and the workers all waiting on network transfers.
 
-**Apache has no equivalent that ProjectSend can use.** Apache's closest feature, `mod_xsendfile`,
-reads a differently-named header (`X-Sendfile`) that ProjectSend does not send, and it is not
-installed by default anyway. LiteSpeed has its own third spelling. On any of them the application
-installs fine and every page works — you can log in, upload, manage clients, browse the library —
-but **every download returns an empty response or a 404**, because nothing is listening for the
-instruction PHP just gave. There is no setting to change; the header names simply do not match.
+**The web server sends the file.** PHP answers with an empty response and a header naming the
+file, and finishes immediately; the web server streams the bytes with the same code it uses for
+any static file — `sendfile`, byte ranges, resume support, no PHP process held open — and the
+visitor never sees the real path. This is what you want on anything busy.
 
-Two ways out, if nginx really is impossible on your hosting:
+The second option needs a header, and **each web server reads a different one**, which is why
+ProjectSend has to know which one it is talking to. It works this out from the server itself and
+you can override it.
 
-- Put nginx in front of Apache as a reverse proxy, serving `/protected-files/` itself. This works
-  but is more moving parts than just using nginx. Give the proxy some header headroom while you are
-  there — the same headroom the reference configuration in Step 6 gives PHP-FPM, in the directives a
-  proxy uses instead:
+| Your server | What ProjectSend does | What you need to configure |
+|---|---|---|
+| nginx | `X-Accel-Redirect` | The `location /protected-files/` block in [step 6](#step-6--point-your-web-server-at-it). Detected automatically |
+| Apache | PHP sends the file, unless you enable `mod_xsendfile` | See below |
+| LiteSpeed / OpenLiteSpeed | PHP sends the file, unless you turn on X-Sendfile | See below |
+| Anything else | PHP sends the file | Nothing |
 
-  ```nginx
-  proxy_buffer_size       32k;
-  proxy_buffers           8 32k;
-  proxy_busy_buffers_size 64k;
-  ```
+**The dashboard tells you which one is in use.** The System panel has a "Downloads sent by" line,
+with a warning icon and an explanation whenever PHP is doing the sending. You do not have to
+remember to check this file.
 
-  nginx buffers a response's headers into a single block that defaults to one memory page — 4 KB on
-  most systems — and answers `502 Bad Gateway` with `upstream sent too big header` when they do not
-  fit. The page that goes over is not always the same one, so it presents as an intermittent fault
-  rather than as a misconfiguration. This applies to any proxy in front of ProjectSend, not just
-  this one: Nginx Proxy Manager, Traefik and a hand-written nginx vhost all ship the same default.
-  ([#1664](https://github.com/projectsend/projectsend/issues/1664))
-- Store your files in object storage instead — S3-compatible or Google Cloud Storage (see
-  [Storing files somewhere other than this server](#storing-files-somewhere-other-than-this-server)).
-  Files kept there are never on your server's disk, so downloads become a signed, expiring redirect
-  to the storage provider and the web server is not involved at all. This is a genuine, supported
-  path — just decide it before people start uploading, not after.
+#### Enabling X-Sendfile on Apache or LiteSpeed
+
+Apache needs [`mod_xsendfile`](https://github.com/nmaier/mod_xsendfile) installed and enabled, and
+a directive allowing it to serve your storage directory:
+
+```apache
+XSendFile On
+XSendFilePath /home/projectsend/storage/app/files
+```
+
+LiteSpeed and OpenLiteSpeed read the same header without an extra module; enable it in the server
+configuration.
+
+Then tell ProjectSend to use it, in `.env`:
+
+```dotenv
+PROJECTSEND_FILE_DELIVERY=xsendfile
+```
+
+**ProjectSend will not switch this on by itself**, even when it can see the module is loaded,
+because it cannot see whether `XSendFilePath` allows the storage directory. Guessing wrong there
+produces empty downloads rather than slow ones, and an empty download is a much worse failure than
+a slow one — so this stays something you turn on having configured it.
+
+#### Choosing explicitly
+
+`PROJECTSEND_FILE_DELIVERY` accepts:
+
+| Value | Meaning |
+|---|---|
+| `auto` | The default. nginx if the server says it is nginx, PHP otherwise |
+| `nginx` | Always `X-Accel-Redirect`. Use this if nginx is proxying another server |
+| `xsendfile` | Always `X-Sendfile`, for Apache with `mod_xsendfile`, or LiteSpeed |
+| `php` | Always PHP. Correct and slow, and never wrong |
+
+The one case `auto` gets wrong is **nginx reverse-proxying Apache**: PHP is talking to Apache, so
+it picks PHP streaming, and downloads work but do not use the nginx in front. Set
+`PROJECTSEND_FILE_DELIVERY=nginx` and make sure the front nginx serves `/protected-files/`. While
+you are there, give the proxy some header headroom — the same headroom the reference configuration
+in Step 6 gives PHP-FPM, in the directives a proxy uses instead:
+
+```nginx
+proxy_buffer_size       32k;
+proxy_buffers           8 32k;
+proxy_busy_buffers_size 64k;
+```
+
+nginx buffers a response's headers into a single block that defaults to one memory page — 4 KB on
+most systems — and answers `502 Bad Gateway` with `upstream sent too big header` when they do not
+fit. The page that goes over is not always the same one, so it presents as an intermittent fault
+rather than as a misconfiguration. This applies to any proxy in front of ProjectSend, not just
+this one: Nginx Proxy Manager, Traefik and a hand-written nginx vhost all ship the same default.
+([#1664](https://github.com/projectsend/projectsend/issues/1664))
+
+#### Or take your server out of it entirely
+
+Store your files in object storage — S3-compatible or Google Cloud Storage (see
+[Storing files somewhere other than this server](#storing-files-somewhere-other-than-this-server)).
+Files kept there are never on your server's disk, so downloads become a signed, expiring redirect
+to the storage provider and the web server is not involved at all. Decide this before people start
+uploading, not after.
 
 ---
 
@@ -216,10 +263,10 @@ FILES_WEB_SERVER_READABLE=true
 
 Uploaded files are written `0600` inside `0700` directories, readable only by the user that wrote
 them. That is deliberate, and on a same-user server it is the safer setting. But a download is not
-served by PHP: PHP checks permissions and then hands the web server the path with `X-Accel-Redirect`
-(see [Why nginx](#why-nginx)), so the web server has to open a file PHP owns. When it cannot, **the
-whole site works and only downloads fail** — the browser reports `ERR_INVALID_RESPONSE` and the
-nginx error log says:
+served by PHP on nginx: PHP checks permissions and then hands the web server the path with
+`X-Accel-Redirect` (see [How downloads are sent](#how-downloads-are-sent)), so the web server has
+to open a file PHP owns. When it cannot, **the whole site works and only downloads fail** — the
+browser reports `ERR_INVALID_RESPONSE` and the nginx error log says:
 
 ```
 open() ".../storage/app/files/..." failed (13: Permission denied)
@@ -546,9 +593,15 @@ That is correct behaviour until the first administrator exists. Finish step 7. I
 created one and it still happens, ProjectSend cannot reach your database — check `storage/logs/`.
 
 **Pages load but downloads give a 404, or download a 0-byte file.**
-The `/protected-files/` block is missing from your nginx config, or its `alias` path does not match
-where you installed ProjectSend. It must point at `storage/app/files/` and end with a slash. If you
-are on Apache or LiteSpeed, no configuration will fix this — see [Why nginx](#why-nginx).
+On nginx, the `/protected-files/` block is missing from your config, or its `alias` path does not
+match where you installed ProjectSend. It must point at `storage/app/files/` and end with a slash.
+
+On any server, check the "Downloads sent by" line in the dashboard's System panel against the
+server you are actually running. A 0-byte download means ProjectSend sent a header the server did
+not act on — most often `PROJECTSEND_FILE_DELIVERY` set to `nginx` or `xsendfile` on a server that
+is neither, or set to `xsendfile` without `XSendFilePath` allowing the storage directory. Setting
+`PROJECTSEND_FILE_DELIVERY=php` always works and is the quickest way to confirm that is the
+problem. See [How downloads are sent](#how-downloads-are-sent).
 
 **Uploads fail partway through.**
 `client_max_body_size` in nginx, or `upload_max_filesize` / `post_max_size` in `php.ini`, is

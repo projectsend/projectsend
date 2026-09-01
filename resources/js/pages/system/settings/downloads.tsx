@@ -1,7 +1,8 @@
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
 
+import { FileDeliveryDialog, type FileDelivery } from '@/components/file-delivery-dialog';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { SaveButton } from '@/components/save-button';
@@ -12,10 +13,12 @@ import AppLayout from '@/layouts/app-layout';
 
 interface DownloadSettingsProps {
     max_zip_download_size_mb: number;
+    file_delivery: FileDelivery;
 }
 
-export default function DownloadSettings({ max_zip_download_size_mb }: DownloadSettingsProps) {
+export default function DownloadSettings({ max_zip_download_size_mb, file_delivery }: DownloadSettingsProps) {
     const { t } = useTranslation();
+    const [deliveryOpen, setDeliveryOpen] = useState(false);
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: t('Settings'), href: '/system/settings' },
@@ -60,6 +63,40 @@ export default function DownloadSettings({ max_zip_download_size_mb }: DownloadS
 
                     <SaveButton processing={processing} recentlySuccessful={recentlySuccessful} />
                 </form>
+
+                {/* Not a setting, and here because this is where somebody
+                    coming from v1 looks for one — v1 had a "Download
+                    method" dropdown. Read-only on purpose: it describes
+                    the server this installation is running on, and a value
+                    kept in the database would travel to a different server
+                    in a restore and be wrong there. */}
+                <div className="mt-8 max-w-xl border-t pt-6">
+                    <h2 className="text-sm font-medium">{t('How downloads are sent')}</h2>
+                    <p className="text-muted-foreground mt-2 text-sm">
+                        {file_delivery.method === 'nginx' &&
+                            t('Files are handed to nginx, which sends them without holding a PHP process open. This is the fastest option and needs nothing further.')}
+                        {file_delivery.method === 'xsendfile' &&
+                            t('Files are handed to your web server with the X-Sendfile header, which sends them without holding a PHP process open.')}
+                        {file_delivery.method === 'php' &&
+                            t('PHP is reading each file and sending it. That works on every server, but it occupies a PHP worker process for the whole of each download.')}
+                    </p>
+                    {file_delivery.method === 'php' && (
+                        <button
+                            type="button"
+                            onClick={() => setDeliveryOpen(true)}
+                            className="mt-2 text-sm underline hover:no-underline"
+                        >
+                            {t('Why this matters, and how to change it')}
+                        </button>
+                    )}
+                    <p className="text-muted-foreground mt-3 text-xs">
+                        {file_delivery.detected
+                            ? t('Detected from the web server. Set PROJECTSEND_FILE_DELIVERY in your .env file to choose explicitly.')
+                            : t('Set explicitly by PROJECTSEND_FILE_DELIVERY in your .env file.')}
+                    </p>
+                </div>
+
+                <FileDeliveryDialog delivery={file_delivery} open={deliveryOpen} onOpenChange={setDeliveryOpen} />
             </div>
         </AppLayout>
     );

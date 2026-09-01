@@ -12,15 +12,16 @@ use App\Modules\Files\Delivery\StoredFileResponse;
 use App\Modules\Files\Models\File;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Authorized downloads without the bytes ever traversing PHP: the app
- * checks the policy, and StoredFileResponse answers with either an
- * X-Accel-Redirect for nginx to stream from the protected location
- * (brief §3) or a presigned URL when the file lives on external storage,
- * since nginx has no way to serve bytes it doesn't have on disk.
+ * Authorized downloads: the app checks the policy, and StoredFileResponse
+ * decides how the bytes travel — a presigned URL when the file lives on
+ * external storage, and otherwise whichever local delivery method this
+ * installation's web server understands (see FileDelivery). On nginx that
+ * is an X-Accel-Redirect and the bytes never traverse PHP at all; on a
+ * server with no such header PHP streams them, which is slower and works.
  */
 class FileDownloadController extends Controller
 {

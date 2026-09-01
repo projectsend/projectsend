@@ -7,6 +7,7 @@ namespace App\Modules\Files\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Files\Access\DownloadAllowance;
+use App\Modules\Files\Delivery\FileDelivery;
 use App\Modules\Files\Delivery\StoredFileResponse;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Preview\PreviewKind;
@@ -21,14 +22,14 @@ use App\Modules\Platform\Settings\Settings;
 use App\Support\ContentDisposition;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Two inline (never `attachment`) views of a file, same X-Accel-Redirect
- * pattern as FileDownloadController: a bounded thumbnail for listing rows,
+ * Two inline (never `attachment`) views of a file, delivered the same way
+ * FileDownloadController delivers one: a bounded thumbnail for listing rows,
  * and a larger view opened in a new tab when a thumbnail is clicked.
  * `thumbnail()` stays unlogged — it fires automatically as an `<img src>`
  * for every row on every listing render, not a deliberate action, and
@@ -76,6 +77,7 @@ class FileThumbnailController extends Controller
         private readonly StoredFileResponse $bytes,
         private readonly LocalSourceFile $source,
         private readonly Settings $settings,
+        private readonly FileDelivery $delivery,
     ) {}
 
     public function thumbnail(Request $request, File $file): Response
@@ -211,10 +213,12 @@ class FileThumbnailController extends Controller
 
     private function serve(File $file, string $path): Response
     {
-        return response('', 200, [
-            'X-Accel-Redirect' => '/protected-files/'.$path,
-            'Content-Type' => $file->mime_type,
-            'Content-Disposition' => ContentDisposition::inline($file->original_name),
-        ]);
+        // No Content-Length: this is the rendition's size, not the
+        // original file's, and $file->size is the wrong number for it.
+        return $this->delivery->serve(
+            $path,
+            $file->mime_type,
+            ContentDisposition::inline($file->original_name),
+        );
     }
 }

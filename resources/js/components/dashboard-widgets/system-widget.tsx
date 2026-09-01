@@ -8,7 +8,6 @@ import { FileDeliveryDialog, type FileDelivery } from '@/components/file-deliver
 import { UpdateInstructions, type InstallKind } from '@/components/update-instructions';
 import { useTranslation } from '@/hooks/use-translation';
 import { formatBytes } from '@/lib/format-bytes';
-import { cn } from '@/lib/utils';
 
 export interface StorageDurability {
     level: 'durable' | 'docker_volume' | 'ephemeral' | 'unknown';
@@ -172,36 +171,46 @@ export function SystemWidget({ system, onViewReleaseNotes }: { system: SystemInf
                         <dd>{formatBytes(system.storage_free_bytes)}</dd>
                     </div>
                 )}
-                {/* Same reasoning as the durability row below: stated
-                    always, flagged only when it is the slow one. The icon
-                    is a button rather than a tooltip because the
-                    explanation does not fit in one, and "not optimized"
-                    without the why is not worth putting on a dashboard. */}
+                {/* Stated always, flagged only when it is the slow one.
+                    Both halves of the row open the explanation, and the
+                    label is underlined, because the icon alone did not read
+                    as clickable — the one thing an administrator has to do
+                    here is find out what it means, and an affordance nobody
+                    recognises is the same as not having one. Two buttons
+                    rather than one wrapping the whole row: a dt/dd pair
+                    cannot be nested inside a single button without losing
+                    the description-list semantics that name the value. */}
                 <div className="flex justify-between gap-2">
-                    {/* The label carries the colour too, not just the icon.
-                        A muted label beside a small amber triangle reads as
-                        decoration; the row has to look different from the
-                        five plain facts above it to be worth a second
-                        glance. */}
-                    <dt
-                        className={cn(
-                            deliveryNeedsAttention ? 'font-medium text-amber-600 dark:text-amber-500' : 'text-muted-foreground',
-                        )}
-                    >
-                        {t('Downloads sent by')}
-                    </dt>
-                    <dd className="flex items-center gap-1.5">
-                        {deliveryLabel(system.file_delivery.method, t)}
-                        {deliveryNeedsAttention && (
+                    <dt>
+                        {deliveryNeedsAttention ? (
                             <button
                                 type="button"
                                 onClick={() => setDeliveryOpen(true)}
-                                className="text-amber-600 hover:text-amber-700 dark:text-amber-500 dark:hover:text-amber-400"
-                                aria-label={t('Why downloads are not being handed to the web server')}
+                                className="font-medium text-amber-600 underline underline-offset-2 hover:no-underline dark:text-amber-500"
                                 title={t('Downloads are not being handed to the web server')}
                             >
+                                {t('Downloads sent by')}
+                            </button>
+                        ) : (
+                            <span className="text-muted-foreground">{t('Downloads sent by')}</span>
+                        )}
+                    </dt>
+                    <dd>
+                        {deliveryNeedsAttention ? (
+                            <button
+                                type="button"
+                                onClick={() => setDeliveryOpen(true)}
+                                className="flex items-center gap-1.5 font-medium text-amber-600 hover:underline dark:text-amber-500"
+                                // "PHP, button" is not a description of
+                                // anything on its own.
+                                aria-label={t('Downloads are being sent by PHP — why this is not optimal')}
+                                title={t('Downloads are not being handed to the web server')}
+                            >
+                                {deliveryLabel(system.file_delivery.method, t)}
                                 <AlertTriangle className="size-4" />
                             </button>
+                        ) : (
+                            <span>{deliveryLabel(system.file_delivery.method, t)}</span>
                         )}
                     </dd>
                 </div>

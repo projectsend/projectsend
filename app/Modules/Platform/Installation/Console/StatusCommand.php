@@ -450,6 +450,16 @@ class StatusCommand extends Command
             // on the day it happens to be empty rather than on the day it
             // is written. It cannot be empty today, but the allowlist is
             // meant to be edited.
+            //
+            // What that costs, confirmed against the reader rather than
+            // guessed at: the hosted platform's probe decodes this block
+            // into a typed struct and discards a block it cannot read, and
+            // Go refuses a JSON list into a map outright. So a `[]` here
+            // would not lose `actions` — it would lose the whole `usage`
+            // block, downloads and uploads with it, on the day a tenant
+            // happened to have no counted activity. The quietest
+            // installations would stop reporting and nothing would log a
+            // fault. Both shapes are pinned by tests on that side too.
             'actions' => (object) $this->usageActions($since),
         ];
     }

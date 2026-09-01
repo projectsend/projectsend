@@ -654,7 +654,37 @@ If you know what you are doing, re-run with --force."
     # vendor/ and public/build/ belong wholly to the release: merged, they
     # keep orphaned classes and orphaned hashed assets from the old one.
     rm -rf "$INSTALL_DIR/vendor" "$INSTALL_DIR/public/build"
-    rm -f "$INSTALL_DIR"/bootstrap/cache/*.php
+    # The compiled manifests and the cached configuration, and only those.
+    #
+    # The manifests must not survive the swap: they name the old release's
+    # package providers, and the first artisan run after the copy would try
+    # to load classes this version no longer ships. The cached
+    # configuration must not survive it either, for a sharper reason --
+    # it is read at every boot, so projectsend:update would read the
+    # *previous* release's version out of it, record that as the version it
+    # applied, and run the migrations under the old configuration.
+    #
+    # The route and event caches stay. Their presence is the signal
+    # projectsend:update reads to decide what to rebuild
+    # (UpdateInstallation::warmCaches), and it clears them itself moments
+    # later anyway. Wiping them here made an installation that had cached
+    # its routes look exactly like one that never had, so nothing was ever
+    # rebuilt and INSTALL.md's promise -- "projectsend:update notices they
+    # are in place and rebuilds them for you after every update" -- quietly
+    # stopped being true for anybody who updates with this script. Neither
+    # cache is read at boot: both are arrays of class names, consulted when
+    # a route is matched or an event dispatched.
+    #
+    # The warning about a cached configuration is said here, because after
+    # this the command cannot see one to warn about. Same sentence it uses,
+    # so an operator meets one wording rather than two.
+    if [[ -f "$INSTALL_DIR/bootstrap/cache/config.php" ]]; then
+        warn "A cached configuration was found and cleared. Do not run config:cache on this application — it stops TRUSTED_PROXIES from being read at all. See INSTALL.md."
+    fi
+
+    rm -f "$INSTALL_DIR/bootstrap/cache/config.php"
+    rm -f "$INSTALL_DIR/bootstrap/cache/packages.php"
+    rm -f "$INSTALL_DIR/bootstrap/cache/services.php"
     cp -a "$TMP_DIR"/. "$INSTALL_DIR"/
 
     # Symlinks are skipped on purpose. A symlink's own ownership decides

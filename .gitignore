@@ -39,6 +39,7 @@ yarn-error.log
 /database/seeders/DevDataSeeder.php
 /docs/*.md
 !/docs/api-guide.md
+!/docs/api-modules.md
 !/docs/email-oauth.md
 !/docs/api-zapier.md
 

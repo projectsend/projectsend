@@ -449,8 +449,10 @@ the core vocabulary. A slug must be unique and lowercase; a clash throws at boot
 silently shadowing.
 
 Module endpoints are deliberately absent from the document above — `OpenApiContractTest` skips
-`api/v1/modules/*` — so each package documents its own surface in its own repository. The
-`branding` module's endpoints are in `packages/cloud-modules/docs/api.md`.
+`api/v1/modules/*` — because that document is served unauthenticated and has to be identical on
+every installation. The modules that ship with the application document their endpoints in
+[`api-modules.md`](api-modules.md); a module living in its own package documents its surface in its
+own repository.
 
 ---
 

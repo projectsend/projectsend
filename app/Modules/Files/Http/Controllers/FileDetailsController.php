@@ -11,6 +11,7 @@ use App\Modules\Audit\ActivityLog;
 use App\Modules\Audit\ActivityPresenter;
 use App\Modules\Audit\DownloadPresenter;
 use App\Modules\Comments\CommentingRules;
+use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Access\DownloadAllowance;
 use App\Modules\Files\Access\ShareTargets;
 use App\Modules\Files\DownloadLimitScope;
@@ -79,6 +80,7 @@ class FileDetailsController extends Controller
         private readonly ActivityPresenter $presenter,
         private readonly DownloadPresenter $downloadPresenter,
         private readonly ShareTargets $shareTargets,
+        private readonly ClientIdentityScope $identity,
         private readonly CommentingRules $commenting,
         private readonly FileVersionLinks $versionLinks,
         private readonly DownloadAllowance $allowance,
@@ -100,7 +102,10 @@ class FileDetailsController extends Controller
             'size' => $file->size,
             'mime_type' => $file->mime_type,
             'checksum' => $file->checksum,
-            'uploader' => $file->uploader?->name,
+            // Null when the uploader is a client this viewer may not
+            // be told about, which reads the same as an uploader whose
+            // account has since been deleted.
+            'uploader' => $this->identity->nameOf($viewer, $file->uploader),
             'folder' => $file->folder?->only('id', 'name'),
             'categories' => $file->categories()->orderBy('name')->get()
                 ->map(fn (Category $category): array => ['id' => $category->id, 'name' => $category->name, 'color' => $category->color])
@@ -140,7 +145,7 @@ class FileDetailsController extends Controller
             // Resolved from the chain root for a revision (ShareTargets
             // does that), so this names who really has the file. The panel
             // says where those recipients are set.
-            'shares' => $this->shareTargets->assigned($file),
+            'shares' => $this->shareTargets->assignedFor($file, $viewer),
             'sharing_root' => $file->isRevision()
                 ? File::query()->find($file->sharingOwnerId())?->only('id', 'name')
                 : null,
@@ -368,7 +373,7 @@ class FileDetailsController extends Controller
             'name' => $folder->name,
             'files_count' => $folder->files()->count(),
             'children_count' => $folder->children()->count(),
-            'creator' => $folder->creator?->name,
+            'creator' => $this->identity->nameOf($viewer, $folder->creator),
             'created_at' => $folder->created_at?->toIso8601String(),
             'open_url' => route('files.index', ['folder' => $folder->id], false),
             // Read-only here, same as a file's shares — sharing (and every
@@ -377,7 +382,7 @@ class FileDetailsController extends Controller
             'edit_url' => route('folders.share', $folder, false),
             'can_update' => Gate::forUser($viewer)->allows('update', $folder),
             'can_view_activity' => $viewer->can('view_actions_log'),
-            'shares' => $this->shareTargets->assigned($folder),
+            'shares' => $this->shareTargets->assignedFor($folder, $viewer),
         ]);
     }
 

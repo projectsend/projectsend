@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Files;
 
+use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
@@ -30,6 +31,10 @@ class FilesServiceProvider extends ServiceProvider
         // reached twice. Scoped rather than a singleton so a long-lived
         // queue worker starts each job with an empty memo.
         $this->app->scoped(StaffLibraryScope::class);
+
+        // Same lifetime, same reason: the identity rule memoises a roster
+        // per viewer and the file listings ask it once per row.
+        $this->app->scoped(ClientIdentityScope::class);
     }
 
     public function boot(): void

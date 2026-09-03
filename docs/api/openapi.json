@@ -4075,7 +4075,7 @@
                             "object",
                             "null"
                         ],
-                        "description": "Name only. The uploader is a user record; their email address\nis not part of what \"this file exists\" needs to say.",
+                        "description": "Name only. The uploader is a user record; their email address\nis not part of what \"this file exists\" needs to say. Null\nwhen the uploader is a client the token's owner is not\nscoped to; an unscoped account always gets the name.",
                         "properties": {
                             "id": {
                                 "type": "integer"
@@ -4109,6 +4109,7 @@
                     },
                     "assignments": {
                         "type": "array",
+                        "description": "Who the file is shared with, as far as this caller is\nconcerned: a recipient the token's owner is not scoped to is\nleft out rather than returned without a name.",
                         "items": {
                             "type": "object",
                             "properties": {

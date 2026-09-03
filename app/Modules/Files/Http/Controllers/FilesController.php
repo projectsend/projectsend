@@ -10,6 +10,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Comments\CommentingRules;
 use App\Modules\Comments\CommentScope;
+use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Access\ShareTargets;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\DownloadLimitScope;
@@ -49,6 +50,7 @@ class FilesController extends Controller
         private readonly StaffLibraryScope $scope,
         private readonly PublicUrl $publicUrl,
         private readonly ShareTargets $shareTargets,
+        private readonly ClientIdentityScope $identity,
         private readonly CommentingRules $commenting,
         private readonly FileVersions $versions,
         private readonly FileVersionLinks $versionLinks,
@@ -164,7 +166,7 @@ class FilesController extends Controller
                 'original_name' => $file->original_name,
                 'size' => $file->size,
                 'mime_type' => $file->mime_type,
-                'uploader' => $file->uploader?->name,
+                'uploader' => $this->identity->nameOf($viewer, $file->uploader),
                 'folder_id' => $file->folder_id,
                 'public' => $file->public,
                 'commentable' => $file->commentable,

@@ -6,6 +6,7 @@ namespace App\Modules\Files\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
@@ -28,6 +29,7 @@ class ClientFilesController extends Controller
 {
     public function __construct(
         private readonly StaffLibraryScope $scope,
+        private readonly ClientIdentityScope $identity,
     ) {}
 
     public function index(Request $request, User $client): Response
@@ -66,7 +68,11 @@ class ClientFilesController extends Controller
                 'size' => $file->size,
                 'created_at' => $file->created_at?->toIso8601String(),
                 'uploaded_by_client' => $file->uploaded_by === $client->id,
-                'uploader' => $file->uploader?->name,
+                // Being allowed to browse this client's files does not
+                // extend to the other clients who shared files with them:
+                // a file reaches this listing through the client in the
+                // URL, and its uploader can be somebody else entirely.
+                'uploader' => $this->identity->nameOf($viewer, $file->uploader),
                 'downloads_count' => $file->downloads_count,
                 'can_download' => Gate::forUser($viewer)->allows('view', $file),
                 'categories' => $file->categories->map(fn (Category $category): array => [

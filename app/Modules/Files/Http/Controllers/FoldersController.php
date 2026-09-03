@@ -10,6 +10,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Comments\Access\VisibleCommentScope;
 use App\Modules\Comments\CommentingRules;
+use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Access\DownloadAllowance;
 use App\Modules\Files\Access\ShareTargets;
 use App\Modules\Files\Access\StaffLibraryScope;
@@ -54,6 +55,7 @@ class FoldersController extends Controller
         private readonly ActivityLogger $activity,
         private readonly PublicUrl $publicUrl,
         private readonly ShareTargets $shareTargets,
+        private readonly ClientIdentityScope $identity,
         private readonly BreadcrumbBuilder $breadcrumbs,
         private readonly CommentingRules $commenting,
         private readonly VisibleCommentScope $comments,
@@ -240,7 +242,11 @@ class FoldersController extends Controller
             'original_name' => $file->original_name,
             'mime_type' => $file->mime_type,
             'size' => $file->size,
-            'uploader' => $file->uploader ? [
+            // The whole block goes, not just the name: type and role
+            // describe the same person, and "a client uploaded this" on a
+            // row whose uploader is off this viewer's roster narrows who
+            // it could be just as effectively as naming them.
+            'uploader' => ($file->uploader !== null && $this->identity->permits($user, $file->uploader)) ? [
                 'name' => $file->uploader->name,
                 'type' => $file->uploader->type->value,
                 'role' => $file->uploader->role?->name,

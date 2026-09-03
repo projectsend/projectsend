@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Files\Http\Resources\Api;
 
+use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\DownloadLimitScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\FileAssignment;
@@ -26,6 +27,23 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *  - `checksum` is included deliberately, since verifying an integration's
  *    own download is a real use case, and it reveals nothing about
  *    location.
+ *
+ * Two fields are narrowed to the caller: the uploader and the assignment
+ * list both name clients, and a client-scoped account may hold a file whose
+ * uploader or co-recipients are clients off their own roster — the file is
+ * theirs to read, those names are not theirs to see. ClientIdentityScope is
+ * the rule; a name dropped here is dropped to null or out of the list, and
+ * an unscoped account is unaffected.
+ *
+ * That narrowing happens here rather than in the controllers, which is the opposite of how the version counterparts are
+ * handled a few files over — and deliberately so. Whether a counterpart may
+ * be named is a set-shaped question with a query to express it, so it is
+ * asked once in the caller's eager load. Whether a client may be named is a
+ * per-row check against the viewer's roster with no query to fold it into,
+ * and this resource is built at eight call sites across four controllers,
+ * two of them re-loading `assignments.assignable` after a write. Asking at
+ * the point of serialisation is the only version of this rule that cannot
+ * be forgotten by the ninth caller.
  */
 class FileResource extends JsonResource
 {
@@ -34,6 +52,15 @@ class FileResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $viewer = $request->user();
+        $identity = app(ClientIdentityScope::class);
+
+        // The morph class rather than ::class, matching ShareTargets: with
+        // a morph map registered the two disagree, and this line now
+        // decides which roster an entry is checked against, so getting it
+        // wrong would mean checking a group id against the client list.
+        $groupMorph = (new Group)->getMorphClass();
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -96,11 +123,16 @@ class FileResource extends JsonResource
             ]),
 
             // Name only. The uploader is a user record; their email address
-            // is not part of what "this file exists" needs to say.
-            'uploaded_by' => $this->whenLoaded('uploader', fn (): ?array => $this->uploader === null ? null : [
-                'id' => $this->uploader->id,
-                'name' => $this->uploader->name,
-            ]),
+            // is not part of what "this file exists" needs to say. Null
+            // when the uploader is a client the token's owner is not
+            // scoped to; an unscoped account always gets the name.
+            'uploaded_by' => $this->whenLoaded(
+                'uploader',
+                fn (): ?array => $identity->permits($viewer, $this->uploader) && $this->uploader !== null ? [
+                    'id' => $this->uploader->id,
+                    'name' => $this->uploader->name,
+                ] : null,
+            ),
 
             'categories' => $this->whenLoaded('categories', fn (): array => $this->categories
                 ->map(fn ($category): array => [
@@ -109,15 +141,22 @@ class FileResource extends JsonResource
                 ])
                 ->all()),
 
+            // Who the file is shared with, as far as this caller is
+            // concerned: a recipient the token's owner is not scoped to is
+            // left out rather than returned without a name.
             'assignments' => $this->whenLoaded('assignments', fn (): array => $this->assignments
+                ->filter(fn (FileAssignment $assignment): bool => $assignment->assignable_type === $groupMorph
+                    ? $identity->permitsGroupId($viewer, (int) $assignment->assignable_id)
+                    : $identity->permitsClientId($viewer, (int) $assignment->assignable_id))
                 ->map(fn (FileAssignment $assignment): array => [
-                    'type' => $assignment->assignable_type === Group::class ? 'group' : 'client',
+                    'type' => $assignment->assignable_type === $groupMorph ? 'group' : 'client',
                     'id' => $assignment->assignable_id,
                     // getAttribute() rather than ->name: the relation is a
                     // MorphTo over User|Group, so the property is only
                     // knowable at runtime. Both targets carry a name.
                     'name' => $assignment->assignable?->getAttribute('name'),
                 ])
+                ->values()
                 ->all()),
 
             'links' => [

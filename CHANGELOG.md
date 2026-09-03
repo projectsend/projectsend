@@ -13,6 +13,28 @@ Anything under **Upgrade notes** is something you have to do, not something we d
 This section collects changes as they land; the release process turns it into a numbered entry
 when a version is cut.
 
+**Closed holes in who can see what**
+
+- A staff member limited to their own assigned clients could read the names of other clients out of
+  file details. Sharing means a file can reach somebody through one client while it was uploaded by
+  another, or while it is also shared with another. That is normal and the file is theirs to open —
+  but the uploader's name, the other recipient's name, and both their ID numbers were being sent
+  along with it, on the library list, the file's edit page, the details panel, the per-client file
+  list, and the matching API responses. A group holding none of their clients was named the same
+  way. The file list could also be filtered by uploader, which answered "does this client of yours
+  share files with that client of mine" without naming anybody.
+
+  Those names are now left out for a limited staff member, and the uploader filter no longer answers
+  for a client they are not assigned to. Administrators and any unrestricted role see exactly what
+  they saw before.
+
+  **Who this affected.** Only installations using the Client Manager role, or a custom role with
+  "Limit to assigned clients" switched on, and only where files are shared with more than one client
+  or through groups. No files, downloads or credentials were reachable this way — a file belonging
+  to a client outside the roster was refused before, and still is.
+
+  Reported by [@Noorkhalel](https://github.com/Noorkhalel) (GHSA-whmp-p9hv-r7j7).
+
 ## 2.3.0 — 1 September 2026
 
 If you run ProjectSend on Apache or LiteSpeed, this is the release to take. It installed fine on

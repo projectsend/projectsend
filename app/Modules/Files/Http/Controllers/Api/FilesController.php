@@ -12,6 +12,7 @@ use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Comments\CommentingRules;
 use App\Modules\Comments\CommentScope;
+use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\DownloadLimitScope;
@@ -62,6 +63,7 @@ class FilesController extends Controller
         private readonly ActivityLogger $activity,
         private readonly CommentingRules $commenting,
         private readonly StaffLibraryScope $scope,
+        private readonly ClientIdentityScope $identity,
         private readonly TimezoneRegistry $timezones,
     ) {}
 
@@ -114,6 +116,17 @@ class FilesController extends Controller
         }
 
         if (array_key_exists('uploaded_by', $filters) && $filters['uploaded_by'] !== null) {
+            // A filter is a question, and this one asks "did client N put
+            // anything into my library". Answered plainly it is an oracle:
+            // a client-scoped caller could walk the id space and learn
+            // which clients off their roster share files with clients on
+            // it, without ever reading a name. So an id this caller may
+            // not identify matches nothing — indistinguishable from a
+            // client who has uploaded nothing, which is the point.
+            if (! $this->identity->permitsClientId($user, (int) $filters['uploaded_by'])) {
+                $query->whereRaw('1 = 0');
+            }
+
             $query->where('files.uploaded_by', $filters['uploaded_by']);
         }
 

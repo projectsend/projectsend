@@ -28,12 +28,24 @@ use Illuminate\Support\Collection;
  */
 class ShareTargets
 {
-    public function __construct(private readonly StaffLibraryScope $scope) {}
+    public function __construct(
+        private readonly StaffLibraryScope $scope,
+        private readonly ClientIdentityScope $identity,
+    ) {}
 
     /**
      * The clients and groups a subject is already shared with, as id/name
      * pairs. Neutral keys, so callers can nest it ('shares' on the details
      * panel) or flatten it (the edit pages' assigned_* props).
+     *
+     * **This is the unfiltered truth, and it is not what a screen should
+     * show.** Everyone a file is really in front of is the right answer for
+     * deciding something — VisibleCommentScope resolves notification
+     * recipients from it, and a recipient left out of that list is one who
+     * never hears about a message addressed to them. It is the wrong answer
+     * for telling somebody, because a client-scoped viewer may hold a file
+     * that is also shared with a client they have no business knowing
+     * exists. Anything rendering these names wants assignedFor() below.
      *
      * @return array{clients: list<array{id: int, name: string}>, groups: list<array{id: int, name: string}>}
      */
@@ -45,6 +57,17 @@ class ShareTargets
             'clients' => $this->clients($clientIds),
             'groups' => $this->groups($groupIds),
         ];
+    }
+
+    /**
+     * assigned(), narrowed to the recipients this viewer may be told
+     * about. The display half of the pair — see the warning above.
+     *
+     * @return array{clients: list<array{id: int, name: string}>, groups: list<array{id: int, name: string}>}
+     */
+    public function assignedFor(File|Folder $subject, ?User $viewer): array
+    {
+        return $this->identity->filterShares($viewer, $this->assigned($subject));
     }
 
     /**
@@ -76,7 +99,12 @@ class ShareTargets
             ->orderBy('name')
             ->get();
 
-        $assigned = $this->assigned($subject);
+        // assignedFor, not assigned: an edit page listing a recipient this
+        // viewer may not identify would both name them and offer a control
+        // for a share the viewer cannot otherwise reach. available_* below
+        // was already narrowed this way; assigned_* was not, which is the
+        // asymmetry that made the whole panel a roster listing.
+        $assigned = $this->assignedFor($subject, $viewer);
 
         return [
             'assigned_clients' => $assigned['clients'],

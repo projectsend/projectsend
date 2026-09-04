@@ -23,6 +23,11 @@ page to download it.
 No public link passed around by email, no third-party service holding your clients' documents, no
 per-seat pricing. It runs on your server, and the files stay there.
 
+Prefer not to run the server yourself? [ProjectSend Cloud](https://projectsend.cloud) is the
+official hosted version of ProjectSend, run by the same team — every subscription funds this free
+software. The line between the free core and Cloud, and the commitments that go with it, are set
+out in [LICENSING.md](LICENSING.md).
+
 ## What it does
 
 **For the people you send to**

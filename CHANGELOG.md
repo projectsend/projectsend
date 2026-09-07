@@ -35,6 +35,46 @@ when a version is cut.
 
   Reported by [@Noorkhalel](https://github.com/Noorkhalel) (GHSA-whmp-p9hv-r7j7).
 
+**Download links to external storage now last a minute instead of an hour**
+
+If your files live on S3, R2, MinIO or another external bucket, a download is served by redirecting
+the browser to a temporary link the storage provider signs. That link is a key: anyone who has it
+can fetch the file without signing in, and nothing in ProjectSend can withdraw it once it is issued.
+It used to stay valid for an hour, which meant a link that leaked — into a proxy log, a Referer
+header, a pasted chat message, a screenshot — was still usable long after the person who requested
+it had finished. It is now good for sixty seconds, which is all it needs to be followed.
+
+A transfer that has already started is not affected: the provider checks the link when the request
+arrives, not while it runs, so a slow download of a large file finishes normally. **What changes is
+resuming.** If a download is interrupted and picked up again more than a minute later, it will be
+refused and has to be started again from ProjectSend. Previews are deliberately unchanged and keep
+the hour, because a video player re-uses the same link every time somebody skips forward.
+
+**Who this affected.** Only installations using external storage. If your files are on local disk,
+downloads never used one of these links and nothing here changes for you. Zip bundles are also
+unaffected — they are always built and served locally.
+
+**A failed upload no longer loses its parts**
+
+Large uploads arrive in pieces, which ProjectSend then joins together and hands to storage. If that
+last step failed — the bucket rejected it, credentials had expired, the disk was full — the pieces
+had already been cleaned up, so the retry that was supposed to be possible could not find anything
+to work with and the whole file had to be sent again. The pieces are now kept until the assembled
+file is safely stored, so fixing the underlying problem and clicking again works.
+
+**Who this affected.** Anyone whose storage backend refused a write mid-upload. It is most visible
+on large files over slow connections, where re-sending is expensive. The trade is temporary disk:
+while a file is being joined together, the temporary directory now holds the pieces *and* the joined
+copy at once, rather than the copy and one piece. Both are removed the moment the upload succeeds,
+and the moment it fails.
+
+### Upgrade notes
+
+- **If you accept very large uploads and your temporary directory is on a small or separate volume,
+  check it has headroom for twice the largest file you allow.** Nothing needs configuring; this is
+  only a sizing question, and it applies while a file is being assembled rather than at rest.
+
+
 ## 2.3.0 — 1 September 2026
 
 If you run ProjectSend on Apache or LiteSpeed, this is the release to take. It installed fine on

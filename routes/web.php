@@ -248,6 +248,10 @@ Route::middleware(['auth'])->group(function () {
     // others_ key" for staff, and only FilePolicy knows which. A route-level
     // gate would let a client through on the key alone, before anything had
     // asked whose file it is. MyFilesController authorizes both.
+    // Registered after the literal my-files/* GETs above, which would
+    // otherwise be swallowed by {file} — the same ordering rule as
+    // files/orphans.
+    Route::get('my-files/{file}/edit', [MyFilesController::class, 'edit'])->name('my-files.edit');
     Route::patch('my-files/{file}', [MyFilesController::class, 'update'])->name('my-files.update');
     Route::delete('my-files/{file}', [MyFilesController::class, 'destroy'])->name('my-files.destroy');
 

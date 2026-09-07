@@ -10,6 +10,7 @@ import { CategoryBadges } from '@/components/files/category-badges';
 import { VersionBadge } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
 import { Pagination } from '@/components/pagination';
+import { FileRowActions } from '@/components/portal/file-row-actions';
 import { FolderRowActions } from '@/components/portal/folder-row-actions';
 import { NewFolderButton } from '@/components/portal/new-folder-button';
 import { PortalBreadcrumb } from '@/components/portal/portal-breadcrumb';
@@ -232,6 +233,7 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                         size="sm"
                                     />
                                     <DownloadAction href={route('files.download', file.id)} limit={file.download_limit} variant="outline" size="sm" />
+                                    <FileRowActions file={file} />
                                 </div>
                             </div>
                         ))}
@@ -356,6 +358,7 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                             size="sm"
                                             iconOnly
                                         />
+                                        <FileRowActions file={file} />
                                     </div>
                                 </div>
                             </div>

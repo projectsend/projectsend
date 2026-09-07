@@ -9,6 +9,7 @@ import { CategoryBadges } from '@/components/files/category-badges';
 import { VersionBadge } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
 import { Pagination } from '@/components/pagination';
+import { FileRowActions } from '@/components/portal/file-row-actions';
 import { FolderRowActions } from '@/components/portal/folder-row-actions';
 import { NewFolderButton } from '@/components/portal/new-folder-button';
 import { PortalBreadcrumb } from '@/components/portal/portal-breadcrumb';
@@ -257,6 +258,7 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
                                                 iconClassName="size-3.5"
                                                 iconOnly
                                             />
+                                            <FileRowActions file={file} />
                                         </div>
                                     </td>
                                 </tr>

@@ -11,6 +11,7 @@ use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Models\RolePermission;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
     Storage::fake('files');
@@ -361,4 +362,109 @@ test('a client cannot hand their file to somebody else, or repoint its bytes', f
         ->and($file->path)->toBe($originalPath)
         ->and($file->disk)->toBe('files')
         ->and($file->size)->toBe(11);
+});
+
+/*
+|--------------------------------------------------------------------------
+| The page and the rows
+|--------------------------------------------------------------------------
+|
+| Hiding a control is a courtesy, never the enforcement — every assertion
+| above already proves the server refuses. These pin that a client is not
+| shown a switch that would silently do nothing.
+*/
+
+test('the editor opens for an owner and refuses everyone else', function () {
+    $client = clientWithPermissions(['edit_files']);
+    $stranger = User::factory()->client()->create();
+    $file = ownedFile($client);
+
+    $this->actingAs($client)->get("/my-files/{$file->id}/edit")
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('portal/edit-file')
+            ->where('file.name', 'report'));
+
+    $this->actingAs($stranger)->get("/my-files/{$file->id}/edit")->assertForbidden();
+
+    // And a staff account gets the staff editor, not this one.
+    $this->actingAs($this->admin)->get("/my-files/{$file->id}/edit")->assertNotFound();
+});
+
+test('the editor offers only the fields the role actually grants', function () {
+    $bare = clientWithPermissions(['edit_files']);
+    $file = ownedFile($bare);
+
+    $this->actingAs($bare)->get("/my-files/{$file->id}/edit")->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->where('can_publish', false)
+            ->where('can_set_expiration', false)
+            ->where('can_set_categories', false)
+            ->where('can_limit_downloads', false)
+            ->where('can_delete', false),
+    );
+
+    $full = clientWithPermissions([
+        'edit_files', 'delete_files', 'upload_public',
+        'set_file_expiration_date', 'set_file_categories', 'limit_downloads',
+    ]);
+    $theirs = ownedFile($full);
+
+    $this->actingAs($full)->get("/my-files/{$theirs->id}/edit")->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->where('can_publish', true)
+            ->where('can_set_expiration', true)
+            ->where('can_set_categories', true)
+            ->where('can_limit_downloads', true)
+            ->where('can_delete', true),
+    );
+});
+
+// The folder picker must not offer a destination the save would refuse —
+// otherwise a client picks a folder, saves, and gets a 403 for choosing
+// something they were shown.
+test('the folder picker offers only folders the client could upload to', function () {
+    $client = clientWithPermissions(['edit_files', 'create_own_folders', 'upload']);
+    $file = ownedFile($client);
+    makeFolder('Internal');
+
+    $this->actingAs($client)->post('/my-folders', ['name' => 'Mine'])->assertRedirect();
+
+    $this->actingAs($client)->get("/my-files/{$file->id}/edit")->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->has('folders', 1)
+            ->where('folders.0.name', 'Mine'),
+    );
+});
+
+test('file rows carry the same answer the server will give', function () {
+    $client = clientWithPermissions(['edit_files', 'delete_files']);
+    $own = ownedFile($client, ['name' => 'mine']);
+    $shared = ownedFile($this->admin, ['name' => 'theirs']);
+
+    $this->actingAs($this->admin)
+        ->post("/files/{$shared->id}/assignments", ['type' => 'client', 'id' => $client->id])
+        ->assertRedirect();
+
+    $this->actingAs($client)->get('/my-files')->assertInertia(function (AssertableInertia $page) {
+        $files = collect($page->toArray()['props']['files'])->keyBy('name');
+
+        expect($files['mine']['can_update'])->toBeTrue()
+            ->and($files['mine']['can_delete'])->toBeTrue()
+            // Shared with them, and still not theirs — the same answer the
+            // PATCH gives, so the row never offers what the save refuses.
+            ->and($files['theirs']['can_update'])->toBeFalse()
+            ->and($files['theirs']['can_delete'])->toBeFalse();
+    });
+});
+
+test('a client without the keys sees no controls on their own rows', function () {
+    $client = clientWithPermissions([]);
+    ownedFile($client, ['name' => 'mine']);
+
+    $this->actingAs($client)->get('/my-files')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->where('files.0.can_update', false)
+            ->where('files.0.can_delete', false),
+    );
 });

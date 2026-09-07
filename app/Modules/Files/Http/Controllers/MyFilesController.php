@@ -10,6 +10,7 @@ use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Comments\Access\VisibleCommentScope;
 use App\Modules\Comments\CommentingRules;
+use App\Modules\Comments\CommentScope;
 use App\Modules\Files\Access\DownloadAllowance;
 use App\Modules\Files\DownloadLimitScope;
 use App\Modules\Files\Editing\ApplyFileEdits;
@@ -216,9 +217,11 @@ class MyFilesController extends Controller
         $fileRows = $sliced['items']['files'];
 
         $commentCounts = $this->comments->countsFor($client, $fileRows);
-        // Two queries for the page, not two per row. No URL resolver: the
-        // portal has no per-file page to link to, so a counterpart is named
-        // and not linked (see docs/theming-files-checklist.md).
+        // Two queries for the page, not two per row. Still no URL resolver:
+        // the portal's per-file page is an *editor* for a client's own
+        // uploads, and a version counterpart is frequently neither theirs
+        // nor editable — so a counterpart stays named and not linked (see
+        // docs/theming-files-checklist.md).
         $versions = $this->versionLinks->forMany($fileRows, $client);
         $unreadComments = $this->comments->unreadCountsFor($client, array_values(array_map(intval(...), $fileRows->pluck('id')->all())));
 
@@ -246,6 +249,14 @@ class MyFilesController extends Controller
                 'size' => $file->size,
                 'created_at' => $file->created_at?->toIso8601String(),
                 'is_mine' => $file->uploaded_by === $client->id,
+                // Decided per row by FilePolicy, exactly as the folder rows
+                // above are: a client's own uploads are theirs to manage
+                // and files shared with them are not, and both kinds sit in
+                // the same list. A theme reads these and never works them
+                // out from is_mine — holding the file is only half of it,
+                // the role's keys are the other half.
+                'can_update' => Gate::forUser($client)->allows('update', $file),
+                'can_delete' => Gate::forUser($client)->allows('delete', $file),
                 // Effective status (own flag or inherited from a public
                 // folder) — same "will visitors on the public site see
                 // this" badge as the staff library shows.
@@ -312,6 +323,77 @@ class MyFilesController extends Controller
             // Upload time is the only place a client can set this: there is
             // no per-file editor in the portal, and none is being added.
             'version_candidates_url' => route('my-files.version-candidates', [], false),
+        ]);
+    }
+
+    /**
+     * The editor page for a file this client uploaded.
+     *
+     * One page for every theme, not one per theme — the same shape
+     * `upload()` uses, and for the same reason: this is a form, and a form
+     * rebuilt four times is four places for a field to go missing. The
+     * `theme` prop picks the shell (see portal/edit-file.tsx), which is the
+     * only part that differs.
+     *
+     * Every `can_*` prop below is the *same* question ApplyFileEdits will
+     * ask when the form posts. A control this page hides is not a control
+     * the server then trusts: hiding it is a courtesy so a client is not
+     * shown a switch that will silently do nothing, and the refusal is
+     * server-side either way.
+     */
+    public function edit(Request $request, File $file): Response
+    {
+        $client = $request->user();
+        abort_unless($client !== null && $client->isClient(), 404);
+
+        Gate::authorize('update', $file);
+
+        $file->loadMissing('categories');
+
+        return Inertia::render('portal/edit-file', [
+            'theme' => $this->themeKey(),
+            'file' => [
+                'id' => $file->id,
+                'name' => $file->name,
+                'description' => $file->description,
+                'original_name' => $file->original_name,
+                'size' => $file->size,
+                'public' => $file->public,
+                'commentable' => $file->commentable,
+                // The stored instant as the calendar day this client's own
+                // zone shows — the value the form posts back untouched, and
+                // the one update() compares against to tell a real change
+                // from a date that merely came along with a rename.
+                'expires_at' => $this->expiry->asShown($file, $client),
+                'download_limit' => $file->download_limit,
+                'download_limit_scope' => ($file->download_limit_scope ?? DownloadLimitScope::Total)->value,
+                'folder_id' => $file->folder_id,
+                'categories' => $file->categories->pluck('id')->all(),
+            ],
+            'can_delete' => Gate::forUser($client)->allows('delete', $file),
+            'can_publish' => $client->can('upload_public'),
+            'can_set_expiration' => $client->can('set_file_expiration_date'),
+            'can_set_categories' => $client->can('set_file_categories'),
+            'can_limit_downloads' => $client->can('limit_downloads'),
+            // Only while the installation asks per file; otherwise the
+            // setting decides and the switch would be a lie.
+            'can_set_commentable' => $this->commenting->scope() === CommentScope::SelectedFiles,
+            'categories' => Category::query()->orderBy('name')->get(['id', 'name', 'color'])
+                ->map(fn (Category $category): array => [
+                    'id' => $category->id, 'name' => $category->name, 'color' => $category->color,
+                ])->all(),
+            // Somewhere this client could have uploaded it in the first
+            // place — the same rule update() enforces, so the picker cannot
+            // offer a destination the save would refuse.
+            'folders' => Folder::query()->visibleToClient($client)->orderBy('name')->get()
+                ->filter(fn (Folder $folder): bool => Folder::uploadableBy($client, $folder))
+                ->map(fn (Folder $folder): array => ['id' => $folder->id, 'name' => $folder->name])
+                ->values()->all(),
+            // Public files are reachable at the installation's one public
+            // slug; without it configured, publishing shows nowhere and the
+            // page says so rather than offering a switch that does nothing
+            // visible.
+            'public_listing_slug' => $this->settings->get(Setting::PublicListingSlug),
         ]);
     }
 

@@ -38,6 +38,14 @@ export interface FileRow {
     created_at: string | null;
     is_mine: boolean;
     public: boolean;
+    /**
+     * Whether this client may edit / delete this row, decided per file by
+     * FilePolicy. Not the same question as `is_mine`: holding the file is
+     * half of it and the role's keys are the other half, so a theme reads
+     * these and never derives them.
+     */
+    can_update: boolean;
+    can_delete: boolean;
     /** Comments this client can see on the file — the number on its row. */
     comments_count: number;
     /** How many of those they have not read yet. */

@@ -468,3 +468,67 @@ test('a client without the keys sees no controls on their own rows', function ()
             ->where('files.0.can_delete', false),
     );
 });
+
+/*
+|--------------------------------------------------------------------------
+| Publishing by the side door
+|--------------------------------------------------------------------------
+|
+| File::isEffectivelyPublic() is "my own flag OR my folder's", and
+| Folder::uploadableBy() lets a client into a public folder on
+| upload_to_public_folders — a different key from upload_public. So a
+| client can make a file world-readable without ever touching the public
+| switch, and without holding the key that switch is behind.
+|
+| That is the established meaning of the two keys and exactly what
+| uploading into such a folder has always done, so the editor does not
+| refuse it. What it must not do is let it happen silently: in a picker of
+| bare folder names the consequence would be invisible, which is the one
+| thing that would be new here.
+*/
+test('moving into a public folder publishes the file, and the picker says so', function () {
+    $client = clientWithPermissions(['edit_files', 'upload_to_public_folders']);
+    $file = ownedFile($client);
+
+    $open = makeFolder('Open Drop Box');
+    $open->forceFill(['public' => true, 'allow_client_uploads' => true, 'slug' => 'open-drop-box'])->save();
+
+    $this->actingAs($this->admin)
+        ->post("/folders/{$open->id}/assignments", ['type' => 'client', 'id' => $client->id])
+        ->assertRedirect();
+
+    // The picker offers it — and carries the consequence with the name.
+    $this->actingAs($client)->get("/my-files/{$file->id}/edit")->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->where('can_publish', false)
+            ->has('folders', 1)
+            ->where('folders.0.name', 'Open Drop Box')
+            ->where('folders.0.public', true),
+    );
+
+    $this->actingAs($client)
+        ->patch("/my-files/{$file->id}", clientEditPayload(['folder_id' => $open->id]))
+        ->assertRedirect();
+
+    $file->refresh();
+
+    // The file's own flag never moved — the client does not hold the key
+    // for that — but the folder makes it readable all the same.
+    expect($file->public)->toBeFalse()
+        ->and($file->isEffectivelyPublic())->toBeTrue();
+});
+
+// The other half: a private folder must never be labelled public, or the
+// warning becomes noise people learn to ignore.
+test('a private folder is not flagged public in the picker', function () {
+    $client = clientWithPermissions(['edit_files', 'create_own_folders', 'upload']);
+    $file = ownedFile($client);
+
+    $this->actingAs($client)->post('/my-folders', ['name' => 'Mine'])->assertRedirect();
+
+    $this->actingAs($client)->get("/my-files/{$file->id}/edit")->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->where('folders.0.name', 'Mine')
+            ->where('folders.0.public', false),
+    );
+});

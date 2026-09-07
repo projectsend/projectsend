@@ -18,9 +18,11 @@ import { categoryColor } from '@/lib/category-colors';
 import { type BreadcrumbItem } from '@/types';
 import { type CategoryTag } from '@/types/portal';
 
-interface Named {
+interface FolderOption {
     id: number;
     name: string;
+    /** Files in here are readable by anyone, with or without the public switch. */
+    public: boolean;
 }
 
 interface PortalEditFileProps {
@@ -46,7 +48,7 @@ interface PortalEditFileProps {
     can_limit_downloads: boolean;
     can_set_commentable: boolean;
     categories: CategoryTag[];
-    folders: Named[];
+    folders: FolderOption[];
     public_listing_slug: string | null;
 }
 
@@ -107,6 +109,7 @@ export default function PortalEditFile({
     };
 
     const unassigned = categories.filter((category) => !data.categories.includes(category.id));
+    const selectedFolder = folders.find((folder) => String(folder.id) === data.folder_id) ?? null;
 
     const content = (
         <>
@@ -146,12 +149,26 @@ export default function PortalEditFile({
                                     <SelectItem value="root">{t('No folder')}</SelectItem>
                                     {folders.map((folder) => (
                                         <SelectItem key={folder.id} value={String(folder.id)}>
-                                            {folder.name}
+                                            <span className="flex items-center gap-1.5">
+                                                {folder.name}
+                                                {folder.public && <Globe className="text-muted-foreground size-3.5 shrink-0" />}
+                                            </span>
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                             <InputError message={errors.folder_id} />
+                            {/* Moving into a public folder publishes the file
+                                whether or not the public switch below is even
+                                offered — so the warning belongs here, next to
+                                the choice, not only next to that switch. */}
+                            {selectedFolder?.public && (
+                                <p className="text-muted-foreground text-xs">
+                                    {t('":name" is a public folder — anyone will be able to open this file, without signing in.', {
+                                        name: selectedFolder.name,
+                                    })}
+                                </p>
+                            )}
                         </div>
                     )}
 

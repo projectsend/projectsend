@@ -387,7 +387,20 @@ class MyFilesController extends Controller
             // offer a destination the save would refuse.
             'folders' => Folder::query()->visibleToClient($client)->orderBy('name')->get()
                 ->filter(fn (Folder $folder): bool => Folder::uploadableBy($client, $folder))
-                ->map(fn (Folder $folder): array => ['id' => $folder->id, 'name' => $folder->name])
+                ->map(fn (Folder $folder): array => [
+                    'id' => $folder->id,
+                    'name' => $folder->name,
+                    // A destination can publish the file without the public
+                    // switch being touched: File::isEffectivelyPublic() is
+                    // "my own flag OR my folder's", and a client holding
+                    // upload_to_public_folders may move into a public
+                    // folder without holding upload_public. That is the
+                    // established meaning of the two keys, and it is what
+                    // uploading there has always done — but in a picker of
+                    // bare names it would be invisible, so the name carries
+                    // the consequence with it.
+                    'public' => $folder->isEffectivelyPublic(),
+                ])
                 ->values()->all(),
             // Public files are reachable at the installation's one public
             // slug; without it configured, publishing shows nowhere and the

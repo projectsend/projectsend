@@ -237,6 +237,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('my-files/upload', [MyFilesController::class, 'upload'])->middleware('can:upload')->name('my-files.upload.create');
     Route::get('my-files/version-candidates', [MyFilesController::class, 'versionCandidates'])->middleware('can:upload')->name('my-files.version-candidates');
 
+    // A client editing and deleting their OWN uploads. Deliberately not the
+    // staff files.* routes, which are `staff`-gated because they carry
+    // assignments, share links and activity — and whose folder guard asks
+    // StaffLibraryScope, which answers "allowed" for any client (see
+    // FilePolicy::update()).
+    //
+    // No `can:` middleware here on purpose: `edit_files` and `delete_files`
+    // mean "your own" for a client and "anyone's, if you also hold the
+    // others_ key" for staff, and only FilePolicy knows which. A route-level
+    // gate would let a client through on the key alone, before anything had
+    // asked whose file it is. MyFilesController authorizes both.
+    Route::patch('my-files/{file}', [MyFilesController::class, 'update'])->name('my-files.update');
+    Route::delete('my-files/{file}', [MyFilesController::class, 'destroy'])->name('my-files.destroy');
+
     // Client-created folders — MyFoldersController double-checks isClient()
     // and create_own_folders itself; the route-level gate here just keeps
     // staff from ever hitting these (they use folders.* instead).

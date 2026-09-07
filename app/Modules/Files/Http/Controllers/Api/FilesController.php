@@ -10,24 +10,21 @@ use App\Modules\Api\Support\PollingQuery;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientStorageUsage;
-use App\Modules\Comments\CommentingRules;
-use App\Modules\Comments\CommentScope;
 use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\DownloadLimitScope;
+use App\Modules\Files\Editing\ApplyFileEdits;
+use App\Modules\Files\Editing\FileExpiry;
 use App\Modules\Files\Http\Resources\Api\FileResource;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Storage\ResolvingUploadDisk;
 use App\Modules\Files\Uploads\StoreUploadedFile;
 use App\Modules\Files\Uploads\UploadExtensionPolicy;
-use App\Modules\Platform\Localization\LocalDay;
-use App\Modules\Platform\Localization\TimezoneRegistry;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use App\Support\Rules;
-use Carbon\Carbon;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -61,10 +58,10 @@ class FilesController extends Controller
         private readonly UploadExtensionPolicy $extensionPolicy,
         private readonly ClientStorageUsage $storageUsage,
         private readonly ActivityLogger $activity,
-        private readonly CommentingRules $commenting,
         private readonly StaffLibraryScope $scope,
         private readonly ClientIdentityScope $identity,
-        private readonly TimezoneRegistry $timezones,
+        private readonly ApplyFileEdits $fileEdits,
+        private readonly FileExpiry $expiry,
     ) {}
 
     /**
@@ -329,44 +326,32 @@ class FilesController extends Controller
             }
         }
 
-        $attributes = array_intersect_key($validated, array_flip(['name', 'description', 'folder_id']));
+        // `sometimes` throughout the rules above means $validated already
+        // holds exactly the fields the caller sent, which is the same
+        // array_key_exists contract ApplyFileEdits reads — so the payload
+        // passes through almost untouched. Which of them this token's user
+        // may actually write is that class's decision, shared with the
+        // staff editor and the client portal.
+        $changes = array_intersect_key($validated, array_flip([
+            'name',
+            'description',
+            'folder_id',
+            'commentable',
+            'download_limit',
+            'download_limit_scope',
+            'public',
+            'slug',
+            'categories',
+        ]));
 
-        if (array_key_exists('expires_at', $validated) && $user->can('set_file_expiration_date')) {
-            $attributes['expires_at'] = $this->expiryInstant($validated['expires_at'], $user);
+        // The one field that needs converting rather than passing along: a
+        // caller may send a calendar day or a full timestamp, and a day
+        // means the end of that day where the caller is.
+        if (array_key_exists('expires_at', $validated)) {
+            $changes['expires_at'] = $this->expiry->instant($validated['expires_at'], $user);
         }
 
-        if (array_key_exists('download_limit', $validated) && $user->can('limit_downloads')) {
-            $attributes['download_limit'] = $validated['download_limit'];
-        }
-
-        if (array_key_exists('download_limit_scope', $validated) && $user->can('limit_downloads')) {
-            $attributes['download_limit_scope'] = $validated['download_limit_scope'];
-        }
-
-        if (array_key_exists('commentable', $validated) && $this->commenting->scope() === CommentScope::SelectedFiles) {
-            $attributes['commentable'] = $validated['commentable'];
-        }
-
-        $wasPublic = $file->public;
-
-        if (array_key_exists('public', $validated) && $user->can('upload_public')) {
-            $attributes['public'] = $validated['public'];
-            $attributes['slug'] = ($validated['slug'] ?? '') ?: ($file->slug ?: File::uniqueSlugFrom($validated['name'] ?? $file->name, $file->id));
-        }
-
-        $file->update($attributes);
-
-        if (array_key_exists('categories', $validated) && $user->can('set_file_categories')) {
-            $file->categories()->sync($validated['categories']);
-        }
-
-        $this->activity->log(Action::FileUpdated, subject: $file);
-
-        if (! $wasPublic && $file->public) {
-            $this->activity->log(Action::FileMadePublic, subject: $file, context: ['slug' => $file->slug]);
-        } elseif ($wasPublic && ! $file->public) {
-            $this->activity->log(Action::FileMadePrivate, subject: $file);
-        }
+        $this->fileEdits->apply($user, $file, $changes);
 
         return new FileResource($file->fresh()?->load(['folder', 'uploader', 'categories']) ?? $file);
     }
@@ -381,30 +366,5 @@ class FilesController extends Controller
         $this->activity->log(Action::FileDeleted, context: ['name' => $name]);
 
         return response()->json(status: 204);
-    }
-
-    /**
-     * What an `expires_at` value means.
-     *
-     * A bare `YYYY-MM-DD` is a calendar day, and a calendar day ends where
-     * the person naming it lives — the same rule the web form's date input
-     * gets from FilesController::expiryInstant. Stored as it arrives it
-     * would be midnight UTC instead, so a file asked to expire on the 12th
-     * would die at the *start* of the 12th, and for a caller west of
-     * Greenwich partway through the 11th.
-     *
-     * Anything carrying a time is an instant the caller named on purpose
-     * and is stored as it arrives, unchanged from before: the API can
-     * express a moment, and a date input cannot.
-     */
-    private function expiryInstant(?string $value, User $setter): ?Carbon
-    {
-        if ($value === null) {
-            return null;
-        }
-
-        return preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) === 1
-            ? LocalDay::end($value, $this->timezones->resolve($setter))
-            : Carbon::parse($value);
     }
 }

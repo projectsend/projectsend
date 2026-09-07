@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
+use App\Modules\Files\Models\File;
 use App\Modules\Identity\Permissions\Permission;
 
 /*
@@ -36,6 +38,45 @@ test('a client token is refused everywhere', function () {
     $token = $client->createToken('t', [Permission::Upload->value])->plainTextToken;
 
     $this->withToken($token)->getJson('/api/v1/me')->assertForbidden();
+});
+
+/*
+ * The write half of the same boundary, and it needs its own test now that
+ * FilePolicy has a client branch.
+ *
+ * Since clients may edit and delete their own uploads in the portal,
+ * `Gate::authorize('update', $file)` inside Api\FilesController *passes*
+ * for a client holding the key on a file they uploaded. The only thing
+ * standing between a client token and the API's write endpoints is the
+ * `staff-token` middleware. That was always true, but until the portal
+ * work it was belt-and-braces: the policy refused as well. It no longer
+ * does, so this pins the one remaining door rather than leaving the whole
+ * boundary resting on a middleware nothing tests against a *passing*
+ * policy.
+ *
+ * If client tokens are ever issued (see docs/api-todo.md), this test is
+ * where that decision has to be made deliberately.
+ */
+test('a client token cannot write through the API even to its own file', function () {
+    $client = User::factory()->client()->create();
+
+    foreach (['edit_files', 'delete_files'] as $permission) {
+        $client->role->permissions()->create(['permission' => $permission]);
+    }
+
+    $file = File::factory()->create(['uploaded_by' => $client->id]);
+
+    // The policy itself now says yes — this is the premise, not an aside.
+    expect(Gate::forUser($client)->allows('update', $file))->toBeTrue()
+        ->and(Gate::forUser($client)->allows('delete', $file))->toBeTrue();
+
+    $token = $client->createToken('t', ['edit_files', 'delete_files'])->plainTextToken;
+
+    $this->withToken($token)->patchJson("/api/v1/files/{$file->id}", ['name' => 'taken'])->assertForbidden();
+    $this->withToken($token)->deleteJson("/api/v1/files/{$file->id}")->assertForbidden();
+
+    expect($file->refresh()->name)->not->toBe('taken')
+        ->and($file->trashed())->toBeFalse();
 });
 
 test('a deactivated account loses API access on the next request', function () {

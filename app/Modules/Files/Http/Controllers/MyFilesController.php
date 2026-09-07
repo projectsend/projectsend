@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace App\Modules\Files\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Audit\Action;
+use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Comments\Access\VisibleCommentScope;
 use App\Modules\Comments\CommentingRules;
 use App\Modules\Files\Access\DownloadAllowance;
+use App\Modules\Files\DownloadLimitScope;
+use App\Modules\Files\Editing\ApplyFileEdits;
+use App\Modules\Files\Editing\FileExpiry;
 use App\Modules\Files\Folders\BreadcrumbBuilder;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
@@ -22,6 +27,7 @@ use App\Modules\Platform\Settings\Settings;
 use App\Modules\Platform\Theming\PublicThemeRegistry;
 use App\Support\ConcatenatedPagination;
 use App\Support\Pagination;
+use App\Support\Rules;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
@@ -66,6 +72,9 @@ class MyFilesController extends Controller
         private readonly DownloadAllowance $allowance,
         private readonly FileVersions $versions,
         private readonly FileVersionLinks $versionLinks,
+        private readonly ApplyFileEdits $fileEdits,
+        private readonly FileExpiry $expiry,
+        private readonly ActivityLogger $activity,
     ) {}
 
     public function index(Request $request): Response|RedirectResponse
@@ -304,6 +313,116 @@ class MyFilesController extends Controller
             // no per-file editor in the portal, and none is being added.
             'version_candidates_url' => route('my-files.version-candidates', [], false),
         ]);
+    }
+
+    /**
+     * Edit a file this client uploaded.
+     *
+     * The client portal's counterpart to the staff file editor, and
+     * deliberately a separate route rather than the staff one opened up:
+     * `files.*` renders assignments, share links, activity and download
+     * history, which are staff surfaces, and its folder guard asks
+     * StaffLibraryScope — which answers "allowed" for every client (see
+     * FilePolicy::update()).
+     *
+     * Who may edit at all is FilePolicy: the file must be this client's own
+     * upload and they must hold `edit_files`. Which *fields* they may
+     * write is ApplyFileEdits, the same decision the staff editor and the
+     * API get, so a client holding `set_file_categories` but not
+     * `upload_public` gets exactly what those keys say and nothing is
+     * decided twice.
+     */
+    public function update(Request $request, File $file): RedirectResponse
+    {
+        $client = $request->user();
+        abort_unless($client !== null && $client->isClient(), 404);
+
+        Gate::authorize('update', $file);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:2000'],
+            'folder_id' => Rules::folderId(),
+            'public' => ['sometimes', 'boolean'],
+            'commentable' => ['sometimes', 'boolean'],
+            'categories' => ['array'],
+            'categories.*' => ['integer', 'exists:categories,id'],
+            'expires_at' => ['nullable', 'date'],
+            'download_limit' => ['nullable', 'integer', 'min:1'],
+            'download_limit_scope' => ['nullable', Rule::enum(DownloadLimitScope::class)],
+        ]);
+
+        // No `slug`, on purpose, and its absence is what makes
+        // ApplyFileEdits derive one from the name. An installation-wide
+        // unique slug that a client picks is a name to squat and an
+        // existence oracle to probe against every file on the
+        // installation, for nothing a derived slug does not already give
+        // them.
+
+        $folderId = isset($validated['folder_id']) ? (int) $validated['folder_id'] : null;
+
+        // The client rule, not the staff one: somewhere they could have
+        // uploaded it in the first place. Same check the upload path makes,
+        // so moving a file cannot reach a folder that uploading it could
+        // not. Only when the folder actually changes, so re-saving a file
+        // that already sits somewhere unusual still works.
+        if ($folderId !== null && $folderId !== $file->folder_id) {
+            $folder = Folder::query()->visibleToClient($client)->find($folderId);
+
+            abort_unless($folder !== null && Folder::uploadableBy($client, $folder), 403);
+        }
+
+        $changes = [
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'folder_id' => $folderId,
+            'commentable' => $validated['commentable'] ?? $file->commentable,
+            'download_limit' => $validated['download_limit'] ?? null,
+            'download_limit_scope' => $validated['download_limit_scope'] ?? DownloadLimitScope::Total->value,
+            'public' => $validated['public'] ?? $file->public,
+            'categories' => $validated['categories'] ?? [],
+        ];
+
+        // Only when the date actually moved — the form posts back what it
+        // was rendered with, and re-deriving it on every save would shift
+        // the expiry by a timezone difference each time somebody renamed
+        // the file. See FileExpiry.
+        $posted = $validated['expires_at'] ?? null;
+
+        if ($posted !== $this->expiry->asShown($file, $client)) {
+            $changes['expires_at'] = $this->expiry->instant($posted, $client);
+        }
+
+        $this->fileEdits->apply($client, $file, $changes);
+
+        return back()->with('success', __('File updated.'));
+    }
+
+    /**
+     * Delete a file this client uploaded.
+     *
+     * Their own upload and `delete_files`, both settled by
+     * FilePolicy::delete(). A file merely shared with them is not theirs to
+     * remove, and no permission changes that.
+     *
+     * The row is soft-deleted and the bytes are not: File::booted()'s
+     * `deleted` hook removes the upload and every cached rendition on
+     * commit, so the client's storage quota — which sums untrashed rows —
+     * frees up by exactly what the disk does.
+     */
+    public function destroy(Request $request, File $file): RedirectResponse
+    {
+        $client = $request->user();
+        abort_unless($client !== null && $client->isClient(), 404);
+
+        Gate::authorize('delete', $file);
+
+        $name = $file->name;
+        $file->delete();
+
+        $this->activity->log(Action::FileDeleted, context: ['name' => $name]);
+
+        return redirect()->route('my-files.index')->with('success', __('File deleted.'));
     }
 
     /**

@@ -14,6 +14,8 @@ use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Access\ShareTargets;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\DownloadLimitScope;
+use App\Modules\Files\Editing\ApplyFileEdits;
+use App\Modules\Files\Editing\FileExpiry;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
@@ -23,13 +25,10 @@ use App\Modules\Files\Uploads\StoreUploadedFile;
 use App\Modules\Files\Uploads\UploadExtensionPolicy;
 use App\Modules\Files\Versions\FileVersionLinks;
 use App\Modules\Files\Versions\FileVersions;
-use App\Modules\Platform\Localization\LocalDay;
-use App\Modules\Platform\Localization\TimezoneRegistry;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use App\Support\PublicUrl;
 use App\Support\Rules;
-use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -54,7 +53,8 @@ class FilesController extends Controller
         private readonly CommentingRules $commenting,
         private readonly FileVersions $versions,
         private readonly FileVersionLinks $versionLinks,
-        private readonly TimezoneRegistry $timezones,
+        private readonly ApplyFileEdits $fileEdits,
+        private readonly FileExpiry $expiry,
     ) {}
 
     public function create(Request $request): Response
@@ -175,7 +175,7 @@ class FilesController extends Controller
                 // calendar date the editor typed — read back in their
                 // zone, not the server's, or a file set to expire on the
                 // 12th reopens showing the 11th.
-                'expires_at' => $this->expiryDateFor($file, $request->user()),
+                'expires_at' => $this->expiry->asShown($file, $request->user()),
                 'expired' => $file->isExpired(),
                 'download_limit' => $file->download_limit,
                 'download_limit_scope' => ($file->download_limit_scope ?? DownloadLimitScope::Total)->value,
@@ -276,6 +276,8 @@ class FilesController extends Controller
         // change comparison below matches the model's int.
         $folderId = isset($validated['folder_id']) ? (int) $validated['folder_id'] : null;
         $user = $request->user();
+        // Gate::authorize above cannot pass without one.
+        assert($user !== null);
 
         // Reparenting through update() is the same privileged write as
         // move()/bulkUpdate(), so it needs the same guard: the destination
@@ -283,80 +285,45 @@ class FilesController extends Controller
         // folder actually changes, so re-saving a file that already sits in
         // an out-of-scope folder (reachable via a direct client share) still
         // works.
-        if ($folderId !== null && $folderId !== $file->folder_id && $user !== null) {
+        if ($folderId !== null && $folderId !== $file->folder_id) {
             $this->scope->folders($user)->findOrFail($folderId);
         }
 
-        $attributes = [
+        // Normalised into the shape ApplyFileEdits reads, then handed
+        // over: which of these the actor may actually write is that
+        // class's decision, and it is the same decision the API and the
+        // client portal get. See its docblock for why the split is here.
+        $changes = [
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
             'folder_id' => $folderId,
+            // Present unconditionally; the comment scope decides whether it
+            // is honoured. Defaulted to the stored value so a form that
+            // does not render the field cannot clear it.
+            'commentable' => $validated['commentable'] ?? $file->commentable,
+            'download_limit' => $validated['download_limit'] ?? null,
+            'download_limit_scope' => $validated['download_limit_scope'] ?? DownloadLimitScope::Total->value,
+            'public' => $validated['public'] ?? $file->public,
+            'slug' => $validated['slug'] ?? '',
+            'categories' => $validated['categories'] ?? [],
         ];
 
-        // Only meaningful while the comment scope is `selected`, and only
-        // offered by the page then — but a request reaching here directly
-        // must not be able to set a flag the UI is currently hiding, the
-        // same shape as the upload_public gate below.
-        if ($this->commenting->scope() === CommentScope::SelectedFiles) {
-            $attributes['commentable'] = $validated['commentable'] ?? $file->commentable;
+        // The one field that is conditionally *present* rather than
+        // conditionally honoured, and the reason it cannot move into
+        // ApplyFileEdits: the form was rendered with the stored instant
+        // read back as a date in this viewer's zone, and posts it again
+        // untouched with every other edit. Re-deriving it unconditionally
+        // would move the expiry by the difference between two people's
+        // zones each time somebody merely renamed the file. Compared
+        // against the same string the form was given, so "unchanged" means
+        // what the editor actually saw.
+        $posted = $validated['expires_at'] ?? null;
+
+        if ($posted !== $this->expiry->asShown($file, $user)) {
+            $changes['expires_at'] = $this->expiry->instant($posted, $user);
         }
 
-        // Only a user who can set expiration dates may change this file's
-        // own expiry — same "leave it alone if you lack the permission"
-        // rule as the upload_public gate below.
-        if ($request->user()?->can('set_file_expiration_date') === true) {
-            $posted = $validated['expires_at'] ?? null;
-
-            // Re-derived only when the date actually changed. The form was
-            // rendered with the stored instant read back as a date in *this*
-            // viewer's zone, and posts it again untouched with every other
-            // edit — so deriving it unconditionally moves the expiry by the
-            // difference between two people's zones each time somebody
-            // merely renames the file. Compared against the same string the
-            // form was given, above, so "unchanged" means what the editor
-            // saw.
-            if ($posted !== $this->expiryDateFor($file, $request->user())) {
-                $attributes['expires_at'] = $this->expiryInstant($posted, $request->user());
-            }
-        }
-
-        // Same rule again for the download cap, behind its own
-        // permission — the one that already gates a share link's
-        // max_downloads, since both are the same question asked about
-        // different objects.
-        if ($request->user()?->can('limit_downloads') === true) {
-            $attributes['download_limit'] = $validated['download_limit'] ?? null;
-            $attributes['download_limit_scope'] = $validated['download_limit_scope'] ?? DownloadLimitScope::Total->value;
-        }
-
-        $wasPublic = $file->public;
-
-        // Only a user who can manage public state may change it — a user
-        // who can edit a file but lacks upload_public leaves its public
-        // state exactly as it was, same rule as FoldersController::update.
-        if ($request->user()?->can('upload_public') === true) {
-            $attributes['public'] = $validated['public'] ?? $file->public;
-            // Omitting the field on an update leaves the current slug
-            // alone — it must not silently change just because the name
-            // did.
-            $attributes['slug'] = ($validated['slug'] ?? '') ?: ($file->slug ?: File::uniqueSlugFrom($validated['name'], $file->id));
-        }
-
-        $file->update($attributes);
-
-        // Categories are gated by their own permission; leave them untouched
-        // for a user who can edit the file but not set categories.
-        if ($request->user()?->can('set_file_categories') === true) {
-            $file->categories()->sync($validated['categories'] ?? []);
-        }
-
-        $this->activity->log(Action::FileUpdated, subject: $file);
-
-        if (! $wasPublic && $file->public) {
-            $this->activity->log(Action::FileMadePublic, subject: $file, context: ['slug' => $file->slug]);
-        } elseif ($wasPublic && ! $file->public) {
-            $this->activity->log(Action::FileMadePrivate, subject: $file);
-        }
+        $this->fileEdits->apply($user, $file, $changes);
 
         return back()->with('success', __('File updated.'));
     }
@@ -477,7 +444,7 @@ class FilesController extends Controller
                 // update()'s expires_at handling.
                 if ($validated['expiration_action'] !== 'no_change' && $canSetExpiration) {
                     $attributes['expires_at'] = $validated['expiration_action'] === 'set'
-                        ? $this->expiryInstant($validated['expires_at'], $user)
+                        ? $this->expiry->instant($validated['expires_at'], $user)
                         : null;
                 }
 
@@ -544,40 +511,17 @@ class FilesController extends Controller
         Gate::authorize('delete', $file);
 
         $name = $file->name;
-        // Soft delete; the bytes stay on disk until a purge policy
-        // lands with the retention work.
+        // Soft delete of the row — but not of the bytes. File::booted()'s
+        // `deleted` hook runs FileDiskCleanup on commit, so the upload and
+        // every cached rendition of it are gone from disk by the time this
+        // returns. The row is kept because version chains, the activity
+        // log and the erasure grace period all still point at it; nothing
+        // serves it (route-model binding 404s), and nothing ever
+        // forceDelete()s it either.
         $file->delete();
 
         $this->activity->log(Action::FileDeleted, context: ['name' => $name]);
 
         return redirect()->route('files.index')->with('success', __('File deleted.'));
-    }
-
-    /**
-     * The instant a `<input type="date">` expiry actually falls on.
-     *
-     * The form posts a bare `YYYY-MM-DD`, which Eloquent would otherwise
-     * store as midnight UTC — so "expires on the 12th" would cut the file
-     * off partway through the 11th for anyone in the Americas, and give
-     * anyone east of Greenwich most of a day they were not promised. It
-     * means the end of the 12th where the person setting it lives.
-     */
-    private function expiryInstant(?string $date, ?User $setter): ?Carbon
-    {
-        return $date === null
-            ? null
-            : LocalDay::end($date, $this->timezones->resolve($setter));
-    }
-
-    /**
-     * The inverse: the calendar date a stored expiry falls on for this
-     * viewer, which is what the date input is given and what it posts back.
-     *
-     * The pair has to agree, or a re-save reads one date and writes
-     * another.
-     */
-    private function expiryDateFor(File $file, ?User $viewer): ?string
-    {
-        return $file->expires_at?->copy()->setTimezone($this->timezones->resolve($viewer))->toDateString();
     }
 }

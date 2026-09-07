@@ -32,8 +32,10 @@ use Symfony\Component\HttpFoundation\Response;
  * Content-Length passed here in favour of the range actually served.
  *
  * The two paths are not equally revocable, which is why the lifetimes
- * below differ. X-Accel-Redirect authorises one response: nginx serves
- * these bytes, now, to this request. A presigned URL is a bearer
+ * below differ. Every local delivery method authorises one response and
+ * no more — nginx's X-Accel-Redirect, Apache's X-Sendfile, or PHP
+ * streaming the bytes itself: these bytes, now, to this request, and
+ * nothing that outlives it. A presigned URL is a bearer
  * credential — whoever holds it can fetch the file without passing the
  * caller's checks again, and it outlives them: a download cap that is
  * spent in the meantime, an expires_at that falls in between, an

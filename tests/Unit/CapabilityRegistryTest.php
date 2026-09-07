@@ -31,7 +31,11 @@ test('community edition has the self-management capabilities and no cloud exclus
         ->and($registry->has(Capability::AttributionHide))->toBeFalse()
         // The counterpart of StorageConfigure above: a self-hosted install
         // configures its own bucket and is never handed one.
-        ->and($registry->has(Capability::StorageManaged))->toBeFalse();
+        ->and($registry->has(Capability::StorageManaged))->toBeFalse()
+        // Both editions, and the self-hosted side is the reason it must
+        // stay present by default: nobody else supplies this
+        // installation's CAPTCHA keys.
+        ->and($registry->has(Capability::CaptchaConfigure))->toBeTrue();
 });
 
 test('cloud edition has cloud exclusives and none of the community-only capabilities', function () {
@@ -43,6 +47,9 @@ test('cloud edition has cloud exclusives and none of the community-only capabili
         // not decide who fills them. See the case's own comment.
         ->and($registry->has(Capability::UsersManage))->toBeTrue()
         ->and($registry->has(Capability::StorageManaged))->toBeTrue()
+        // Granted here too. A hosted platform closes the CAPTCHA screen by
+        // subtracting this key, not by the edition withholding it.
+        ->and($registry->has(Capability::CaptchaConfigure))->toBeTrue()
         ->and($registry->has(Capability::StorageConfigure))->toBeFalse()
         ->and($registry->has(Capability::EmailTransportConfigure))->toBeFalse()
         ->and($registry->has(Capability::SystemUpdates))->toBeFalse()
@@ -60,6 +67,11 @@ test('enabledKeys returns the string keys of enabled capabilities', function () 
         'branding.customize',
         'attribution.hide',
         'storage.managed',
+        // Both editions, present by default. It appears in a Cloud
+        // instance's keys until the platform names it in
+        // PROJECTSEND_CAPABILITIES_DISABLED, which is how the fleet keeps
+        // one tenant from switching its CAPTCHA off.
+        'captcha.configure',
         'captcha.managed_keys',
         'platform.managed',
         'ai.connector',

@@ -269,3 +269,68 @@ test('saving clears a stale outage warning', function () {
 
     expect(CaptchaVerifier::lastError())->toBeNull();
 });
+
+// Capability::CaptchaConfigure. Present in both editions, so nothing here
+// changes for anybody until an operator subtracts it — which is the whole
+// point of the key: a hosted fleet shares one parent domain and one
+// sending reputation, and a tenant switching its own CAPTCHA off spends
+// the rest of the fleet's.
+test('the screen is open by default in both editions', function () {
+    foreach ([Edition::Community, Edition::Cloud] as $edition) {
+        config()->set('projectsend.edition', $edition);
+
+        $this->actingAs($this->admin)->get('/system/settings/captcha')->assertOk();
+    }
+});
+
+test('withdrawing the capability closes the screen', function () {
+    config()->set('projectsend.edition', Edition::Cloud);
+    config()->set('projectsend.capabilities_disabled', 'captcha.configure');
+
+    $this->actingAs($this->admin)->get('/system/settings/captcha')->assertNotFound();
+});
+
+// The half that actually protects the fleet. Closing the read alone would
+// leave a hand-crafted PATCH able to do the damage, and turning the
+// CAPTCHA off needs none of the fields the controller gates per field —
+// `provider: none` does it, and so does unticking the four form switches
+// while leaving perfectly good keys in place.
+test('withdrawing the capability closes the write, keys or no keys', function () {
+    config()->set('projectsend.edition', Edition::Cloud);
+    config()->set('projectsend.capabilities_disabled', 'captcha.configure');
+
+    app(Settings::class)->set(Setting::CaptchaProvider, 'turnstile');
+
+    $this->actingAs($this->admin)
+        ->patch('/system/settings/captcha', captchaPayload(['provider' => 'none']))
+        ->assertNotFound();
+
+    $this->actingAs($this->admin)
+        ->patch('/system/settings/captcha', captchaPayload([
+            'provider' => 'turnstile',
+            'site_key' => 'site-abc',
+            'secret_key' => 'secret-abc',
+            'on_login' => false,
+            'on_registration' => false,
+            'on_password_reset' => false,
+            'on_public_comments' => false,
+        ]))
+        ->assertNotFound();
+
+    $settings = app(Settings::class);
+
+    expect($settings->get(Setting::CaptchaProvider))->toBe('turnstile')
+        ->and($settings->get(Setting::CaptchaOnLogin))->toBeTrue()
+        ->and($settings->get(Setting::CaptchaOnRegistration))->toBeTrue()
+        ->and($settings->get(Setting::CaptchaOnPasswordReset))->toBeTrue()
+        ->and($settings->get(Setting::CaptchaOnPublicComments))->toBeTrue();
+});
+
+test('withdrawing the capability closes the test button too', function () {
+    config()->set('projectsend.edition', Edition::Cloud);
+    config()->set('projectsend.capabilities_disabled', 'captcha.configure');
+
+    $this->actingAs($this->admin)
+        ->post('/system/settings/captcha/test', ['provider' => 'turnstile', 'secret_key' => 'secret-abc'])
+        ->assertNotFound();
+});

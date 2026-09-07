@@ -24,13 +24,18 @@ use Inertia\Response;
 /**
  * Configuring the CAPTCHA on public forms.
  *
- * Available in **both** editions and behind no capability, for the reason
- * LDAP settled and social login repeated: this is an administrator's
- * setting, not an edition difference. What *is* an edition difference is
- * the option of using the platform's own keys, and that is enforced per
- * field rather than on the route — the shape EmailSettingsController uses
- * for SMTP, so a hand-crafted PATCH cannot select a key source this
- * installation has no keys for.
+ * Available in **both** editions, and behind Capability::CaptchaConfigure
+ * — present by default, so a self-hosted installation keeps the screen,
+ * and removable by an operator whose tenants share a domain and a sending
+ * reputation. Enforced entirely by the `capability:captcha.configure`
+ * route middleware, which covers the PATCH as well as the GET: turning
+ * the CAPTCHA off needs no gated field at all, so nothing short of
+ * closing the write would have closed it.
+ *
+ * Which keys this installation may point at is a second question, and
+ * that one is still enforced per field below rather than on the route —
+ * the shape EmailSettingsController uses for SMTP, so a hand-crafted
+ * PATCH cannot select a key source this installation has no keys for.
  *
  * The secret key follows the pattern MailProviderSettings established and
  * LdapSettings and SocialSettings repeated: it is never sent to the

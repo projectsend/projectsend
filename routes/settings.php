@@ -215,12 +215,30 @@ Route::middleware('auth')->group(function () {
         Route::patch('system/settings/social-login/{provider}', [SocialLoginSettingsController::class, 'update'])
             ->name('system-settings.social-login.update');
 
-        // Outside any capability: group for the same reason as LDAP above.
-        // Only the option of using the platform's own keys is an edition
-        // difference, and that is gated per field inside the controller.
-        Route::get('system/settings/captcha', [CaptchaSettingsController::class, 'edit'])->name('system-settings.captcha.edit');
-        Route::patch('system/settings/captcha', [CaptchaSettingsController::class, 'update'])->name('system-settings.captcha.update');
-        Route::post('system/settings/captcha/test', [CaptchaSettingsController::class, 'test'])->name('system-settings.captcha.test');
+        // Unlike LDAP and social login above, this one does get a
+        // capability: group — present in both editions, so a self-hosted
+        // installation keeps the screen it has always had, and only
+        // removed when an operator names captcha.configure in
+        // PROJECTSEND_CAPABILITIES_DISABLED.
+        //
+        // The reason a managed platform would: its tenants share one
+        // parent domain and one sending reputation, so an administrator
+        // switching their own CAPTCHA off spends everybody else's. Same
+        // shape as Storage below — all-or-nothing on the route, read
+        // included. Per-field gating in the controller would leave the
+        // hole open, because turning the CAPTCHA off (provider `none`, or
+        // just unticking the four per-form switches) needs none of the
+        // gated fields. The middleware covers the PATCH as well as the
+        // GET, which is what closes it.
+        //
+        // Which keys the screen may offer is a second, narrower question,
+        // still answered per field inside the controller by
+        // Capability::CaptchaManagedKeys.
+        Route::middleware('capability:captcha.configure')->group(function () {
+            Route::get('system/settings/captcha', [CaptchaSettingsController::class, 'edit'])->name('system-settings.captcha.edit');
+            Route::patch('system/settings/captcha', [CaptchaSettingsController::class, 'update'])->name('system-settings.captcha.update');
+            Route::post('system/settings/captcha/test', [CaptchaSettingsController::class, 'test'])->name('system-settings.captcha.test');
+        });
 
         Route::get('system/settings/privacy', [PrivacySettingsController::class, 'edit'])->name('system-settings.privacy.edit');
         Route::patch('system/settings/privacy', [PrivacySettingsController::class, 'update'])->name('system-settings.privacy.update');

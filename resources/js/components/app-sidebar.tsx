@@ -226,7 +226,7 @@ export function AppSidebar() {
             { title: t('Security'), url: '/system/settings/security', when: settings },
             { title: t('LDAP'), url: '/system/settings/ldap', when: settings },
             { title: t('Social login'), url: '/system/settings/social-login', when: settings },
-            { title: t('CAPTCHA'), url: '/system/settings/captcha', when: settings },
+            { title: t('CAPTCHA'), url: '/system/settings/captcha', when: settings && capabilities.includes('captcha.configure') },
 
             // Files: where they land, how long they stay, who can see them.
             { title: t('Uploads'), url: '/system/settings/uploads', when: settings },

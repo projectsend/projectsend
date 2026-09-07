@@ -79,11 +79,36 @@ enum Capability: string
     // simply inert and files stay on local disk.
     case StorageManaged = 'storage.managed';
 
+    // Both editions, and present by default: a self-hosted installation
+    // has this screen today and needs it, because nobody else is going to
+    // supply its keys. It exists as a key so a managed platform can
+    // subtract it, and the reason to subtract it is narrower than the
+    // reason LDAP and social login stayed ungated.
+    //
+    // On a managed installation the administrator and the host are the
+    // same person, but the *reputation* is not theirs. Every tenant is a
+    // name under one shared domain, sending mail from one shared pool. An
+    // administrator who sets the provider to none, or who leaves the keys
+    // alone and just unticks the four per-form switches, turns their own
+    // public forms into an open door and spends everybody else's
+    // deliverability doing it. That is the same shape as Storage: not a
+    // feature somebody paid for, but a setting whose blast radius reaches
+    // past the installation that holds it.
+    //
+    // All-or-nothing on the route, read included, exactly as Storage and
+    // Branding are. Per-field gating in the controller would not do:
+    // switching the CAPTCHA off does not need the key fields at all, so
+    // the PATCH has to be closed too, and the middleware closes both
+    // verbs at once.
+    case CaptchaConfigure = 'captcha.configure';
+
     // Cloud-only — managed installations supply CAPTCHA keys centrally, so
     // protection is on before anybody finds the settings screen. The
-    // feature itself is in both editions and behind no capability: this
-    // covers only the option of using *our* credentials, which cannot ship
-    // inside a self-hosted package.
+    // feature itself is in both editions: this covers only the option of
+    // using *our* credentials, which cannot ship inside a self-hosted
+    // package. Distinct from CaptchaConfigure above — that one says
+    // whether the screen opens at all, this one says what it may offer
+    // once it does.
     case CaptchaManagedKeys = 'captcha.managed_keys';
 
     // Cloud-only — letting an AI assistant act on this installation on
@@ -129,6 +154,7 @@ enum Capability: string
             self::CustomAssets => [Edition::Community],
 
             self::UsersManage,
+            self::CaptchaConfigure,
             self::Branding => [Edition::Community, Edition::Cloud],
 
             self::AttributionHide,

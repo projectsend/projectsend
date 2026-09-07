@@ -36,6 +36,7 @@ export type Capability =
     | 'custom_assets.manage'
     | 'branding.customize'
     | 'attribution.hide'
+    | 'captcha.configure'
     | 'captcha.managed_keys';
 
 export interface SocialLoginProvider {

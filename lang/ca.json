@@ -2005,5 +2005,13 @@
     "Why it is set this way": "Per què està configurat així",
     "Why that is worth changing": "Per què val la pena canviar-ho",
     "Why this matters, and how to change it": "Per què és important i com canviar-ho",
-    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Els teus fitxers es desen fora de l'arrel web, així que cada descàrrega passa primer per ProjectSend, que comprova que qui la demana hi tingui dret. Després d'aquesta comprovació, el PHP obre el fitxer i l'envia. L'alternativa és que el PHP digui al teu servidor web «envia aquest fitxer» i acabi immediatament."
+    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Els teus fitxers es desen fora de l'arrel web, així que cada descàrrega passa primer per ProjectSend, que comprova que qui la demana hi tingui dret. Després d'aquesta comprovació, el PHP obre el fitxer i l'envia. L'alternativa és que el PHP digui al teu servidor web «envia aquest fitxer» i acabi immediatament.",
+    "\":name\" is a public folder — anyone will be able to open this file, without signing in.": "\":name\" és una carpeta pública: qualsevol podrà obrir aquest fitxer sense iniciar sessió.",
+    "\":name\" will be deleted, along with everyone's access to it. This can be undone by an administrator.": "\":name\" s'eliminarà, juntament amb l'accés de tothom. Un administrador ho pot desfer.",
+    "Anyone with the link will be able to open and download it, without signing in.": "Qualsevol que tingui l'enllaç podrà obrir-lo i descarregar-lo sense iniciar sessió.",
+    "Back to my files": "Torna als meus fitxers",
+    "Edit file": "Edita el fitxer",
+    "Expires on": "Caduca el",
+    "Make this file public": "Fes públic aquest fitxer",
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Aquest lloc encara no té cap pàgina pública configurada, així que no es veurà res fins que un administrador en configuri una."
 }

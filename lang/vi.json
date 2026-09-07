@@ -2005,5 +2005,13 @@
     "Why it is set this way": "Vì sao lại được đặt như vậy",
     "Why that is worth changing": "Vì sao nên thay đổi",
     "Why this matters, and how to change it": "Vì sao điều này quan trọng và cách thay đổi",
-    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Tệp của bạn được lưu ngoài thư mục gốc web, nên mỗi lượt tải xuống đều đi qua ProjectSend trước để kiểm tra người yêu cầu có quyền nhận tệp hay không. Sau bước kiểm tra đó, PHP mở tệp và gửi đi. Cách còn lại là PHP báo cho máy chủ web «gửi tệp này» rồi kết thúc ngay."
+    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Tệp của bạn được lưu ngoài thư mục gốc web, nên mỗi lượt tải xuống đều đi qua ProjectSend trước để kiểm tra người yêu cầu có quyền nhận tệp hay không. Sau bước kiểm tra đó, PHP mở tệp và gửi đi. Cách còn lại là PHP báo cho máy chủ web «gửi tệp này» rồi kết thúc ngay.",
+    "\":name\" is a public folder — anyone will be able to open this file, without signing in.": "“:name” là thư mục công khai — bất kỳ ai cũng sẽ mở được tệp này mà không cần đăng nhập.",
+    "\":name\" will be deleted, along with everyone's access to it. This can be undone by an administrator.": "“:name” sẽ bị xóa, cùng với quyền truy cập của mọi người vào tệp. Quản trị viên có thể hoàn tác việc này.",
+    "Anyone with the link will be able to open and download it, without signing in.": "Bất kỳ ai có liên kết đều có thể mở và tải tệp xuống mà không cần đăng nhập.",
+    "Back to my files": "Quay lại tệp của tôi",
+    "Edit file": "Sửa tệp",
+    "Expires on": "Hết hạn vào",
+    "Make this file public": "Công khai tệp này",
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Trang web này chưa thiết lập trang công khai, nên sẽ không có gì hiển thị cho đến khi quản trị viên thiết lập."
 }

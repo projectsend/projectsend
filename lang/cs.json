@@ -2005,5 +2005,13 @@
     "Why it is set this way": "Proč je to nastavené takto",
     "Why that is worth changing": "Proč se to vyplatí změnit",
     "Why this matters, and how to change it": "Proč na tom záleží a jak to změnit",
-    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Tvoje soubory jsou uložené mimo webový kořen, takže každé stahování projde nejdřív ProjectSendem, který ověří, že na soubor má daný člověk nárok. Po této kontrole PHP soubor otevře a odešle. Druhá možnost je, že PHP řekne webovému serveru „pošli tenhle soubor“ a hned skončí."
+    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Tvoje soubory jsou uložené mimo webový kořen, takže každé stahování projde nejdřív ProjectSendem, který ověří, že na soubor má daný člověk nárok. Po této kontrole PHP soubor otevře a odešle. Druhá možnost je, že PHP řekne webovému serveru „pošli tenhle soubor“ a hned skončí.",
+    "\":name\" is a public folder — anyone will be able to open this file, without signing in.": "\":name\" je veřejná složka – tento soubor bude moci otevřít kdokoli bez přihlášení.",
+    "\":name\" will be deleted, along with everyone's access to it. This can be undone by an administrator.": "\":name\" bude smazán, včetně přístupu všech ostatních. Administrátor to může vrátit zpět.",
+    "Anyone with the link will be able to open and download it, without signing in.": "Kdokoli s odkazem jej bude moci otevřít a stáhnout bez přihlášení.",
+    "Back to my files": "Zpět na moje soubory",
+    "Edit file": "Upravit soubor",
+    "Expires on": "Vyprší dne",
+    "Make this file public": "Zveřejnit tento soubor",
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Tento web zatím nemá nastavenou veřejnou stránku, takže nebude nic vidět, dokud ji administrátor nenastaví."
 }

@@ -2005,5 +2005,13 @@
     "Why it is set this way": "なぜこの設定になっているか",
     "Why that is worth changing": "変更する価値がある理由",
     "Why this matters, and how to change it": "これが重要な理由と変更方法",
-    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "ファイルは Web ルートの外に保存されているため、ダウンロードはまず ProjectSend を通り、要求した人に権限があるかを確認します。その確認のあと、PHP がファイルを開いて送信しています。もう一つの方法は、PHP が Web サーバーに「このファイルを送って」と伝えてすぐ処理を終えることです。"
+    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "ファイルは Web ルートの外に保存されているため、ダウンロードはまず ProjectSend を通り、要求した人に権限があるかを確認します。その確認のあと、PHP がファイルを開いて送信しています。もう一つの方法は、PHP が Web サーバーに「このファイルを送って」と伝えてすぐ処理を終えることです。",
+    "\":name\" is a public folder — anyone will be able to open this file, without signing in.": "「:name」は公開フォルダです。ログインしていない人でもこのファイルを開けるようになります。",
+    "\":name\" will be deleted, along with everyone's access to it. This can be undone by an administrator.": "「:name」を削除します。ほかの人のアクセス権もなくなります。管理者なら元に戻せます。",
+    "Anyone with the link will be able to open and download it, without signing in.": "リンクを知っている人なら誰でも、ログインせずに開いてダウンロードできます。",
+    "Back to my files": "マイファイルに戻る",
+    "Edit file": "ファイルを編集",
+    "Expires on": "有効期限",
+    "Make this file public": "このファイルを公開する",
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "このサイトにはまだ公開ページが設定されていないため、管理者が設定するまで何も表示されません。"
 }

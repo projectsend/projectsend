@@ -2005,5 +2005,13 @@
     "Why it is set this way": "Dlaczego jest tak ustawione",
     "Why that is worth changing": "Dlaczego warto to zmienić",
     "Why this matters, and how to change it": "Dlaczego to ma znaczenie i jak to zmienić",
-    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Twoje pliki są przechowywane poza katalogiem publicznym, więc każde pobranie przechodzi najpierw przez ProjectSend, który sprawdza, czy dana osoba ma do niego prawo. Po tym sprawdzeniu PHP otwiera plik i go wysyła. Alternatywą jest, by PHP powiedziało serwerowi WWW „wyślij ten plik” i od razu zakończyło pracę."
+    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Twoje pliki są przechowywane poza katalogiem publicznym, więc każde pobranie przechodzi najpierw przez ProjectSend, który sprawdza, czy dana osoba ma do niego prawo. Po tym sprawdzeniu PHP otwiera plik i go wysyła. Alternatywą jest, by PHP powiedziało serwerowi WWW „wyślij ten plik” i od razu zakończyło pracę.",
+    "\":name\" is a public folder — anyone will be able to open this file, without signing in.": "\":name\" to folder publiczny — każdy będzie mógł otworzyć ten plik bez logowania.",
+    "\":name\" will be deleted, along with everyone's access to it. This can be undone by an administrator.": "\":name\" zostanie usunięty, razem z dostępem wszystkich osób do niego. Administrator może to cofnąć.",
+    "Anyone with the link will be able to open and download it, without signing in.": "Każdy, kto ma link, będzie mógł go otworzyć i pobrać bez logowania.",
+    "Back to my files": "Wróć do moich plików",
+    "Edit file": "Edytuj plik",
+    "Expires on": "Wygasa",
+    "Make this file public": "Ustaw ten plik jako publiczny",
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Ta witryna nie ma jeszcze skonfigurowanej strony publicznej, więc nic nie będzie widoczne, dopóki administrator jej nie ustawi."
 }

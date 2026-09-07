@@ -2005,5 +2005,13 @@
     "Why it is set this way": "Neden böyle ayarlı",
     "Why that is worth changing": "Değiştirmeye neden değer",
     "Why this matters, and how to change it": "Bu neden önemli ve nasıl değiştirilir",
-    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Dosyaların web kök dizininin dışında saklanır; bu yüzden her indirme önce ProjectSend'den geçer ve isteyen kişinin o dosyayı alma hakkı olup olmadığı denetlenir. Bu denetimden sonra dosyayı PHP açıp gönderir. Diğer seçenek, PHP'nin web sunucuna “bu dosyayı gönder” deyip hemen işini bitirmesidir."
+    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Dosyaların web kök dizininin dışında saklanır; bu yüzden her indirme önce ProjectSend'den geçer ve isteyen kişinin o dosyayı alma hakkı olup olmadığı denetlenir. Bu denetimden sonra dosyayı PHP açıp gönderir. Diğer seçenek, PHP'nin web sunucuna “bu dosyayı gönder” deyip hemen işini bitirmesidir.",
+    "\":name\" is a public folder — anyone will be able to open this file, without signing in.": "\":name\" herkese açık bir klasör — bu dosyayı oturum açmadan herkes açabilecek.",
+    "\":name\" will be deleted, along with everyone's access to it. This can be undone by an administrator.": "\":name\" silinecek, herkesin ona erişimiyle birlikte. Bir yönetici bunu geri alabilir.",
+    "Anyone with the link will be able to open and download it, without signing in.": "Bağlantıya sahip herkes oturum açmadan dosyayı açabilir ve indirebilir.",
+    "Back to my files": "Dosyalarıma dön",
+    "Edit file": "Dosyayı düzenle",
+    "Expires on": "Sona erme tarihi",
+    "Make this file public": "Bu dosyayı herkese açık yap",
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Bu sitede henüz herkese açık bir sayfa ayarlanmamış, bu yüzden bir yönetici ayarlayana kadar hiçbir şey görünmeyecek."
 }

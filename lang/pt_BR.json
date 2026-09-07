@@ -2005,5 +2005,13 @@
     "Why it is set this way": "Por que está assim",
     "Why that is worth changing": "Por que vale a pena mudar",
     "Why this matters, and how to change it": "Por que isso importa e como mudar",
-    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Seus arquivos ficam fora da raiz web, então todo download passa primeiro pelo ProjectSend, que confere se a pessoa pode recebê-lo. Depois dessa checagem, o PHP abre o arquivo e o envia. A alternativa é o PHP dizer ao seu servidor web “envie este arquivo” e terminar na hora."
+    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Seus arquivos ficam fora da raiz web, então todo download passa primeiro pelo ProjectSend, que confere se a pessoa pode recebê-lo. Depois dessa checagem, o PHP abre o arquivo e o envia. A alternativa é o PHP dizer ao seu servidor web “envie este arquivo” e terminar na hora.",
+    "\":name\" is a public folder — anyone will be able to open this file, without signing in.": "\":name\" é uma pasta pública: qualquer pessoa poderá abrir este arquivo sem entrar na conta.",
+    "\":name\" will be deleted, along with everyone's access to it. This can be undone by an administrator.": "\":name\" será excluído, junto com o acesso de todos a ele. Um administrador pode desfazer isso.",
+    "Anyone with the link will be able to open and download it, without signing in.": "Qualquer pessoa com o link poderá abri-lo e baixá-lo sem entrar na conta.",
+    "Back to my files": "Voltar para meus arquivos",
+    "Edit file": "Editar arquivo",
+    "Expires on": "Expira em",
+    "Make this file public": "Tornar este arquivo público",
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Este site ainda não tem uma página pública configurada, então nada ficará visível até que um administrador configure uma."
 }

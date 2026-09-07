@@ -2005,5 +2005,13 @@
     "Why it is set this way": "Waarom het zo staat ingesteld",
     "Why that is worth changing": "Waarom het de moeite waard is dit te veranderen",
     "Why this matters, and how to change it": "Waarom dit uitmaakt, en hoe je het verandert",
-    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Je bestanden staan buiten de webroot, dus elke download gaat eerst langs ProjectSend om te controleren of de persoon het bestand mag hebben. Na die controle opent PHP het bestand en verstuurt het. Het alternatief is dat PHP tegen je webserver zegt “stuur dit bestand” en meteen klaar is."
+    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Je bestanden staan buiten de webroot, dus elke download gaat eerst langs ProjectSend om te controleren of de persoon het bestand mag hebben. Na die controle opent PHP het bestand en verstuurt het. Het alternatief is dat PHP tegen je webserver zegt “stuur dit bestand” en meteen klaar is.",
+    "\":name\" is a public folder — anyone will be able to open this file, without signing in.": "\":name\" is een openbare map — iedereen kan dit bestand dan zonder in te loggen openen.",
+    "\":name\" will be deleted, along with everyone's access to it. This can be undone by an administrator.": "\":name\" wordt verwijderd, samen met de toegang van iedereen tot dit bestand. Een beheerder kan dit ongedaan maken.",
+    "Anyone with the link will be able to open and download it, without signing in.": "Iedereen met de link kan het openen en downloaden, zonder in te loggen.",
+    "Back to my files": "Terug naar mijn bestanden",
+    "Edit file": "Bestand bewerken",
+    "Expires on": "Verloopt op",
+    "Make this file public": "Dit bestand openbaar maken",
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Deze site heeft nog geen openbare pagina, dus er is niets zichtbaar totdat een beheerder er een instelt."
 }

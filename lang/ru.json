@@ -2005,5 +2005,13 @@
     "Why it is set this way": "Почему выбран этот способ",
     "Why that is worth changing": "Почему это стоит изменить",
     "Why this matters, and how to change it": "Почему это важно и как это изменить",
-    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Ваши файлы хранятся вне корня сайта, поэтому каждая загрузка сначала проходит через ProjectSend, который проверяет, имеет ли человек на неё право. После проверки PHP открывает файл и отправляет его. Другой вариант — PHP говорит веб-серверу «отправь этот файл» и сразу завершает работу."
+    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Ваши файлы хранятся вне корня сайта, поэтому каждая загрузка сначала проходит через ProjectSend, который проверяет, имеет ли человек на неё право. После проверки PHP открывает файл и отправляет его. Другой вариант — PHP говорит веб-серверу «отправь этот файл» и сразу завершает работу.",
+    "\":name\" is a public folder — anyone will be able to open this file, without signing in.": "«:name» — публичная папка: любой сможет открыть этот файл без входа в систему.",
+    "\":name\" will be deleted, along with everyone's access to it. This can be undone by an administrator.": "«:name» будет удалён вместе с доступом к нему у всех остальных. Администратор может это отменить.",
+    "Anyone with the link will be able to open and download it, without signing in.": "Любой, у кого есть ссылка, сможет открыть и скачать файл без входа в систему.",
+    "Back to my files": "Назад к моим файлам",
+    "Edit file": "Редактировать файл",
+    "Expires on": "Срок действия до",
+    "Make this file public": "Сделать этот файл публичным",
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "На этом сайте ещё не настроена публичная страница, поэтому ничего не будет видно, пока администратор её не настроит."
 }

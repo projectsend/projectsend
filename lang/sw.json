@@ -2005,5 +2005,13 @@
     "Why it is set this way": "Kwa nini imewekwa hivi",
     "Why that is worth changing": "Kwa nini inafaa kubadilishwa",
     "Why this matters, and how to change it": "Kwa nini hili ni muhimu, na jinsi ya kulibadilisha",
-    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Faili zako huhifadhiwa nje ya mzizi wa wavuti, kwa hivyo kila upakuaji hupitia ProjectSend kwanza ili kuthibitisha kuwa mtu anayeomba anaruhusiwa kuipata. Baada ya ukaguzi huo, PHP hufungua faili na kuituma. Njia mbadala ni PHP kuiambia seva yako ya wavuti “tuma faili hii” kisha imalize mara moja."
+    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Faili zako huhifadhiwa nje ya mzizi wa wavuti, kwa hivyo kila upakuaji hupitia ProjectSend kwanza ili kuthibitisha kuwa mtu anayeomba anaruhusiwa kuipata. Baada ya ukaguzi huo, PHP hufungua faili na kuituma. Njia mbadala ni PHP kuiambia seva yako ya wavuti “tuma faili hii” kisha imalize mara moja.",
+    "\":name\" is a public folder — anyone will be able to open this file, without signing in.": "\":name\" ni folda ya umma — mtu yeyote ataweza kufungua faili hili bila kuingia.",
+    "\":name\" will be deleted, along with everyone's access to it. This can be undone by an administrator.": "\":name\" litafutwa, pamoja na ufikiaji wa kila mtu kwake. Msimamizi anaweza kutendua hatua hii.",
+    "Anyone with the link will be able to open and download it, without signing in.": "Mtu yeyote mwenye kiungo ataweza kulifungua na kulipakua bila kuingia.",
+    "Back to my files": "Rudi kwenye mafaili yangu",
+    "Edit file": "Hariri faili",
+    "Expires on": "Litaisha muda tarehe",
+    "Make this file public": "Fanya faili hili liwe la umma",
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Tovuti hii bado haina ukurasa wa umma, kwa hivyo hakuna kitakachoonekana hadi msimamizi aweke mmoja."
 }

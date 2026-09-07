@@ -2005,5 +2005,13 @@
     "Why it is set this way": "Mengapa disetel seperti ini",
     "Why that is worth changing": "Mengapa ini layak diubah",
     "Why this matters, and how to change it": "Mengapa ini penting, dan cara mengubahnya",
-    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Berkas Anda disimpan di luar akar web, jadi setiap unduhan melewati ProjectSend lebih dulu untuk memastikan orang tersebut memang berhak menerimanya. Setelah pemeriksaan itu, PHP membuka berkas dan mengirimkannya. Alternatifnya adalah PHP memberi tahu server web Anda “kirim berkas ini” lalu langsung selesai."
+    "Your files are stored outside the web root, so every download goes through ProjectSend first to check the person is allowed to have it. After that check, PHP is opening the file and sending it. The alternative is for PHP to tell your web server \"send this file\" and finish immediately.": "Berkas Anda disimpan di luar akar web, jadi setiap unduhan melewati ProjectSend lebih dulu untuk memastikan orang tersebut memang berhak menerimanya. Setelah pemeriksaan itu, PHP membuka berkas dan mengirimkannya. Alternatifnya adalah PHP memberi tahu server web Anda “kirim berkas ini” lalu langsung selesai.",
+    "\":name\" is a public folder — anyone will be able to open this file, without signing in.": "Folder \":name\" bersifat publik — siapa pun bisa membuka berkas ini tanpa masuk.",
+    "\":name\" will be deleted, along with everyone's access to it. This can be undone by an administrator.": "\":name\" akan dihapus, beserta akses semua orang ke berkas ini. Administrator bisa membatalkannya.",
+    "Anyone with the link will be able to open and download it, without signing in.": "Siapa pun yang punya tautannya bisa membuka dan mengunduhnya tanpa masuk.",
+    "Back to my files": "Kembali ke berkas saya",
+    "Edit file": "Sunting berkas",
+    "Expires on": "Kedaluwarsa pada",
+    "Make this file public": "Jadikan berkas ini publik",
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Situs ini belum punya halaman publik, jadi tidak ada yang terlihat sampai administrator menyiapkannya."
 }

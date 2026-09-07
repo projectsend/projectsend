@@ -329,6 +329,61 @@ test('a storage backend that refuses the write fails the upload instead of recor
     expect(File::query()->count())->toBe($before);
 });
 
+// What survives a completion that failed. The lock in complete() promises
+// the client may try again once whatever went wrong is fixed -- "the
+// lock's TTL releases the claim if a completion dies mid-flight, so a
+// later retry still works" -- and a retry has nothing to work from but
+// the parts.
+test('a refused write leaves the parts for the retry the lock promises', function () {
+    $this->actingAs($this->admin);
+    $sessionId = createSession(11, 'assembled.txt');
+
+    putPart($sessionId, 1, 'hello-');
+    putPart($sessionId, 2, 'world');
+
+    $refusing = Mockery::mock(Illuminate\Contracts\Filesystem\Filesystem::class);
+    $refusing->shouldReceive('writeStream')->once()->andReturnFalse();
+    Storage::set('files', $refusing);
+
+    $this->postJson("/uploads/{$sessionId}/complete")->assertStatus(422);
+
+    // Both parts are still there, and the half-written copy is not.
+    expect($this->getJson("/uploads/{$sessionId}/parts")->json())->toHaveCount(2)
+        ->and(file_exists(partsRoot().'/'.$sessionId.'/assembled'))->toBeFalse();
+
+    // The operator fixes the bucket; the same session completes.
+    Storage::fake('files');
+
+    $this->postJson("/uploads/{$sessionId}/complete")->assertOk();
+
+    $file = File::query()->latest('id')->firstOrFail();
+    expect(Storage::disk('files')->get($file->path))->toBe('hello-world')
+        ->and($file->size)->toBe(11);
+});
+
+test('a temporary directory that cannot be written fails the upload, and says so', function () {
+    // /dev/full accepts an open and refuses every write with ENOSPC, which
+    // is the failure this guards against without needing a full volume.
+    // Unchecked, the byte count and the checksum describe what was read
+    // rather than what landed; checked, it reads like the other storage
+    // failure a few lines below it in the same method.
+    $this->actingAs($this->admin);
+    $sessionId = createSession(11, 'assembled.txt');
+
+    putPart($sessionId, 1, 'hello-');
+    putPart($sessionId, 2, 'world');
+
+    symlink('/dev/full', partsRoot().'/'.$sessionId.'/assembled');
+
+    $this->postJson("/uploads/{$sessionId}/complete")
+        ->assertStatus(422)
+        ->assertJsonPath('errors.parts.0', fn (string $message): bool => str_contains($message, 'Could not assemble the upload'));
+
+    // Nothing recorded, and the parts are still the client's to retry with.
+    expect(File::query()->count())->toBe(0)
+        ->and($this->getJson("/uploads/{$sessionId}/parts")->json())->toHaveCount(2);
+})->skip(! file_exists('/dev/full'), 'needs /dev/full, which only exists on Linux');
+
 // A chunked upload is two requests, and store()'s rule only ever sees the
 // first one. Delete the folder while the bytes are in flight and the
 // session still names it -- the version of this that nobody can ask for

@@ -28,6 +28,12 @@ use Throwable;
 class LocalPartStore
 {
     /**
+     * Said twice, because a full temp volume can announce itself in the
+     * middle of the copy or only when the last buffer is flushed.
+     */
+    private const WRITE_FAILED = 'Could not assemble the upload: writing to the temporary directory failed.';
+
+    /**
      * The route name is a parameter because the same flow is mounted twice:
      * once on the session-authenticated web routes for the browser, once on
      * the token-authenticated API routes. The signature is over the URL, so
@@ -140,9 +146,21 @@ class LocalPartStore
     }
 
     /**
-     * Stream-append parts in order onto the files disk, hashing as we
-     * go. Peak temp usage ≈ file size + one part (parts are unlinked
-     * as they are consumed).
+     * Stream-append parts in order onto the files disk, hashing as we go.
+     *
+     * The parts stay on disk until the assembled bytes are safely on the
+     * target disk. ChunkedUploadsController's completion lock promises that
+     * "a later retry still works", and everything that can fail after the
+     * concatenation — reopening the copy, a disk refusing the write, the
+     * File row itself — happens while the client has nothing but this
+     * session to retry with. Unlinking each part as it was consumed left
+     * listParts() empty, so every later complete() answered "Upload is
+     * incomplete: missing parts" for good.
+     *
+     * The cost is temp space: peak usage is the whole file twice over
+     * (every part, plus the assembled copy) rather than the file plus one
+     * part. Both are freed by the abort() below the moment the write lands,
+     * and by the failure path the moment it does not.
      *
      * @return array{path: string, disk: string, size: int, checksum: string}
      */
@@ -158,6 +176,93 @@ class LocalPartStore
         }
 
         $assembledPath = $this->directory($session).'/assembled';
+
+        try {
+            [$size, $checksum] = $this->concatenate($session, $parts, $assembledPath);
+
+            $readStream = fopen($assembledPath, 'rb');
+
+            if ($readStream === false) {
+                throw new RuntimeException('Could not reopen assembled file.');
+            }
+
+            $diskEvent = new ResolvingUploadDisk($session->user);
+            Event::dispatch($diskEvent);
+            $disk = $diskEvent->disk;
+
+            $written = Storage::disk($disk)->writeStream($targetPath, $readStream);
+
+            if (is_resource($readStream)) {
+                fclose($readStream);
+            }
+
+            // The disks are configured with 'throw' => false, so a refused
+            // write is a `false` return rather than an exception — and the
+            // caller goes on to record a File row for bytes that were never
+            // stored. Losing an upload silently is worse than failing it, and
+            // this is the only place that can tell the difference: a real
+            // instance of it was a GCS bucket rejecting the adapter's ACL,
+            // which looked exactly like a successful upload.
+            if ($written === false) {
+                // The reason is lost by the time it gets here — 'throw' => false
+                // means Flysystem swallowed the exception rather than passing it
+                // on — so log what was attempted. Which bucket it was is the
+                // difference between reading this as "my credentials expired"
+                // and "I typed the wrong bucket name", and only the log can say
+                // it: the message below is shown to whoever was uploading, which
+                // includes clients, and a bucket name is not theirs to see.
+                Log::error('Upload could not be written to storage.', [
+                    'disk' => $disk,
+                    'bucket' => config('filesystems.disks.'.$disk.'.bucket'),
+                    'driver' => config('filesystems.disks.'.$disk.'.driver'),
+                    'path' => $targetPath,
+                ]);
+
+                throw new RuntimeException(
+                    'Could not write the assembled upload to the "'.$disk.'" disk. '
+                    .'Check the storage backend is reachable and its credentials are still valid.'
+                );
+            }
+        } catch (Throwable $failure) {
+            // The half-written copy belongs to this attempt and the next one
+            // makes its own; the parts belong to the client, and they are
+            // what a retry needs. Deleting the copy here is also the only
+            // thing that removes it at all on this path — it used to sit in
+            // the session directory until the sweeper came round.
+            FileSystem::delete($assembledPath);
+
+            throw $failure;
+        }
+
+        $this->abort($session);
+
+        return [
+            'path' => $targetPath,
+            'disk' => $disk,
+            'size' => $size,
+            'checksum' => $checksum,
+        ];
+    }
+
+    /**
+     * Concatenate the parts into $assembledPath, returning the byte count
+     * and the sha256 of what was written.
+     *
+     * Every read and every write is checked. They were not, and while a
+     * failing fwrite on a full volume is loud in practice — Laravel's
+     * error handler turns the warning into an ErrorException — loud there
+     * means a 500 carrying a PHP message, where the disk-refused-the-write
+     * case a few lines above becomes a sentence the person uploading can
+     * act on. A short write arriving without a warning would be worse
+     * still: $size and the hash describe the buffer that was read, so an
+     * unchecked one yields a truncated file with a checksum matching bytes
+     * that were never stored.
+     *
+     * @param  list<array{PartNumber: int, Size: int, ETag: string}>  $parts
+     * @return array{0: int, 1: string}
+     */
+    private function concatenate(UploadSession $session, array $parts, string $assembledPath): array
+    {
         $out = fopen($assembledPath, 'wb');
 
         if ($out === false) {
@@ -167,85 +272,46 @@ class LocalPartStore
         $hash = hash_init('sha256');
         $size = 0;
 
-        foreach ($parts as $part) {
-            $partPath = $this->partPath($session, $part['PartNumber']);
-            $in = fopen($partPath, 'rb');
+        try {
+            foreach ($parts as $part) {
+                $in = fopen($this->partPath($session, $part['PartNumber']), 'rb');
 
-            if ($in === false) {
-                fclose($out);
-                throw new RuntimeException('Could not read part '.$part['PartNumber'].'.');
-            }
-
-            while (! feof($in)) {
-                $buffer = fread($in, 1024 * 1024);
-
-                if ($buffer === false) {
-                    break;
+                if ($in === false) {
+                    throw new RuntimeException('Could not read part '.$part['PartNumber'].'.');
                 }
 
-                fwrite($out, $buffer);
-                hash_update($hash, $buffer);
-                $size += strlen($buffer);
+                try {
+                    while (! feof($in)) {
+                        $buffer = fread($in, 1024 * 1024);
+
+                        if ($buffer === false) {
+                            throw new RuntimeException('Could not read part '.$part['PartNumber'].'.');
+                        }
+
+                        if ($buffer !== '' && @fwrite($out, $buffer) !== strlen($buffer)) {
+                            throw new RuntimeException(self::WRITE_FAILED);
+                        }
+
+                        hash_update($hash, $buffer);
+                        $size += strlen($buffer);
+                    }
+                } finally {
+                    fclose($in);
+                }
             }
+        } catch (Throwable $failure) {
+            fclose($out);
 
-            fclose($in);
-            unlink($partPath);
+            throw $failure;
         }
 
-        fclose($out);
-
-        $readStream = fopen($assembledPath, 'rb');
-
-        if ($readStream === false) {
-            throw new RuntimeException('Could not reopen assembled file.');
+        // fclose flushes, so a volume that filled up on the last buffer
+        // fails here rather than in the loop.
+        if (! fclose($out)) {
+            throw new RuntimeException(self::WRITE_FAILED);
         }
 
-        $diskEvent = new ResolvingUploadDisk($session->user);
-        Event::dispatch($diskEvent);
-        $disk = $diskEvent->disk;
-
-        $written = Storage::disk($disk)->writeStream($targetPath, $readStream);
-
-        if (is_resource($readStream)) {
-            fclose($readStream);
-        }
-
-        // The disks are configured with 'throw' => false, so a refused
-        // write is a `false` return rather than an exception — and the
-        // caller goes on to record a File row for bytes that were never
-        // stored. Losing an upload silently is worse than failing it, and
-        // this is the only place that can tell the difference: a real
-        // instance of it was a GCS bucket rejecting the adapter's ACL,
-        // which looked exactly like a successful upload.
-        if ($written === false) {
-            // The reason is lost by the time it gets here — 'throw' => false
-            // means Flysystem swallowed the exception rather than passing it
-            // on — so log what was attempted. Which bucket it was is the
-            // difference between reading this as "my credentials expired"
-            // and "I typed the wrong bucket name", and only the log can say
-            // it: the message below is shown to whoever was uploading, which
-            // includes clients, and a bucket name is not theirs to see.
-            Log::error('Upload could not be written to storage.', [
-                'disk' => $disk,
-                'bucket' => config('filesystems.disks.'.$disk.'.bucket'),
-                'driver' => config('filesystems.disks.'.$disk.'.driver'),
-                'path' => $targetPath,
-            ]);
-
-            throw new RuntimeException(
-                'Could not write the assembled upload to the "'.$disk.'" disk. '
-                .'Check the storage backend is reachable and its credentials are still valid.'
-            );
-        }
-
-        $this->abort($session);
-
-        return [
-            'path' => $targetPath,
-            'disk' => $disk,
-            'size' => $size,
-            'checksum' => hash_final($hash),
-        ];
+        return [$size, hash_final($hash)];
     }
 
     public function abort(UploadSession $session): void

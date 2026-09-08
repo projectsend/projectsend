@@ -6,6 +6,8 @@ namespace App\Modules\Files\Thumbnails;
 
 use App\Modules\Files\Thumbnails\Events\RenderingImage;
 use claviska\SimpleImage;
+use Illuminate\Contracts\Cache\LockTimeoutException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use RuntimeException;
 
@@ -102,7 +104,106 @@ class ThumbnailGenerator
         };
     }
 
+    /**
+     * How long a render may hold the lock before another request is
+     * entitled to assume it died. Generous: a 40-megapixel decode is a
+     * second or two, and an external source is copied local first.
+     */
+    private const LOCK_SECONDS = 120;
+
+    /**
+     * How long to wait for the request that got there first.
+     *
+     * Waiting costs an idle worker — about 35 MB. Rendering costs that
+     * plus four bytes per source pixel, up to 160 MB at the megapixel
+     * ceiling. Waiting is the cheap option by an order of magnitude,
+     * which is the whole reason this exists.
+     *
+     * Configurable because the right number depends on how long a decode
+     * takes here, and that is a property of the machine rather than of
+     * the application: a small VPS reading a large source off a slow disk
+     * wants longer than this, and nothing in the code can know that.
+     */
+    private const DEFAULT_LOCK_WAIT_SECONDS = 15;
+
+    /**
+     * Render one image, once, however many requests ask at the same time.
+     *
+     * **Why the lock.** Renditions are generated on demand and cached by
+     * existence, and nothing between the callers stopped two requests
+     * rendering the same image at once. The atomic rename below settles
+     * which file survives — it never stopped both from decoding. So N
+     * concurrent requests for one cold rendition were N full-size decodes,
+     * each holding four bytes per source pixel.
+     *
+     * That is not an attack. A public listing emits a thumbnail URL per
+     * file, a browser opens six or more connections at once, and the first
+     * visit to a gallery of ordinary camera images is six simultaneous
+     * decodes on a container sized for one. It kills the container, and
+     * because a killed render writes nothing, the cache never warms: the
+     * page dies again on the next visit. `PublicGroupsController` reaches
+     * here with no account at all.
+     *
+     * **Why waiting rather than refusing.** The request that waits holds
+     * an idle worker. The request that renders holds a worker plus the
+     * whole source bitmap. Six waiters cost what one renderer costs, so
+     * blocking is the cheap answer even when it looks like the slow one.
+     *
+     * **Why the re-check after acquiring.** The winner has finished by the
+     * time a waiter gets in, so the file it was waiting for is already
+     * there. Re-reading is what turns a wait into a cache hit rather than
+     * a second render of the same image.
+     */
     public function generate(
+        string $sourcePath,
+        string $destinationPath,
+        string $mimeType,
+        ImageAudience $audience,
+        ImageRendition $rendition,
+    ): void {
+        // Keyed on the destination, which already encodes the file, the
+        // audience and the rendition — two requests collide here exactly
+        // when they would have written the same path.
+        $lock = Cache::lock('rendition:'.sha1($destinationPath), self::LOCK_SECONDS);
+
+        try {
+            $lock->block($this->lockWaitSeconds());
+        } catch (LockTimeoutException) {
+            // Deliberately not rendering anyway. Falling through on
+            // timeout would reinstate exactly the pile-on this exists to
+            // stop, at the moment the system is already struggling — one
+            // failed thumbnail is a better outcome than a container that
+            // dies and takes the warm cache with it.
+            throw new RuntimeException('Timed out waiting for another request to render this image.');
+        }
+
+        try {
+            // Somebody else rendered it while we waited. An empty file is
+            // not a rendition — same rule the callers apply, and the same
+            // reason: nothing invalidates one once it is cached.
+            if (is_file($destinationPath) && filesize($destinationPath) > 0) {
+                return;
+            }
+
+            $this->render($sourcePath, $destinationPath, $mimeType, $audience, $rendition);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    /**
+     * Clamped to at least a second: a zero would make every concurrent
+     * request fail instead of waiting, which is the opposite of the point
+     * and exactly what a stray empty environment variable produces.
+     */
+    private function lockWaitSeconds(): int
+    {
+        $configured = config('projectsend.rendition_lock_wait_seconds');
+
+        return max(1, is_numeric($configured) ? (int) $configured : self::DEFAULT_LOCK_WAIT_SECONDS);
+    }
+
+    private function render(
         string $sourcePath,
         string $destinationPath,
         string $mimeType,

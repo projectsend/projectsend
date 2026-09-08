@@ -161,6 +161,12 @@ return [
     |
     */
 
+    // How long a request waits for another one that is already rendering
+    // the same thumbnail or preview, before giving up rather than
+    // decoding the same image a second time. See ThumbnailGenerator.
+    // A slow disk or a large source wants longer than the default 15.
+    'rendition_lock_wait_seconds' => env('PROJECTSEND_RENDITION_LOCK_WAIT_SECONDS'),
+
     'version' => '2.4.0',
 
     /*

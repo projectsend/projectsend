@@ -13,6 +13,13 @@ Anything under **Upgrade notes** is something you have to do, not something we d
 This section collects changes as they land; the release process turns it into a numbered entry
 when a version is cut.
 
+**Fixed**
+
+- **A public gallery no longer renders the same thumbnail several times at once.** The first visit
+  to a page of large images started one full-size decode per thumbnail in parallel, which on a
+  memory-limited server could exhaust it — and because a decode that dies writes nothing, the page
+  stayed broken on reload. One render now happens and the rest wait for it.
+
 
 ## 2.4.0 — 8 September 2026
 

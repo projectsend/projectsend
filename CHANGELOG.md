@@ -13,6 +13,12 @@ Anything under **Upgrade notes** is something you have to do, not something we d
 This section collects changes as they land; the release process turns it into a numbered entry
 when a version is cut.
 
+
+## 2.4.0 — 8 September 2026
+
+Clients can now look after the files they uploaded, and this release closes three ways somebody
+could see a little more than they should.
+
 **New**
 
 - **Clients can edit and delete the files they uploaded**, with the name, description, expiry,
@@ -42,6 +48,17 @@ when a version is cut.
   fails.** Start it again from ProjectSend. Local-disk installations and zip bundles are unaffected.
 - **If your temporary directory is on a small or separate volume, allow headroom for twice your
   largest allowed upload.** Only while a file is being assembled, and nothing needs configuring.
+
+Thanks to [@Noorkhalel](https://github.com/Noorkhalel), [@denkfabrik-li](https://github.com/denkfabrik-li)
+and [@mehmedturk](https://github.com/mehmedturk) for reporting and fixing.
+
+### Issues closed since 2.3.0
+
+The summary above is what changed. This is the paper trail, for anyone who wants to read the
+original report.
+
+- [#1765](https://github.com/projectsend/projectsend/issues/1765) — Projectsend 2.2.1 thumbnail issue after file upload
+- [#1771](https://github.com/projectsend/projectsend/issues/1771) — Permissions granted to the Client role are not applied to client accounts
 
 ## 2.3.0 — 1 September 2026
 

@@ -9,6 +9,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\ShareLink;
+use App\Modules\Files\Sharing\CreateShareLink;
 use App\Modules\Platform\Localization\LocalDay;
 use App\Modules\Platform\Localization\TimezoneRegistry;
 use Illuminate\Http\RedirectResponse;
@@ -30,6 +31,7 @@ class ShareLinksController extends Controller
     public function __construct(
         private readonly ActivityLogger $activity,
         private readonly TimezoneRegistry $timezones,
+        private readonly CreateShareLink $links,
     ) {}
 
     public function store(Request $request, File $file): RedirectResponse
@@ -80,16 +82,16 @@ class ShareLinksController extends Controller
             ]);
         }
 
-        ShareLink::query()->create([
-            'shareable_type' => $file->getMorphClass(),
-            'shareable_id' => $file->id,
-            'token' => $validated['token'] ?? Str::random(32),
-            'created_by' => $user->id,
-            'expires_at' => $user->can('set_file_expiration_date') ? $expiresAt : null,
-            'max_downloads' => $user->can('limit_downloads') ? $validated['max_downloads'] ?? null : null,
-        ]);
-
-        $this->activity->log(Action::ShareLinkCreated, subject: $file);
+        // The permission gates stay here, where the request is: whether
+        // this person may set an expiry or a cap is a fact about them,
+        // not about link creation, and the action has no viewer to ask.
+        $this->links->for(
+            file: $file,
+            creator: $user,
+            expiresAt: $user->can('set_file_expiration_date') ? $expiresAt : null,
+            maxDownloads: $user->can('limit_downloads') ? $validated['max_downloads'] ?? null : null,
+            token: $validated['token'] ?? null,
+        );
 
         return back()->with('success', __('Public link created.'));
     }

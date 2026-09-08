@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\Files\Uploads;
 
 use App\Models\User;
+use App\Modules\Files\Events\FileWasStored;
+use Illuminate\Support\Facades\Event;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Models\File;
@@ -51,6 +53,13 @@ class StoreUploadedFile
         ]);
 
         $this->activity->log($action, $uploader, $file);
+
+        // Every upload path converges here — the chunked flow staff and
+        // clients share, and the synchronous POST beside it — so a
+        // listener sees each upload once without knowing which route
+        // produced it. Dispatched after the row exists, so what it
+        // receives is a complete File.
+        Event::dispatch(new FileWasStored($file, $uploader));
 
         return $file;
     }

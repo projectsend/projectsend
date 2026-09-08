@@ -81,6 +81,25 @@ export function AnnouncementBand({ announcement }: { announcement: Announcement 
 }
 
 /**
+ * The band, reading the shared prop itself.
+ *
+ * Self-reading so a theme adds it in one line without threading a prop
+ * through a page that has no other reason to know about it — the same
+ * shape as AnnouncementIcon below. Every portal theme renders this, so a
+ * message reaches a client wherever they are looking rather than only in
+ * the theme somebody remembered to wire.
+ */
+export function ViewerAnnouncement() {
+    const { announcement } = usePage<SharedData>().props;
+
+    if (!announcement) {
+        return null;
+    }
+
+    return <AnnouncementBand announcement={announcement} />;
+}
+
+/**
  * The header icon, beside the notification bell.
  *
  * Same shape as UpdateAvailableIcon next to it: absent entirely when

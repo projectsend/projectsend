@@ -12,6 +12,7 @@ import { Pagination } from '@/components/pagination';
 import { FileRowActions } from '@/components/portal/file-row-actions';
 import { FolderRowActions } from '@/components/portal/folder-row-actions';
 import { NewFolderButton } from '@/components/portal/new-folder-button';
+import { ViewerAnnouncement } from '@/components/announcement';
 import { PortalBreadcrumb } from '@/components/portal/portal-breadcrumb';
 import { PortalFilesToolbarDrive } from '@/components/portal/portal-files-toolbar-drive';
 import { RenameFolderDialog } from '@/components/portal/rename-folder-dialog';
@@ -86,6 +87,11 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
 
             <div className="px-4 py-6">
                 <div className="flex items-start justify-between">
+                    {/* Above everything the client came here to do. Reads the
+                        shared prop itself; core drops anything not aimed at
+                        this viewer, so a theme never decides who sees it. */}
+                    <ViewerAnnouncement />
+
                     <Heading title={folder?.name ?? t('My files')} description={t('The files shared with you')} />
                     <div className="flex items-center gap-2">
                         <PortalFilesToolbarDrive

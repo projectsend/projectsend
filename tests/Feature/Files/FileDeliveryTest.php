@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Modules\Files\Delivery\FileDelivery;
 use App\Modules\Files\Models\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -202,4 +203,50 @@ test('previews, thumbnails and zips travel the same way downloads do', function 
 
     $response->assertOk()->assertHeaderMissing('X-Accel-Redirect');
     expect(strlen($response->streamedContent()))->toBeGreaterThan(0);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Asking from a console
+|--------------------------------------------------------------------------
+|
+| detect() reads SERVER_SOFTWARE, which only exists inside a request. A
+| console process therefore has nothing to look at and falls to the `php`
+| default — correct for that process, and wrong as a statement about the
+| installation, which is exactly how somebody running `artisan tinker` on
+| a healthy nginx box will read it. It cost somebody an afternoon before
+| it was recognised as an artefact of where the question was asked.
+*/
+
+test('a console reading says the method was not observed', function () {
+    config()->set('projectsend.file_delivery', null);
+
+    $described = app(FileDelivery::class)->describe();
+
+    expect($described['observed'])->toBeFalse()
+        // Still `php`, because that is what this process would actually do.
+        ->and($described['method'])->toBe('php');
+});
+
+test('a reading taken during a request is observed', function () {
+    config()->set('projectsend.file_delivery', null);
+
+    request()->server->set('SERVER_SOFTWARE', 'nginx/1.27.0');
+
+    $described = app(FileDelivery::class)->describe();
+
+    expect($described['observed'])->toBeTrue()
+        ->and($described['method'])->toBe('nginx');
+});
+
+// An explicit setting is somebody's decision and needs nothing observed to
+// be true — the value stands wherever it is read from.
+test('a stated method is always observed, console or not', function () {
+    config()->set('projectsend.file_delivery', 'xsendfile');
+
+    $described = app(FileDelivery::class)->describe();
+
+    expect($described['method'])->toBe('xsendfile')
+        ->and($described['detected'])->toBeFalse()
+        ->and($described['observed'])->toBeTrue();
 });

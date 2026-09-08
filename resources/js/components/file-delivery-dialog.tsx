@@ -7,6 +7,13 @@ export interface FileDelivery {
     method: DeliveryMethod;
     /** True when nobody set PROJECTSEND_FILE_DELIVERY and the server was detected. */
     detected: boolean;
+    /**
+     * Whether the detection had anything to work with. Always true in a
+     * request; false only when something asks from a console, where
+     * SERVER_SOFTWARE does not exist and `method` is a default rather
+     * than a finding.
+     */
+    observed: boolean;
 }
 
 /**

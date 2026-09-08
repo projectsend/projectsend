@@ -61,7 +61,7 @@ class FileDelivery
     /**
      * The method in force, and whether it was detected or stated.
      *
-     * @return array{method: DeliveryMethod, detected: bool}
+     * @return array{method: DeliveryMethod, detected: bool, observed: bool}
      */
     public function resolve(): array
     {
@@ -69,10 +69,25 @@ class FileDelivery
         $explicit = is_string($configured) ? DeliveryMethod::tryFrom($configured) : null;
 
         if ($explicit !== null) {
-            return ['method' => $explicit, 'detected' => false];
+            return ['method' => $explicit, 'detected' => false, 'observed' => true];
         }
 
-        return ['method' => $this->detect(), 'detected' => true];
+        // Whether there was anything to detect *from*. detect() reads
+        // SERVER_SOFTWARE, which only exists inside a request — so a
+        // console process has nothing to look at and falls to the `php`
+        // default. That default is right for the console (no web server is
+        // handling this, so nothing could hand a file off), and wrong as a
+        // statement about the installation, which is how somebody reading
+        // it from `artisan tinker` will take it.
+        //
+        // Reported rather than papered over: a reader who runs
+        // `describe()` from a shell on a perfectly good nginx box was
+        // being told `php`, with `detected: true` vouching for it. That
+        // cost somebody an afternoon before it was recognised as an
+        // artefact of asking outside a request.
+        $observed = is_string($this->request->server('SERVER_SOFTWARE'));
+
+        return ['method' => $this->detect(), 'detected' => true, 'observed' => $observed];
     }
 
     public function method(): DeliveryMethod
@@ -88,7 +103,12 @@ class FileDelivery
      * the installation from outside, and neither should change meaning if
      * the enum ever grows a JsonSerializable of its own.
      *
-     * @return array{method: string, detected: bool}
+     * `observed` is false only outside an HTTP request, where nothing can
+     * be detected and `method` is a default rather than a finding. Both
+     * screens that read this run in a request, so they always see true;
+     * it exists for whoever asks from a console.
+     *
+     * @return array{method: string, detected: bool, observed: bool}
      */
     public function describe(): array
     {
@@ -100,6 +120,8 @@ class FileDelivery
             // to the reader: a detected `php` is an installation that
             // could be faster, a stated one is somebody's decision.
             'detected' => $resolved['detected'],
+            // And whether the detection had anything to work with.
+            'observed' => $resolved['observed'],
         ];
     }
 

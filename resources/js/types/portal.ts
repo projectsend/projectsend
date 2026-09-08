@@ -66,6 +66,14 @@ export interface FileRow {
      * a theme must never derive this from `is_mine`.
      */
     share_url: string | null;
+    /**
+     * How often this file has been downloaded and when it last was —
+     * present only on files this client uploaded. Null means "not yours
+     * to know", never "nobody has": a count on a file shared with several
+     * clients would tell each of them about the others' activity, so the
+     * server sends nothing rather than a zero.
+     */
+    downloads: { count: number; last_at: string | null } | null;
     categories: CategoryTag[];
     /**
      * The download cap on this file, already decided for this client by

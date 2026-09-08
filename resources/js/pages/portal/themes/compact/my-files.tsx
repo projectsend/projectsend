@@ -9,6 +9,7 @@ import { CategoryBadges } from '@/components/files/category-badges';
 import { VersionBadge } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
 import { Pagination } from '@/components/pagination';
+import { FileDownloadStats } from '@/components/portal/file-download-stats';
 import { FileRowActions } from '@/components/portal/file-row-actions';
 import { FolderRowActions } from '@/components/portal/folder-row-actions';
 import { NewFolderButton } from '@/components/portal/new-folder-button';
@@ -228,6 +229,11 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
                                                     <VersionBadge version={file.version} variant="compact" />
                                                 </div>
                                                 {file.description && <p className="truncate text-[11px] text-neutral-400">{file.description}</p>}
+                                                {file.downloads !== null && (
+                                                    <p className="truncate text-[11px] text-neutral-400">
+                                                        <FileDownloadStats file={file} />
+                                                    </p>
+                                                )}
                                                 <CategoryBadges categories={file.categories} size="xs" className="mt-0.5" />
                                             </div>
                                         </div>

@@ -10,6 +10,7 @@ import { CategoryBadges } from '@/components/files/category-badges';
 import { VersionBadge } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
 import { Pagination } from '@/components/pagination';
+import { FileDownloadStats } from '@/components/portal/file-download-stats';
 import { FileRowActions } from '@/components/portal/file-row-actions';
 import { FolderRowActions } from '@/components/portal/folder-row-actions';
 import { NewFolderButton } from '@/components/portal/new-folder-button';
@@ -212,6 +213,12 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                         </div>
                                         <p className="text-muted-foreground truncate text-xs">
                                             {file.description ?? file.original_name} · {formatBytes(file.size)} · {date(file.created_at)}
+                                            {file.downloads !== null && (
+                                                <>
+                                                    {' · '}
+                                                    <FileDownloadStats file={file} />
+                                                </>
+                                            )}
                                         </p>
                                         <CategoryBadges categories={file.categories} className="mt-1" />
                                     </div>
@@ -337,6 +344,16 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                         <p className="text-muted-foreground truncate text-xs">
                                             {formatBytes(file.size)} · {date(file.created_at)}
                                         </p>
+                                        {/* Its own line in the grid, for the
+                                            reason gallery gives: a card's
+                                            metadata line truncates, and a
+                                            sentence appended to it takes the
+                                            size and date with it. */}
+                                        {file.downloads !== null && (
+                                            <p className="text-muted-foreground truncate text-xs">
+                                                <FileDownloadStats file={file} />
+                                            </p>
+                                        )}
                                         <CategoryBadges categories={file.categories} className="mt-1" />
                                     </div>
                                     <div className="flex shrink-0 items-center">

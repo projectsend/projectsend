@@ -12,6 +12,7 @@ use App\Modules\Comments\Access\VisibleCommentScope;
 use App\Modules\Comments\CommentingRules;
 use App\Modules\Comments\CommentScope;
 use App\Modules\Files\Access\DownloadAllowance;
+use App\Modules\Files\Access\OwnFileDownloads;
 use App\Modules\Files\DownloadLimitScope;
 use App\Modules\Files\Editing\ApplyFileEdits;
 use App\Modules\Files\Editing\FileExpiry;
@@ -75,6 +76,7 @@ class MyFilesController extends Controller
         private readonly FileVersions $versions,
         private readonly FileVersionLinks $versionLinks,
         private readonly ClientShareLinks $shareLinks,
+        private readonly OwnFileDownloads $ownDownloads,
         private readonly ApplyFileEdits $fileEdits,
         private readonly FileExpiry $expiry,
         private readonly ActivityLogger $activity,
@@ -230,6 +232,10 @@ class MyFilesController extends Controller
         // minted on files this client uploaded — see ClientShareLinks for
         // why both halves are required.
         $shareUrls = $this->shareLinks->forMany($fileRows, $client);
+        // Also one query for the page, and also own files only — see
+        // OwnFileDownloads for why telling a recipient the count would be
+        // telling them about the other recipients.
+        $downloads = $this->ownDownloads->forMany($fileRows, $client);
 
         return Inertia::render("portal/themes/{$this->themeKey()}/my-files", [
             'folder' => $current === null ? null : ['id' => $current->id, 'name' => $current->name],
@@ -280,6 +286,12 @@ class MyFilesController extends Controller
                 // installation did it for them. Never derived from
                 // is_mine: a theme renders what is here and nothing else.
                 'share_url' => $shareUrls[$file->id] ?? null,
+                // How often this went out and when it last did — the
+                // answer to "did it arrive?", which on a link-only
+                // account is the only evidence there is. Null on a file
+                // somebody shared with this client: not zero, which would
+                // be a claim about other people's activity, but nothing.
+                'downloads' => $downloads[$file->id] ?? null,
                 'categories' => $file->categories->map(fn (Category $category): array => [
                     'id' => $category->id, 'name' => $category->name, 'color' => $category->color,
                 ])->values()->all(),

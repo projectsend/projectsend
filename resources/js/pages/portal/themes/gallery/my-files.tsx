@@ -9,6 +9,7 @@ import { CategoryBadges } from '@/components/files/category-badges';
 import { VersionBadge } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
 import { Pagination } from '@/components/pagination';
+import { FileDownloadStats } from '@/components/portal/file-download-stats';
 import { FileRowActions } from '@/components/portal/file-row-actions';
 import { FolderRowActions } from '@/components/portal/folder-row-actions';
 import { NewFolderButton } from '@/components/portal/new-folder-button';
@@ -223,8 +224,17 @@ export default function MyFilesGallery(props: MyFilesFolderManagementProps) {
                                 </div>
                             )}
 
-                            <div className="flex items-center gap-2 p-3">
-                                <div className="min-w-0 flex-1">
+                            {/* Stacked, not side by side. The actions used
+                                to sit in a flex row beside the text, and a
+                                card in this grid is around 200px wide — so
+                                the icons took what they needed and every line
+                                of text truncated to two characters ("Q…",
+                                "75 …"), with the badges overlapping them.
+                                Giving the text the full width and putting the
+                                actions on their own row below fixes all of
+                                it. */}
+                            <div className="p-3">
+                                <div className="min-w-0">
                                     <div className="flex items-center gap-1.5">
                                         <p className="truncate text-sm font-medium">{file.name}</p>
                                         {file.public && (
@@ -237,9 +247,19 @@ export default function MyFilesGallery(props: MyFilesFolderManagementProps) {
                                     <p className="text-muted-foreground truncate text-xs">
                                         {formatBytes(file.size)} · {date(file.created_at)}
                                     </p>
+                                    {/* Its own line, not appended to the one
+                                        above: a card is narrow and that line
+                                        truncates, so a sentence on the end of
+                                        it pushes the size and date out of
+                                        sight. */}
+                                    {file.downloads !== null && (
+                                        <p className="text-muted-foreground truncate text-xs">
+                                            <FileDownloadStats file={file} />
+                                        </p>
+                                    )}
                                     <CategoryBadges categories={file.categories} className="mt-1" />
                                 </div>
-                                <div className="flex shrink-0 items-center">
+                                <div className="mt-2 flex flex-wrap items-center">
                                     {comments_enabled && (
                                         <CommentsShellGallery
                                             fileId={file.id}

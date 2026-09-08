@@ -2021,5 +2021,8 @@
     "Copy the public link to this file": "Скопировать публичную ссылку на этот файл",
     "Downloaded :count times, last on :date": "Скачиваний: :count — последнее :date",
     "Downloaded once, on :date": "Скачан один раз, :date",
-    "Not downloaded yet": "Ещё не скачивался"
+    "Not downloaded yet": "Ещё не скачивался",
+    "Also add the \"xms_edov\" optional claim to your app registration, under Token configuration. Naming the tenant says which directory vouched for the sign-in; that claim says the directory checked the person really owns the address. Without it, someone else inside your tenant could sign in with a colleague's address, so ProjectSend will create new accounts but never attach a Microsoft sign-in to an account that already exists.": "Также добавьте необязательное утверждение «xms_edov» в регистрацию приложения, в разделе «Конфигурация токена». Указание клиента говорит, какой каталог поручился за вход; это утверждение говорит, что каталог проверил, что адрес действительно принадлежит человеку. Без него кто-то другой внутри вашего клиента смог бы войти с адресом коллеги, поэтому ProjectSend будет создавать новые учётные записи, но никогда не привяжет вход через Microsoft к уже существующей.",
+    "A password reset goes to this address, so changing it needs your password.": "Сброс пароля отправляется на этот адрес, поэтому его изменение требует вашего пароля.",
+    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Ваш адрес электронной почты берётся из каталога или поставщика удостоверений, через который вы входите, и здесь его изменить нельзя."
 }

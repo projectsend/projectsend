@@ -2021,5 +2021,8 @@
     "Copy the public link to this file": "Copiar o link público para este arquivo",
     "Downloaded :count times, last on :date": "Baixado :count vezes, a última em :date",
     "Downloaded once, on :date": "Baixado uma vez, em :date",
-    "Not downloaded yet": "Ainda não foi baixado"
+    "Not downloaded yet": "Ainda não foi baixado",
+    "Also add the \"xms_edov\" optional claim to your app registration, under Token configuration. Naming the tenant says which directory vouched for the sign-in; that claim says the directory checked the person really owns the address. Without it, someone else inside your tenant could sign in with a colleague's address, so ProjectSend will create new accounts but never attach a Microsoft sign-in to an account that already exists.": "Adicione também a declaração opcional \"xms_edov\" ao registro do aplicativo, em Configuração de token. Informar o locatário diz qual diretório respondeu pelo login; essa declaração diz que o diretório verificou que a pessoa realmente é dona do endereço. Sem ela, outra pessoa dentro do seu locatário poderia entrar com o endereço de um colega, então o ProjectSend criará contas novas mas nunca vinculará um login da Microsoft a uma conta que já existe.",
+    "A password reset goes to this address, so changing it needs your password.": "A redefinição de senha vai para este endereço, então alterá-lo exige a sua senha.",
+    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Seu endereço de e-mail vem do diretório ou provedor de identidade com que você entra, e não pode ser alterado aqui."
 }

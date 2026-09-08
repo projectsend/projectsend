@@ -2021,5 +2021,8 @@
     "Copy the public link to this file": "Kopieer de openbare link naar dit bestand",
     "Downloaded :count times, last on :date": ":count keer gedownload, laatst op :date",
     "Downloaded once, on :date": "Eén keer gedownload, op :date",
-    "Not downloaded yet": "Nog niet gedownload"
+    "Not downloaded yet": "Nog niet gedownload",
+    "Also add the \"xms_edov\" optional claim to your app registration, under Token configuration. Naming the tenant says which directory vouched for the sign-in; that claim says the directory checked the person really owns the address. Without it, someone else inside your tenant could sign in with a colleague's address, so ProjectSend will create new accounts but never attach a Microsoft sign-in to an account that already exists.": "Voeg ook de optionele claim \"xms_edov\" toe aan je app-registratie, onder Tokenconfiguratie. De tenant noemen zegt welke directory voor de aanmelding instaat; die claim zegt dat de directory heeft gecontroleerd dat de persoon het adres echt bezit. Zonder die claim kan iemand anders binnen je tenant zich aanmelden met het adres van een collega, dus ProjectSend maakt wel nieuwe accounts aan maar koppelt een Microsoft-aanmelding nooit aan een account dat al bestaat.",
+    "A password reset goes to this address, so changing it needs your password.": "Een wachtwoordherstel gaat naar dit adres, dus het wijzigen ervan vraagt om je wachtwoord.",
+    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Je e-mailadres komt van de directory of identiteitsprovider waarmee je je aanmeldt en kan hier niet worden gewijzigd."
 }

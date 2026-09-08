@@ -2021,5 +2021,8 @@
     "Copy the public link to this file": "Nakili kiungo cha umma cha faili hili",
     "Downloaded :count times, last on :date": "Imepakuliwa mara :count, mara ya mwisho :date",
     "Downloaded once, on :date": "Imepakuliwa mara moja, :date",
-    "Not downloaded yet": "Bado haijapakuliwa"
+    "Not downloaded yet": "Bado haijapakuliwa",
+    "Also add the \"xms_edov\" optional claim to your app registration, under Token configuration. Naming the tenant says which directory vouched for the sign-in; that claim says the directory checked the person really owns the address. Without it, someone else inside your tenant could sign in with a colleague's address, so ProjectSend will create new accounts but never attach a Microsoft sign-in to an account that already exists.": "Ongeza pia dai la hiari \"xms_edov\" kwenye usajili wa programu yako, chini ya Token configuration. Kutaja mpangaji kunaeleza ni saraka gani iliyodhamini kuingia; dai hilo linaeleza kuwa saraka imethibitisha kuwa mtu huyo ndiye mmiliki halisi wa anwani. Bila hilo, mtu mwingine ndani ya mpangaji wako anaweza kuingia kwa anwani ya mwenzake, hivyo ProjectSend itaunda akaunti mpya lakini haitaunganisha kamwe kuingia kwa Microsoft na akaunti iliyopo.",
+    "A password reset goes to this address, so changing it needs your password.": "Kuweka upya nenosiri hutumwa kwa anwani hii, hivyo kuibadilisha kunahitaji nenosiri lako.",
+    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Anwani yako ya barua pepe inatoka kwenye saraka au mtoa utambulisho unaotumia kuingia, na haiwezi kubadilishwa hapa."
 }

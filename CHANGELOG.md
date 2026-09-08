@@ -15,6 +15,18 @@ when a version is cut.
 
 **Fixed**
 
+- **Uploading into a public folder now needs a permission that says so.** Putting a file in a public
+  folder publishes it — a file is public if its own switch is on *or* its folder's is — so the
+  destination was a way round the "Upload public files" permission entirely. A staff member who
+  could upload but was deliberately not allowed to publish could publish anyway, to the anonymous
+  public site, by choosing where the file landed.
+
+  *Who this affected:* installations with public folders and a staff role that can upload but is not
+  meant to publish. The permission for this already existed and already worked this way for clients
+  — "Upload to public folders" — it was simply never asked of staff, so on a staff role that
+  checkbox did nothing. **There is something to do — see the upgrade notes.**
+
+  Reported by the same researcher as the group finding above.
 - **Microsoft sign-in now needs one more claim before it will trust an address.** Naming your tenant
   says which directory vouched for a sign-in; it never said the person owns the address they
   presented. Inside your own tenant a member or an invited guest could present a colleague's — an
@@ -61,6 +73,10 @@ when a version is cut.
 
 ### Upgrade notes
 
+- **If a staff role uploads into public folders, give it "Upload to public folders".** That
+  permission was not being asked of staff, and now is. Roles holding "Upload public files" are
+  unaffected — that one still opens it. Everything outside public folders is unaffected: an ordinary
+  upload still needs nothing new.
 - **If you use Microsoft sign-in, add the `xms_edov` optional claim to your app registration.** In
   the Entra portal: your app registration → Token configuration → Add optional claim → ID →
   `xms_edov`. Until you do, Microsoft sign-in keeps working and keeps creating new accounts, but it

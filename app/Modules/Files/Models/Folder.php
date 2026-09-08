@@ -174,7 +174,30 @@ class Folder extends Model
         }
 
         if ($user->isStaff()) {
-            return app(StaffLibraryScope::class)->allowsFolder($user, $folder);
+            if (! app(StaffLibraryScope::class)->allowsFolder($user, $folder)) {
+                return false;
+            }
+
+            // Being allowed to reach the folder is not the same as being
+            // allowed to publish, and putting a file in a public folder
+            // publishes it: isEffectivelyPublic() is "my own flag, or my
+            // folder's". So the destination reaches the property that
+            // `upload_public` guards, without ever touching the switch
+            // (GHSA-237r-jx85-j3hr).
+            //
+            // The keys already say this. The client branch below has always
+            // asked for `upload_to_public_folders` here, and
+            // MyFilesController's picker calls that the established meaning
+            // of the two — it was simply never asked on a staff role, which
+            // left that permission doing nothing at all for staff.
+            //
+            // Effectively public, not `public`: the flag is inherited down
+            // a subtree, so a private folder inside a public one publishes
+            // just the same and a check on the folder's own flag would walk
+            // straight past it.
+            return ! $folder->isEffectivelyPublic()
+                || $user->can('upload_public')
+                || $user->can('upload_to_public_folders');
         }
 
         return $folder->isOwnedBy($user)

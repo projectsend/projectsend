@@ -25,13 +25,18 @@ class ProfileUpdateTest extends TestCase
 
     public function test_profile_information_can_be_updated()
     {
-        $user = User::factory()->create();
+        // The password is here because the address changes. Changing it is
+        // a credential change — it is where a password reset is sent — so
+        // it asks for the current password, exactly as deleting the account
+        // does. See ProfileEmailReauthTest (GHSA-f32x-fgmp-q353).
+        $user = User::factory()->create(['password' => 'the-real-password']);
 
         $response = $this
             ->actingAs($user)
             ->patch('/settings/profile', [
                 'name' => 'Test User',
                 'email' => 'test@example.com',
+                'current_password' => 'the-real-password',
             ]);
 
         $response

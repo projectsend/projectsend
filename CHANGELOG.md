@@ -15,6 +15,19 @@ when a version is cut.
 
 **Fixed**
 
+- **Changing your own email address now asks for your password.** It did not, and that address is
+  where a password reset is sent — so anybody who got hold of a signed-in session could point the
+  account at their own inbox, request a reset, and keep the account for good. Deleting your account
+  from the same screen has always asked; this is the same question on the door that leads to the
+  same place.
+
+  *Who this affected:* every installation. Nothing else on the profile screen changed — a name, a
+  timezone or a custom field still saves with no password. An account that signs in through a
+  directory or an identity provider can no longer change its address here at all, and is told why:
+  that address belongs to the directory, and the local password those accounts hold is one nobody
+  knows.
+
+  Reported by Nooraldden Khalel.
 - **A staff member limited to some clients can no longer see or change other people's groups.** The
   groups list showed every group on the installation — name, description and member count — whatever
   the viewer's roster, and a group that nothing had been shared with yet could be renamed, deleted or

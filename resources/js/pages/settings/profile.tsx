@@ -43,7 +43,14 @@ export default function Profile({
         email: auth.user.email,
         custom_field_values,
         timezone,
+        current_password: '',
     });
+
+    // Changing this address is a credential change: it is where a password
+    // reset is sent. So the field appears only when the address actually
+    // differs from the stored one — the rest of the screen keeps saving
+    // with nothing extra, which is what the server asks for too.
+    const emailChanged = data.email.trim().toLowerCase() !== auth.user.email.trim().toLowerCase();
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -92,6 +99,28 @@ export default function Profile({
 
                             <InputError className="mt-2" message={errors.email} />
                         </div>
+
+                        {emailChanged && (
+                            <div className="grid gap-2">
+                                <Label htmlFor="current_password">{t('Current password')}</Label>
+
+                                <Input
+                                    id="current_password"
+                                    type="password"
+                                    className="mt-1 block w-full"
+                                    value={data.current_password}
+                                    onChange={(e) => setData('current_password', e.target.value)}
+                                    required
+                                    autoComplete="current-password"
+                                />
+
+                                <p className="text-muted-foreground text-sm">
+                                    {t('A password reset goes to this address, so changing it needs your password.')}
+                                </p>
+
+                                <InputError className="mt-2" message={errors.current_password} />
+                            </div>
+                        )}
 
                         <div className="grid gap-2">
                             <Label htmlFor="timezone">{t('Timezone')}</Label>

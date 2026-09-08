@@ -15,6 +15,18 @@ when a version is cut.
 
 **Fixed**
 
+- **A staff member limited to some clients can no longer see or change other people's groups.** The
+  groups list showed every group on the installation — name, description and member count — whatever
+  the viewer's roster, and a group that nothing had been shared with yet could be renamed, deleted or
+  made public by somebody with no relationship to any of its members. Making one public is the part
+  that mattered: whatever is shared with the group afterwards becomes reachable without signing in.
+
+  *Who this affected:* only installations using a role with client scoping turned on. If every staff
+  role on your installation sees all clients, nothing changed for you. Groups holding at least one of
+  a scoped viewer's own clients stay visible and editable to them, exactly as before; groups holding
+  none of them are now hidden and refused. The API behaves the same way as the screens do.
+
+  Reported by [@Drescargot](https://github.com/Drescargot).
 - **A public gallery no longer renders the same thumbnail several times at once.** The first visit
   to a page of large images started one full-size decode per thumbnail in parallel, which on a
   memory-limited server could exhaust it — and because a decode that dies writes nothing, the page

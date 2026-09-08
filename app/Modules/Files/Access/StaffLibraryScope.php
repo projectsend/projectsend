@@ -159,15 +159,37 @@ class StaffLibraryScope
             return null;
         }
 
-        $clientIds = $this->assignableClientIds($user) ?? [];
+        return array_values($this->groups($user)->pluck('id')->map(fn ($id): int => (int) $id)->all());
+    }
 
-        if ($clientIds === []) {
-            return [];
+    /**
+     * Every group this staff member may be told about, as a query.
+     *
+     * The listing half of assignableGroupIds(), and the same rule: a
+     * group counts as theirs because one of their clients is in it. The
+     * two were not the same code, and the listing simply had none — so
+     * `/groups` and `/api/v1/groups` showed a scoped staff member every
+     * group on the installation, name, description and member count,
+     * including groups whose every member was somebody else's client
+     * (GHSA-r3hg-3fxw-rcmr).
+     *
+     * Deliberately the *sharing* rule rather than the change rule below.
+     * A scoped staff member may already share a file with a mixed group,
+     * so its existence is not news to them; what they may not do is
+     * rename, publish or delete it.
+     *
+     * @return Builder<Group>
+     */
+    public function groups(User $user): Builder
+    {
+        $query = Group::query();
+        $clientIds = $this->assignableClientIds($user);
+
+        if ($clientIds === null) {
+            return $query;
         }
 
-        return array_values(Group::query()
-            ->whereHas('members', fn (Builder $members) => $members->whereIn('users.id', $clientIds))
-            ->pluck('id')->map(fn ($id): int => (int) $id)->all());
+        return $query->whereHas('members', fn (Builder $members) => $members->whereIn('users.id', $clientIds));
     }
 
     public function canAssignClient(User $user, User $client): bool
@@ -249,7 +271,53 @@ class StaffLibraryScope
      */
     public function allowsGroupChange(User $user, Group $group): bool
     {
-        return $this->groupReachesNoFurther($user, $group);
+        return $this->groupIsNotWhollySomebodyElses($user, $group)
+            && $this->groupReachesNoFurther($user, $group);
+    }
+
+    /**
+     * Whether this group is somebody else's entirely — every member
+     * outside the staff member's roster, and none of theirs in it.
+     *
+     * The half allowsGroupChange() was missing. Reach answers "what would
+     * this group hand somebody", which is the right question for putting a
+     * client *into* it; it says nothing about who is already there. So a
+     * group with nothing shared with it yet passed the reach check
+     * vacuously, and a scoped staff member could rename it, delete it, or
+     * publish it — a group made entirely of clients they had never been
+     * assigned (GHSA-r3hg-3fxw-rcmr).
+     *
+     * **Not "every member is mine", which is the obvious reading and is
+     * wrong.** A mixed group has to stay changeable: GHSA-whmp-p9hv-r7j7
+     * settled that a scoped staff member opens such a group's edit screen
+     * and is shown only their own clients in it, rather than being refused
+     * the screen. Requiring every member to be theirs turns that narrowing
+     * back into a 404 and undoes the earlier fix. What is left over — a
+     * mixed group whose shared content reaches past their library — is
+     * refused by groupReachesNoFurther() beside this, which is the check
+     * that has always covered it.
+     *
+     * **And deliberately not folded into groupReachesNoFurther() either.**
+     * That predicate is shared with allowsGroupMembership(), where a group
+     * nobody has joined must stay usable so its creator can put the first
+     * member in — the case that method's own docblock calls out.
+     *
+     * An empty group is nobody else's, so whoever just made it can still
+     * name it.
+     */
+    private function groupIsNotWhollySomebodyElses(User $user, Group $group): bool
+    {
+        $clientIds = $this->assignableClientIds($user);
+
+        if ($clientIds === null) {
+            return true;
+        }
+
+        if (! $group->members()->exists()) {
+            return true;
+        }
+
+        return $group->members()->whereIn('users.id', $clientIds)->exists();
     }
 
     /**

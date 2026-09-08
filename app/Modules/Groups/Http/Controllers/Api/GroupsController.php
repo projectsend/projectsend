@@ -41,7 +41,13 @@ class GroupsController extends Controller
             'visibility' => ['nullable', Rule::in(['public', 'private'])],
         ]);
 
-        $query = Group::query()->withCount('members');
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // The API twin of the web listing's narrowing, and it has to be
+        // here rather than only there: the same disclosure through a token
+        // is the same disclosure (GHSA-r3hg-3fxw-rcmr).
+        $query = $this->scope->groups($viewer)->withCount('members');
 
         if (($filters['search'] ?? null) !== null) {
             $search = $filters['search'];

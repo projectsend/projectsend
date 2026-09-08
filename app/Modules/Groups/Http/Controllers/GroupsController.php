@@ -40,7 +40,14 @@ class GroupsController extends Controller
             'visibility' => $validated['visibility'] ?? null,
         ];
 
-        $groups = Group::query()
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // Scoped, not Group::query(): a client-scoped staff member is told
+        // about a group because one of their clients is in it. Without
+        // this the listing showed every group on the installation, to a
+        // viewer who could reach nothing of theirs (GHSA-r3hg-3fxw-rcmr).
+        $groups = $this->scope->groups($viewer)
             ->withCount('members')
             ->when($filters['search'], fn (Builder $query, string $search) => $query->where(fn (Builder $q) => $q
                 ->where('name', 'like', "%{$search}%")

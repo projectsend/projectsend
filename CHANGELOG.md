@@ -19,6 +19,9 @@ when a version is cut.
   to a page of large images started one full-size decode per thumbnail in parallel, which on a
   memory-limited server could exhaust it — and because a decode that dies writes nothing, the page
   stayed broken on reload. One render now happens and the rest wait for it.
+- **`PROJECTSEND_CAPTCHA_DISABLED` no longer reads a "no" as a "yes".** Any value other than `true`
+  or `1` — including `no`, `off`, and a misspelling — used to switch the CAPTCHA off on the login
+  and registration forms. Only an explicit `true` or `1` does now; everything else leaves it on.
 
 
 ## 2.4.0 — 8 September 2026

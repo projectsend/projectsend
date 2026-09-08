@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\Platform\Capabilities\Edition;
+use App\Support\EnvFlag;
 
 return [
 
@@ -141,7 +142,12 @@ return [
     */
 
     'captcha' => [
-        'disabled' => (bool) env('PROJECTSEND_CAPTCHA_DISABLED', false),
+        // Read strictly rather than cast: `env()` returns anything it does
+        // not recognise as the string it was, and every non-empty string
+        // is truthy — so `(bool)` would read `PROJECTSEND_CAPTCHA_DISABLED=no`
+        // as "yes, disabled" and quietly take the bot protection off the
+        // login and registration forms. See App\Support\EnvFlag.
+        'disabled' => EnvFlag::isTrue(env('PROJECTSEND_CAPTCHA_DISABLED', false)),
 
         'managed' => [
             'provider' => env('PROJECTSEND_CAPTCHA_MANAGED_PROVIDER'),

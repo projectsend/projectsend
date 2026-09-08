@@ -26,7 +26,7 @@ when a version is cut.
   — "Upload to public folders" — it was simply never asked of staff, so on a staff role that
   checkbox did nothing. **There is something to do — see the upgrade notes.**
 
-  Reported by the same researcher as the group finding above.
+  Reported by [@skeletonsec](https://github.com/skeletonsec).
 - **Microsoft sign-in now needs one more claim before it will trust an address.** Naming your tenant
   says which directory vouched for a sign-in; it never said the person owns the address they
   presented. Inside your own tenant a member or an invited guest could present a colleague's — an
@@ -37,7 +37,7 @@ when a version is cut.
   — see the upgrade notes.** Nobody is locked out: accounts already linked to Microsoft keep working
   untouched, because they are matched on the account itself rather than on the address.
 
-  Reported by Dickson Massawe.
+  Reported by [@archnexus707](https://github.com/archnexus707).
 - **Changing your own email address now asks for your password.** It did not, and that address is
   where a password reset is sent — so anybody who got hold of a signed-in session could point the
   account at their own inbox, request a reset, and keep the account for good. Deleting your account
@@ -50,7 +50,7 @@ when a version is cut.
   that address belongs to the directory, and the local password those accounts hold is one nobody
   knows.
 
-  Reported by Nooraldden Khalel.
+  Reported by [@Noorkhalel](https://github.com/Noorkhalel).
 - **A staff member limited to some clients can no longer see or change other people's groups.** The
   groups list showed every group on the installation — name, description and member count — whatever
   the viewer's roster, and a group that nothing had been shared with yet could be renamed, deleted or

@@ -197,6 +197,11 @@ function ProviderCard({ provider, open, onToggle }: { provider: ProviderSettings
                                     'Your own tenant, not "common". Microsoft lets a user change the email address on their account, so a sign-in is only trustworthy when the token came from the tenant you named here.',
                                 )}
                             </p>
+                            <p className="text-muted-foreground text-sm">
+                                {t(
+                                    'Also add the "xms_edov" optional claim to your app registration, under Token configuration. Naming the tenant says which directory vouched for the sign-in; that claim says the directory checked the person really owns the address. Without it, someone else inside your tenant could sign in with a colleague\'s address, so ProjectSend will create new accounts but never attach a Microsoft sign-in to an account that already exists.',
+                                )}
+                            </p>
                             <InputError message={form.errors.tenant_id} />
                         </div>
                     )}

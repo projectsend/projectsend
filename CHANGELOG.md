@@ -73,6 +73,10 @@ when a version is cut.
 
 ### Upgrade notes
 
+- **If you set `PROJECTSEND_CAPTCHA_DISABLED`, check what you set it to.** Only `true` or `1`
+  switches the CAPTCHA off now. Anything else — including `no`, `off`, `yes` and a misspelling —
+  used to be read as "yes, disabled" and is now read as "leave it on". So a value that is not
+  `true` or `1` means the CAPTCHA comes back on this upgrade. If you meant it off, write `true`.
 - **If a staff role uploads into public folders, give it "Upload to public folders".** That
   permission was not being asked of staff, and now is. Roles holding "Upload public files" are
   unaffected — that one still opens it. Everything outside public folders is unaffected: an ordinary

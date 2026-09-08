@@ -350,6 +350,11 @@ class HandleInertiaRequests extends Middleware
             return null;
         }
 
+        // Dispatched for clients too, unlike the sidebar links beside it.
+        // A client is somebody a shared instance may legitimately need to
+        // address — about their own account, not about the installation —
+        // and the event refuses anything not aimed at them, so widening
+        // this does not widen what reaches them.
         $event = new ResolvingAnnouncement(isStaff: $user->isStaff());
 
         Event::dispatch($event);

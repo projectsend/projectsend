@@ -42,14 +42,55 @@ class ResolvingAnnouncement
     ) {}
 
     /**
+     * Audience is declared by the listener and enforced here, rather than
+     * each listener remembering to check `isStaff`.
+     *
+     * The first version of this refused clients outright, which was right
+     * for the only message that existed — a hosted instance telling its
+     * administrator about their plan. It stopped being right when a
+     * message needed to reach the *clients* of a shared instance, and the
+     * safe way to allow that is not to drop the guard: it is to make
+     * every caller say who it is talking to, so a listener that forgets
+     * reaches nobody rather than everybody.
+     */
+    public const AUDIENCE_STAFF = 'staff';
+
+    public const AUDIENCE_CLIENTS = 'clients';
+
+    /**
+     * `audience` is required and has no default. A message for staff and
+     * a message for the people they share with are different messages,
+     * and a signature that let one be mistaken for the other would put
+     * the mistake in the quiet direction.
+     *
      * `tone` picks the accent the band is drawn in. Two values, because
      * two is what the difference is worth: `info` for something worth
      * knowing, `warning` for something worth acting on. Anything else
      * falls back to `info` rather than rendering unstyled.
      */
-    public function show(string $title, string $body, ?string $actionLabel = null, ?string $actionUrl = null, string $tone = 'info'): void
-    {
+    public function show(
+        string $title,
+        string $body,
+        string $audience,
+        ?string $actionLabel = null,
+        ?string $actionUrl = null,
+        string $tone = 'info',
+    ): void {
         if ($this->announcement !== null) {
+            return;
+        }
+
+        // Silently ignored rather than thrown, and deliberately: a
+        // listener aimed at the wrong audience should show nothing, not
+        // break the page it was trying to decorate. An unrecognised value
+        // reaches nobody for the same reason.
+        $intended = match ($audience) {
+            self::AUDIENCE_STAFF => $this->isStaff,
+            self::AUDIENCE_CLIENTS => ! $this->isStaff,
+            default => false,
+        };
+
+        if (! $intended) {
             return;
         }
 

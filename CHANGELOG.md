@@ -15,94 +15,33 @@ when a version is cut.
 
 **New**
 
-- **Clients can edit and delete the files they uploaded.** Until now uploading was a one-way door: a
-  client could send a file and then never touch it again — no rename, no description, not even a
-  delete — because every screen that could change a file was a staff screen. A client with the
-  "Edit files" permission now gets an editor for their own uploads, offering exactly what their role
-  allows and nothing more. Renaming and the description come with the edit permission; an expiry
-  date, categories, a download limit and making a file public are each behind the same separate
-  permission a staff member needs for them. Deleting is its own permission again. **What never
-  changes is whose file it is:** a file shared *with* a client is not theirs to edit or remove, no
-  matter which permissions their role carries, and no combination of them reaches another client's
-  files.
-- **You can stop this installation fetching the project news.** ProjectSend pulls announcements from
-  projectsend.org once a day for the dashboard card, and there was no way to turn that off. There is
-  now a checkbox on Settings → General, on by default, and off means the request is never made
-  rather than the result hidden — useful on a closed network, or simply if you would rather it did
-  not. The update check beside it has always had its own switch.
+- **Clients can edit and delete the files they uploaded**, with the name, description, expiry,
+  categories, download limit and public flag each behind the permission that already governs it.
+  A file shared *with* a client is still not theirs to touch.
+- **A switch to stop this installation fetching the project news**, on Settings → General. On by
+  default; off means the request is never made.
 
 **Closed holes in who can see what**
 
-- A staff member limited to their own assigned clients could read the names of other clients out of
-  file details. Sharing means a file can reach somebody through one client while it was uploaded by
-  another, or while it is also shared with another. That is normal and the file is theirs to open —
-  but the uploader's name, the other recipient's name, and both their ID numbers were being sent
-  along with it, on the library list, the file's edit page, the details panel, the per-client file
-  list, and the matching API responses. A group holding none of their clients was named the same
-  way. The file list could also be filtered by uploader, which answered "does this client of yours
-  share files with that client of mine" without naming anybody.
-
-  Those names are now left out for a limited staff member, and the uploader filter no longer answers
-  for a client they are not assigned to. Administrators and any unrestricted role see exactly what
-  they saw before.
-
-  **Who this affected.** Only installations using the Client Manager role, or a custom role with
-  "Limit to assigned clients" switched on, and only where files are shared with more than one client
-  or through groups. No files, downloads or credentials were reachable this way — a file belonging
-  to a client outside the roster was refused before, and still is.
-
-  Reported by [@Noorkhalel](https://github.com/Noorkhalel) (GHSA-whmp-p9hv-r7j7).
-
-**Download links to external storage now last a minute instead of an hour**
-
-If your files live on S3, R2, MinIO or another external bucket, a download is served by redirecting
-the browser to a temporary link the storage provider signs. That link is a key: anyone who has it
-can fetch the file without signing in, and nothing in ProjectSend can withdraw it once it is issued.
-It used to stay valid for an hour, which meant a link that leaked — into a proxy log, a Referer
-header, a pasted chat message, a screenshot — was still usable long after the person who requested
-it had finished. It is now good for sixty seconds, which is all it needs to be followed.
-
-A transfer that has already started is not affected: the provider checks the link when the request
-arrives, not while it runs, so a slow download of a large file finishes normally. **What changes is
-resuming.** If a download is interrupted and picked up again more than a minute later, it will be
-refused and has to be started again from ProjectSend. Previews are deliberately unchanged and keep
-the hour, because a video player re-uses the same link every time somebody skips forward.
-
-**Who this affected.** Only installations using external storage. If your files are on local disk,
-downloads never used one of these links and nothing here changes for you. Zip bundles are also
-unaffected — they are always built and served locally.
-
-**A failed upload no longer loses its parts**
-
-Large uploads arrive in pieces, which ProjectSend then joins together and hands to storage. If that
-last step failed — the bucket rejected it, credentials had expired, the disk was full — the pieces
-had already been cleaned up, so the retry that was supposed to be possible could not find anything
-to work with and the whole file had to be sent again. The pieces are now kept until the assembled
-file is safely stored, so fixing the underlying problem and clicking again works.
-
-**Who this affected.** Anyone whose storage backend refused a write mid-upload. It is most visible
-on large files over slow connections, where re-sending is expensive. The trade is temporary disk:
-while a file is being joined together, the temporary directory now holds the pieces *and* the joined
-copy at once, rather than the copy and one piece. Both are removed the moment the upload succeeds,
-and the moment it fails.
+- A staff member limited to their assigned clients could read other clients' names, and their IDs,
+  out of file details and the uploader filter. Reported by
+  [@Noorkhalel](https://github.com/Noorkhalel) (GHSA-whmp-p9hv-r7j7).
+- Download links to external storage now last a minute instead of an hour. Previews keep the hour.
+- Eight advisories in bundled dependencies, including an XSS bypass in the markdown renderer that
+  builds your email templates.
 
 **Fixed**
 
-- **Eight security advisories in bundled dependencies**, including an XSS bypass and three
-  denial-of-service issues in the markdown renderer that turns your email templates into HTML.
-  Nothing in ProjectSend's own code changed; these arrive by upgrading.
-- **`projectsend:captcha-off` no longer reports success it did not have.** On an installation whose
-  CAPTCHA keys are supplied centrally rather than entered on the settings screen, the command wrote
-  a setting nothing reads and then said "CAPTCHA is off" — sending somebody who was still being
-  challenged away from the one thing that would have explained why. It now says plainly that nothing
-  changed, and names the environment variable that does work.
+- A failed upload keeps its parts, so retrying it works instead of needing the whole file again.
+- `projectsend:captcha-off` no longer claims success on an installation whose CAPTCHA keys are
+  supplied centrally, where it changed nothing.
 
 ### Upgrade notes
 
-- **If you accept very large uploads and your temporary directory is on a small or separate volume,
-  check it has headroom for twice the largest file you allow.** Nothing needs configuring; this is
-  only a sizing question, and it applies while a file is being assembled rather than at rest.
-
+- **Resuming an interrupted download from external storage more than a minute after it started now
+  fails.** Start it again from ProjectSend. Local-disk installations and zip bundles are unaffected.
+- **If your temporary directory is on a small or separate volume, allow headroom for twice your
+  largest allowed upload.** Only while a file is being assembled, and nothing needs configuring.
 
 ## 2.3.0 — 1 September 2026
 

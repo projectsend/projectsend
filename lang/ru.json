@@ -2013,5 +2013,7 @@
     "Edit file": "Редактировать файл",
     "Expires on": "Срок действия до",
     "Make this file public": "Сделать этот файл публичным",
-    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "На этом сайте ещё не настроена публичная страница, поэтому ничего не будет видно, пока администратор её не настроит."
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "На этом сайте ещё не настроена публичная страница, поэтому ничего не будет видно, пока администратор её не настроит.",
+    "Show ProjectSend news on the dashboard": "Показывать новости ProjectSend на панели",
+    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Раз в день загружает анонсы проекта с projectsend.org для карточки на панели. Если выключить, эта установка вообще перестанет обращаться к projectsend.org за новостями."
 }

@@ -2013,5 +2013,7 @@
     "Edit file": "Dosyayı düzenle",
     "Expires on": "Sona erme tarihi",
     "Make this file public": "Bu dosyayı herkese açık yap",
-    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Bu sitede henüz herkese açık bir sayfa ayarlanmamış, bu yüzden bir yönetici ayarlayana kadar hiçbir şey görünmeyecek."
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Bu sitede henüz herkese açık bir sayfa ayarlanmamış, bu yüzden bir yönetici ayarlayana kadar hiçbir şey görünmeyecek.",
+    "Show ProjectSend news on the dashboard": "ProjectSend haberlerini panelde göster",
+    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Panel kartı için proje duyurularını günde bir kez projectsend.org adresinden alır. Kapatıldığında bu kurulum haberler için projectsend.org ile hiç bağlantı kurmaz."
 }

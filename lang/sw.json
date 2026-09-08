@@ -2013,5 +2013,7 @@
     "Edit file": "Hariri faili",
     "Expires on": "Litaisha muda tarehe",
     "Make this file public": "Fanya faili hili liwe la umma",
-    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Tovuti hii bado haina ukurasa wa umma, kwa hivyo hakuna kitakachoonekana hadi msimamizi aweke mmoja."
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Tovuti hii bado haina ukurasa wa umma, kwa hivyo hakuna kitakachoonekana hadi msimamizi aweke mmoja.",
+    "Show ProjectSend news on the dashboard": "Onyesha habari za ProjectSend kwenye dashibodi",
+    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Huleta matangazo ya mradi kutoka projectsend.org mara moja kwa siku kwa ajili ya kadi ya dashibodi. Ukiizima, usakinishaji huu hautawasiliana kabisa na projectsend.org kwa habari."
 }

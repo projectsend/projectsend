@@ -2013,5 +2013,7 @@
     "Edit file": "Editar arquivo",
     "Expires on": "Expira em",
     "Make this file public": "Tornar este arquivo público",
-    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Este site ainda não tem uma página pública configurada, então nada ficará visível até que um administrador configure uma."
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Este site ainda não tem uma página pública configurada, então nada ficará visível até que um administrador configure uma.",
+    "Show ProjectSend news on the dashboard": "Mostrar novidades do ProjectSend no painel",
+    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Busca os anúncios do projeto em projectsend.org uma vez por dia para o cartão do painel. Se você desativar, esta instalação para de contatar o projectsend.org por novidades."
 }

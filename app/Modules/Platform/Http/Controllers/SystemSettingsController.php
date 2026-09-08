@@ -62,6 +62,12 @@ class SystemSettingsController extends Controller
             'viewer_timezone' => $request->user()?->timezone,
             'can_manage_updates' => $canManageUpdates,
             'check_for_updates' => $canManageUpdates ? $this->settings->get(Setting::CheckForUpdates) : null,
+            // Not behind $canManageUpdates. The news card is both editions
+            // and gated on view_news alone (DashboardController), so the
+            // switch that turns it off belongs to anyone who may edit
+            // settings — including on an installation where the update
+            // block above is absent entirely.
+            'fetch_news' => $this->settings->get(Setting::FetchNews),
             'last_checked_at' => $canManageUpdates ? $this->lastCheckedAt()?->toIso8601String() : null,
             'check_result' => $request->session()->get('update_check_result'),
         ]);
@@ -132,6 +138,8 @@ class SystemSettingsController extends Controller
             // no such thing as clearing it — the empty stored value means
             // "follow APP_TIMEZONE", and only a fresh install has that.
             'timezone' => ['sometimes', 'string', 'timezone', Rule::in($this->timezones->all())],
+            // No capability behind it, unlike check_for_updates below.
+            'fetch_news' => ['sometimes', 'boolean'],
         ];
         if ($canManageUpdates) {
             // Omitting the field (any caller not sending it, not just this
@@ -154,6 +162,10 @@ class SystemSettingsController extends Controller
         // cloud install or a staff member without manage_updates either.
         if ($canManageUpdates && array_key_exists('check_for_updates', $validated)) {
             $this->settings->set(Setting::CheckForUpdates, $validated['check_for_updates']);
+        }
+
+        if (array_key_exists('fetch_news', $validated)) {
+            $this->settings->set(Setting::FetchNews, $validated['fetch_news']);
         }
 
         $this->activity->log(Action::SettingsUpdated, context: ['section' => 'general']);

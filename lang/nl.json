@@ -2013,5 +2013,7 @@
     "Edit file": "Bestand bewerken",
     "Expires on": "Verloopt op",
     "Make this file public": "Dit bestand openbaar maken",
-    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Deze site heeft nog geen openbare pagina, dus er is niets zichtbaar totdat een beheerder er een instelt."
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Deze site heeft nog geen openbare pagina, dus er is niets zichtbaar totdat een beheerder er een instelt.",
+    "Show ProjectSend news on the dashboard": "ProjectSend-nieuws op het overzicht tonen",
+    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Haalt eens per dag projectaankondigingen op van projectsend.org voor de kaart op het overzicht. Uitgeschakeld neemt deze installatie voor nieuws helemaal geen contact meer op met projectsend.org."
 }

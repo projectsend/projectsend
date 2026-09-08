@@ -249,6 +249,17 @@ enum Setting: string
     // is allowed to tell the admin a newer release exists.
     case CheckForUpdates = 'check_for_updates';
 
+    // Whether this installation fetches the project's news feed for the
+    // dashboard card. Its own key rather than riding on CheckForUpdates
+    // above, because they are two different wants: "do not tell me about
+    // releases" and "do not show me the project's news" are asked
+    // separately, and an installation with no outbound access at all
+    // wants both off while an ordinary one may want updates and no feed.
+    //
+    // On by default, so nothing changes for an installation that has
+    // never seen this switch.
+    case FetchNews = 'fetch_news';
+
     // Cached result of the last update check — never written directly by
     // a settings form, only by CheckForUpdatesCommand. Empty string means
     // "no successful check yet" (fresh install, or checks disabled).
@@ -367,6 +378,7 @@ enum Setting: string
             self::ClientsCanPreviewFiles,
             self::PublicListingPreviewEnabled,
             self::CheckForUpdates,
+            self::FetchNews,
             self::ExpiredFilesAutoDeleteEnabled,
             self::PublicCommentsEnabled,
             self::CommentsGuestModeration,
@@ -433,6 +445,7 @@ enum Setting: string
             self::OrphanFilesAutoDeleteEnabled => false,
 
             self::CheckForUpdates,
+            self::FetchNews,
             self::CommentsGuestModeration,
             // On, so that an installation updating into these switches
             // keeps the preview it already had rather than losing it to a

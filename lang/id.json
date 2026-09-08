@@ -2013,5 +2013,7 @@
     "Edit file": "Sunting berkas",
     "Expires on": "Kedaluwarsa pada",
     "Make this file public": "Jadikan berkas ini publik",
-    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Situs ini belum punya halaman publik, jadi tidak ada yang terlihat sampai administrator menyiapkannya."
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Situs ini belum punya halaman publik, jadi tidak ada yang terlihat sampai administrator menyiapkannya.",
+    "Show ProjectSend news on the dashboard": "Tampilkan kabar terbaru ProjectSend di dasbor",
+    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Mengambil pengumuman proyek dari projectsend.org sekali sehari untuk kartu di dasbor. Jika dimatikan, instalasi ini sama sekali tidak lagi menghubungi projectsend.org untuk kabar terbaru."
 }

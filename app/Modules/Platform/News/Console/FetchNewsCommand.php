@@ -40,6 +40,21 @@ class FetchNewsCommand extends Command
 
     public function handle(): int
     {
+        // Before the request, not after it. An operator who has switched
+        // the feed off has said "this installation does not call out for
+        // this", and honouring that after the call has already gone is
+        // not honouring it at all.
+        //
+        // Returns success rather than failure: a scheduled task that was
+        // asked not to run has not failed, and reporting it as a failure
+        // would put a red line in the scheduler history every night for
+        // an installation that is behaving exactly as configured.
+        if ($this->settings->get(Setting::FetchNews) !== true) {
+            $this->info('The news feed is switched off for this installation.');
+
+            return self::SUCCESS;
+        }
+
         $response = Http::withHeaders(['User-Agent' => 'ProjectSend'])
             ->timeout(10)
             ->get(self::FEED_URL);

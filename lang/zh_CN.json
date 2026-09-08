@@ -2013,5 +2013,7 @@
     "Edit file": "编辑文件",
     "Expires on": "到期日",
     "Make this file public": "将此文件设为公开",
-    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "本站尚未设置公开页面，因此在管理员设置之前不会显示任何内容。"
+    "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "本站尚未设置公开页面，因此在管理员设置之前不会显示任何内容。",
+    "Show ProjectSend news on the dashboard": "在仪表板上显示 ProjectSend 动态",
+    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "每天一次从 projectsend.org 获取项目公告，用于仪表板卡片。关闭后，本安装将完全不再因动态而连接 projectsend.org。"
 }

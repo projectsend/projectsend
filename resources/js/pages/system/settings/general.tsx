@@ -23,6 +23,7 @@ interface SystemSettingsProps {
     viewer_timezone: string | null;
     can_manage_updates: boolean;
     check_for_updates: boolean | null;
+    fetch_news: boolean;
     /** When the release feed was last asked, by anybody. Null until it has been. */
     last_checked_at: string | null;
     /** The answer to a "check now" press, for the one render after it. */
@@ -36,6 +37,7 @@ export default function SystemSettings({
     viewer_timezone,
     can_manage_updates,
     check_for_updates,
+    fetch_news,
     last_checked_at,
     check_result,
 }: SystemSettingsProps) {
@@ -75,6 +77,7 @@ export default function SystemSettings({
         site_name: site_name,
         timezone: timezone,
         check_for_updates: check_for_updates ?? false,
+        fetch_news,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -130,6 +133,26 @@ export default function SystemSettings({
                         )}
 
                         <InputError className="mt-2" message={errors.timezone} />
+                    </div>
+
+                    {/* Outside the can_manage_updates block on purpose:
+                        the dashboard's news card is both editions and needs
+                        only view_news, so an installation with no update
+                        block at all still has a feed to switch off. */}
+                    <div className="grid gap-2">
+                        <div className="flex items-center gap-2">
+                            <Checkbox
+                                id="fetch_news"
+                                checked={data.fetch_news}
+                                onCheckedChange={(checked) => setData('fetch_news', checked === true)}
+                            />
+                            <Label htmlFor="fetch_news">{t('Show ProjectSend news on the dashboard')}</Label>
+                        </div>
+                        <p className="text-muted-foreground text-sm">
+                            {t(
+                                'Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.',
+                            )}
+                        </p>
                     </div>
 
                     {can_manage_updates && (

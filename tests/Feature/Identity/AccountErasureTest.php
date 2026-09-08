@@ -183,3 +183,51 @@ test('reassign falls back to cascade when the target is no longer valid', functi
     expect(File::find($file->id))->toBeNull()
         ->and(ActivityLog::query()->where('action', Action::AccountContentCascadeDeleted->value)->exists())->toBeTrue();
 });
+
+test('a staff member\'s content is never handed to a client', function () {
+    // The installation-wide reassignment target is one id for every
+    // erasure, and the picker offers clients — legitimately, because
+    // erasing a client and handing their files to another client is what
+    // that setting is for. Applied to a *staff* account it means something
+    // else entirely: a staff library is usually everything, and a client
+    // named as the target inherits the lot.
+    $client = User::factory()->client()->create(['name' => 'Inheriting Client']);
+    app(Settings::class)->set(Setting::AccountErasureContentAction, 'reassign');
+    app(Settings::class)->set(Setting::AccountErasureReassignTo, $client->id);
+
+    $leaving = User::factory()->create();
+    $file = File::factory()->create(['uploaded_by' => $leaving->id]);
+
+    app(AccountEraser::class)->erase($leaving);
+
+    // Cascade, not reassign: never orphaned, and never disclosed either.
+    expect(File::find($file->id))->toBeNull()
+        ->and(ActivityLog::query()->where('action', Action::AccountContentCascadeDeleted->value)->exists())->toBeTrue();
+});
+
+test('a client\'s content can still go to a client', function () {
+    // Unchanged, and deliberately: this is the case the setting exists for.
+    $inheritor = User::factory()->client()->create();
+    app(Settings::class)->set(Setting::AccountErasureContentAction, 'reassign');
+    app(Settings::class)->set(Setting::AccountErasureReassignTo, $inheritor->id);
+
+    $leaving = User::factory()->client()->create();
+    $file = File::factory()->create(['uploaded_by' => $leaving->id]);
+
+    app(AccountEraser::class)->erase($leaving);
+
+    expect(File::find($file->id)?->uploaded_by)->toBe($inheritor->id);
+});
+
+test('a staff member\'s content still goes to another staff member', function () {
+    $inheritor = User::factory()->create();
+    app(Settings::class)->set(Setting::AccountErasureContentAction, 'reassign');
+    app(Settings::class)->set(Setting::AccountErasureReassignTo, $inheritor->id);
+
+    $leaving = User::factory()->create();
+    $file = File::factory()->create(['uploaded_by' => $leaving->id]);
+
+    app(AccountEraser::class)->erase($leaving);
+
+    expect(File::find($file->id)?->uploaded_by)->toBe($inheritor->id);
+});

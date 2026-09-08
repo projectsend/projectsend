@@ -38,6 +38,12 @@ installation from starting.
 
 **Fixed**
 
+- **Erasing a staff account no longer hands their files to a client.** The account that inherits
+  erased content is one setting for the whole installation, and it can name a client — which is
+  right when a client is erased and their files go to another client. Applied to a staff account it
+  meant something else: a staff library is usually everything, and the named client would have
+  inherited all of it, in a scheduled job nobody was watching. A staff account's content now only
+  goes to staff, and falls back to deleting rather than to disclosing.
 - **Uploading into a public folder now needs a permission that says so.** Putting a file in a public
   folder publishes it — a file is public if its own switch is on *or* its folder's is — so the
   destination was a way round the "Upload public files" permission entirely. A staff member who

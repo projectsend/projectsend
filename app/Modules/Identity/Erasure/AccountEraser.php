@@ -9,6 +9,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\DeletedAccountContent;
+use App\Modules\Identity\UserType;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Support\Facades\DB;
@@ -102,6 +103,24 @@ class AccountEraser
         $this->activity->logSystem(Action::AccountContentCascadeDeleted, ['name' => $user->name, ...$result]);
     }
 
+    /**
+     * The account configured to inherit erased content, or null when
+     * there is nobody valid to hand it to — in which case handleContent()
+     * cascades, because orphaning is never the answer.
+     *
+     * **A staff member's content may only go to staff.** The target is one
+     * installation-wide id used for every erasure, and the picker offers
+     * clients on purpose: erasing a client and handing their files to
+     * another client is what the setting is for. Applied to a *staff*
+     * account the same id means something else entirely — a staff library
+     * is usually the whole installation's, and a client named there would
+     * inherit all of it, in one unattended scheduled job.
+     *
+     * The check cannot live in the settings validation, which is where it
+     * would otherwise belong: that runs when the target is chosen, and
+     * whose account will be erased later is not knowable then. So it is
+     * asked here, where both halves are in hand.
+     */
     private function fallbackFor(User $user): ?User
     {
         $id = (int) $this->settings->get(Setting::AccountErasureReassignTo);
@@ -113,6 +132,7 @@ class AccountEraser
         return User::query()
             ->where('active', true)
             ->whereKeyNot($user->id)
+            ->when($user->isStaff(), fn ($query) => $query->where('type', UserType::Staff))
             ->find($id);
     }
 }

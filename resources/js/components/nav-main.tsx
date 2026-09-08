@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/sidebar';
 import { type NavGroup } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ExternalLink } from 'lucide-react';
 
 export function NavMain({ groups = [] }: { groups: NavGroup[] }) {
     const page = usePage();
@@ -58,11 +58,31 @@ export function NavMain({ groups = [] }: { groups: NavGroup[] }) {
                                 </Collapsible>
                             ) : (
                                 <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
-                                        <Link href={item.url ?? '#'}>
-                                            {item.icon && <item.icon />}
-                                            <span>{item.title}</span>
-                                        </Link>
+                                    <SidebarMenuButton
+                                        asChild
+                                        isActive={item.external ? false : isActive(item.url)}
+                                        tooltip={item.title}
+                                    >
+                                        {/* An external destination is a plain
+                                            anchor, never an Inertia <Link>:
+                                            Link expects a page component back
+                                            and another origin will not give it
+                                            one, so it fails without saying so.
+                                            It is also never "active" — nothing
+                                            outside this app is the page you
+                                            are on. */}
+                                        {item.external ? (
+                                            <a href={item.url ?? '#'} target="_blank" rel="noopener noreferrer">
+                                                {item.icon && <item.icon />}
+                                                <span>{item.title}</span>
+                                                <ExternalLink className="ml-auto size-3.5 opacity-60" />
+                                            </a>
+                                        ) : (
+                                            <Link href={item.url ?? '#'}>
+                                                {item.icon && <item.icon />}
+                                                <span>{item.title}</span>
+                                            </Link>
+                                        )}
                                     </SidebarMenuButton>
                                     {item.badge !== undefined && item.badge > 0 && (
                                         <SidebarMenuBadge className="bg-primary text-primary-foreground peer-hover/menu-button:text-primary-foreground peer-data-[active=true]/menu-button:text-primary-foreground rounded-full">

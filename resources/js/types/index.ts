@@ -23,6 +23,12 @@ export interface NavItem {
     isActive?: boolean;
     items?: NavItem[];
     badge?: number;
+    /**
+     * Leaves this installation. Rendered as a plain anchor opening in a
+     * new tab rather than an Inertia <Link>, which would try to fetch a
+     * page component from another origin and fail silently.
+     */
+    external?: boolean;
 }
 
 export type Edition = 'community' | 'cloud';
@@ -38,6 +44,19 @@ export type Capability =
     | 'attribution.hide'
     | 'captcha.configure'
     | 'captcha.managed_keys';
+
+/**
+ * A sidebar entry contributed by a package — see
+ * ResolvingNavigationLinks. Staff-only and already filtered server-side,
+ * so the sidebar renders these without re-deciding who may see them.
+ */
+export interface ExtraNavLink {
+    title: string;
+    url: string;
+    /** Opens in a new tab and shows that it leaves this installation. */
+    external: boolean;
+    icon: string | null;
+}
 
 export interface SocialLoginProvider {
     provider: string;
@@ -90,6 +109,8 @@ export interface SharedData {
      */
     attribution: boolean;
     capabilities: Capability[];
+    /** Sidebar entries contributed by packages, already staff-filtered. */
+    extra_nav_links: ExtraNavLink[];
     /** Identity providers that are switched on and fully configured. */
     social_login: SocialLoginProvider[];
     /** The CAPTCHA in force, or null when this installation has none. */

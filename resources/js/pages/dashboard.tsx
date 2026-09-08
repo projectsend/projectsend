@@ -28,6 +28,7 @@ import { TopClientsWidget, type TopClient } from '@/components/dashboard-widgets
 import { TransfersRangeControls, TransfersWidget, type TransferPoint, type TransfersRange } from '@/components/dashboard-widgets/transfers-widget';
 import { WidgetBox } from '@/components/dashboard-widgets/widget-box';
 import { WidgetsDialog } from '@/components/dashboard-widgets/widgets-dialog';
+import { DashboardCalloutBand, type DashboardCallout } from '@/components/dashboard-callout';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -49,6 +50,7 @@ interface DashboardProps {
     api: ApiUsageSummary | null;
     widget_layout: WidgetLayout;
     dashboard_columns: number;
+    callout: DashboardCallout | null;
 }
 
 const COLUMN_CLASSES: Record<number, string> = {
@@ -107,6 +109,7 @@ export default function Dashboard({
     expired_files,
     api,
     widget_layout,
+    callout,
     dashboard_columns,
 }: DashboardProps) {
     const { t } = useTranslation();
@@ -336,6 +339,11 @@ export default function Dashboard({
             <Head title={t('Dashboard')} />
 
             <div className="space-y-6 px-4 py-6">
+                {/* Above the heading, not inside the grid: whoever asked
+                    for this wants it read, and the grid is arranged by
+                    each viewer. */}
+                {callout && <DashboardCalloutBand callout={callout} />}
+
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <Heading title={t('Dashboard')} description={t('An overview of this installation')} />
                     <Button variant="outline" size="sm" onClick={() => setWidgetsDialogOpen(true)}>

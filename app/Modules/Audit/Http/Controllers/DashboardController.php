@@ -12,6 +12,8 @@ use App\Modules\Audit\ActivityLog;
 use App\Modules\Audit\ActivityLogScope;
 use App\Modules\Audit\ActivityPresenter;
 use App\Modules\Audit\DashboardWidgetPreferences;
+use Illuminate\Support\Facades\Event;
+use App\Modules\Platform\Announcements\Events\ResolvingDashboardCallout;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Delivery\FileDelivery;
@@ -84,6 +86,12 @@ class DashboardController extends Controller
         $prefs = $this->widgetPrefs;
 
         return Inertia::render('dashboard', [
+            // Above the grid rather than in it — see
+            // ResolvingDashboardCallout for why a message that matters
+            // must not be something each viewer can drag under a fold.
+            // Null with nothing listening, which is every community
+            // installation.
+            'callout' => $this->callout($user),
             'counters' => $canCounters && $prefs->isEnabled($user, 'counters') ? $this->counters() : null,
             'transfers' => $canStatistics && $prefs->isEnabled($user, 'transfers') ? $this->transferSeries($from, $to, $timezone) : null,
             'transfers_range' => $canStatistics && $prefs->isEnabled($user, 'transfers')
@@ -541,5 +549,17 @@ class DashboardController extends Controller
                     'created_at' => $file->created_at?->toIso8601String(),
                 ])->all(),
         ]);
+    }
+
+    /**
+     * @return array{title: string, body: string, action_label: string|null, action_url: string|null, tone: string}|null
+     */
+    private function callout(User $user): ?array
+    {
+        $event = new ResolvingDashboardCallout(isStaff: $user->isStaff());
+
+        Event::dispatch($event);
+
+        return $event->callout;
     }
 }

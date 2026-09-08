@@ -32,7 +32,7 @@ import AppLogo from './app-logo';
 
 export function AppSidebar() {
     const { t } = useTranslation();
-    const { auth, capabilities, pending, version } = usePage<SharedData>().props;
+    const { auth, capabilities, extra_nav_links, pending, version } = usePage<SharedData>().props;
 
     // Modules (Files, Clients, Groups…) add their own groups here as
     // they land, mirroring v1's grouped admin menu.
@@ -259,6 +259,23 @@ export function AppSidebar() {
         groups.push({
             title: t('Administration'),
             items: adminItems,
+        });
+    }
+
+    // Contributed by whatever is installed — see ResolvingNavigationLinks.
+    // Their own group at the end rather than mixed into Administration:
+    // these leave the installation, and a link that takes somebody out of
+    // the app should not sit between two that do not. Empty on every
+    // installation with nothing listening, and the group disappears with
+    // it rather than rendering a heading over nothing.
+    if (extra_nav_links.length > 0) {
+        groups.push({
+            title: t('More'),
+            items: extra_nav_links.map((link) => ({
+                title: link.title,
+                url: link.url,
+                external: link.external,
+            })),
         });
     }
 

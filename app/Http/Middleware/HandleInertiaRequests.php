@@ -24,7 +24,9 @@ use App\Modules\Platform\Settings\Settings;
 use App\Modules\Platform\Updates\LatestReleaseInfo;
 use App\Modules\Platform\Updates\RunningCodeState;
 use Illuminate\Foundation\Inspiring;
+use App\Modules\Platform\Navigation\Events\ResolvingNavigationLinks;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -84,6 +86,13 @@ class HandleInertiaRequests extends Middleware
             // ignore this and always show it.
             'attribution' => app(Attribution::class)->visible(),
             'capabilities' => $capabilities->enabledKeys(),
+            // Sidebar entries a package asked for. Shared rather than
+            // passed per page because the sidebar is on every page, and
+            // dispatched unconditionally so that with nothing listening
+            // the list is empty and the sidebar is exactly what it was.
+            // See ResolvingNavigationLinks for why core never learns what
+            // is in it.
+            'extra_nav_links' => $this->extraNavLinks($request),
             // Shared rather than passed by each page: the sign-in buttons,
             // the registration form and the Connected accounts nav entry
             // all need the same list, and a nav entry to a screen with
@@ -300,5 +309,26 @@ class HandleInertiaRequests extends Middleware
 
         /** @var array<string, string> */
         return app('translator')->getLoader()->load($locale, '*', '*');
+    }
+
+    /**
+     * @return list<array{title: string, url: string, external: bool, icon: string|null}>
+     */
+    private function extraNavLinks(Request $request): array
+    {
+        $user = $request->user();
+
+        // Staff only, decided here rather than in each listener: these
+        // render in the administration area, and a client's portal shows
+        // their own files and nothing about the installation.
+        $event = new ResolvingNavigationLinks(isStaff: $user !== null && $user->isStaff());
+
+        if (! $event->isStaff) {
+            return [];
+        }
+
+        Event::dispatch($event);
+
+        return $event->links;
     }
 }

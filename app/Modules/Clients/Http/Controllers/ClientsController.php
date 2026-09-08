@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Clients\ClientAccounts;
 use App\Modules\Clients\ClientCustomFieldType;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Access\StaffLibraryScope;
@@ -20,10 +21,7 @@ use App\Modules\Files\DeletedAccountContent;
 use App\Modules\Identity\AccountContentDeletion;
 use App\Modules\Identity\Erasure\AvailableEmailRule;
 use App\Modules\Identity\Erasure\ErasureSchedule;
-use App\Modules\Identity\Models\Role;
-use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\TwoFactor\TwoFactorAdministration;
-use App\Modules\Identity\UserType;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use App\Support\Pagination;
@@ -51,6 +49,7 @@ class ClientsController extends Controller
         private readonly AccountContentDeletion $accountDeletion,
         private readonly StaffLibraryScope $scope,
         private readonly SeatAllowance $seats,
+        private readonly ClientAccounts $clients,
         private readonly ErasureSchedule $erasure,
     ) {}
 
@@ -129,10 +128,6 @@ class ClientsController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        // A client created here is approved by construction, so it counts
-        // immediately — unlike a self-registration awaiting a decision.
-        $this->seats->guardClient();
-
         $validated = $request->validate(array_merge([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', new AvailableEmailRule],
@@ -140,24 +135,19 @@ class ClientsController extends Controller
             'storage_quota_mb' => ['nullable', 'integer', 'min:0'],
         ], $this->customFieldRules()));
 
-        $client = User::create([
-            'type' => UserType::Client,
-            'active' => true,
-            'account_requested' => false,
-            'role_id' => Role::query()->where('name', SystemRole::Client->value)->value('id'),
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => $validated['password'],
-            // 0 (including an omitted field) means "no custom quota" —
-            // it inherits Setting::DefaultClientStorageQuotaMb at
-            // enforcement time (see ClientStorageUsage::quotaMb()), not
-            // baked in here, so a later change to the site default
-            // keeps applying to this client automatically.
-            'storage_quota_mb' => $validated['storage_quota_mb'] ?? 0,
-            'email_verified_at' => now(),
-        ]);
-
-        $this->activity->log(Action::UserCreated, subject: $client);
+        // The seat guard, the type, the role, and the quota's "0 means
+        // inherit the site default" all live in ClientAccounts, shared
+        // with the API and the control plane. A client created here is
+        // approved by construction, so it counts against the cap
+        // immediately — unlike a self-registration awaiting a decision.
+        // The welcome waits until the custom fields are saved below.
+        $client = $this->clients->create(
+            name: $validated['name'],
+            email: $validated['email'],
+            password: $validated['password'],
+            storageQuotaMb: $validated['storage_quota_mb'] ?? 0,
+            welcome: false,
+        );
 
         $creator = $request->user();
         assert($creator !== null);

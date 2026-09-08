@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Modules\Api\Support\PollingQuery;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Clients\ClientAccounts;
 use App\Modules\Clients\ClientCustomFieldType;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Access\StaffLibraryScope;
@@ -22,10 +23,7 @@ use App\Modules\Files\DeletedAccountContent;
 use App\Modules\Identity\AccountContentDeletion;
 use App\Modules\Identity\Erasure\AvailableEmailRule;
 use App\Modules\Identity\Erasure\ErasureSchedule;
-use App\Modules\Identity\Models\Role;
-use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\TwoFactor\TwoFactorAdministration;
-use App\Modules\Identity\UserType;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Database\Eloquent\Builder;
@@ -62,6 +60,7 @@ class ClientsController extends Controller
         private readonly AccountContentDeletion $accountDeletion,
         private readonly StaffLibraryScope $scope,
         private readonly SeatAllowance $seats,
+        private readonly ClientAccounts $clients,
         private readonly ErasureSchedule $erasure,
     ) {}
 
@@ -118,8 +117,6 @@ class ClientsController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $this->seats->guardClient();
-
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', new AvailableEmailRule],
@@ -138,21 +135,18 @@ class ClientsController extends Controller
 
         $validated['custom_field_values'] = $this->validateCustomFieldValues($request);
 
-        $client = User::create([
-            'type' => UserType::Client,
-            'active' => true,
-            'account_requested' => false,
-            'role_id' => Role::query()->where('name', SystemRole::Client->value)->value('id'),
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => $validated['password'],
-            // 0 means "no custom quota" and inherits the site default at
-            // enforcement time — see ClientStorageUsage::quotaMb().
-            'storage_quota_mb' => $validated['storage_quota_mb'] ?? 0,
-            'email_verified_at' => now(),
-        ]);
-
-        $this->activity->log(Action::UserCreated, subject: $client);
+        // The invariants — the seat guard, the type, the role, the quota's
+        // "0 means inherit" — live in ClientAccounts, shared with the staff
+        // screens and with the platform control plane. What stays here is
+        // this surface's own business: its validation, its custom fields,
+        // and who the creator is.
+        $client = $this->clients->create(
+            name: $validated['name'],
+            email: $validated['email'],
+            password: $validated['password'],
+            storageQuotaMb: $validated['storage_quota_mb'] ?? 0,
+            welcome: false,
+        );
 
         $creator = $request->user();
         assert($creator !== null);
@@ -170,6 +164,10 @@ class ClientsController extends Controller
 
         $this->saveCustomFieldValues($client, $validated['custom_field_values'] ?? []);
 
+        // Sent here rather than inside ClientAccounts so the custom fields
+        // are already saved when it goes: a welcome that arrives before
+        // the account is finished describes an account that does not quite
+        // exist yet.
         if ($this->settings->get(Setting::EmailNotificationsEnabled) === true) {
             $client->notify(new ClientWelcomeNotification);
         }

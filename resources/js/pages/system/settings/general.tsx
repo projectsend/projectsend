@@ -23,7 +23,8 @@ interface SystemSettingsProps {
     viewer_timezone: string | null;
     can_manage_updates: boolean;
     check_for_updates: boolean | null;
-    fetch_news: boolean;
+    fetch_news: boolean | null;
+    can_configure_news: boolean;
     /** When the release feed was last asked, by anybody. Null until it has been. */
     last_checked_at: string | null;
     /** The answer to a "check now" press, for the one render after it. */
@@ -38,6 +39,7 @@ export default function SystemSettings({
     can_manage_updates,
     check_for_updates,
     fetch_news,
+    can_configure_news,
     last_checked_at,
     check_result,
 }: SystemSettingsProps) {
@@ -77,7 +79,7 @@ export default function SystemSettings({
         site_name: site_name,
         timezone: timezone,
         check_for_updates: check_for_updates ?? false,
-        fetch_news,
+        fetch_news: fetch_news ?? true,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -135,10 +137,13 @@ export default function SystemSettings({
                         <InputError className="mt-2" message={errors.timezone} />
                     </div>
 
-                    {/* Outside the can_manage_updates block on purpose:
-                        the dashboard's news card is both editions and needs
-                        only view_news, so an installation with no update
-                        block at all still has a feed to switch off. */}
+                    {/* Its own capability, not can_manage_updates: that block
+                        disappears on a managed installation because nobody
+                        there can act on an update notice, while this one
+                        disappears because the news has to keep arriving
+                        whether or not that installation's administrator
+                        would have chosen it. */}
+                    {can_configure_news && (
                     <div className="grid gap-2">
                         <div className="flex items-center gap-2">
                             <Checkbox
@@ -154,6 +159,7 @@ export default function SystemSettings({
                             )}
                         </p>
                     </div>
+                    )}
 
                     {can_manage_updates && (
                         <div className="grid gap-2">

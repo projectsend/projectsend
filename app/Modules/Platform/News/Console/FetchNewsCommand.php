@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\Platform\News\Console;
 
+use App\Modules\Platform\Capabilities\Capability;
+use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Console\Command;
@@ -12,9 +14,13 @@ use Illuminate\Support\Facades\Http;
 use Stevebauman\Purify\Facades\Purify;
 
 /**
- * Both editions — unlike CheckForUpdatesCommand, this isn't gated on any
- * Capability: dashboard news is informational content, not an update
- * action, so Cloud tenants see it too.
+ * Both editions, and on a managed instance not switchable off — unlike
+ * CheckForUpdatesCommand, which does not run there at all. Dashboard news
+ * is informational content rather than an update action, so hosted
+ * customers see it too, and see it whether their administrator would have
+ * chosen to or not. Capability::NewsConfigure is what a self-hosted
+ * installation holds and a managed one does not: the choice is the
+ * edition difference, not the news.
  *
  * The feed returns raw HTML in `content` (links, paragraphs) — sanitized
  * here, once, before it's ever cached or sent to the frontend, so the
@@ -34,22 +40,31 @@ class FetchNewsCommand extends Command
 
     public function __construct(
         private readonly Settings $settings,
+        private readonly CapabilityRegistry $capabilities,
     ) {
         parent::__construct();
     }
 
     public function handle(): int
     {
-        // Before the request, not after it. An operator who has switched
-        // the feed off has said "this installation does not call out for
-        // this", and honouring that after the call has already gone is
-        // not honouring it at all.
+        // The setting only decides where the installation is allowed to
+        // make that choice. On a managed instance it is not: announcements
+        // about the product are what a hosted customer should be told, and
+        // one administrator switching them off for everybody on that
+        // instance is not a decision the platform hands over. So the news
+        // runs there regardless of what any row says — including a row
+        // left behind by an instance that used to be self-hosted.
+        //
+        // The opposite of the update check, which does not run on a
+        // managed instance at all because nobody there could act on it.
+        // The two look alike and point in different directions.
         //
         // Returns success rather than failure: a scheduled task that was
         // asked not to run has not failed, and reporting it as a failure
         // would put a red line in the scheduler history every night for
         // an installation that is behaving exactly as configured.
-        if ($this->settings->get(Setting::FetchNews) !== true) {
+        if ($this->capabilities->has(Capability::NewsConfigure)
+            && $this->settings->get(Setting::FetchNews) !== true) {
             $this->info('The news feed is switched off for this installation.');
 
             return self::SUCCESS;

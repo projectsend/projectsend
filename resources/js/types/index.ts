@@ -39,6 +39,7 @@ export type Capability =
     | 'storage.configure'
     | 'email.transport.configure'
     | 'system.updates'
+    | 'news.configure'
     | 'scheduler.monitoring'
     | 'custom_assets.manage'
     | 'branding.customize'

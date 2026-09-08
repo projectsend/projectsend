@@ -45,6 +45,10 @@ class SystemSettingsController extends Controller
     {
         $canManageUpdates = $this->capabilities->has(Capability::SystemUpdates)
             && $request->user()?->can('manage_updates') === true;
+        // No permission beside it, unlike updates: turning the news card
+        // off is an ordinary settings change, and edit_settings already
+        // gates this whole screen.
+        $canConfigureNews = $this->capabilities->has(Capability::NewsConfigure);
 
         return Inertia::render('system/settings/general', [
             'site_name' => $this->settings->get(Setting::SiteName),
@@ -62,12 +66,15 @@ class SystemSettingsController extends Controller
             'viewer_timezone' => $request->user()?->timezone,
             'can_manage_updates' => $canManageUpdates,
             'check_for_updates' => $canManageUpdates ? $this->settings->get(Setting::CheckForUpdates) : null,
-            // Not behind $canManageUpdates. The news card is both editions
-            // and gated on view_news alone (DashboardController), so the
-            // switch that turns it off belongs to anyone who may edit
-            // settings — including on an installation where the update
-            // block above is absent entirely.
-            'fetch_news' => $this->settings->get(Setting::FetchNews),
+            // Its own capability, and deliberately not $canManageUpdates:
+            // the update block disappears on a managed instance because
+            // nobody there can act on it, while this one disappears
+            // because the news must keep arriving whether or not the
+            // instance's administrator would have chosen it. Null where
+            // the choice is not theirs, so the page renders no switch
+            // rather than a switch that would do nothing.
+            'can_configure_news' => $canConfigureNews,
+            'fetch_news' => $canConfigureNews ? $this->settings->get(Setting::FetchNews) : null,
             'last_checked_at' => $canManageUpdates ? $this->lastCheckedAt()?->toIso8601String() : null,
             'check_result' => $request->session()->get('update_check_result'),
         ]);
@@ -129,6 +136,10 @@ class SystemSettingsController extends Controller
     {
         $canManageUpdates = $this->capabilities->has(Capability::SystemUpdates)
             && $request->user()?->can('manage_updates') === true;
+        // No permission beside it, unlike updates: turning the news card
+        // off is an ordinary settings change, and edit_settings already
+        // gates this whole screen.
+        $canConfigureNews = $this->capabilities->has(Capability::NewsConfigure);
 
         $rules = [
             'site_name' => ['required', 'string', 'max:255'],
@@ -138,9 +149,11 @@ class SystemSettingsController extends Controller
             // no such thing as clearing it — the empty stored value means
             // "follow APP_TIMEZONE", and only a fresh install has that.
             'timezone' => ['sometimes', 'string', 'timezone', Rule::in($this->timezones->all())],
-            // No capability behind it, unlike check_for_updates below.
-            'fetch_news' => ['sometimes', 'boolean'],
         ];
+
+        if ($canConfigureNews) {
+            $rules['fetch_news'] = ['sometimes', 'boolean'];
+        }
         if ($canManageUpdates) {
             // Omitting the field (any caller not sending it, not just this
             // page's own form) leaves the current value alone rather than
@@ -164,7 +177,10 @@ class SystemSettingsController extends Controller
             $this->settings->set(Setting::CheckForUpdates, $validated['check_for_updates']);
         }
 
-        if (array_key_exists('fetch_news', $validated)) {
+        // Never read where the choice is not this installation's, so a
+        // hand-crafted PATCH cannot switch off the news on a managed
+        // instance any more than the absent checkbox could.
+        if ($canConfigureNews && array_key_exists('fetch_news', $validated)) {
             $this->settings->set(Setting::FetchNews, $validated['fetch_news']);
         }
 

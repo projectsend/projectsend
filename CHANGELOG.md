@@ -13,6 +13,24 @@ Anything under **Upgrade notes** is something you have to do, not something we d
 This section collects changes as they land; the release process turns it into a numbered entry
 when a version is cut.
 
+**New**
+
+- **Clients can edit and delete the files they uploaded.** Until now uploading was a one-way door: a
+  client could send a file and then never touch it again — no rename, no description, not even a
+  delete — because every screen that could change a file was a staff screen. A client with the
+  "Edit files" permission now gets an editor for their own uploads, offering exactly what their role
+  allows and nothing more. Renaming and the description come with the edit permission; an expiry
+  date, categories, a download limit and making a file public are each behind the same separate
+  permission a staff member needs for them. Deleting is its own permission again. **What never
+  changes is whose file it is:** a file shared *with* a client is not theirs to edit or remove, no
+  matter which permissions their role carries, and no combination of them reaches another client's
+  files.
+- **You can stop this installation fetching the project news.** ProjectSend pulls announcements from
+  projectsend.org once a day for the dashboard card, and there was no way to turn that off. There is
+  now a checkbox on Settings → General, on by default, and off means the request is never made
+  rather than the result hidden — useful on a closed network, or simply if you would rather it did
+  not. The update check beside it has always had its own switch.
+
 **Closed holes in who can see what**
 
 - A staff member limited to their own assigned clients could read the names of other clients out of
@@ -67,6 +85,17 @@ on large files over slow connections, where re-sending is expensive. The trade i
 while a file is being joined together, the temporary directory now holds the pieces *and* the joined
 copy at once, rather than the copy and one piece. Both are removed the moment the upload succeeds,
 and the moment it fails.
+
+**Fixed**
+
+- **Eight security advisories in bundled dependencies**, including an XSS bypass and three
+  denial-of-service issues in the markdown renderer that turns your email templates into HTML.
+  Nothing in ProjectSend's own code changed; these arrive by upgrading.
+- **`projectsend:captcha-off` no longer reports success it did not have.** On an installation whose
+  CAPTCHA keys are supplied centrally rather than entered on the settings screen, the command wrote
+  a setting nothing reads and then said "CAPTCHA is off" — sending somebody who was still being
+  challenged away from the one thing that would have explained why. It now says plainly that nothing
+  changed, and names the environment variable that does work.
 
 ### Upgrade notes
 

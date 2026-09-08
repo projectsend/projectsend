@@ -32,6 +32,24 @@ enum Capability: string
     case EmailTransportConfigure = 'email.transport.configure';
     case SystemUpdates = 'system.updates';
 
+    // Community-only — whether this installation may switch off the
+    // project news on its dashboard.
+    //
+    // Note what is Community-only: the *choice*, not the news. A managed
+    // instance still fetches and still shows it, and cannot be made to
+    // stop. That is the difference from SystemUpdates beside it, and it
+    // is worth stating because the two look alike and are opposites. An
+    // update notice is useless on a hosted tenant — they cannot act on
+    // it, the image is ours — so the check does not run at all there.
+    // News is the reverse: announcements about the product are exactly
+    // what a hosted customer should be told, and an administrator
+    // switching them off for everybody on that instance is not a
+    // preference we meant to hand over.
+    //
+    // A self-hosted operator keeps the switch, because there nobody else
+    // decides what their installation reaches out for.
+    case NewsConfigure = 'news.configure';
+
     // Community-only — scheduled-task run history and failed-queue-job
     // visibility. Cut on managed installations, where infrastructure
     // monitoring happens outside this application; a transient failure
@@ -150,6 +168,7 @@ enum Capability: string
             self::StorageConfigure,
             self::EmailTransportConfigure,
             self::SystemUpdates,
+            self::NewsConfigure,
             self::SchedulerMonitoring,
             self::CustomAssets => [Edition::Community],
 

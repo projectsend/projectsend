@@ -54,17 +54,44 @@ test('the news feed is on by default, so nothing changes for an existing install
     Http::assertSentCount(1);
 });
 
-// The news is informational and both editions show it: a Cloud client
-// with view_news sees that card today (DashboardController), so this must
-// NOT be gated on a capability. Switching it off is an operator's choice,
-// not an edition's.
-test('the news feed is not an edition difference', function () {
+// The news itself is both editions — a Cloud client with view_news sees
+// that card. What is Community-only is the *choice*: announcements about
+// the product are what a hosted customer should be told, and one
+// administrator switching them off for everybody on that instance is not
+// a decision the platform hands over.
+//
+// The exact opposite of the update check below, which does not run on a
+// managed instance at all. The two look alike and point in different
+// directions, so both directions are pinned.
+test('a managed instance fetches the news whatever its setting says', function () {
     Http::fake(['*' => Http::response([])]);
     config()->set('projectsend.edition', Edition::Cloud);
+
+    // Off — including a row left behind by an instance that used to be
+    // self-hosted, which is the case that would otherwise go silent.
+    app(Settings::class)->set(Setting::FetchNews, false);
 
     $this->artisan('projectsend:fetch-news')->assertSuccessful();
 
     Http::assertSentCount(1);
+});
+
+test('a managed instance is not offered the switch, and cannot be sent it', function () {
+    config()->set('projectsend.edition', Edition::Cloud);
+    app(Settings::class)->set(Setting::FetchNews, true);
+
+    $this->actingAs($this->admin)->get('/system/settings/general')->assertInertia(
+        fn (Inertia\Testing\AssertableInertia $page) => $page
+            ->where('can_configure_news', false)
+            ->where('fetch_news', null),
+    );
+
+    // A hand-crafted PATCH must not do what the absent checkbox could not.
+    $this->actingAs($this->admin)
+        ->patch('/system/settings/general', generalPayload(['fetch_news' => false]))
+        ->assertRedirect();
+
+    expect(app(Settings::class)->get(Setting::FetchNews))->toBeTrue();
 });
 
 /*
@@ -121,14 +148,12 @@ test('a self-hosted install keeps its own switch, both ways', function () {
 | one must not be, because the card it controls is shown in both editions.
 */
 
-test('the news switch is on the settings page in both editions', function () {
-    foreach ([Edition::Community, Edition::Cloud] as $edition) {
-        config()->set('projectsend.edition', $edition);
-
-        $this->actingAs($this->admin)->get('/system/settings/general')->assertInertia(
-            fn (Inertia\Testing\AssertableInertia $page) => $page->where('fetch_news', true),
-        );
-    }
+test('a self-hosted installation is offered the switch', function () {
+    $this->actingAs($this->admin)->get('/system/settings/general')->assertInertia(
+        fn (Inertia\Testing\AssertableInertia $page) => $page
+            ->where('can_configure_news', true)
+            ->where('fetch_news', true),
+    );
 });
 
 test('saving the settings page can turn the feed off and on', function () {

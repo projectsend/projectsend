@@ -6,12 +6,35 @@ Versions follow [SemVer](https://semver.org/): the middle number moves when ther
 the last one when there are only fixes, and the first one when an upgrade needs more from you than
 dropping in the new files and running the migrations.
 
-Anything under **Upgrade notes** is something you have to do, not something we did.
+Anything under **⚠️ Important — do these yourself** is something you have to do, not something
+we did. It sits at the top of a release for that reason. Older entries call the same section
+**Upgrade notes**.
 
 ## Unreleased
 
 This section collects changes as they land; the release process turns it into a numbered entry
 when a version is cut.
+
+### ⚠️ Important — do these yourself
+
+Everything else in this release happens on its own. These do not: each one leaves something working
+differently from how you expect until you act on it. Nothing here stops the upgrade or the
+installation from starting.
+
+- **If you set `PROJECTSEND_CAPTCHA_DISABLED`, check what you set it to.** Only `true` or `1`
+  switches the CAPTCHA off now. Anything else — including `no`, `off`, `yes` and a misspelling —
+  used to be read as "yes, disabled" and is now read as "leave it on". So a value that is not
+  `true` or `1` means the CAPTCHA comes back on this upgrade. If you meant it off, write `true`.
+- **If a staff role uploads into public folders, give it "Upload to public folders".** That
+  permission was not being asked of staff, and now is. Roles holding "Upload public files" are
+  unaffected — that one still opens it. Everything outside public folders is unaffected: an ordinary
+  upload still needs nothing new.
+- **If you use Microsoft sign-in, add the `xms_edov` optional claim to your app registration.** In
+  the Entra portal: your app registration → Token configuration → Add optional claim → ID →
+  `xms_edov`. Until you do, Microsoft sign-in keeps working and keeps creating new accounts, but it
+  will no longer attach itself to an account that already exists — the person is told to sign in
+  with their password and connect Microsoft from their settings instead. People already signed in
+  with Microsoft are not affected.
 
 **Fixed**
 
@@ -24,7 +47,7 @@ when a version is cut.
   *Who this affected:* installations with public folders and a staff role that can upload but is not
   meant to publish. The permission for this already existed and already worked this way for clients
   — "Upload to public folders" — it was simply never asked of staff, so on a staff role that
-  checkbox did nothing. **There is something to do — see the upgrade notes.**
+  checkbox did nothing. **There is something to do — see the Important section at the top.**
 
   Reported by [@skeletonsec](https://github.com/skeletonsec).
 - **Microsoft sign-in now needs one more claim before it will trust an address.** Naming your tenant
@@ -34,7 +57,7 @@ when a version is cut.
   the `xms_edov` claim, which is Microsoft's own answer to that question.
 
   *Who this affected:* only installations with Microsoft sign-in enabled. **There is something to do
-  — see the upgrade notes.** Nobody is locked out: accounts already linked to Microsoft keep working
+  — see the Important section at the top.** Nobody is locked out: accounts already linked to Microsoft keep working
   untouched, because they are matched on the account itself rather than on the address.
 
   Reported by [@archnexus707](https://github.com/archnexus707).
@@ -70,23 +93,6 @@ when a version is cut.
 - **`PROJECTSEND_CAPTCHA_DISABLED` no longer reads a "no" as a "yes".** Any value other than `true`
   or `1` — including `no`, `off`, and a misspelling — used to switch the CAPTCHA off on the login
   and registration forms. Only an explicit `true` or `1` does now; everything else leaves it on.
-
-### Upgrade notes
-
-- **If you set `PROJECTSEND_CAPTCHA_DISABLED`, check what you set it to.** Only `true` or `1`
-  switches the CAPTCHA off now. Anything else — including `no`, `off`, `yes` and a misspelling —
-  used to be read as "yes, disabled" and is now read as "leave it on". So a value that is not
-  `true` or `1` means the CAPTCHA comes back on this upgrade. If you meant it off, write `true`.
-- **If a staff role uploads into public folders, give it "Upload to public folders".** That
-  permission was not being asked of staff, and now is. Roles holding "Upload public files" are
-  unaffected — that one still opens it. Everything outside public folders is unaffected: an ordinary
-  upload still needs nothing new.
-- **If you use Microsoft sign-in, add the `xms_edov` optional claim to your app registration.** In
-  the Entra portal: your app registration → Token configuration → Add optional claim → ID →
-  `xms_edov`. Until you do, Microsoft sign-in keeps working and keeps creating new accounts, but it
-  will no longer attach itself to an account that already exists — the person is told to sign in
-  with their password and connect Microsoft from their settings instead. People already signed in
-  with Microsoft are not affected.
 
 
 ## 2.4.0 — 8 September 2026

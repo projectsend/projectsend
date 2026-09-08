@@ -2017,5 +2017,9 @@
     "Show ProjectSend news on the dashboard": "Показывать новости ProjectSend на панели",
     "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Раз в день загружает анонсы проекта с projectsend.org для карточки на панели. Если выключить, эта установка вообще перестанет обращаться к projectsend.org за новостями.",
     "Announcement": "Объявление",
-    "More": "Ещё"
+    "More": "Ещё",
+    "Copy the public link to this file": "Скопировать публичную ссылку на этот файл",
+    "Downloaded :count times, last on :date": "Скачиваний: :count — последнее :date",
+    "Downloaded once, on :date": "Скачан один раз, :date",
+    "Not downloaded yet": "Ещё не скачивался"
 }

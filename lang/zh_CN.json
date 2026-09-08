@@ -2017,5 +2017,9 @@
     "Show ProjectSend news on the dashboard": "在仪表板上显示 ProjectSend 动态",
     "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "每天一次从 projectsend.org 获取项目公告，用于仪表板卡片。关闭后，本安装将完全不再因动态而连接 projectsend.org。",
     "Announcement": "公告",
-    "More": "更多"
+    "More": "更多",
+    "Copy the public link to this file": "复制此文件的公开链接",
+    "Downloaded :count times, last on :date": "已下载 :count 次，最近一次 :date",
+    "Downloaded once, on :date": "已下载 1 次，:date",
+    "Not downloaded yet": "尚未下载"
 }

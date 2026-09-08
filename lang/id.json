@@ -2017,5 +2017,9 @@
     "Show ProjectSend news on the dashboard": "Tampilkan kabar terbaru ProjectSend di dasbor",
     "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Mengambil pengumuman proyek dari projectsend.org sekali sehari untuk kartu di dasbor. Jika dimatikan, instalasi ini sama sekali tidak lagi menghubungi projectsend.org untuk kabar terbaru.",
     "Announcement": "Pengumuman",
-    "More": "Lainnya"
+    "More": "Lainnya",
+    "Copy the public link to this file": "Salin tautan publik ke berkas ini",
+    "Downloaded :count times, last on :date": "Diunduh :count kali, terakhir pada :date",
+    "Downloaded once, on :date": "Diunduh sekali, pada :date",
+    "Not downloaded yet": "Belum pernah diunduh"
 }

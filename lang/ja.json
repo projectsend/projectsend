@@ -2017,5 +2017,9 @@
     "Show ProjectSend news on the dashboard": "ダッシュボードに ProjectSend のお知らせを表示する",
     "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "ダッシュボードのカード用に、プロジェクトのお知らせを projectsend.org から1日1回取得します。オフにすると、このインストールはお知らせのために projectsend.org へ接続しなくなります。",
     "Announcement": "お知らせ",
-    "More": "その他"
+    "More": "その他",
+    "Copy the public link to this file": "このファイルの公開リンクをコピー",
+    "Downloaded :count times, last on :date": ":count 回ダウンロードされました。最終 :date",
+    "Downloaded once, on :date": "1 回ダウンロードされました。:date",
+    "Not downloaded yet": "まだダウンロードされていません"
 }

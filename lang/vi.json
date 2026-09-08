@@ -2017,5 +2017,9 @@
     "Show ProjectSend news on the dashboard": "Hiển thị tin tức ProjectSend trên bảng điều khiển",
     "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Tải thông báo của dự án từ projectsend.org mỗi ngày một lần cho thẻ trên bảng điều khiển. Khi tắt, bản cài đặt này sẽ hoàn toàn không liên hệ với projectsend.org để lấy tin tức.",
     "Announcement": "Thông báo",
-    "More": "Thêm"
+    "More": "Thêm",
+    "Copy the public link to this file": "Sao chép liên kết công khai tới tệp này",
+    "Downloaded :count times, last on :date": "Đã tải xuống :count lần, lần cuối :date",
+    "Downloaded once, on :date": "Đã tải xuống một lần, :date",
+    "Not downloaded yet": "Chưa được tải xuống"
 }

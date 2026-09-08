@@ -2017,5 +2017,9 @@
     "Show ProjectSend news on the dashboard": "Mostra les novetats de ProjectSend al tauler",
     "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Recupera els anuncis del projecte des de projectsend.org un cop al dia per a la targeta del tauler. Si ho desactives, aquesta instal·lació deixa de contactar amb projectsend.org per a novetats.",
     "Announcement": "Avís",
-    "More": "Més"
+    "More": "Més",
+    "Copy the public link to this file": "Copia l'enllaç públic d'aquest fitxer",
+    "Downloaded :count times, last on :date": "Descarregat :count vegades, l'última el :date",
+    "Downloaded once, on :date": "Descarregat una vegada, el :date",
+    "Not downloaded yet": "Encara no s'ha descarregat"
 }

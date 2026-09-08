@@ -2017,5 +2017,9 @@
     "Show ProjectSend news on the dashboard": "ProjectSend haberlerini panelde göster",
     "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Panel kartı için proje duyurularını günde bir kez projectsend.org adresinden alır. Kapatıldığında bu kurulum haberler için projectsend.org ile hiç bağlantı kurmaz.",
     "Announcement": "Duyuru",
-    "More": "Daha fazla"
+    "More": "Daha fazla",
+    "Copy the public link to this file": "Bu dosyanın herkese açık bağlantısını kopyalayın",
+    "Downloaded :count times, last on :date": ":count kez indirildi, son olarak :date",
+    "Downloaded once, on :date": "Bir kez indirildi, :date",
+    "Not downloaded yet": "Henüz indirilmedi"
 }

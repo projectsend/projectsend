@@ -2017,5 +2017,9 @@
     "Show ProjectSend news on the dashboard": "Onyesha habari za ProjectSend kwenye dashibodi",
     "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Huleta matangazo ya mradi kutoka projectsend.org mara moja kwa siku kwa ajili ya kadi ya dashibodi. Ukiizima, usakinishaji huu hautawasiliana kabisa na projectsend.org kwa habari.",
     "Announcement": "Tangazo",
-    "More": "Zaidi"
+    "More": "Zaidi",
+    "Copy the public link to this file": "Nakili kiungo cha umma cha faili hili",
+    "Downloaded :count times, last on :date": "Imepakuliwa mara :count, mara ya mwisho :date",
+    "Downloaded once, on :date": "Imepakuliwa mara moja, :date",
+    "Not downloaded yet": "Bado haijapakuliwa"
 }

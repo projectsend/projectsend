@@ -2017,5 +2017,9 @@
     "Show ProjectSend news on the dashboard": "Mostra le novità di ProjectSend nel pannello",
     "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Recupera gli annunci del progetto da projectsend.org una volta al giorno per la scheda del pannello. Disattivandolo, questa installazione smette del tutto di contattare projectsend.org per le novità.",
     "Announcement": "Avviso",
-    "More": "Altro"
+    "More": "Altro",
+    "Copy the public link to this file": "Copia il link pubblico a questo file",
+    "Downloaded :count times, last on :date": "Scaricato :count volte, l'ultima il :date",
+    "Downloaded once, on :date": "Scaricato una volta, il :date",
+    "Not downloaded yet": "Non ancora scaricato"
 }

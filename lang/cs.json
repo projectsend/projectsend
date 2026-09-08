@@ -2017,5 +2017,9 @@
     "Show ProjectSend news on the dashboard": "Zobrazovat novinky ProjectSendu v přehledu",
     "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Jednou denně načte oznámení projektu z projectsend.org pro kartu v přehledu. Když to vypnete, tato instalace se kvůli novinkám na projectsend.org už vůbec nepřipojí.",
     "Announcement": "Oznámení",
-    "More": "Další"
+    "More": "Další",
+    "Copy the public link to this file": "Zkopírovat veřejný odkaz na tento soubor",
+    "Downloaded :count times, last on :date": "Stažení: :count — naposledy :date",
+    "Downloaded once, on :date": "Staženo jednou, :date",
+    "Not downloaded yet": "Zatím nestaženo"
 }

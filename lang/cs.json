@@ -2015,5 +2015,7 @@
     "Make this file public": "Zveřejnit tento soubor",
     "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Tento web zatím nemá nastavenou veřejnou stránku, takže nebude nic vidět, dokud ji administrátor nenastaví.",
     "Show ProjectSend news on the dashboard": "Zobrazovat novinky ProjectSendu v přehledu",
-    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Jednou denně načte oznámení projektu z projectsend.org pro kartu v přehledu. Když to vypnete, tato instalace se kvůli novinkám na projectsend.org už vůbec nepřipojí."
+    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Jednou denně načte oznámení projektu z projectsend.org pro kartu v přehledu. Když to vypnete, tato instalace se kvůli novinkám na projectsend.org už vůbec nepřipojí.",
+    "Announcement": "Oznámení",
+    "More": "Další"
 }

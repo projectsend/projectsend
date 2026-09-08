@@ -2015,5 +2015,7 @@
     "Make this file public": "Công khai tệp này",
     "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Trang web này chưa thiết lập trang công khai, nên sẽ không có gì hiển thị cho đến khi quản trị viên thiết lập.",
     "Show ProjectSend news on the dashboard": "Hiển thị tin tức ProjectSend trên bảng điều khiển",
-    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Tải thông báo của dự án từ projectsend.org mỗi ngày một lần cho thẻ trên bảng điều khiển. Khi tắt, bản cài đặt này sẽ hoàn toàn không liên hệ với projectsend.org để lấy tin tức."
+    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Tải thông báo của dự án từ projectsend.org mỗi ngày một lần cho thẻ trên bảng điều khiển. Khi tắt, bản cài đặt này sẽ hoàn toàn không liên hệ với projectsend.org để lấy tin tức.",
+    "Announcement": "Thông báo",
+    "More": "Thêm"
 }

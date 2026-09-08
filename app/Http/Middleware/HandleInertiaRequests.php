@@ -24,6 +24,7 @@ use App\Modules\Platform\Settings\Settings;
 use App\Modules\Platform\Updates\LatestReleaseInfo;
 use App\Modules\Platform\Updates\RunningCodeState;
 use Illuminate\Foundation\Inspiring;
+use App\Modules\Platform\Announcements\Events\ResolvingAnnouncement;
 use App\Modules\Platform\Navigation\Events\ResolvingNavigationLinks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
@@ -93,6 +94,12 @@ class HandleInertiaRequests extends Middleware
             // See ResolvingNavigationLinks for why core never learns what
             // is in it.
             'extra_nav_links' => $this->extraNavLinks($request),
+            // Shared rather than a dashboard prop, because it is shown in
+            // two places — the band on the dashboard and the icon beside
+            // the notification bell everywhere else — and "the same
+            // message" is the requirement. Two props would drift the day
+            // somebody edited one.
+            'announcement' => $this->announcement($request),
             // Shared rather than passed by each page: the sign-in buttons,
             // the registration form and the Connected accounts nav entry
             // all need the same list, and a nav entry to a screen with
@@ -330,5 +337,23 @@ class HandleInertiaRequests extends Middleware
         Event::dispatch($event);
 
         return $event->links;
+    }
+
+    /**
+     * @return array{title: string, body: string, action_label: string|null, action_url: string|null, tone: string}|null
+     */
+    private function announcement(Request $request): ?array
+    {
+        $user = $request->user();
+
+        if ($user === null) {
+            return null;
+        }
+
+        $event = new ResolvingAnnouncement(isStaff: $user->isStaff());
+
+        Event::dispatch($event);
+
+        return $event->announcement;
     }
 }

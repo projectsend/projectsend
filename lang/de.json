@@ -2015,5 +2015,7 @@
     "Make this file public": "Diese Datei öffentlich machen",
     "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Für diese Website ist noch keine öffentliche Seite eingerichtet, daher ist nichts sichtbar, bis ein Administrator eine einrichtet.",
     "Show ProjectSend news on the dashboard": "ProjectSend-Neuigkeiten in der Übersicht anzeigen",
-    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Ruft einmal täglich Projektankündigungen von projectsend.org für die Karte in der Übersicht ab. Ausgeschaltet nimmt diese Installation für Neuigkeiten überhaupt keine Verbindung zu projectsend.org mehr auf."
+    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Ruft einmal täglich Projektankündigungen von projectsend.org für die Karte in der Übersicht ab. Ausgeschaltet nimmt diese Installation für Neuigkeiten überhaupt keine Verbindung zu projectsend.org mehr auf.",
+    "Announcement": "Ankündigung",
+    "More": "Mehr"
 }

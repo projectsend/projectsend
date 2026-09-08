@@ -28,7 +28,7 @@ import { TopClientsWidget, type TopClient } from '@/components/dashboard-widgets
 import { TransfersRangeControls, TransfersWidget, type TransferPoint, type TransfersRange } from '@/components/dashboard-widgets/transfers-widget';
 import { WidgetBox } from '@/components/dashboard-widgets/widget-box';
 import { WidgetsDialog } from '@/components/dashboard-widgets/widgets-dialog';
-import { DashboardCalloutBand, type DashboardCallout } from '@/components/dashboard-callout';
+import { AnnouncementBand } from '@/components/announcement';
 import Heading from '@/components/heading';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -50,7 +50,6 @@ interface DashboardProps {
     api: ApiUsageSummary | null;
     widget_layout: WidgetLayout;
     dashboard_columns: number;
-    callout: DashboardCallout | null;
 }
 
 const COLUMN_CLASSES: Record<number, string> = {
@@ -109,11 +108,10 @@ export default function Dashboard({
     expired_files,
     api,
     widget_layout,
-    callout,
     dashboard_columns,
 }: DashboardProps) {
     const { t } = useTranslation();
-    const { update_notice } = usePage<SharedData>().props;
+    const { announcement, update_notice } = usePage<SharedData>().props;
     const [releaseDialogOpen, setReleaseDialogOpen] = useState(false);
     const [widgetsDialogOpen, setWidgetsDialogOpen] = useState(false);
     const [layout, setLayout] = useState<WidgetLayout>(widget_layout);
@@ -341,8 +339,9 @@ export default function Dashboard({
             <div className="space-y-6 px-4 py-6">
                 {/* Above the heading, not inside the grid: whoever asked
                     for this wants it read, and the grid is arranged by
-                    each viewer. */}
-                {callout && <DashboardCalloutBand callout={callout} />}
+                    each viewer. Read from shared props, the same source
+                    the header icon uses, so the two cannot disagree. */}
+                {announcement && <AnnouncementBand announcement={announcement} />}
 
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <Heading title={t('Dashboard')} description={t('An overview of this installation')} />

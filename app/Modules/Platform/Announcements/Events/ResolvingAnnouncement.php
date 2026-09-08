@@ -5,13 +5,18 @@ declare(strict_types=1);
 namespace App\Modules\Platform\Announcements\Events;
 
 /**
- * A single message a package wants shown across the top of the dashboard.
+ * A single message a package wants put in front of staff.
+ *
+ * Shown twice, from one source: a band across the top of the dashboard,
+ * and an icon beside the notification bell that opens the same words on
+ * every other page. One event rather than two because "the same message"
+ * is the requirement — two props would drift the day somebody edits one.
  *
  * Not a widget, on purpose. The widget grid is a closed list of keys that
  * dashboard.tsx renders one by one, and each viewer arranges it — so a
  * message that matters would sit wherever somebody happened to drag it,
- * or under a fold, or switched off. A callout is one band above the grid:
- * seen, and not competing with the columns for space.
+ * or under a fold, or switched off. A band above the grid is seen without
+ * competing with the columns for space.
  *
  * **Core knows nothing about what it says.** Title, body, the label on the
  * button and where the button goes all come from the listener. The first
@@ -21,15 +26,15 @@ namespace App\Modules\Platform\Announcements\Events;
  *
  * One at a time, deliberately. A dashboard that can accumulate banners
  * accumulates them, and the second one is what teaches people to skip the
- * first. A listener that finds `$callout` already set should leave it
- * alone rather than overwrite it.
+ * first. A listener that finds one already set should leave it alone
+ * rather than overwrite it.
  */
-class ResolvingDashboardCallout
+class ResolvingAnnouncement
 {
     /**
      * @var array{title: string, body: string, action_label: string|null, action_url: string|null, tone: string}|null
      */
-    public ?array $callout = null;
+    public ?array $announcement = null;
 
     public function __construct(
         /** Whether the viewer is a staff account. */
@@ -44,11 +49,11 @@ class ResolvingDashboardCallout
      */
     public function show(string $title, string $body, ?string $actionLabel = null, ?string $actionUrl = null, string $tone = 'info'): void
     {
-        if ($this->callout !== null) {
+        if ($this->announcement !== null) {
             return;
         }
 
-        $this->callout = [
+        $this->announcement = [
             'title' => $title,
             'body' => $body,
             'action_label' => $actionLabel,

@@ -2015,5 +2015,7 @@
     "Make this file public": "Fes públic aquest fitxer",
     "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "Aquest lloc encara no té cap pàgina pública configurada, així que no es veurà res fins que un administrador en configuri una.",
     "Show ProjectSend news on the dashboard": "Mostra les novetats de ProjectSend al tauler",
-    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Recupera els anuncis del projecte des de projectsend.org un cop al dia per a la targeta del tauler. Si ho desactives, aquesta instal·lació deixa de contactar amb projectsend.org per a novetats."
+    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "Recupera els anuncis del projecte des de projectsend.org un cop al dia per a la targeta del tauler. Si ho desactives, aquesta instal·lació deixa de contactar amb projectsend.org per a novetats.",
+    "Announcement": "Avís",
+    "More": "Més"
 }

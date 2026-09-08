@@ -2015,5 +2015,7 @@
     "Make this file public": "このファイルを公開する",
     "This site has no public page set up yet, so nothing will be visible until an administrator sets one.": "このサイトにはまだ公開ページが設定されていないため、管理者が設定するまで何も表示されません。",
     "Show ProjectSend news on the dashboard": "ダッシュボードに ProjectSend のお知らせを表示する",
-    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "ダッシュボードのカード用に、プロジェクトのお知らせを projectsend.org から1日1回取得します。オフにすると、このインストールはお知らせのために projectsend.org へ接続しなくなります。"
+    "Fetches project announcements from projectsend.org once a day for the dashboard card. Turn it off and this installation stops contacting projectsend.org for news at all.": "ダッシュボードのカード用に、プロジェクトのお知らせを projectsend.org から1日1回取得します。オフにすると、このインストールはお知らせのために projectsend.org へ接続しなくなります。",
+    "Announcement": "お知らせ",
+    "More": "その他"
 }

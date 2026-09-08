@@ -1,3 +1,4 @@
+import { AnnouncementIcon } from '@/components/announcement';
 import { AppearanceSwitcher } from '@/components/appearance-switcher';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { IconLocaleSwitcher } from '@/components/locale-switcher';
@@ -15,6 +16,7 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
             </div>
             <div className="ml-auto flex items-center gap-1">
                 <UpdateAvailableIcon />
+                <AnnouncementIcon />
                 <NotificationBell />
                 <AppearanceSwitcher />
                 <IconLocaleSwitcher />

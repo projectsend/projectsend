@@ -1,3 +1,4 @@
+import { type Announcement } from '@/components/announcement';
 import { type InstallKind } from '@/components/update-instructions';
 import { LucideIcon } from 'lucide-react';
 
@@ -111,6 +112,12 @@ export interface SharedData {
     capabilities: Capability[];
     /** Sidebar entries contributed by packages, already staff-filtered. */
     extra_nav_links: ExtraNavLink[];
+    /**
+     * One message to put in front of staff, or null. Rendered as a band
+     * on the dashboard and behind the header icon everywhere else — see
+     * ResolvingAnnouncement. Shared so both say the same thing.
+     */
+    announcement: Announcement | null;
     /** Identity providers that are switched on and fully configured. */
     social_login: SocialLoginProvider[];
     /** The CAPTCHA in force, or null when this installation has none. */

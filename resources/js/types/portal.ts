@@ -57,6 +57,15 @@ export interface FileRow {
      * renders it or not; it must never filter it.
      */
     version: VersionLinks;
+    /**
+     * The public URL for a file of this client's own, where the install
+     * made one. Null on a file somebody shared with them — that link is
+     * the person who shared it's decision about who may reach the file,
+     * and handing the recipient the URL would turn "you may download
+     * this" into "you may pass this on to anyone". The server decides;
+     * a theme must never derive this from `is_mine`.
+     */
+    share_url: string | null;
     categories: CategoryTag[];
     /**
      * The download cap on this file, already decided for this client by

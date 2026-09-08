@@ -19,6 +19,7 @@ use App\Modules\Files\Folders\BreadcrumbBuilder;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
+use App\Modules\Files\Sharing\ClientShareLinks;
 use App\Modules\Files\Uploads\UploadExtensionPolicy;
 use App\Modules\Files\Versions\FileVersionLinks;
 use App\Modules\Files\Versions\FileVersions;
@@ -73,6 +74,7 @@ class MyFilesController extends Controller
         private readonly DownloadAllowance $allowance,
         private readonly FileVersions $versions,
         private readonly FileVersionLinks $versionLinks,
+        private readonly ClientShareLinks $shareLinks,
         private readonly ApplyFileEdits $fileEdits,
         private readonly FileExpiry $expiry,
         private readonly ActivityLogger $activity,
@@ -224,6 +226,10 @@ class MyFilesController extends Controller
         // docs/theming-files-checklist.md).
         $versions = $this->versionLinks->forMany($fileRows, $client);
         $unreadComments = $this->comments->unreadCountsFor($client, array_values(array_map(intval(...), $fileRows->pluck('id')->all())));
+        // One query for the page. Already narrowed to links this client
+        // minted on files this client uploaded — see ClientShareLinks for
+        // why both halves are required.
+        $shareUrls = $this->shareLinks->forMany($fileRows, $client);
 
         return Inertia::render("portal/themes/{$this->themeKey()}/my-files", [
             'folder' => $current === null ? null : ['id' => $current->id, 'name' => $current->name],
@@ -267,6 +273,13 @@ class MyFilesController extends Controller
                 // counterpart they were not given is null, not hidden by
                 // the theme. A theme must never filter this itself.
                 'version' => $versions[$file->id] ?? ['previous' => null, 'next' => null],
+                // The public URL for a file of their own, where one
+                // exists. Null on a file somebody shared with them, and
+                // null on their own file that has no link — a client has
+                // no way to mint one, so this is populated only where the
+                // installation did it for them. Never derived from
+                // is_mine: a theme renders what is here and nothing else.
+                'share_url' => $shareUrls[$file->id] ?? null,
                 'categories' => $file->categories->map(fn (Category $category): array => [
                     'id' => $category->id, 'name' => $category->name, 'color' => $category->color,
                 ])->values()->all(),

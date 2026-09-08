@@ -161,6 +161,16 @@ class User extends Authenticatable implements HasLocalePreference
             // credentials live is a security decision, not an attribute a
             // form or an API payload may set. Written with forceFill by
             // the code that provisions the account.
+            //
+            // Same for 'email_verified_at' below, and it is worth saying
+            // what absence from $fillable does and does not buy. It stops
+            // a request smuggling the value in. It does not tell the code
+            // that meant to set it deliberately that it failed: a key in a
+            // create() array is dropped in silence, so every path that
+            // provisions an account had one and lost it — staff accounts,
+            // client accounts, the setup screen and projectsend:admin, all
+            // fixed in September 2026. Not fillable only helps when the
+            // writer knows it has to be deliberate.
             'auth_source' => AuthSource::class,
             'ldap_synced_at' => 'datetime',
             'active' => 'boolean',

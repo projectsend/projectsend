@@ -63,8 +63,16 @@ class SetupController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => $validated['password'],
-            'email_verified_at' => now(),
         ]);
+
+        // forceFill, not part of the create() array: email_verified_at is
+        // deliberately absent from User::$fillable, so mass assignment
+        // dropped it in silence and this account was never marked
+        // verified. The first administrator typed their own address into
+        // the form in front of them; there is nobody to confirm it to.
+        // (Inert today, since MustVerifyEmail is not enabled on the model,
+        // but the column is what a later switch would read.)
+        $admin->forceFill(['email_verified_at' => now()])->save();
 
         // v1 logged installation as action 0; setup is a recorded action.
         $this->activity->log(Action::SetupCompleted, $admin);

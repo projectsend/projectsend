@@ -64,8 +64,13 @@ class CreateAdminCommand extends Command
             'name' => $name,
             'email' => $email,
             'password' => $password,
-            'email_verified_at' => now(),
         ]);
+
+        // forceFill, for the reason SetupController gives beside it:
+        // email_verified_at is not in User::$fillable, so passing it into
+        // create() lost it without a word. Whoever provisioned this
+        // container supplied the address themselves.
+        $user->forceFill(['email_verified_at' => now()])->save();
 
         app(ActivityLogger::class)->log(Action::UserCreated, null, $user);
 

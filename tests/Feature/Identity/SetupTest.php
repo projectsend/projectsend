@@ -39,7 +39,12 @@ test('setup creates the first staff administrator without logging them in', func
 
     $user = User::query()->sole();
     expect($user->type)->toBe(UserType::Staff)
-        ->and($user->email)->toBe('admin@example.com');
+        ->and($user->email)->toBe('admin@example.com')
+        // Written with forceFill, because email_verified_at is not in
+        // User::$fillable and the create() array it used to sit in threw
+        // it away without a word. This administrator typed their own
+        // address into the form in front of them.
+        ->and($user->email_verified_at)->not->toBeNull();
 });
 
 test('setup seeds the admin notification recipient with the new administrator email', function () {
@@ -109,7 +114,11 @@ test('the projectsend:admin command creates a staff administrator', function () 
         '--password' => 'super-secret-password',
     ])->assertSuccessful();
 
-    expect(User::query()->sole()->type)->toBe(UserType::Staff);
+    $user = User::query()->sole();
+    expect($user->type)->toBe(UserType::Staff)
+        // Same silent drop as the setup screen had: whoever provisioned
+        // this container supplied the address themselves.
+        ->and($user->email_verified_at)->not->toBeNull();
 });
 
 test('the projectsend:admin command rejects invalid input', function () {

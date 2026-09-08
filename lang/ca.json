@@ -2024,5 +2024,8 @@
     "Not downloaded yet": "Encara no s'ha descarregat",
     "Also add the \"xms_edov\" optional claim to your app registration, under Token configuration. Naming the tenant says which directory vouched for the sign-in; that claim says the directory checked the person really owns the address. Without it, someone else inside your tenant could sign in with a colleague's address, so ProjectSend will create new accounts but never attach a Microsoft sign-in to an account that already exists.": "Afegeix també la reclamació opcional \"xms_edov\" al registre de l'aplicació, a Configuració de testimoni. Indicar el tenant diu quin directori avala l'inici de sessió; aquesta reclamació diu que el directori ha comprovat que la persona és realment propietària de l'adreça. Sense ella, algú altre dins del teu tenant podria iniciar sessió amb l'adreça d'un company, de manera que ProjectSend crearà comptes nous però mai no vincularà un inici de sessió de Microsoft a un compte que ja existeix.",
     "A password reset goes to this address, so changing it needs your password.": "El restabliment de contrasenya s'envia a aquesta adreça, així que canviar-la requereix la teva contrasenya.",
-    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "La teva adreça de correu prové del directori o del proveïdor d'identitat amb què inicies sessió, i no es pot canviar aquí."
+    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "La teva adreça de correu prové del directori o del proveïdor d'identitat amb què inicies sessió, i no es pot canviar aquí.",
+    "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Els enllaços de restabliment duren una hora. Demana'n un de nou i arribarà de seguida.",
+    "Send me a new link": "Envia'm un enllaç nou",
+    "This link has expired": "Aquest enllaç ha caducat"
 }

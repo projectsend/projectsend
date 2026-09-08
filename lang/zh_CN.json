@@ -2024,5 +2024,8 @@
     "Not downloaded yet": "尚未下载",
     "Also add the \"xms_edov\" optional claim to your app registration, under Token configuration. Naming the tenant says which directory vouched for the sign-in; that claim says the directory checked the person really owns the address. Without it, someone else inside your tenant could sign in with a colleague's address, so ProjectSend will create new accounts but never attach a Microsoft sign-in to an account that already exists.": "还请在应用注册的“令牌配置”中添加可选声明“xms_edov”。指定租户说明是哪个目录为此次登录背书；该声明则说明目录已核实此人确实拥有该地址。没有它，你租户内的其他人就能用同事的地址登录，因此 ProjectSend 会创建新账户，但绝不会把 Microsoft 登录关联到已存在的账户。",
     "A password reset goes to this address, so changing it needs your password.": "密码重置会发送到这个地址，所以修改它需要你的密码。",
-    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "你的邮箱地址来自你用于登录的目录或身份提供方，无法在此处修改。"
+    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "你的邮箱地址来自你用于登录的目录或身份提供方，无法在此处修改。",
+    "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "重置链接有效期为一小时。申请一个新的，稍后即可收到。",
+    "Send me a new link": "给我发送新链接",
+    "This link has expired": "此链接已过期"
 }

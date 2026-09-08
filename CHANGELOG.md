@@ -38,6 +38,10 @@ installation from starting.
 
 **Fixed**
 
+- **An expired password reset link now says so before asking for a new password.** The page took a
+  password, took it a second time to confirm, and only then answered "this password reset token is
+  invalid" — a word nobody outside the code knows, at the end of the work rather than the start.
+  Links last an hour and people open them late; the screen now says that, and offers to send another.
 - **Erasing a staff account no longer hands their files to a client.** The account that inherits
   erased content is one setting for the whole installation, and it can name a client — which is
   right when a client is erased and their files go to another client. Applied to a staff account it

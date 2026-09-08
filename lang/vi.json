@@ -2024,5 +2024,8 @@
     "Not downloaded yet": "Chưa được tải xuống",
     "Also add the \"xms_edov\" optional claim to your app registration, under Token configuration. Naming the tenant says which directory vouched for the sign-in; that claim says the directory checked the person really owns the address. Without it, someone else inside your tenant could sign in with a colleague's address, so ProjectSend will create new accounts but never attach a Microsoft sign-in to an account that already exists.": "Đồng thời hãy thêm xác nhận quyền tùy chọn \"xms_edov\" vào đăng ký ứng dụng của bạn, trong phần Cấu hình mã thông báo. Việc nêu tên tenant cho biết thư mục nào đã bảo đảm cho lần đăng nhập; xác nhận quyền đó cho biết thư mục đã kiểm tra rằng người này thực sự sở hữu địa chỉ. Không có nó, một người khác trong tenant của bạn có thể đăng nhập bằng địa chỉ của đồng nghiệp, nên ProjectSend sẽ tạo tài khoản mới nhưng không bao giờ gắn một lần đăng nhập Microsoft vào tài khoản đã tồn tại.",
     "A password reset goes to this address, so changing it needs your password.": "Việc đặt lại mật khẩu sẽ gửi tới địa chỉ này, nên thay đổi nó cần mật khẩu của bạn.",
-    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Địa chỉ email của bạn đến từ thư mục hoặc nhà cung cấp danh tính mà bạn dùng để đăng nhập, và không thể thay đổi tại đây."
+    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Địa chỉ email của bạn đến từ thư mục hoặc nhà cung cấp danh tính mà bạn dùng để đăng nhập, và không thể thay đổi tại đây.",
+    "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Liên kết đặt lại có hiệu lực một giờ. Hãy yêu cầu liên kết mới, nó sẽ đến ngay.",
+    "Send me a new link": "Gửi cho tôi liên kết mới",
+    "This link has expired": "Liên kết này đã hết hạn"
 }

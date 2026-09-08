@@ -30,7 +30,48 @@ class NewPasswordController extends Controller
         return Inertia::render('auth/reset-password', [
             'email' => $request->email,
             'token' => $request->route('token'),
+            'expired' => $this->linkIsSpent(
+                (string) $request->string('email'),
+                (string) $request->route('token'),
+            ),
         ]);
+    }
+
+    /**
+     * Whether this link is one store() is certain to refuse.
+     *
+     * The scaffolding renders the form without looking at the token, so an
+     * expired link asked for a new password, asked for it a second time to
+     * confirm, and only then answered "this password reset token is
+     * invalid" — naming a word nobody outside the code knows, after the
+     * work rather than before it. Reset links last an hour and people open
+     * them late; that is ordinary, not an error to be scolded for.
+     *
+     * store() still validates and remains the rule. This is the screen
+     * being honest a minute earlier.
+     *
+     * **An address that is missing or belongs to nobody is not an expired
+     * link, and is drawn as the form was before.** Two reasons, and the
+     * second is the one that matters: a page that said "expired" for a
+     * real address and something else for an unknown one would answer
+     * whether an account exists here, to anybody who typed a guess — the
+     * property /forgot-password already protects by saying "a link will be
+     * sent if the account exists".
+     */
+    private function linkIsSpent(string $email, string $token): bool
+    {
+        if ($email === '' || $token === '') {
+            return false;
+        }
+
+        $broker = Password::broker();
+        $user = $broker->getUser(['email' => $email]);
+
+        if ($user === null) {
+            return false;
+        }
+
+        return ! $broker->tokenExists($user, $token);
     }
 
     /**

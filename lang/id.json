@@ -2024,5 +2024,8 @@
     "Not downloaded yet": "Belum pernah diunduh",
     "Also add the \"xms_edov\" optional claim to your app registration, under Token configuration. Naming the tenant says which directory vouched for the sign-in; that claim says the directory checked the person really owns the address. Without it, someone else inside your tenant could sign in with a colleague's address, so ProjectSend will create new accounts but never attach a Microsoft sign-in to an account that already exists.": "Tambahkan juga klaim opsional \"xms_edov\" ke pendaftaran aplikasi Anda, di bagian Token configuration. Menyebutkan tenant memberi tahu direktori mana yang menjamin proses masuk; klaim itu menyatakan bahwa direktori telah memeriksa bahwa orang tersebut benar-benar memiliki alamat itu. Tanpanya, orang lain di dalam tenant Anda dapat masuk dengan alamat rekan kerja, sehingga ProjectSend akan membuat akun baru tetapi tidak pernah menautkan proses masuk Microsoft ke akun yang sudah ada.",
     "A password reset goes to this address, so changing it needs your password.": "Pengaturan ulang kata sandi dikirim ke alamat ini, jadi mengubahnya memerlukan kata sandi Anda.",
-    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Alamat email Anda berasal dari direktori atau penyedia identitas tempat Anda masuk, dan tidak dapat diubah di sini."
+    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Alamat email Anda berasal dari direktori atau penyedia identitas tempat Anda masuk, dan tidak dapat diubah di sini.",
+    "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Tautan atur ulang berlaku satu jam. Minta yang baru dan akan tiba sebentar lagi.",
+    "Send me a new link": "Kirimi saya tautan baru",
+    "This link has expired": "Tautan ini sudah kedaluwarsa"
 }

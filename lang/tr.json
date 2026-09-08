@@ -2024,5 +2024,8 @@
     "Not downloaded yet": "Henüz indirilmedi",
     "Also add the \"xms_edov\" optional claim to your app registration, under Token configuration. Naming the tenant says which directory vouched for the sign-in; that claim says the directory checked the person really owns the address. Without it, someone else inside your tenant could sign in with a colleague's address, so ProjectSend will create new accounts but never attach a Microsoft sign-in to an account that already exists.": "Uygulama kaydınıza, Belirteç yapılandırması altında \"xms_edov\" isteğe bağlı talebini de ekleyin. Kiracıyı belirtmek, oturum açma için hangi dizinin kefil olduğunu söyler; bu talep ise dizinin, kişinin adresin gerçekten sahibi olduğunu doğruladığını söyler. Bu olmadan, kiracınızdaki başka biri bir iş arkadaşının adresiyle oturum açabilir; bu nedenle ProjectSend yeni hesaplar oluşturur ancak bir Microsoft oturum açma işlemini var olan bir hesaba asla bağlamaz.",
     "A password reset goes to this address, so changing it needs your password.": "Parola sıfırlama bu adrese gönderilir, bu yüzden değiştirmek parolanızı gerektirir.",
-    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "E-posta adresiniz, oturum açtığınız dizinden veya kimlik sağlayıcısından gelir ve burada değiştirilemez."
+    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "E-posta adresiniz, oturum açtığınız dizinden veya kimlik sağlayıcısından gelir ve burada değiştirilemez.",
+    "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Sıfırlama bağlantıları bir saat geçerlidir. Yenisini isteyin, birazdan ulaşır.",
+    "Send me a new link": "Bana yeni bir bağlantı gönder",
+    "This link has expired": "Bu bağlantının süresi doldu"
 }

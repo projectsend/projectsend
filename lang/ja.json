@@ -2024,5 +2024,8 @@
     "Not downloaded yet": "まだダウンロードされていません",
     "Also add the \"xms_edov\" optional claim to your app registration, under Token configuration. Naming the tenant says which directory vouched for the sign-in; that claim says the directory checked the person really owns the address. Without it, someone else inside your tenant could sign in with a colleague's address, so ProjectSend will create new accounts but never attach a Microsoft sign-in to an account that already exists.": "アプリ登録の「トークン構成」で、オプションの要求「xms_edov」も追加してください。テナントの指定は、どのディレクトリがサインインを保証したかを示します。この要求は、その人が本当にそのアドレスの持ち主であることをディレクトリが確認したことを示します。これがないと、テナント内の別の人が同僚のアドレスでサインインできてしまうため、ProjectSend は新しいアカウントは作成しますが、既存のアカウントに Microsoft サインインを結び付けることはありません。",
     "A password reset goes to this address, so changing it needs your password.": "パスワードの再設定はこのアドレスに届くため、変更にはパスワードが必要です。",
-    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "メールアドレスはサインインに使用しているディレクトリまたは ID プロバイダーのもので、ここでは変更できません。"
+    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "メールアドレスはサインインに使用しているディレクトリまたは ID プロバイダーのもので、ここでは変更できません。",
+    "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "再設定リンクの有効期間は 1 時間です。新しいリンクを申し込めば、すぐに届きます。",
+    "Send me a new link": "新しいリンクを送る",
+    "This link has expired": "このリンクは有効期限が切れています"
 }

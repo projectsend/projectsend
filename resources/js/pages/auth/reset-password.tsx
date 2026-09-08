@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -13,6 +13,12 @@ import AuthLayout from '@/layouts/auth-layout';
 interface ResetPasswordProps {
     token: string;
     email: string;
+    /**
+     * Whether the server already knows this link will be refused. False
+     * for an address it cannot place, which is not the same thing — see
+     * NewPasswordController::linkIsSpent().
+     */
+    expired: boolean;
 }
 
 interface ResetPasswordForm {
@@ -23,7 +29,7 @@ interface ResetPasswordForm {
     password_confirmation: string;
 }
 
-export default function ResetPassword({ token, email }: ResetPasswordProps) {
+export default function ResetPassword({ token, email, expired }: ResetPasswordProps) {
     const { t } = useTranslation();
 
     const { data, setData, post, processing, errors, reset } = useForm<ResetPasswordForm>({
@@ -39,6 +45,24 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
             onFinish: () => reset('password', 'password_confirmation'),
         });
     };
+
+    // Said before the work rather than after it. Reset links last an hour
+    // and people open them late; asking for a password twice and then
+    // refusing it is a bad minute for somebody who is already worried.
+    if (expired) {
+        return (
+            <AuthLayout
+                title={t('This link has expired')}
+                description={t('Reset links last one hour. Ask for a new one and it will arrive in a moment.')}
+            >
+                <Head title={t('This link has expired')} />
+
+                <Button className="w-full" asChild>
+                    <Link href={route('password.request')}>{t('Send me a new link')}</Link>
+                </Button>
+            </AuthLayout>
+        );
+    }
 
     return (
         <AuthLayout title={t('Reset password')} description={t('Please enter your new password below')}>

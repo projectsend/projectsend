@@ -2024,5 +2024,8 @@
     "Not downloaded yet": "Zatím nestaženo",
     "Also add the \"xms_edov\" optional claim to your app registration, under Token configuration. Naming the tenant says which directory vouched for the sign-in; that claim says the directory checked the person really owns the address. Without it, someone else inside your tenant could sign in with a colleague's address, so ProjectSend will create new accounts but never attach a Microsoft sign-in to an account that already exists.": "Přidejte také volitelný nárok \"xms_edov\" do registrace aplikace v části Konfigurace tokenu. Uvedení tenanta říká, který adresář se za přihlášení zaručil; tento nárok říká, že adresář ověřil, že adresa opravdu patří dané osobě. Bez něj by se někdo jiný ve vašem tenantovi mohl přihlásit adresou kolegy, takže ProjectSend bude vytvářet nové účty, ale nikdy nepřipojí přihlášení přes Microsoft k účtu, který už existuje.",
     "A password reset goes to this address, so changing it needs your password.": "Obnovení hesla se posílá na tuto adresu, takže její změna vyžaduje vaše heslo.",
-    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Vaše e-mailová adresa pochází z adresáře nebo poskytovatele identity, přes kterého se přihlašujete, a nelze ji zde změnit."
+    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Vaše e-mailová adresa pochází z adresáře nebo poskytovatele identity, přes kterého se přihlašujete, a nelze ji zde změnit.",
+    "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Odkazy pro obnovení platí jednu hodinu. Požádejte o nový a za chvíli dorazí.",
+    "Send me a new link": "Pošlete mi nový odkaz",
+    "This link has expired": "Platnost tohoto odkazu vypršela"
 }

@@ -2024,5 +2024,8 @@
     "Not downloaded yet": "Jeszcze nie pobrano",
     "Also add the \"xms_edov\" optional claim to your app registration, under Token configuration. Naming the tenant says which directory vouched for the sign-in; that claim says the directory checked the person really owns the address. Without it, someone else inside your tenant could sign in with a colleague's address, so ProjectSend will create new accounts but never attach a Microsoft sign-in to an account that already exists.": "Dodaj też opcjonalne oświadczenie \"xms_edov\" do rejestracji aplikacji, w sekcji Konfiguracja tokenu. Wskazanie dzierżawy mówi, który katalog poręczył za logowanie; to oświadczenie mówi, że katalog sprawdził, iż dana osoba naprawdę jest właścicielem adresu. Bez niego ktoś inny w Twojej dzierżawie mógłby zalogować się adresem współpracownika, więc ProjectSend będzie tworzyć nowe konta, ale nigdy nie powiąże logowania Microsoft z kontem, które już istnieje.",
     "A password reset goes to this address, so changing it needs your password.": "Resetowanie hasła trafia na ten adres, więc jego zmiana wymaga Twojego hasła.",
-    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Twój adres e-mail pochodzi z katalogu lub dostawcy tożsamości, przez którego się logujesz, i nie można go tu zmienić."
+    "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Twój adres e-mail pochodzi z katalogu lub dostawcy tożsamości, przez którego się logujesz, i nie można go tu zmienić.",
+    "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Linki do resetowania są ważne godzinę. Poproś o nowy, dotrze za chwilę.",
+    "Send me a new link": "Wyślij mi nowy link",
+    "This link has expired": "Ten link wygasł"
 }

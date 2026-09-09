@@ -50,28 +50,31 @@ class NewPasswordController extends Controller
      * store() still validates and remains the rule. This is the screen
      * being honest a minute earlier.
      *
-     * **An address that is missing or belongs to nobody is not an expired
-     * link, and is drawn as the form was before.** Two reasons, and the
-     * second is the one that matters: a page that said "expired" for a
-     * real address and something else for an unknown one would answer
-     * whether an account exists here, to anybody who typed a guess — the
-     * property /forgot-password already protects by saying "a link will be
-     * sent if the account exists".
+     * **Anything that will not validate reads as expired, whether or not
+     * the address is one we know.** That is the whole of the rule and it
+     * exists for one reason: a page answering "expired" for a real address
+     * and drawing the form for an unknown one tells anybody who types a
+     * guess whether an account is here — the exact property
+     * /forgot-password protects by saying "a link will be sent if the
+     * account exists".
+     *
+     * The first version of this method described that oracle in a comment
+     * and then built it: unknown address returned false and drew the form,
+     * known address returned true and said expired. Two branches, two
+     * answers, and the difference *was* the account. Now both answer the
+     * same, so the page reveals nothing and the message is still right in
+     * every case somebody real will meet — a mistyped address gets "ask
+     * for a new link", which is what they should do anyway.
      */
     private function linkIsSpent(string $email, string $token): bool
     {
-        if ($email === '' || $token === '') {
-            return false;
-        }
-
         $broker = Password::broker();
-        $user = $broker->getUser(['email' => $email]);
+        $user = $email === '' ? null : $broker->getUser(['email' => $email]);
 
-        if ($user === null) {
-            return false;
-        }
-
-        return ! $broker->tokenExists($user, $token);
+        // One answer for "no such account", "wrong token" and "spent
+        // token", because telling them apart is telling somebody which
+        // addresses exist here.
+        return $user === null || ! $broker->tokenExists($user, $token);
     }
 
     /**

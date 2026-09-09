@@ -53,20 +53,37 @@ test('a link whose token has been used is spent', function () {
 |--------------------------------------------------------------------------
 |
 | /forgot-password deliberately says "a link will be sent if the account
-| exists". A screen that said "expired" for a real address and something
-| else for an unknown one would give that away to anybody typing guesses.
+| exists". This screen must not undo that, and the first version of it did:
+| a real address answered "expired" and an unknown one drew the form, so
+| the difference between the two answers was the account.
 */
 
-test('an address nobody has is not called expired', function () {
-    $this->get('/reset-password/not-a-real-token?email=nobody@example.com')
-        ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page->where('expired', false));
+test('an address nobody has gets the same answer as one that exists', function () {
+    // The oracle, pinned. Not "both are false" or "both are true" — both
+    // are *the same*, which is the property, and it survives somebody
+    // later changing which answer that is.
+    User::factory()->create(['email' => 'known@example.com']);
+
+    $expiredFor = function (string $email): bool {
+        $seen = null;
+        test()->get("/reset-password/not-a-real-token?email={$email}")->assertOk()->assertInertia(
+            function (AssertableInertia $page) use (&$seen) {
+                $seen = $page->toArray()['props']['expired'];
+            },
+        );
+
+        return (bool) $seen;
+    };
+
+    expect($expiredFor('known@example.com'))->toBe($expiredFor('nobody@example.com'));
 });
 
-test('a missing address is not called expired either', function () {
+test('a missing address reads as expired rather than as a form', function () {
+    // Same rule seen from the other side. The form needs an address to
+    // post, so drawing it here would ask for a password it cannot use.
     $this->get('/reset-password/not-a-real-token')
         ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page) => $page->where('expired', false));
+        ->assertInertia(fn (AssertableInertia $page) => $page->where('expired', true));
 });
 
 test('the real check still happens on the write', function () {

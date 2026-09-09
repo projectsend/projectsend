@@ -2027,5 +2027,6 @@
     "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Je e-mailadres komt van de directory of identiteitsprovider waarmee je je aanmeldt en kan hier niet worden gewijzigd.",
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Herstellinks zijn een uur geldig. Vraag een nieuwe aan, die komt zo binnen.",
     "Send me a new link": "Stuur me een nieuwe link",
-    "This link has expired": "Deze link is verlopen"
+    "This link has expired": "Deze link is verlopen",
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Deze herstellink is niet meer geldig. Vraag een nieuwe aan en probeer het opnieuw."
 }

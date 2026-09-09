@@ -2027,5 +2027,6 @@
     "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Ваш адрес электронной почты берётся из каталога или поставщика удостоверений, через который вы входите, и здесь его изменить нельзя.",
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Ссылки для сброса действуют один час. Запросите новую — она придёт через мгновение.",
     "Send me a new link": "Прислать новую ссылку",
-    "This link has expired": "Срок действия ссылки истёк"
+    "This link has expired": "Срок действия ссылки истёк",
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Эта ссылка для сброса больше не действует. Запросите новую и попробуйте снова."
 }

@@ -2027,5 +2027,6 @@
     "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Vaše e-mailová adresa pochází z adresáře nebo poskytovatele identity, přes kterého se přihlašujete, a nelze ji zde změnit.",
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Odkazy pro obnovení platí jednu hodinu. Požádejte o nový a za chvíli dorazí.",
     "Send me a new link": "Pošlete mi nový odkaz",
-    "This link has expired": "Platnost tohoto odkazu vypršela"
+    "This link has expired": "Platnost tohoto odkazu vypršela",
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Tento odkaz pro obnovení už neplatí. Požádejte o nový a zkuste to znovu."
 }

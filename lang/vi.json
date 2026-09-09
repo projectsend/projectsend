@@ -2027,5 +2027,6 @@
     "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Địa chỉ email của bạn đến từ thư mục hoặc nhà cung cấp danh tính mà bạn dùng để đăng nhập, và không thể thay đổi tại đây.",
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Liên kết đặt lại có hiệu lực một giờ. Hãy yêu cầu liên kết mới, nó sẽ đến ngay.",
     "Send me a new link": "Gửi cho tôi liên kết mới",
-    "This link has expired": "Liên kết này đã hết hạn"
+    "This link has expired": "Liên kết này đã hết hạn",
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Liên kết đặt lại này không còn hiệu lực. Hãy yêu cầu liên kết mới và thử lại."
 }

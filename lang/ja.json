@@ -2027,5 +2027,6 @@
     "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "メールアドレスはサインインに使用しているディレクトリまたは ID プロバイダーのもので、ここでは変更できません。",
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "再設定リンクの有効期間は 1 時間です。新しいリンクを申し込めば、すぐに届きます。",
     "Send me a new link": "新しいリンクを送る",
-    "This link has expired": "このリンクは有効期限が切れています"
+    "This link has expired": "このリンクは有効期限が切れています",
+    "This password reset link is no longer valid. Ask for a new one and try again.": "この再設定リンクは無効になりました。新しいリンクを申し込んでもう一度お試しください。"
 }

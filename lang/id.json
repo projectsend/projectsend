@@ -2027,5 +2027,6 @@
     "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Alamat email Anda berasal dari direktori atau penyedia identitas tempat Anda masuk, dan tidak dapat diubah di sini.",
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Tautan atur ulang berlaku satu jam. Minta yang baru dan akan tiba sebentar lagi.",
     "Send me a new link": "Kirimi saya tautan baru",
-    "This link has expired": "Tautan ini sudah kedaluwarsa"
+    "This link has expired": "Tautan ini sudah kedaluwarsa",
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Tautan atur ulang ini sudah tidak berlaku. Minta yang baru dan coba lagi."
 }

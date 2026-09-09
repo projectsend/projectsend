@@ -2027,5 +2027,6 @@
     "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Anwani yako ya barua pepe inatoka kwenye saraka au mtoa utambulisho unaotumia kuingia, na haiwezi kubadilishwa hapa.",
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Viungo vya kuweka upya hudumu saa moja. Omba kipya na kitafika punde.",
     "Send me a new link": "Nitumie kiungo kipya",
-    "This link has expired": "Kiungo hiki kimeisha muda"
+    "This link has expired": "Kiungo hiki kimeisha muda",
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Kiungo hiki cha kuweka upya hakifanyi kazi tena. Omba kipya kisha ujaribu tena."
 }

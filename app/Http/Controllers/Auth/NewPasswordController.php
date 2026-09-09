@@ -157,8 +157,21 @@ class NewPasswordController extends Controller
             return to_route('login')->with('status', __($status));
         }
 
+        // One sentence for every way this can fail, and deliberately not
+        // Laravel's own. The scaffolding answers `passwords.user` for an
+        // address it cannot find and `passwords.token` for a real one whose
+        // token is dead — two different sentences, which is the same
+        // account-enumeration oracle the screen above was fixed for,
+        // reachable through the write instead. `passwords.throttled` is the
+        // third and the sharpest: the broker throttles per *user*, so an
+        // address nobody holds can never be throttled, and being told to
+        // wait is being told the account is there.
+        //
+        // Nothing is lost by collapsing them. The action is the same in
+        // every case — ask for a new link — and /forgot-password already
+        // refuses to say whether an address has an account.
         throw ValidationException::withMessages([
-            'email' => [__($status)],
+            'email' => [__('This password reset link is no longer valid. Ask for a new one and try again.')],
         ]);
     }
 }

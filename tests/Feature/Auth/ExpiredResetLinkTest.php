@@ -78,6 +78,29 @@ test('an address nobody has gets the same answer as one that exists', function (
     expect($expiredFor('known@example.com'))->toBe($expiredFor('nobody@example.com'));
 });
 
+test('the write refuses both the same way', function () {
+    // The GET is not the only way to ask. Laravel answers a failed reset
+    // with passwords.user for an address it cannot find and passwords.token
+    // for a real one whose token is dead — two different sentences, which
+    // is the same oracle through the POST. This one predates the screen
+    // above; it is the scaffolding, shipped in every release.
+    User::factory()->create(['email' => 'known@example.com']);
+
+    $refusalFor = function (string $email): string {
+        return test()->from('/reset-password/not-a-real-token')
+            ->post('/reset-password', [
+                'token' => 'not-a-real-token',
+                'email' => $email,
+                'password' => 'a-brand-new-password',
+                'password_confirmation' => 'a-brand-new-password',
+            ])
+            ->assertSessionHasErrors('email')
+            ->getSession()->get('errors')->first('email');
+    };
+
+    expect($refusalFor('known@example.com'))->toBe($refusalFor('nobody@example.com'));
+});
+
 test('a missing address reads as expired rather than as a form', function () {
     // Same rule seen from the other side. The form needs an address to
     // post, so drawing it here would ask for a password it cannot use.

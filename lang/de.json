@@ -2027,5 +2027,6 @@
     "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "Ihre E-Mail-Adresse stammt aus dem Verzeichnis oder Identitätsanbieter, mit dem Sie sich anmelden, und kann hier nicht geändert werden.",
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Zurücksetzungslinks gelten eine Stunde. Fordern Sie einen neuen an, er trifft gleich ein.",
     "Send me a new link": "Neuen Link senden",
-    "This link has expired": "Dieser Link ist abgelaufen"
+    "This link has expired": "Dieser Link ist abgelaufen",
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Dieser Link zum Zurücksetzen ist nicht mehr gültig. Fordern Sie einen neuen an und versuchen Sie es erneut."
 }

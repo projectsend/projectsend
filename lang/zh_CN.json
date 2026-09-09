@@ -2027,5 +2027,6 @@
     "Your email address comes from the directory or identity provider you sign in with, and cannot be changed here.": "你的邮箱地址来自你用于登录的目录或身份提供方，无法在此处修改。",
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "重置链接有效期为一小时。申请一个新的，稍后即可收到。",
     "Send me a new link": "给我发送新链接",
-    "This link has expired": "此链接已过期"
+    "This link has expired": "此链接已过期",
+    "This password reset link is no longer valid. Ask for a new one and try again.": "此重置链接已失效。请申请一个新的链接后重试。"
 }

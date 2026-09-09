@@ -38,6 +38,12 @@ installation from starting.
 
 **Fixed**
 
+- **The password reset screen no longer says whether an email address has an account here.** Asking
+  to reset a password already answers "a link will be sent if the account exists" without confirming
+  either way; the screen the link leads to did confirm it, twice — once by showing a form for an
+  unknown address and an expired notice for a real one, and once by answering "we can't find a user
+  with that email address" instead of "this token is invalid". Both now give the same answer to
+  everybody, and every failure reads the same: ask for a new link.
 - **An expired password reset link now says so before asking for a new password.** The page took a
   password, took it a second time to confirm, and only then answered "this password reset token is
   invalid" — a word nobody outside the code knows, at the end of the work rather than the start.

@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Modules\Files\Events\FileWasStored;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Sharing\CreateShareLink;
+use App\Modules\Identity\Models\RolePermission;
+use App\Modules\Identity\Permissions\Permission;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 
@@ -37,6 +39,44 @@ test('storing a file announces it, whichever path stored it', function () {
     Event::assertDispatched(FileWasStored::class, function (FileWasStored $event): bool {
         return $event->file->original_name === 'report.pdf'
             && $event->uploader->is($this->admin);
+    });
+});
+
+test('a client uploading through the portal announces it too', function () {
+    // The title above says "whichever path stored it" and only the plain
+    // staff POST proved it. This is the path the hosted free tier hangs
+    // on: a *client*, through the resumable flow, whose upload is what
+    // cloud-modules listens for to mint the public link.
+    //
+    // Worth a test of its own rather than trusting the shared
+    // StoreUploadedFile, because the package's own suite cannot tell us —
+    // it fakes both the event and the link-minting, so a chunked path that
+    // stopped dispatching would leave every one of its tests green and the
+    // free tier silently inert.
+    Event::fake([FileWasStored::class]);
+
+    $client = User::factory()->client()->create();
+    RolePermission::query()->firstOrCreate([
+        'role_id' => $client->role_id,
+        'permission' => Permission::Upload->value,
+    ]);
+
+    $this->actingAs($client);
+
+    $session = $this->postJson('/uploads', [
+        'filename' => 'holiday.jpg',
+        'size' => 11,
+        'type' => 'image/jpeg',
+    ])->assertOk()->json('uploadId');
+
+    $signed = $this->getJson("/uploads/{$session}/parts/1/sign")->assertOk()->json('url');
+    $this->call('PUT', $signed, [], [], [], [], 'hello world');
+
+    $this->postJson("/uploads/{$session}/complete")->assertOk();
+
+    Event::assertDispatched(FileWasStored::class, function (FileWasStored $event) use ($client): bool {
+        return $event->file->original_name === 'holiday.jpg'
+            && $event->uploader->is($client);
     });
 });
 

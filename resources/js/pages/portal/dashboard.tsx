@@ -4,6 +4,7 @@ import { Bell, Download, Files, FileText, FolderKanban, HardDrive } from 'lucide
 
 import Heading from '@/components/heading';
 import { StatTile } from '@/components/stat-tile';
+import { ViewerAnnouncement } from '@/components/announcement';
 import { Button } from '@/components/ui/button';
 import { useFormatDate } from '@/hooks/use-format-date';
 import { useTranslation } from '@/hooks/use-translation';
@@ -44,6 +45,13 @@ export default function PortalDashboard({ files_count, groups_count, storage, la
             <Head title={t('Dashboard')} />
 
             <div className="space-y-6 px-4 py-6">
+                {/* The same band the file portal shows, on the screen that
+                    is about the account rather than about the files. Reads
+                    the shared prop itself, so this and /my-files cannot
+                    disagree about what is being said or to whom — core
+                    drops anything not aimed at this viewer. */}
+                <ViewerAnnouncement />
+
                 <Heading title={t('Hello, :name', { name: auth.user.name })} description={t('Here is what has been shared with you')} />
 
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">

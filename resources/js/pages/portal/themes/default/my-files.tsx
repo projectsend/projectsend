@@ -95,12 +95,15 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
             <Head title={t('My files')} />
 
             <div className="px-4 py-6">
-                <div className="flex items-start justify-between">
-                    {/* Above everything the client came here to do. Reads the
-                        shared prop itself; core drops anything not aimed at
-                        this viewer, so a theme never decides who sees it. */}
-                    <ViewerAnnouncement />
+                {/* Above everything the client came here to do, and outside
+                    the row below it: as a flex child it shared the line with
+                    the heading and the buttons, so the band was never full
+                    width and squeezed them into a column beside it. Reads the
+                    shared prop itself; core drops anything not aimed at this
+                    viewer, so a theme never decides who sees it. */}
+                <ViewerAnnouncement />
 
+                <div className="flex items-start justify-between">
                     <Heading title={folder?.name ?? t('My files')} description={t('The files shared with you')} />
                     <div className="flex items-center gap-2">
                         <NewFolderButton

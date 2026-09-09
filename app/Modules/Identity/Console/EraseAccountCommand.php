@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Identity\Console;
 
 use App\Models\User;
+use App\Modules\Identity\AccountLookup;
 use App\Modules\Identity\Erasure\AccountEraser;
 use Illuminate\Console\Command;
 
@@ -25,7 +26,10 @@ class EraseAccountCommand extends Command
     {
         $email = (string) $this->argument('email');
 
-        $user = User::withTrashed()->where('email', $email)->first();
+        // Exact: this deletes somebody permanently, and a collation that
+        // folds accents could hand it a different account than the one an
+        // operator typed. See AccountLookup.
+        $user = app(AccountLookup::class)->byEmail($email, withTrashed: true);
 
         if ($user === null) {
             $this->error("No account found for {$email}.");

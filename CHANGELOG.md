@@ -60,6 +60,20 @@ installation from starting.
   checkbox did nothing. **There is something to do — see the Important section at the top.**
 
   Reported by [@skeletonsec](https://github.com/skeletonsec).
+- **An OIDC sign-in can no longer be handed somebody else's account through a lookalike domain.**
+  The database was asked which account an address belonged to, and the collation the install
+  instructions give — `utf8mb4_unicode_ci` — treats `administrator@example.com` and
+  `administrator@éxample.com` as the same address. They are not: the second is a different domain
+  that somebody else can register. An attacker with no account here could verify that address at
+  your identity provider, sign in, and be given the first account — with no password and nothing the
+  owner had to do. Sign-in now compares addresses itself: case-insensitively, and exactly about
+  everything else.
+
+  *Who this affected:* installations with the Generic OIDC provider enabled, on MySQL or MariaDB
+  with the documented collation. Two-factor authentication on the target account stopped the
+  takeover completing. Nothing to do on upgrade.
+
+  Reported by [@choewonwoo1817](https://github.com/choewonwoo1817).
 - **Microsoft sign-in now needs one more claim before it will trust an address.** Naming your tenant
   says which directory vouched for a sign-in; it never said the person owns the address they
   presented. Inside your own tenant a member or an invited guest could present a colleague's — an

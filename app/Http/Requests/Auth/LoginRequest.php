@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use App\Models\User;
+use App\Modules\Identity\AccountLookup;
 use App\Modules\Identity\Ldap\LdapProvisioner;
 use App\Modules\Identity\PasswordVerification;
 use App\Modules\Identity\SignIn;
@@ -71,7 +72,13 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        $user = User::query()->where('email', $this->string('email'))->first();
+        // Exact, for the reason SocialAuthenticator is: a collation that
+        // folds accents would otherwise let somebody typing
+        // admin@éxample.com be *identified* as admin@example.com. A
+        // password still gates this one, so it was never the takeover the
+        // social path was — but identifying the wrong account is the bug,
+        // and the credential check is a second line rather than the rule.
+        $user = app(AccountLookup::class)->byEmail((string) $this->string('email'));
 
         // A directory identity with no local account yet. Returns null
         // unless LDAP is on, auto-provisioning is on, and the bind

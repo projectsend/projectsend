@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Identity\Social;
 
 use App\Models\User;
+use App\Modules\Identity\AccountLookup;
 
 /**
  * Which local account, if any, a provider identity signs in as.
@@ -28,6 +29,7 @@ class SocialAuthenticator
 {
     public function __construct(
         private readonly SocialProvisioner $provisioner,
+        private readonly AccountLookup $accounts,
     ) {}
 
     public function resolve(SocialSettings $settings, SocialIdentity $identity): SocialResolution
@@ -74,7 +76,12 @@ class SocialAuthenticator
         // directory that omits the claim.
         $trusted = $identity->emailVerified || ! $settings->require_verified_email;
 
-        $existing = User::query()->where('email', $identity->email)->first();
+        // Exactly this address, not whatever the database's collation
+        // calls equal. utf8mb4_unicode_ci folds accents, so a verified
+        // sign-in as administrator@éxample.com — a domain somebody else
+        // can own — selected administrator@example.com and this method
+        // then linked the attacker's subject to it (GHSA-wgxf-v8cr-37mj).
+        $existing = $this->accounts->byEmail($identity->email);
 
         if ($existing !== null) {
             // 4/5. The takeover, refused. An unverified address may not

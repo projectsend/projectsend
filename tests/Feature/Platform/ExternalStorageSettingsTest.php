@@ -41,7 +41,7 @@ test('the secret never reaches the cache store', function () {
     Cache::flush();
     app(ExternalStorageConfigApplier::class)->apply();
 
-    $cached = Cache::get('platform.external_storage_settings.v3');
+    $cached = Cache::get('platform.external_storage_settings.v4');
 
     expect($cached)->toBeArray()
         ->and(json_encode($cached))->not->toContain('super-secret-access-key');
@@ -178,6 +178,67 @@ test('a real upload lands on the external disk once the backend is active, and l
     expect($localFile->disk)->toBe('files');
 });
 
+test('apply() supplies no credentials at all when authenticating as the server role', function () {
+    // Nothing to leave blank and nothing to read: Laravel only builds a
+    // `credentials` entry for the S3 client when both halves are
+    // non-empty, and the AWS SDK falls back to its default credential
+    // provider chain when none is given. An empty string here would be a
+    // credential, and would fail instead of falling through.
+    ExternalStorageSettings::current()->fill([
+        'active' => true,
+        'use_instance_role' => true,
+        'bucket' => 'my-bucket',
+        'region' => 'us-east-1',
+    ])->save();
+
+    app(ExternalStorageConfigApplier::class)->flush();
+    app(ExternalStorageConfigApplier::class)->apply();
+
+    expect(config('filesystems.disks.files_external.key'))->toBeNull()
+        ->and(config('filesystems.disks.files_external.secret'))->toBeNull()
+        ->and(config('filesystems.disks.files_external.bucket'))->toBe('my-bucket')
+        ->and(config('filesystems.disks.files_external.region'))->toBe('us-east-1');
+});
+
+test('a leftover stored secret is never applied once the server role is authenticating', function () {
+    // The row is written straight here, bypassing the controller that
+    // clears the credential — the runtime must not fall back to a secret
+    // it was told to stop using.
+    ExternalStorageSettings::current()->fill([
+        'active' => true,
+        'use_instance_role' => true,
+        'key' => 'AKIALEFTOVER',
+        'secret' => 'leftover-secret',
+        'bucket' => 'my-bucket',
+        'region' => 'us-east-1',
+    ])->save();
+
+    app(ExternalStorageConfigApplier::class)->flush();
+    app(ExternalStorageConfigApplier::class)->apply();
+
+    expect(config('filesystems.disks.files_external.key'))->toBeNull()
+        ->and(config('filesystems.disks.files_external.secret'))->toBeNull();
+});
+
+test('new uploads go to the external disk with no stored credentials when the server role is authenticating', function () {
+    // The silent failure this guards: isConfigured() demanding a key and
+    // a secret would leave the disk "unconfigured" forever, and every
+    // upload would keep landing on the local disk without saying so.
+    ExternalStorageSettings::current()->fill([
+        'active' => true,
+        'use_instance_role' => true,
+        'bucket' => 'my-bucket',
+        'region' => 'us-east-1',
+    ])->save();
+
+    app(ExternalStorageConfigApplier::class)->flush();
+
+    $event = new ResolvingUploadDisk($this->admin);
+    Event::dispatch($event);
+
+    expect($event->disk)->toBe('files_external');
+});
+
 test('staff can save external storage settings', function () {
     config()->set('projectsend.edition', Edition::Community);
 
@@ -204,6 +265,70 @@ test('saving with a blank secret keeps the previously stored secret', function (
     $settings = ExternalStorageSettings::current();
     expect($settings->secret)->toBe('first-secret')
         ->and($settings->bucket)->toBe('renamed-bucket');
+});
+
+test('saving with the server role asked for needs no access key, and deletes the stored credentials', function () {
+    $this->actingAs($this->admin)->patch('/system/settings/storage', validStorageSettingsPayload([
+        'access_key' => 'AKIAEXAMPLE',
+        'secret' => 'shh',
+    ]))->assertRedirect();
+
+    $payload = validStorageSettingsPayload(['use_instance_role' => true]);
+    unset($payload['access_key'], $payload['secret']);
+
+    $this->actingAs($this->admin)->patch('/system/settings/storage', $payload)
+        ->assertSessionHasNoErrors();
+
+    $settings = ExternalStorageSettings::current();
+    expect($settings->use_instance_role)->toBeTrue()
+        ->and($settings->key)->toBeNull()
+        ->and($settings->secret)->toBeNull()
+        ->and($settings->isConfigured())->toBeTrue();
+
+    // And nothing is left in the row for a database dump to carry.
+    expect(DB::table('external_storage_settings')->value('secret'))->toBeNull();
+});
+
+test('an access key is still required when it is missing rather than blank', function () {
+    // Not the same case as an empty string: a validation rule that only
+    // runs on a present attribute would let this through.
+    $payload = validStorageSettingsPayload();
+    unset($payload['access_key']);
+
+    $this->actingAs($this->admin)->patch('/system/settings/storage', $payload)
+        ->assertSessionHasErrors(['access_key']);
+});
+
+test('the connection test runs without an access key when the server role is authenticating', function () {
+    // The button has to accept the same configuration the save does —
+    // otherwise there is no way to check an IAM-role setup before
+    // switching uploads over to it, which is the whole point of it.
+    //
+    // Credentials are put in the environment so the SDK's default chain
+    // resolves instantly from there rather than reaching for the EC2
+    // metadata service, and the endpoint is a closed local port so the
+    // request fails at once. This asserts the request is *made*, offline
+    // and in well under a second — not that a bucket exists.
+    putenv('AWS_ACCESS_KEY_ID=AKIAENVEXAMPLE');
+    putenv('AWS_SECRET_ACCESS_KEY=env-secret');
+
+    try {
+        $response = $this->actingAs($this->admin)->post('/system/settings/storage/test', [
+            'provider' => 's3',
+            'use_instance_role' => true,
+            'bucket' => 'my-bucket',
+            'region' => 'us-east-1',
+            'endpoint' => 'http://127.0.0.1:1',
+            'use_path_style' => true,
+        ]);
+
+        $response->assertRedirect()->assertSessionHasNoErrors();
+
+        expect(session('storage_test_result'))->toBeString();
+    } finally {
+        putenv('AWS_ACCESS_KEY_ID');
+        putenv('AWS_SECRET_ACCESS_KEY');
+    }
 });
 
 test('saving external storage settings rejects invalid input', function () {

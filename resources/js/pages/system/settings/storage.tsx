@@ -17,6 +17,7 @@ import AppLayout from '@/layouts/app-layout';
 interface StorageSettingsProps {
     active: boolean;
     provider: string;
+    use_instance_role: boolean;
     access_key: string;
     has_secret: boolean;
     has_key_file: boolean;
@@ -33,6 +34,7 @@ const FORM_ID = 'storage-settings-form';
 export default function StorageSettings({
     active,
     provider,
+    use_instance_role,
     access_key,
     has_secret,
     has_key_file,
@@ -54,6 +56,7 @@ export default function StorageSettings({
     const { data, setData, patch, processing, recentlySuccessful, errors } = useForm({
         active: active,
         provider: provider,
+        use_instance_role: use_instance_role,
         access_key: access_key,
         secret: '',
         key_file: '',
@@ -65,6 +68,7 @@ export default function StorageSettings({
     });
 
     const isGcs = data.provider === 'gcs';
+    const usesInstanceRole = !isGcs && data.use_instance_role;
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -83,6 +87,7 @@ export default function StorageSettings({
             route('system-settings.storage.test'),
             {
                 provider: data.provider,
+                use_instance_role: data.use_instance_role,
                 access_key: data.access_key,
                 secret: data.secret,
                 key_file: data.key_file,
@@ -158,24 +163,56 @@ export default function StorageSettings({
                             <InputError message={errors.key_file} />
                         </div>
                     ) : (
-                        <div className="flex gap-4">
-                            <div className="grid flex-1 gap-2">
-                                <Label htmlFor="storage_access_key">{t('Access key')}</Label>
-                                <Input id="storage_access_key" value={data.access_key} onChange={(e) => setData('access_key', e.target.value)} />
-                                <InputError message={errors.access_key} />
-                            </div>
-                            <div className="grid flex-1 gap-2">
-                                <Label htmlFor="storage_secret">{t('Secret key')}</Label>
-                                <Input
-                                    id="storage_secret"
-                                    type="password"
-                                    placeholder={has_secret ? t('Unchanged') : ''}
-                                    value={data.secret}
-                                    onChange={(e) => setData('secret', e.target.value)}
+                        <>
+                            <div className="flex items-start gap-2">
+                                <Checkbox
+                                    id="use_instance_role"
+                                    checked={data.use_instance_role}
+                                    onCheckedChange={(checked) => setData('use_instance_role', checked === true)}
                                 />
-                                <InputError message={errors.secret} />
+                                <div className="grid gap-1">
+                                    <Label htmlFor="use_instance_role" className="font-normal">
+                                        {t("Authenticate as this server's IAM role")}
+                                    </Label>
+                                    <p className="text-muted-foreground text-sm">
+                                        {t(
+                                            'For installations running on AWS with a role already attached — an ECS task role, an EC2 instance profile, EKS/IRSA. ProjectSend asks the AWS SDK for temporary credentials instead of storing an access key. Leave this off for MinIO, Backblaze, Wasabi and anything else that needs a key and secret.',
+                                        )}
+                                    </p>
+                                    {usesInstanceRole && has_secret && (
+                                        <p className="text-muted-foreground text-sm">
+                                            {t('Saving will delete the access key and secret currently stored here.')}
+                                        </p>
+                                    )}
+                                    <InputError message={errors.use_instance_role} />
+                                </div>
                             </div>
-                        </div>
+
+                            {!usesInstanceRole && (
+                                <div className="flex gap-4">
+                                    <div className="grid flex-1 gap-2">
+                                        <Label htmlFor="storage_access_key">{t('Access key')}</Label>
+                                        <Input
+                                            id="storage_access_key"
+                                            value={data.access_key}
+                                            onChange={(e) => setData('access_key', e.target.value)}
+                                        />
+                                        <InputError message={errors.access_key} />
+                                    </div>
+                                    <div className="grid flex-1 gap-2">
+                                        <Label htmlFor="storage_secret">{t('Secret key')}</Label>
+                                        <Input
+                                            id="storage_secret"
+                                            type="password"
+                                            placeholder={has_secret ? t('Unchanged') : ''}
+                                            value={data.secret}
+                                            onChange={(e) => setData('secret', e.target.value)}
+                                        />
+                                        <InputError message={errors.secret} />
+                                    </div>
+                                </div>
+                            )}
+                        </>
                     )}
 
                     <div className="flex gap-4">

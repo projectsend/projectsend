@@ -17,6 +17,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\RequiredIf;
 use Inertia\Inertia;
 use Inertia\Response;
 use RuntimeException;
@@ -43,6 +44,7 @@ class ExternalStorageSettingsController extends Controller
         return Inertia::render('system/settings/storage', [
             'active' => $settings->active,
             'provider' => $settings->provider->value,
+            'use_instance_role' => $settings->use_instance_role,
             // Never name a top-level Inertia prop "key" — Inertia's React
             // renderer spreads page props onto the component via
             // `{ key: <internal-remount-key>, ...props }`, and a prop
@@ -78,10 +80,18 @@ class ExternalStorageSettingsController extends Controller
             'bucket' => ['required', 'string', 'max:255'],
             'root' => ['nullable', 'string', 'max:255'],
 
+            // 'sometimes' for the same reason as 'provider' above: absent
+            // means false, which is what every payload written before this
+            // choice existed meant.
+            'use_instance_role' => ['sometimes', 'boolean'],
+
             // Required only for the provider that uses them, so switching
             // to GCS does not demand an AWS region that means nothing.
-            'access_key' => ['required_if:provider,s3', 'nullable', 'string', 'max:255'],
+            'access_key' => [self::requiredForStaticS3($request), 'nullable', 'string', 'max:255'],
             'secret' => ['nullable', 'string', 'max:255'],
+            // Still required when the machine's own role is doing the
+            // authenticating: the credential chain resolves credentials,
+            // not which region the bucket is in.
             'region' => ['required_if:provider,s3', 'nullable', 'string', 'max:255'],
             'endpoint' => ['nullable', 'string', 'max:255'],
             'use_path_style' => ['required', 'boolean'],
@@ -94,10 +104,13 @@ class ExternalStorageSettingsController extends Controller
 
         $settings = ExternalStorageSettings::current();
 
+        $useInstanceRole = (bool) ($validated['use_instance_role'] ?? false);
+
         $settings->fill([
             'active' => $validated['active'],
             'provider' => $validated['provider'],
-            'key' => $validated['access_key'] ?? null,
+            'use_instance_role' => $useInstanceRole,
+            'key' => $useInstanceRole ? null : ($validated['access_key'] ?? null),
             'bucket' => $validated['bucket'],
             'region' => $validated['region'] ?? null,
             'endpoint' => $validated['endpoint'] ?? null,
@@ -108,7 +121,16 @@ class ExternalStorageSettingsController extends Controller
         // A blank credential keeps whatever is already stored — neither
         // field is ever round-tripped to the browser (only the has_*
         // flags are), so blank means "unchanged", not "cleared".
-        if (is_string($validated['secret'] ?? null) && $validated['secret'] !== '') {
+        //
+        // Except when the machine's own role takes over, which is the one
+        // thing that does clear it. The whole point of the setting is that
+        // no long-lived AWS credential is kept here, and a secret left
+        // sitting in the row unused would still be in the next database
+        // dump — and would silently come back the moment the box is
+        // unticked.
+        if ($useInstanceRole) {
+            $settings->secret = null;
+        } elseif (is_string($validated['secret'] ?? null) && $validated['secret'] !== '') {
             $settings->secret = $validated['secret'];
         }
 
@@ -144,7 +166,8 @@ class ExternalStorageSettingsController extends Controller
         $validated = $request->validate([
             'provider' => ['sometimes', Rule::enum(StorageProvider::class)],
             'bucket' => ['required', 'string', 'max:255'],
-            'access_key' => ['required_if:provider,s3', 'nullable', 'string', 'max:255'],
+            'use_instance_role' => ['sometimes', 'boolean'],
+            'access_key' => [self::requiredForStaticS3($request), 'nullable', 'string', 'max:255'],
             'secret' => ['nullable', 'string', 'max:255'],
             'region' => ['required_if:provider,s3', 'nullable', 'string', 'max:255'],
             'endpoint' => ['nullable', 'string', 'max:255'],
@@ -174,12 +197,20 @@ class ExternalStorageSettingsController extends Controller
         $config = [
             'version' => 'latest',
             'region' => $validated['region'],
-            'credentials' => [
-                'key' => $validated['access_key'],
-                'secret' => (string) $this->storedIfBlank($validated, 'secret'),
-            ],
             'use_path_style_endpoint' => (bool) ($validated['use_path_style'] ?? false),
         ];
+
+        // Omitted entirely, not left blank: an S3Client handed a
+        // 'credentials' array is told to use it, so an empty one fails
+        // instead of falling through to the default credential provider
+        // chain. This is what makes the button test the same thing the
+        // uploads will do — see ExternalStorageConfigApplier::applyS3().
+        if (! ($validated['use_instance_role'] ?? false)) {
+            $config['credentials'] = [
+                'key' => $validated['access_key'],
+                'secret' => (string) $this->storedIfBlank($validated, 'secret'),
+            ];
+        }
 
         if (is_string($validated['endpoint'] ?? null) && $validated['endpoint'] !== '') {
             $config['endpoint'] = $validated['endpoint'];
@@ -208,6 +239,22 @@ class ExternalStorageSettingsController extends Controller
         // $bucket->exists() reports failure for a key that works perfectly.
         // An empty bucket is a valid answer here, and returns no rows.
         iterator_to_array($bucket->objects(['maxResults' => 1]), false);
+    }
+
+    /**
+     * An access key is only demanded of an S3 backend that is actually
+     * going to authenticate with one. Shared by both the save and the
+     * connection test so the two cannot disagree about what is required.
+     */
+    private static function requiredForStaticS3(Request $request): RequiredIf
+    {
+        // Rule::requiredIf(), not a closure rule: this has to fire when
+        // the field is missing from the payload altogether, and a closure
+        // rule is not implicit — it never runs on an absent attribute.
+        return Rule::requiredIf(
+            fn (): bool => $request->input('provider') === StorageProvider::S3->value
+                && ! $request->boolean('use_instance_role')
+        );
     }
 
     /**

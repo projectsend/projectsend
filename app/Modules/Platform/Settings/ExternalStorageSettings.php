@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property bool $active
  * @property StorageProvider $provider
+ * @property bool $use_instance_role
  * @property string|null $key
  * @property string|null $secret
  * @property string|null $key_file
@@ -33,6 +34,7 @@ class ExternalStorageSettings extends Model
     protected $fillable = [
         'active',
         'provider',
+        'use_instance_role',
         'key',
         'secret',
         'key_file',
@@ -55,6 +57,7 @@ class ExternalStorageSettings extends Model
     protected $attributes = [
         'active' => false,
         'provider' => 's3',
+        'use_instance_role' => false,
         'use_path_style' => false,
     ];
 
@@ -63,6 +66,7 @@ class ExternalStorageSettings extends Model
         return [
             'active' => 'boolean',
             'provider' => StorageProvider::class,
+            'use_instance_role' => 'boolean',
             'secret' => 'encrypted',
             'key_file' => 'encrypted',
             'use_path_style' => 'boolean',
@@ -88,8 +92,14 @@ class ExternalStorageSettings extends Model
         // What counts as "filled in" is per provider, because the two
         // authenticate with different things entirely: S3 wants a key and
         // a secret, GCS wants a service account key file.
+        //
+        // Unless S3 is being asked to authenticate as the machine it is
+        // running on, in which case there is no credential to fill in at
+        // all and demanding one would leave the disk permanently
+        // "unconfigured" — which fails silently, by leaving every new
+        // upload on the local disk rather than by reporting anything.
         return match ($this->provider) {
-            StorageProvider::S3 => $this->filled('key') && $this->filled('secret'),
+            StorageProvider::S3 => $this->use_instance_role || ($this->filled('key') && $this->filled('secret')),
             StorageProvider::Gcs => $this->filled('key_file'),
         };
     }

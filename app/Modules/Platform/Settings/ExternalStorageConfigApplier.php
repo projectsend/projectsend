@@ -50,7 +50,9 @@ class ExternalStorageConfigApplier
     // account's private key included — in the same database whose dump
     // the `encrypted` cast exists to survive. Both are now read straight
     // from the row, by the provider branch that uses them.
-    private const CACHE_KEY = 'platform.external_storage_settings.v3';
+    // v4: use_instance_role joined the shape. Not a credential — it is
+    // the fact that there isn't one — so it caches like the rest.
+    private const CACHE_KEY = 'platform.external_storage_settings.v4';
 
     public function __construct(
         private readonly CapabilityRegistry $capabilities,
@@ -93,8 +95,16 @@ class ExternalStorageConfigApplier
      */
     private function applyS3(array $resolved): void
     {
-        Config::set('filesystems.disks.files_external.key', $resolved['key']);
-        Config::set('filesystems.disks.files_external.secret', $this->credential('secret'));
+        // Left null on purpose when the machine's own role is doing the
+        // authenticating. Laravel's FilesystemManager::formatS3Config()
+        // only builds a `credentials` entry when both a key and a secret
+        // are non-empty, and the AWS SDK falls back to its default
+        // credential provider chain — ECS task role, EC2 instance
+        // profile, EKS/IRSA, environment — whenever none is supplied.
+        // Passing an empty string instead of nothing would be a
+        // credential, and would fail rather than fall through.
+        Config::set('filesystems.disks.files_external.key', $resolved['use_instance_role'] ? null : $resolved['key']);
+        Config::set('filesystems.disks.files_external.secret', $resolved['use_instance_role'] ? null : $this->credential('secret'));
         Config::set('filesystems.disks.files_external.region', $resolved['region']);
         Config::set('filesystems.disks.files_external.endpoint', $resolved['endpoint']);
         Config::set('filesystems.disks.files_external.use_path_style_endpoint', $resolved['use_path_style']);
@@ -172,13 +182,14 @@ class ExternalStorageConfigApplier
      * filled in and active, nothing more. Callers AND the capability check
      * live and uncached — see class docblock.
      *
-     * @return array{configured: bool, provider: string, key: string|null, region: string|null, bucket: string|null, endpoint: string|null, use_path_style: bool, root: string|null}
+     * @return array{configured: bool, provider: string, use_instance_role: bool, key: string|null, region: string|null, bucket: string|null, endpoint: string|null, use_path_style: bool, root: string|null}
      */
     private function resolve(): array
     {
         $blank = [
             'configured' => false,
             'provider' => StorageProvider::S3->value,
+            'use_instance_role' => false,
             'key' => null,
             'region' => null, 'bucket' => null,
             'endpoint' => null, 'use_path_style' => false, 'root' => null,
@@ -202,6 +213,7 @@ class ExternalStorageConfigApplier
             return [
                 'configured' => true,
                 'provider' => $settings->provider->value,
+                'use_instance_role' => $settings->use_instance_role,
                 'key' => $settings->key,
                 'region' => $settings->region,
                 'bucket' => $settings->bucket,

@@ -183,7 +183,7 @@ test('the service account key never reaches the cache store', function () {
     Cache::flush();
     app(ExternalStorageConfigApplier::class)->apply();
 
-    $cached = Cache::get('platform.external_storage_settings.v3');
+    $cached = Cache::get('platform.external_storage_settings.v4');
 
     // Asserted to exist before it is searched: a renamed cache key would
     // otherwise make this pass by finding nothing at all, which is how a

@@ -8,9 +8,12 @@ use App\Modules\Files\Storage\ResolvingUploadDisk;
 use App\Modules\Platform\Capabilities\Edition;
 use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
 use App\Modules\Platform\Settings\ExternalStorageSettings;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
@@ -239,6 +242,43 @@ test('new uploads go to the external disk with no stored credentials when the se
     expect($event->disk)->toBe('files_external');
 });
 
+test('booting against a row older than the provider column does not throw', function () {
+    // #1770. The exact shape of a 2.0/2.1 install with S3 configured,
+    // upgrading to 2.2 or later: the code is new, the schema is still old,
+    // and boot happens before `artisan migrate` gets a chance to run.
+    //
+    // The failure this pins was not a wrong answer but a fatal one — an
+    // UnhandledMatchError on a null provider, thrown during
+    // PlatformServiceProvider::boot(), which took down every artisan
+    // command including the one that would have added the column. The
+    // official image reported it as "database unreachable" and
+    // restart-looped.
+    legacyStorageRow();
+
+    app(ExternalStorageConfigApplier::class)->flush();
+    app(ExternalStorageConfigApplier::class)->apply();
+
+    // Read as S3, which is the only thing a row predating the column could
+    // have been — and is what the migration's own default says.
+    expect(config('filesystems.disks.files_external.bucket'))->toBe('my-bucket')
+        ->and(config('filesystems.disks.files_external.key'))->toBe('AKIAEXAMPLE')
+        ->and(config('filesystems.disks.files_external.driver'))->toBe('s3');
+});
+
+test('an upload still reaches the external disk while the schema is mid-upgrade', function () {
+    // The other half: not throwing is not the same as behaving. An
+    // installation that was storing files in a bucket before the upgrade
+    // must not quietly start writing them to local disk during it.
+    legacyStorageRow();
+
+    app(ExternalStorageConfigApplier::class)->flush();
+
+    $event = new ResolvingUploadDisk($this->admin);
+    Event::dispatch($event);
+
+    expect($event->disk)->toBe('files_external');
+});
+
 test('staff can save external storage settings', function () {
     config()->set('projectsend.edition', Edition::Community);
 
@@ -416,6 +456,29 @@ test('a value cached while running as Community cannot leak into Cloud without a
 
     expect($event->disk)->toBe('files');
 });
+
+/**
+ * An external storage row exactly as 2.0/2.1 wrote it: S3 credentials in
+ * place, and none of the columns added since.
+ *
+ * Written with the query builder and then stripped back, rather than
+ * hand-rolled SQL, so it stays honest if the table changes shape again.
+ */
+function legacyStorageRow(): void
+{
+    DB::table('external_storage_settings')->insert([
+        'active' => true,
+        'key' => 'AKIAEXAMPLE',
+        'secret' => Crypt::encryptString('shh'),
+        'bucket' => 'my-bucket',
+        'region' => 'us-east-1',
+        'use_path_style' => false,
+    ]);
+
+    Schema::table('external_storage_settings', function (Blueprint $table) {
+        $table->dropColumn(['provider', 'key_file', 'use_instance_role']);
+    });
+}
 
 /**
  * @param  array<string, mixed>  $overrides

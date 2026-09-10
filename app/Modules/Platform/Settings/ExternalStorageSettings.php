@@ -75,7 +75,38 @@ class ExternalStorageSettings extends Model
 
     public static function current(): self
     {
-        return static::query()->firstOrNew([]);
+        $settings = static::query()->firstOrNew([]);
+
+        // Column defaults — the $attributes array above — apply to a NEW
+        // model, never to one hydrated from a row. So a row written by an
+        // older release, before one of these columns existed, reads that
+        // column as null however sensible its default is.
+        //
+        // That matters here more than it would anywhere else, because
+        // PlatformServiceProvider::boot() reads these settings on every
+        // process boot — and boot happens BEFORE `artisan migrate` runs.
+        // For the length of an upgrade the code is new and the schema is
+        // still old, and every artisan command in that window, including
+        // the one that would run the migrations, boots through here.
+        //
+        // A null `provider` made the match in isConfigured() throw
+        // UnhandledMatchError, which the official image's readiness probe
+        // reported to the operator as "database unreachable" — on a
+        // perfectly reachable database, in a container that then
+        // restart-looped without ever reaching the migration that would
+        // have fixed it (#1770, upgrading from 2.0/2.1 with external
+        // storage configured).
+        //
+        // Applying the defaults to a hydrated row closes that window for
+        // every column that has one, rather than for the single column
+        // where it was found. Inert on any install whose schema is current.
+        foreach ((new self)->getAttributes() as $column => $default) {
+            if (! array_key_exists($column, $settings->getAttributes())) {
+                $settings->setAttribute($column, $default);
+            }
+        }
+
+        return $settings;
     }
 
     /**
@@ -92,6 +123,11 @@ class ExternalStorageSettings extends Model
         // What counts as "filled in" is per provider, because the two
         // authenticate with different things entirely: S3 wants a key and
         // a secret, GCS wants a service account key file.
+        //
+        // The match is deliberately left total rather than given a default
+        // arm: current() guarantees a provider even on a row older than the
+        // column, and a default arm here would quietly swallow a genuinely
+        // unhandled case instead of naming it.
         //
         // Unless S3 is being asked to authenticate as the machine it is
         // running on, in which case there is no credential to fill in at

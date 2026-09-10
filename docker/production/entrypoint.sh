@@ -58,12 +58,26 @@ fi
 # Wait for the database. `migrate` against a database still starting up is
 # the single most common first-run failure, and a bare failure here would
 # restart-loop the container with a stack trace instead of a clear message.
+#
+# The probe boots the whole application, so it fails for two quite different
+# reasons: the database really is not there yet, or it is there and the
+# application could not start. Both used to be reported as the first one,
+# which sent an operator off checking credentials that were never wrong
+# (#1770). The last failure is kept and printed, so whichever it was is on
+# screen instead of being guessed at.
 if [ "$1" = "supervisord" ] || [ "$1" = "/usr/bin/supervisord" ]; then
     i=0
-    until su-exec www-data php artisan db:show --quiet >/dev/null 2>&1; do
+    until probe_error=$(su-exec www-data php artisan db:show --quiet 2>&1); do
         i=$((i + 1))
         if [ "$i" -ge 60 ]; then
-            echo "projectsend: database unreachable after 60s — check DB_HOST, DB_DATABASE and credentials" >&2
+            echo "projectsend: gave up waiting for the database after 60s." >&2
+            echo "projectsend: the last attempt failed with:" >&2
+            printf '%s\n' "$probe_error" | tail -n 20 >&2
+            echo "projectsend:" >&2
+            echo "projectsend: if that names the database host, the connection or the credentials," >&2
+            echo "projectsend: check DB_HOST, DB_DATABASE, DB_USERNAME and DB_PASSWORD." >&2
+            echo "projectsend: if it is an application error, the database is fine and this is a" >&2
+            echo "projectsend: bug — please report it at https://github.com/projectsend/projectsend/issues" >&2
             exit 1
         fi
         [ "$i" = 1 ] && echo "projectsend: waiting for the database..."

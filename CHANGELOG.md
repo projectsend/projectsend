@@ -66,6 +66,16 @@ installation from starting.
 - **A public gallery no longer renders the same thumbnail several times at once.**
 - **`PROJECTSEND_CAPTCHA_DISABLED` no longer reads a "no" as a "yes".**
 
+### Issues closed since 2.4.0
+
+The summary above is what changed. This is the paper trail, for anyone who wants to read the
+original report.
+
+- [#1768](https://github.com/projectsend/projectsend/issues/1768) — Search in file not restricted in directory
+- [#1773](https://github.com/projectsend/projectsend/issues/1773) — Feature Request : Support AWS IAM roles / default credential provider chain for S3 storage
+- [#1774](https://github.com/projectsend/projectsend/issues/1774) — HTTP Error by upload on R2098
+- [#1778](https://github.com/projectsend/projectsend/issues/1778) — [Documentation] Error 500 on install
+
 ## 2.4.0 — 8 September 2026
 
 Clients can now look after the files they uploaded, and this release closes three ways somebody

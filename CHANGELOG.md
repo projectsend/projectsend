@@ -38,6 +38,27 @@ installation from starting.
 
 **Fixed**
 
+- **An interrupted upload can no longer park unlimited bytes on the server.** A resumable upload
+  says up front how big the file is, and that number is what gets weighed against the maximum file
+  size and the client's storage quota. Only the finished file was held to it. The parts arriving in
+  between were checked one at a time and never added up, so a client could say "this file is one
+  byte", send gigabytes of parts, never finish the upload, and none of it counted against their
+  quota or appeared anywhere — because nothing becomes a file until the upload completes. They could
+  also open as many of these as they liked. A transfer now cannot leave more on the server than it
+  said it was sending, uploads still in progress count against the quota at the size they declared,
+  and there is a cap on how many one account can have running at once.
+
+  *Who this affected:* any installation where people other than administrators can upload, which is
+  the normal setup. The bytes were temporary — they were cleared within a day — but a volume that is
+  full is full, and uploading could be repeated. Nothing to do on upgrade; the limits apply on their
+  own and no ordinary upload comes anywhere near them.
+
+  Two related changes you may notice. A transfer you start and abandon holds its share of your quota
+  until you cancel it or it is cleared, so a cancelled upload frees the room straight away while an
+  abandoned one takes a little longer. And the job that clears abandoned transfers now runs every
+  hour instead of once a day, so that wait is shorter.
+
+  Reported by [@ry2811](https://github.com/ry2811).
 - **Two people filling in the first-run setup screen at the same moment can no longer both become
   administrators.** The screen asked the database whether the installation already had a staff user,
   and only some time later — after hashing a password, which is deliberately slow — created one. Two

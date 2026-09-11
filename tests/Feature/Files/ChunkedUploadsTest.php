@@ -164,18 +164,22 @@ test('a staff account without the upload permission cannot create sessions', fun
     $this->postJson('/uploads', ['filename' => 'x.zip', 'size' => 10])->assertForbidden();
 });
 
-test('complete refuses a file whose real assembled size exceeds the limit, even when a tiny size was declared', function () {
+test('complete refuses a file whose real assembled size exceeds the limit', function () {
     $this->actingAs($this->admin);
 
-    // A 1 MB cap. The session is declared as a single byte, so it sails
-    // through store()'s check against the client-supplied size.
-    app(Settings::class)->set(Setting::MaxFileSizeMb, 1);
-    $sessionId = createSession(1, 'sneaky.zip');
+    // Declared honestly and staged honestly, under a 2 MB cap.
+    app(Settings::class)->set(Setting::MaxFileSizeMb, 2);
+    $sessionId = createSession(1600 * 1024, 'sneaky.zip');
 
-    // But the real parts stream ~1.5 MB.
     $chunk = str_repeat('a', 800 * 1024);
     putPart($sessionId, 1, $chunk)->assertOk();
     putPart($sessionId, 2, $chunk)->assertOk();
+
+    // The cap moves while the transfer is running. Declaring a size is not
+    // the same as being allowed to store it, which is why complete()
+    // re-asks rather than trusting what store() decided — the parts have
+    // been on disk for as long as the upload took.
+    app(Settings::class)->set(Setting::MaxFileSizeMb, 1);
 
     $this->postJson("/uploads/{$sessionId}/complete")->assertStatus(422);
 
@@ -286,7 +290,10 @@ test('a part within the size limit is still accepted', function () {
 
     $session = $this->actingAs($user)->postJson('/uploads', [
         'filename' => 'ok.pdf',
-        'size' => 1024,
+        // Declared truthfully: a session only holds what it said it would,
+        // so the part below has to fit inside this number as well as
+        // inside the per-part cap.
+        'size' => 512 * 1024,
         'type' => 'application/pdf',
     ])->assertOk()->json('uploadId');
 
@@ -474,4 +481,107 @@ test('a second complete is refused while one is already finalising the session',
     $lock->release();
     $this->postJson("/uploads/{$sessionId}/complete")->assertOk();
     expect(File::query()->count())->toBe(1);
+});
+
+/**
+ * GHSA-6jh6-gvj5-pv8v. The per-part cap bounded one request and nothing
+ * else: a session could declare one byte, then stage 10,000 parts of twice
+ * the part size, and none of it ever became a File row, so none of it
+ * counted against a quota or showed up anywhere. Sessions were unlimited
+ * too, and the sweeper only came round daily.
+ */
+test('a session cannot stage more bytes than it declared', function () {
+    $user = User::factory()->create();
+    grantChunkedUploadPermission($user);
+    $this->actingAs($user);
+
+    $sessionId = createSession(1, 'one-byte.zip');
+
+    // The reporter's shape exactly: one byte declared, a part far under the
+    // per-part cap, and nothing to stop it before this fix.
+    putPart($sessionId, 1, str_repeat('a', 2 * 1024 * 1024))->assertStatus(413);
+
+    expect(Illuminate\Support\Facades\File::exists(partsRoot().'/'.$sessionId.'/1.part'))->toBeFalse()
+        ->and(UploadSession::query()->findOrFail($sessionId)->staged_bytes)->toBe(0);
+
+    // The one byte it did declare is still welcome, and the session is
+    // still usable: a refusal must not poison the upload.
+    putPart($sessionId, 1, 'a')->assertOk();
+    expect(UploadSession::query()->findOrFail($sessionId)->staged_bytes)->toBe(1);
+});
+
+test('staged bytes are released when a part is replaced, refused or falls short', function () {
+    $this->actingAs($this->admin);
+
+    $sessionId = createSession(10, 'refunds.zip');
+    $session = fn (): UploadSession => UploadSession::query()->findOrFail($sessionId);
+
+    putPart($sessionId, 1, 'aaaa')->assertOk();
+    expect($session()->staged_bytes)->toBe(4);
+
+    // Re-sending a part replaces it rather than adding to it — an ordinary
+    // resume must not spend the room twice.
+    putPart($sessionId, 1, 'bb')->assertOk();
+    expect($session()->staged_bytes)->toBe(2);
+
+    // A part that does not fit leaves nothing behind, including in the
+    // running total: otherwise a client's own retries would exhaust a
+    // session that has plenty of room left.
+    putPart($sessionId, 2, str_repeat('c', 64))->assertStatus(413);
+    expect($session()->staged_bytes)->toBe(2);
+
+    putPart($sessionId, 2, str_repeat('c', 8))->assertOk();
+    expect($session()->staged_bytes)->toBe(10);
+});
+
+test('open sessions count against a client quota, so it cannot be spent twice', function () {
+    $client = User::factory()->client()->create(['storage_quota_mb' => 1]);
+    grantChunkedUploadPermission($client);
+    $this->actingAs($client);
+
+    // The whole megabyte, declared but not yet sent. Before this fix the
+    // quota only ever looked at finished files, so a second session was
+    // told there was a full megabyte free — and so was a third.
+    createSession(1024 * 1024, 'first.zip');
+
+    $this->postJson('/uploads', [
+        'filename' => 'second.zip',
+        'size' => 1024 * 1024,
+        'type' => 'application/octet-stream',
+    ])->assertStatus(422)->assertJsonValidationErrors('size');
+
+    expect(UploadSession::query()->where('user_id', $client->id)->count())->toBe(1);
+});
+
+test('an abandoned session gives its room back once it is swept', function () {
+    $client = User::factory()->client()->create(['storage_quota_mb' => 1]);
+    grantChunkedUploadPermission($client);
+    $this->actingAs($client);
+
+    $abandoned = createSession(1024 * 1024, 'abandoned.zip');
+
+    UploadSession::query()->whereKey($abandoned)->update(['created_at' => now()->subDays(2)]);
+    $this->artisan('projectsend:purge-stale-uploads')->assertSuccessful();
+
+    // Held room is only held while the session is: the quota is a ceiling,
+    // not a debt somebody is stuck with because a transfer died.
+    createSession(1024 * 1024, 'second-attempt.zip');
+});
+
+test('one account cannot hold unlimited sessions open', function () {
+    config(['projectsend.uploads.max_open_sessions' => 3]);
+
+    $this->actingAs($this->admin);
+
+    createSession(1024, 'a.zip');
+    createSession(1024, 'b.zip');
+    createSession(1024, 'c.zip');
+
+    // Staff have no quota to spend, so the session count is the only thing
+    // bounding what they can hold on the temporary volume.
+    $this->postJson('/uploads', [
+        'filename' => 'd.zip',
+        'size' => 1024,
+        'type' => 'application/octet-stream',
+    ])->assertStatus(422)->assertJsonValidationErrors('filename');
 });

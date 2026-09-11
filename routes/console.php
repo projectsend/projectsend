@@ -9,7 +9,11 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('projectsend:purge-erasures')->daily();
-Schedule::command('projectsend:purge-stale-uploads')->daily();
+// Hourly, not daily: this one frees disk that an account is holding
+// against its own upload limits, so the gap between a session going stale
+// and the sweep noticing is a gap where somebody cannot upload. Daily made
+// that gap up to two days wide.
+Schedule::command('projectsend:purge-stale-uploads')->hourly();
 Schedule::command('projectsend:purge-zip-downloads')->daily();
 Schedule::command('projectsend:check-for-updates')->daily();
 Schedule::command('projectsend:fetch-news')->daily();

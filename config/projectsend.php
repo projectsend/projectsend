@@ -98,6 +98,16 @@ return [
 
     'uploads' => [
         'parts_path' => env('UPLOAD_PARTS_PATH'),
+
+        // How many resumable uploads one account may have in flight.
+        //
+        // A session holds room on the temporary volume from the moment it
+        // is created until it completes, is cancelled, or is swept — and
+        // for an account with no storage quota to spend, this number is
+        // the only thing bounding how much room that is. The browser
+        // uploads a few files at once, so this is far above anything a
+        // person does by hand.
+        'max_open_sessions' => 25,
     ],
 
     /*

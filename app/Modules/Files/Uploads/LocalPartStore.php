@@ -119,6 +119,25 @@ class LocalPartStore
     }
 
     /**
+     * What one part number currently weighs on disk, 0 if it has never
+     * arrived. Read before and after a part is received, so the session's
+     * reservation can be settled against what is really there rather than
+     * against what the request claimed it would send.
+     */
+    public function partSize(UploadSession $session, int $partNumber): int
+    {
+        $path = $this->partPath($session, $partNumber);
+
+        if (! is_file($path)) {
+            return 0;
+        }
+
+        clearstatcache(true, $path);
+
+        return (int) (filesize($path) ?: 0);
+    }
+
+    /**
      * @return list<array{PartNumber: int, Size: int, ETag: string}>
      */
     public function listParts(UploadSession $session): array

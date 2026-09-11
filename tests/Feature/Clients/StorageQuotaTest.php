@@ -165,20 +165,25 @@ test('a chunked session whose declared size already exceeds quota is rejected at
     expect(UploadSession::query()->count())->toBe(0);
 });
 
-test('a client who under-declares size then exceeds quota once assembled is rejected at completion', function () {
+test('a client whose quota fills while the transfer is running is rejected at completion', function () {
     $client = User::factory()->client()->create(['storage_quota_mb' => 1]);
     grantUploadPermission($client);
-    makeClientFile($client, 1000 * 1024); // ~1000 KB already used, out of a 1 MB quota
     $this->actingAs($client);
 
-    // Declared size (11 bytes) passes the session-creation check, but the
-    // real assembled bytes (~50 KB) push the client over quota.
-    $sessionId = createChunkedSession(11, 'lied-about-size.txt');
+    // Declared honestly, and there is room for it when the session opens.
+    $sessionId = createChunkedSession(50 * 1024, 'honest.txt');
     putChunkedPart($sessionId, 1, str_repeat('a', 50 * 1024));
+
+    // The rest of the quota goes while the bytes are in flight — another
+    // device, a staff member uploading on their behalf, a second transfer
+    // finishing first. A big file takes a long time and the check at
+    // session creation is only true of the moment it was made, which is
+    // why completion asks again rather than trusting it.
+    makeClientFile($client, 1000 * 1024);
 
     $this->postJson("/uploads/{$sessionId}/complete")->assertJsonValidationErrors('size');
 
-    expect(File::query()->where('uploaded_by', $client->id)->count())->toBe(1) // only the pre-existing fixture file
+    expect(File::query()->where('uploaded_by', $client->id)->count())->toBe(1) // only the file that filled the quota
         ->and(UploadSession::query()->find($sessionId))->toBeNull();
 
     $paths = Storage::disk('files')->allFiles();
@@ -292,11 +297,12 @@ test('the same is true when the real byte count is what pushes them over', funct
     app(Settings::class)->set(Setting::DefaultClientStorageQuotaMb, 1);
     $client = User::factory()->client()->create(['storage_quota_mb' => 0]);
     grantUploadPermission($client);
-    makeClientFile($client, 1000 * 1024);
     $this->actingAs($client);
 
-    $sessionId = createChunkedSession(11, 'lied-about-size.txt');
+    $sessionId = createChunkedSession(50 * 1024, 'honest.txt');
     putChunkedPart($sessionId, 1, str_repeat('a', 50 * 1024));
+
+    makeClientFile($client, 1000 * 1024);
 
     $response = $this->postJson("/uploads/{$sessionId}/complete")->assertJsonValidationErrors('size');
 

@@ -2028,5 +2028,9 @@
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Herstellinks zijn een uur geldig. Vraag een nieuwe aan, die komt zo binnen.",
     "Send me a new link": "Stuur me een nieuwe link",
     "This link has expired": "Deze link is verlopen",
-    "This password reset link is no longer valid. Ask for a new one and try again.": "Deze herstellink is niet meer geldig. Vraag een nieuwe aan en probeer het opnieuw."
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Deze herstellink is niet meer geldig. Vraag een nieuwe aan en probeer het opnieuw.",
+    "Authenticate as this server's IAM role": "Verifiëren met de IAM-rol van deze server",
+    "For installations running on AWS with a role already attached — an ECS task role, an EC2 instance profile, EKS/IRSA. ProjectSend asks the AWS SDK for temporary credentials instead of storing an access key. Leave this off for MinIO, Backblaze, Wasabi and anything else that needs a key and secret.": "Voor installaties op AWS waaraan al een rol is gekoppeld — een ECS-taakrol, een EC2-instantieprofiel, EKS/IRSA. ProjectSend vraagt tijdelijke inloggegevens op bij de AWS SDK in plaats van een toegangssleutel op te slaan. Laat dit uit staan voor MinIO, Backblaze, Wasabi en al het andere dat een toegangssleutel en geheime sleutel nodig heeft.",
+    "Saving will delete the access key and secret currently stored here.": "Bij het opslaan worden de hier opgeslagen toegangssleutel en geheime sleutel verwijderd.",
+    "Too many uploads are already in progress. Finish or cancel one and try again.": "Er lopen al te veel uploads. Rond er een af of annuleer er een en probeer het opnieuw."
 }

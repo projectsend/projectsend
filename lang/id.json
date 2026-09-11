@@ -2028,5 +2028,9 @@
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Tautan atur ulang berlaku satu jam. Minta yang baru dan akan tiba sebentar lagi.",
     "Send me a new link": "Kirimi saya tautan baru",
     "This link has expired": "Tautan ini sudah kedaluwarsa",
-    "This password reset link is no longer valid. Ask for a new one and try again.": "Tautan atur ulang ini sudah tidak berlaku. Minta yang baru dan coba lagi."
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Tautan atur ulang ini sudah tidak berlaku. Minta yang baru dan coba lagi.",
+    "Authenticate as this server's IAM role": "Autentikasi sebagai peran IAM server ini",
+    "For installations running on AWS with a role already attached — an ECS task role, an EC2 instance profile, EKS/IRSA. ProjectSend asks the AWS SDK for temporary credentials instead of storing an access key. Leave this off for MinIO, Backblaze, Wasabi and anything else that needs a key and secret.": "Untuk instalasi yang berjalan di AWS dan sudah memiliki peran terpasang — peran tugas ECS, profil instance EC2, EKS/IRSA. ProjectSend meminta kredensial sementara kepada AWS SDK alih-alih menyimpan kunci akses. Biarkan nonaktif untuk MinIO, Backblaze, Wasabi, dan layanan lain yang memerlukan kunci akses dan kunci rahasia.",
+    "Saving will delete the access key and secret currently stored here.": "Menyimpan akan menghapus kunci akses dan kunci rahasia yang tersimpan di sini.",
+    "Too many uploads are already in progress. Finish or cancel one and try again.": "Sudah terlalu banyak unggahan yang sedang berjalan. Selesaikan atau batalkan salah satunya, lalu coba lagi."
 }

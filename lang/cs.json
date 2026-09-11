@@ -2028,5 +2028,9 @@
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Odkazy pro obnovení platí jednu hodinu. Požádejte o nový a za chvíli dorazí.",
     "Send me a new link": "Pošlete mi nový odkaz",
     "This link has expired": "Platnost tohoto odkazu vypršela",
-    "This password reset link is no longer valid. Ask for a new one and try again.": "Tento odkaz pro obnovení už neplatí. Požádejte o nový a zkuste to znovu."
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Tento odkaz pro obnovení už neplatí. Požádejte o nový a zkuste to znovu.",
+    "Authenticate as this server's IAM role": "Ověřovat se rolí IAM tohoto serveru",
+    "For installations running on AWS with a role already attached — an ECS task role, an EC2 instance profile, EKS/IRSA. ProjectSend asks the AWS SDK for temporary credentials instead of storing an access key. Leave this off for MinIO, Backblaze, Wasabi and anything else that needs a key and secret.": "Pro instalace běžící na AWS, ke kterým je již přiřazena role – role úlohy ECS, profil instance EC2, EKS/IRSA. ProjectSend si vyžádá dočasné přihlašovací údaje od AWS SDK místo toho, aby ukládal přístupový klíč. Pro MinIO, Backblaze, Wasabi a cokoli dalšího, co vyžaduje klíč a tajný klíč, nechte vypnuté.",
+    "Saving will delete the access key and secret currently stored here.": "Uložením se smaže přístupový klíč i tajný klíč, které jsou zde nyní uložené.",
+    "Too many uploads are already in progress. Finish or cancel one and try again.": "Už probíhá příliš mnoho nahrávání. Dokončete nebo zrušte jedno z nich a zkuste to znovu."
 }

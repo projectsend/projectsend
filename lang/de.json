@@ -2028,5 +2028,9 @@
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Zurücksetzungslinks gelten eine Stunde. Fordern Sie einen neuen an, er trifft gleich ein.",
     "Send me a new link": "Neuen Link senden",
     "This link has expired": "Dieser Link ist abgelaufen",
-    "This password reset link is no longer valid. Ask for a new one and try again.": "Dieser Link zum Zurücksetzen ist nicht mehr gültig. Fordern Sie einen neuen an und versuchen Sie es erneut."
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Dieser Link zum Zurücksetzen ist nicht mehr gültig. Fordern Sie einen neuen an und versuchen Sie es erneut.",
+    "Authenticate as this server's IAM role": "Mit der IAM-Rolle dieses Servers authentifizieren",
+    "For installations running on AWS with a role already attached — an ECS task role, an EC2 instance profile, EKS/IRSA. ProjectSend asks the AWS SDK for temporary credentials instead of storing an access key. Leave this off for MinIO, Backblaze, Wasabi and anything else that needs a key and secret.": "Für Installationen auf AWS, denen bereits eine Rolle zugewiesen ist – eine ECS-Task-Rolle, ein EC2-Instanzprofil, EKS/IRSA. ProjectSend fordert temporäre Anmeldedaten beim AWS SDK an, statt einen Zugriffsschlüssel zu speichern. Lassen Sie dies für MinIO, Backblaze, Wasabi und alles andere, was Schlüssel und geheimen Schlüssel benötigt, ausgeschaltet.",
+    "Saving will delete the access key and secret currently stored here.": "Beim Speichern werden der hier hinterlegte Zugriffsschlüssel und der geheime Schlüssel gelöscht.",
+    "Too many uploads are already in progress. Finish or cancel one and try again.": "Es laufen bereits zu viele Uploads. Beenden oder brechen Sie einen ab und versuchen Sie es erneut."
 }

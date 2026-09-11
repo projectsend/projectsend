@@ -2028,5 +2028,9 @@
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Ссылки для сброса действуют один час. Запросите новую — она придёт через мгновение.",
     "Send me a new link": "Прислать новую ссылку",
     "This link has expired": "Срок действия ссылки истёк",
-    "This password reset link is no longer valid. Ask for a new one and try again.": "Эта ссылка для сброса больше не действует. Запросите новую и попробуйте снова."
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Эта ссылка для сброса больше не действует. Запросите новую и попробуйте снова.",
+    "Authenticate as this server's IAM role": "Аутентификация через роль IAM этого сервера",
+    "For installations running on AWS with a role already attached — an ECS task role, an EC2 instance profile, EKS/IRSA. ProjectSend asks the AWS SDK for temporary credentials instead of storing an access key. Leave this off for MinIO, Backblaze, Wasabi and anything else that needs a key and secret.": "Для установок на AWS, которым уже назначена роль, — роль задачи ECS, профиль экземпляра EC2, EKS/IRSA. ProjectSend запрашивает временные учётные данные у AWS SDK вместо того, чтобы хранить ключ доступа. Оставьте выключенным для MinIO, Backblaze, Wasabi и всего остального, чему нужны ключ доступа и секретный ключ.",
+    "Saving will delete the access key and secret currently stored here.": "При сохранении хранящиеся здесь ключ доступа и секретный ключ будут удалены.",
+    "Too many uploads are already in progress. Finish or cancel one and try again.": "Уже выполняется слишком много загрузок. Завершите или отмените одну из них и попробуйте снова."
 }

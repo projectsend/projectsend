@@ -2028,5 +2028,9 @@
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Sıfırlama bağlantıları bir saat geçerlidir. Yenisini isteyin, birazdan ulaşır.",
     "Send me a new link": "Bana yeni bir bağlantı gönder",
     "This link has expired": "Bu bağlantının süresi doldu",
-    "This password reset link is no longer valid. Ask for a new one and try again.": "Bu sıfırlama bağlantısı artık geçerli değil. Yenisini isteyip tekrar deneyin."
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Bu sıfırlama bağlantısı artık geçerli değil. Yenisini isteyip tekrar deneyin.",
+    "Authenticate as this server's IAM role": "Bu sunucunun IAM rolüyle kimlik doğrula",
+    "For installations running on AWS with a role already attached — an ECS task role, an EC2 instance profile, EKS/IRSA. ProjectSend asks the AWS SDK for temporary credentials instead of storing an access key. Leave this off for MinIO, Backblaze, Wasabi and anything else that needs a key and secret.": "AWS üzerinde çalışan ve halihazırda bir rol atanmış kurulumlar için — bir ECS görev rolü, bir EC2 örnek profili, EKS/IRSA. ProjectSend, erişim anahtarı saklamak yerine AWS SDK'dan geçici kimlik bilgileri ister. MinIO, Backblaze, Wasabi ve erişim anahtarı ile gizli anahtar gerektiren diğer her şey için kapalı bırakın.",
+    "Saving will delete the access key and secret currently stored here.": "Kaydetmek, burada saklanan erişim anahtarını ve gizli anahtarı silecek.",
+    "Too many uploads are already in progress. Finish or cancel one and try again.": "Zaten çok fazla yükleme sürüyor. Birini tamamlayın veya iptal edin, sonra tekrar deneyin."
 }

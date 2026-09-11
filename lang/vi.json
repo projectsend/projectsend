@@ -2028,5 +2028,9 @@
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Liên kết đặt lại có hiệu lực một giờ. Hãy yêu cầu liên kết mới, nó sẽ đến ngay.",
     "Send me a new link": "Gửi cho tôi liên kết mới",
     "This link has expired": "Liên kết này đã hết hạn",
-    "This password reset link is no longer valid. Ask for a new one and try again.": "Liên kết đặt lại này không còn hiệu lực. Hãy yêu cầu liên kết mới và thử lại."
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Liên kết đặt lại này không còn hiệu lực. Hãy yêu cầu liên kết mới và thử lại.",
+    "Authenticate as this server's IAM role": "Xác thực bằng vai trò IAM của máy chủ này",
+    "For installations running on AWS with a role already attached — an ECS task role, an EC2 instance profile, EKS/IRSA. ProjectSend asks the AWS SDK for temporary credentials instead of storing an access key. Leave this off for MinIO, Backblaze, Wasabi and anything else that needs a key and secret.": "Dành cho các bản cài đặt chạy trên AWS đã được gắn sẵn một vai trò — vai trò tác vụ ECS, hồ sơ phiên bản EC2, EKS/IRSA. ProjectSend yêu cầu AWS SDK cấp thông tin đăng nhập tạm thời thay vì lưu khóa truy cập. Hãy để tắt với MinIO, Backblaze, Wasabi và bất kỳ dịch vụ nào khác cần khóa truy cập và khóa bí mật.",
+    "Saving will delete the access key and secret currently stored here.": "Việc lưu sẽ xóa khóa truy cập và khóa bí mật đang được lưu ở đây.",
+    "Too many uploads are already in progress. Finish or cancel one and try again.": "Đã có quá nhiều lần tải lên đang diễn ra. Hãy hoàn tất hoặc hủy một lần rồi thử lại."
 }

@@ -2028,5 +2028,9 @@
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Viungo vya kuweka upya hudumu saa moja. Omba kipya na kitafika punde.",
     "Send me a new link": "Nitumie kiungo kipya",
     "This link has expired": "Kiungo hiki kimeisha muda",
-    "This password reset link is no longer valid. Ask for a new one and try again.": "Kiungo hiki cha kuweka upya hakifanyi kazi tena. Omba kipya kisha ujaribu tena."
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Kiungo hiki cha kuweka upya hakifanyi kazi tena. Omba kipya kisha ujaribu tena.",
+    "Authenticate as this server's IAM role": "Thibitisha kwa jukumu la IAM la seva hii",
+    "For installations running on AWS with a role already attached — an ECS task role, an EC2 instance profile, EKS/IRSA. ProjectSend asks the AWS SDK for temporary credentials instead of storing an access key. Leave this off for MinIO, Backblaze, Wasabi and anything else that needs a key and secret.": "Kwa usakinishaji unaoendeshwa kwenye AWS ambao tayari una jukumu lililoambatishwa — jukumu la kazi la ECS, wasifu wa mfano wa EC2, EKS/IRSA. ProjectSend huomba AWS SDK kitambulisho cha muda badala ya kuhifadhi ufunguo wa ufikiaji. Iache imezimwa kwa MinIO, Backblaze, Wasabi na kitu kingine chochote kinachohitaji ufunguo wa ufikiaji na ufunguo wa siri.",
+    "Saving will delete the access key and secret currently stored here.": "Kuhifadhi kutafuta ufunguo wa ufikiaji na ufunguo wa siri vilivyohifadhiwa hapa.",
+    "Too many uploads are already in progress. Finish or cancel one and try again.": "Tayari kuna upakiaji mwingi mno unaoendelea. Maliza au ghairi mmoja kisha ujaribu tena."
 }

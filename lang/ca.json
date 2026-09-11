@@ -2028,5 +2028,9 @@
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "Els enllaços de restabliment duren una hora. Demana'n un de nou i arribarà de seguida.",
     "Send me a new link": "Envia'm un enllaç nou",
     "This link has expired": "Aquest enllaç ha caducat",
-    "This password reset link is no longer valid. Ask for a new one and try again.": "Aquest enllaç de restabliment ja no és vàlid. Demana'n un de nou i torna-ho a provar."
+    "This password reset link is no longer valid. Ask for a new one and try again.": "Aquest enllaç de restabliment ja no és vàlid. Demana'n un de nou i torna-ho a provar.",
+    "Authenticate as this server's IAM role": "Autentica't amb el rol d'IAM d'aquest servidor",
+    "For installations running on AWS with a role already attached — an ECS task role, an EC2 instance profile, EKS/IRSA. ProjectSend asks the AWS SDK for temporary credentials instead of storing an access key. Leave this off for MinIO, Backblaze, Wasabi and anything else that needs a key and secret.": "Per a instal·lacions a AWS que ja tinguin un rol assignat: un rol de tasca d'ECS, un perfil d'instància d'EC2, EKS/IRSA. ProjectSend demana credencials temporals al SDK d'AWS en lloc de desar una clau d'accés. Deixa-ho desactivat per a MinIO, Backblaze, Wasabi i qualsevol altre servei que necessiti una clau i un secret.",
+    "Saving will delete the access key and secret currently stored here.": "En desar s'esborraran la clau d'accés i la clau secreta que hi ha desades aquí.",
+    "Too many uploads are already in progress. Finish or cancel one and try again.": "Ja hi ha massa pujades en curs. Acaba'n o cancel·la'n una i torna-ho a provar."
 }

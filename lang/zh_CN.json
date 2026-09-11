@@ -2028,5 +2028,9 @@
     "Reset links last one hour. Ask for a new one and it will arrive in a moment.": "重置链接有效期为一小时。申请一个新的，稍后即可收到。",
     "Send me a new link": "给我发送新链接",
     "This link has expired": "此链接已过期",
-    "This password reset link is no longer valid. Ask for a new one and try again.": "此重置链接已失效。请申请一个新的链接后重试。"
+    "This password reset link is no longer valid. Ask for a new one and try again.": "此重置链接已失效。请申请一个新的链接后重试。",
+    "Authenticate as this server's IAM role": "使用此服务器的 IAM 角色进行认证",
+    "For installations running on AWS with a role already attached — an ECS task role, an EC2 instance profile, EKS/IRSA. ProjectSend asks the AWS SDK for temporary credentials instead of storing an access key. Leave this off for MinIO, Backblaze, Wasabi and anything else that needs a key and secret.": "适用于已附加角色的 AWS 上的安装 —— ECS 任务角色、EC2 实例配置文件、EKS/IRSA。ProjectSend 会向 AWS SDK 申请临时凭证，而不是保存访问密钥。对于 MinIO、Backblaze、Wasabi 以及其他需要访问密钥和私有密钥的服务，请保持关闭。",
+    "Saving will delete the access key and secret currently stored here.": "保存后会删除此处当前保存的访问密钥和私有密钥。",
+    "Too many uploads are already in progress. Finish or cancel one and try again.": "正在进行的上传太多了。请先完成或取消一个，然后重试。"
 }

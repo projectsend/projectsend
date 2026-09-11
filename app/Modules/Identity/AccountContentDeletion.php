@@ -10,6 +10,7 @@ use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\DeletedAccountContent;
 use App\Modules\Identity\Models\Role;
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -61,12 +62,8 @@ class AccountContentDeletion
      */
     public function candidates(?User $viewer, ?int $excludeId = null): array
     {
-        return User::query()
+        return $this->reachableTargets($viewer)
             ->when($excludeId, fn (Builder $query, int $id) => $query->whereKeyNot($id))
-            ->when($viewer, fn (Builder $query, User $for) => $query->where(fn (Builder $reachable) => $reachable
-                ->where('type', UserType::Staff)
-                ->orWhereIn('id', $this->scope->clients($for)->select('users.id'))))
-            ->where('active', true)
             ->with('role')
             ->orderBy('name')
             ->get()
@@ -99,15 +96,60 @@ class AccountContentDeletion
             return [];
         }
 
+        $viewer = $request->user();
+
         return $request->validate([
             'content_action' => ['required', Rule::in(['cascade_delete', 'reassign'])],
             'reassign_to_id' => [
                 'required_if:content_action,reassign',
                 'integer',
-                Rule::exists('users', 'id')->where('active', true),
                 Rule::notIn([$target->id]),
+                // The same question the picker asks, asked again of what
+                // came back from it. It used to be "exists, and is active",
+                // which is not the boundary the picker documents two
+                // methods up: a client-scoped staff member was shown their
+                // own roster and could name anybody, so deleting a roster
+                // client could hand that client's files and folders to a
+                // client on somebody else's roster — who then reads, edits
+                // and deletes them under the own-upload rules
+                // (GHSA-w29w-pj29-x7ww).
+                //
+                // One predicate for both, rather than a matching pair: a
+                // picker that promises a boundary the write does not keep
+                // is exactly what this was.
+                function (string $attribute, mixed $value, Closure $fail) use ($viewer): void {
+                    if (! $this->reachableTargets($viewer)->whereKey($value)->exists()) {
+                        // Deliberately the message an id that does not
+                        // exist at all would get. "Not yours" and "not
+                        // there" have to read the same, or refusing is how
+                        // a scoped staff member enumerates the accounts
+                        // outside their roster.
+                        $fail('validation.exists')->translate();
+                    }
+                },
             ],
         ]);
+    }
+
+    /**
+     * Every active account $viewer may hand content to: staff, who are
+     * narrowed nowhere in the application, plus the clients
+     * StaffLibraryScope shows them. An unscoped viewer gets everybody,
+     * because clients() returns everybody for them.
+     *
+     * $viewer is null only where the question is about the installation
+     * rather than about a screen — the erasure default in privacy
+     * settings, which is stored once for everybody.
+     *
+     * @return Builder<User>
+     */
+    private function reachableTargets(?User $viewer): Builder
+    {
+        return User::query()
+            ->when($viewer, fn (Builder $query, User $for) => $query->where(fn (Builder $reachable) => $reachable
+                ->where('type', UserType::Staff)
+                ->orWhereIn('id', $this->scope->clients($for)->select('users.id'))))
+            ->where('active', true);
     }
 
     /**

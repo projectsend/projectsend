@@ -38,6 +38,19 @@ installation from starting.
 
 **Fixed**
 
+- **Deleting a client can no longer hand their files to a client you do not manage.** When you
+  delete an account that owns files, ProjectSend asks who should inherit them, and the list it
+  offers a staff member whose access is limited to certain clients shows only those clients. The
+  list was the only thing enforcing that. A request naming any other active account was accepted, so
+  one client's files and folders could end up owned by a client on somebody else's list — who could
+  then read, change and delete them, because people own what they upload. The list and the rule
+  behind it are now the same thing.
+
+  *Who this affected:* installations using staff roles that are limited to certain clients, where
+  such a role can also delete clients. Administrators whose access is not limited are unaffected and
+  can still reassign to anybody. Nothing to do on upgrade.
+
+  Reported by [@skeletonsec](https://github.com/skeletonsec).
 - **Moving a file into a public folder now needs the same permission as uploading one there.** A
   file in a public folder is public — that is what the folder means, and it applies to anything
   inside it, at any depth. Uploading into one was already refused to staff who are not allowed to

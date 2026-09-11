@@ -36,6 +36,16 @@ installation from starting.
   with their password and connect Microsoft from their settings instead. People already signed in
   with Microsoft are not affected.
 
+**Added**
+
+- **Your logo now appears on the sign-in screen.** If you have uploaded one under Branding, it
+  replaces the ProjectSend logo on the page people log in through — and on registration, the
+  password-reset pages, the two-factor prompt and the page a share link opens. Those are usually the
+  first pages of yours anyone sees, and often the only ones a client sees at all. Installations that
+  have not uploaded a logo look exactly as they did. Requested by
+  [@Zodiac1978](https://github.com/Zodiac1978) in
+  [#1777](https://github.com/projectsend/projectsend/issues/1777).
+
 **Fixed**
 
 - **Deleting a client can no longer hand their files to a client you do not manage.** When you

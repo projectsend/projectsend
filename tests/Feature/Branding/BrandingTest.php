@@ -178,3 +178,42 @@ test('core has no route that can change it', function () {
         ->contains(fn (RouteInstance $route): bool => str_contains($route->uri(), 'branding/attribution')))
         ->toBeFalse();
 });
+
+// The sign-in screens, requested in #1777. One layout serves all of them —
+// login, registration, the reset pair, the two-factor challenge, first-run
+// setup and the page a share link opens — so what is asserted here is that
+// the prop reaches a page nobody has signed in to see, which is the part
+// the layout could not do for itself.
+test('a guest at the sign-in screen is given the branding logo', function () {
+    $this->post(route('branding.store'), ['logo' => UploadedFile::fake()->image('logo.png')]);
+
+    $logoUrl = BrandingSetting::query()->sole()->logoUrl();
+
+    auth()->logout();
+
+    $this->get(route('login'))->assertInertia(
+        fn (AssertableInertia $page) => $page->component('auth/login')->where('branding.logo_url', $logoUrl),
+    );
+});
+
+test('the sign-in screen falls back to the product logo when nothing was uploaded', function () {
+    auth()->logout();
+
+    $this->get(route('login'))->assertInertia(
+        fn (AssertableInertia $page) => $page->component('auth/login')->where('branding.logo_url', null),
+    );
+});
+
+test('a withheld capability takes the logo off the sign-in screen too', function () {
+    // The screen that would remove it 404s without the capability, so a
+    // login page still wearing somebody's logo would have no way back.
+    $this->post(route('branding.store'), ['logo' => UploadedFile::fake()->image('logo.png')]);
+
+    config(['projectsend.capabilities_disabled' => 'branding.customize']);
+    forgetRequestState();
+    auth()->logout();
+
+    $this->get(route('login'))->assertInertia(
+        fn (AssertableInertia $page) => $page->where('branding.logo_url', null),
+    );
+});

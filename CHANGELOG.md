@@ -10,10 +10,7 @@ Anything under **⚠️ Important — do these yourself** is something you have 
 we did. It sits at the top of a release for that reason. Older entries call the same section
 **Upgrade notes**.
 
-## Unreleased
-
-This section collects changes as they land; the release process turns it into a numbered entry
-when a version is cut.
+## 2.4.1 — 11 September 2026
 
 ### ⚠️ Important — do these yourself
 
@@ -23,183 +20,51 @@ installation from starting.
 
 - **If you set `PROJECTSEND_CAPTCHA_DISABLED`, check what you set it to.** Only `true` or `1`
   switches the CAPTCHA off now. Anything else — including `no`, `off`, `yes` and a misspelling —
-  used to be read as "yes, disabled" and is now read as "leave it on". So a value that is not
-  `true` or `1` means the CAPTCHA comes back on this upgrade. If you meant it off, write `true`.
+  used to be read as "yes, disabled" and is now read as "leave it on". If you meant it off, write
+  `true`.
 - **If a staff role uploads into public folders, give it "Upload to public folders".** That
   permission was not being asked of staff, and now is. Roles holding "Upload public files" are
-  unaffected — that one still opens it. Everything outside public folders is unaffected: an ordinary
-  upload still needs nothing new.
+  unaffected, and ordinary uploads need nothing new.
 - **If you use Microsoft sign-in, add the `xms_edov` optional claim to your app registration.** In
   the Entra portal: your app registration → Token configuration → Add optional claim → ID →
   `xms_edov`. Until you do, Microsoft sign-in keeps working and keeps creating new accounts, but it
-  will no longer attach itself to an account that already exists — the person is told to sign in
-  with their password and connect Microsoft from their settings instead. People already signed in
-  with Microsoft are not affected.
+  will no longer attach itself to an account that already exists.
 
 **Added**
 
-- **Your logo now appears on the sign-in screen.** If you have uploaded one under Branding, it
-  replaces the ProjectSend logo on the page people log in through — and on registration, the
-  password-reset pages, the two-factor prompt and the page a share link opens. Those are usually the
-  first pages of yours anyone sees, and often the only ones a client sees at all. Installations that
-  have not uploaded a logo look exactly as they did. Requested by
+- **Your logo now appears on the sign-in screen.** Requested by
   [@Zodiac1978](https://github.com/Zodiac1978) in
   [#1777](https://github.com/projectsend/projectsend/issues/1777).
+- **An installation on AWS can authenticate as its own IAM role instead of storing an access key.**
+- **Clients can now see how often their own files were downloaded, and when.**
 
 **Fixed**
 
-- **Deleting a client can no longer hand their files to a client you do not manage.** When you
-  delete an account that owns files, ProjectSend asks who should inherit them, and the list it
-  offers a staff member whose access is limited to certain clients shows only those clients. The
-  list was the only thing enforcing that. A request naming any other active account was accepted, so
-  one client's files and folders could end up owned by a client on somebody else's list — who could
-  then read, change and delete them, because people own what they upload. The list and the rule
-  behind it are now the same thing.
-
-  *Who this affected:* installations using staff roles that are limited to certain clients, where
-  such a role can also delete clients. Administrators whose access is not limited are unaffected and
-  can still reassign to anybody. Nothing to do on upgrade.
-
-  Reported by [@skeletonsec](https://github.com/skeletonsec).
-- **Moving a file into a public folder now needs the same permission as uploading one there.** A
-  file in a public folder is public — that is what the folder means, and it applies to anything
-  inside it, at any depth. Uploading into one was already refused to staff who are not allowed to
-  publish. Moving something in was not: dragging a file there, bulk-moving a selection there,
-  changing the folder on the edit screen, or dragging a whole folder into a public one all published
-  the content without asking. A member of staff who had been given editing rights and deliberately
-  not been given "Upload public files" could put confidential files on the anonymous public site by
-  choosing where they landed. All four now refuse, and so does the same edit through the API.
-
-  *Who this affected:* installations with public folders and a staff role that can edit files but is
-  not meant to publish. Roles that can publish are unaffected and nothing about moving files into
-  ordinary folders changes. Nothing to do on upgrade, but if you have public folders it is worth a
-  look through them for anything that should not be there.
-
-  Reported by [@skeletonsec](https://github.com/skeletonsec).
-- **An interrupted upload can no longer park unlimited bytes on the server.** A resumable upload
-  says up front how big the file is, and that number is what gets weighed against the maximum file
-  size and the client's storage quota. Only the finished file was held to it. The parts arriving in
-  between were checked one at a time and never added up, so a client could say "this file is one
-  byte", send gigabytes of parts, never finish the upload, and none of it counted against their
-  quota or appeared anywhere — because nothing becomes a file until the upload completes. They could
-  also open as many of these as they liked. A transfer now cannot leave more on the server than it
-  said it was sending, uploads still in progress count against the quota at the size they declared,
-  and there is a cap on how many one account can have running at once.
-
-  *Who this affected:* any installation where people other than administrators can upload, which is
-  the normal setup. The bytes were temporary — they were cleared within a day — but a volume that is
-  full is full, and uploading could be repeated. Nothing to do on upgrade; the limits apply on their
-  own and no ordinary upload comes anywhere near them.
-
-  Two related changes you may notice. A transfer you start and abandon holds its share of your quota
-  until you cancel it or it is cleared, so a cancelled upload frees the room straight away while an
-  abandoned one takes a little longer. And the job that clears abandoned transfers now runs every
-  hour instead of once a day, so that wait is shorter.
-
-  Reported by [@ry2811](https://github.com/ry2811).
+- **A lookalike domain can no longer hand somebody else's account to an OIDC sign-in.** Reported by
+  [@choewonwoo1817](https://github.com/choewonwoo1817).
+- **Changing your own email address now asks for your password.** Reported by
+  [@Noorkhalel](https://github.com/Noorkhalel).
+- **Microsoft sign-in now checks that the person owns the address they presented.** Reported by
+  [@archnexus707](https://github.com/archnexus707).
 - **Two people filling in the first-run setup screen at the same moment can no longer both become
-  administrators.** The screen asked the database whether the installation already had a staff user,
-  and only some time later — after hashing a password, which is deliberately slow — created one. Two
-  requests arriving together both got the answer "no", so both created a System Administrator. The
-  attack that follows is quiet: the operator's own setup succeeds and looks entirely normal, and a
-  stranger who timed their submission to land alongside it walks away with a second, permanent
-  administrator account on the installation. Setup now claims the installation before it writes
-  anything, and a request that arrives second creates nothing at all — not even the site name.
-
-  *Who this affected:* only an installation in the window between being reachable on the network and
-  being set up, which is why this is worth closing rather than a reason to worry about an install
-  that is already running. If yours went up some time ago, the thing to check is simply that
-  **Users** lists only the administrators you expect. The same window existed in the
-  `projectsend:admin --if-none` command that containers use to provision themselves, and is closed
-  the same way. Nothing to do on upgrade.
-
-  Reported by [@ry2811](https://github.com/ry2811).
-- **The password reset screen no longer says whether an email address has an account here.** Asking
-  to reset a password already answers "a link will be sent if the account exists" without confirming
-  either way; the screen the link leads to did confirm it, twice — once by showing a form for an
-  unknown address and an expired notice for a real one, and once by answering "we can't find a user
-  with that email address" instead of "this token is invalid". Both now give the same answer to
-  everybody, and every failure reads the same: ask for a new link.
-- **An expired password reset link now says so before asking for a new password.** The page took a
-  password, took it a second time to confirm, and only then answered "this password reset token is
-  invalid" — a word nobody outside the code knows, at the end of the work rather than the start.
-  Links last an hour and people open them late; the screen now says that, and offers to send another.
-- **Erasing a staff account no longer hands their files to a client.** The account that inherits
-  erased content is one setting for the whole installation, and it can name a client — which is
-  right when a client is erased and their files go to another client. Applied to a staff account it
-  meant something else: a staff library is usually everything, and the named client would have
-  inherited all of it, in a scheduled job nobody was watching. A staff account's content now only
-  goes to staff, and falls back to deleting rather than to disclosing.
-- **Uploading into a public folder now needs a permission that says so.** Putting a file in a public
-  folder publishes it — a file is public if its own switch is on *or* its folder's is — so the
-  destination was a way round the "Upload public files" permission entirely. A staff member who
-  could upload but was deliberately not allowed to publish could publish anyway, to the anonymous
-  public site, by choosing where the file landed.
-
-  *Who this affected:* installations with public folders and a staff role that can upload but is not
-  meant to publish. The permission for this already existed and already worked this way for clients
-  — "Upload to public folders" — it was simply never asked of staff, so on a staff role that
-  checkbox did nothing. **There is something to do — see the Important section at the top.**
-
-  Reported by [@skeletonsec](https://github.com/skeletonsec).
-- **An OIDC sign-in can no longer be handed somebody else's account through a lookalike domain.**
-  The database was asked which account an address belonged to, and the collation the install
-  instructions give — `utf8mb4_unicode_ci` — treats `administrator@example.com` and
-  `administrator@éxample.com` as the same address. They are not: the second is a different domain
-  that somebody else can register. An attacker with no account here could verify that address at
-  your identity provider, sign in, and be given the first account — with no password and nothing the
-  owner had to do. Sign-in now compares addresses itself: case-insensitively, and exactly about
-  everything else.
-
-  *Who this affected:* installations with the Generic OIDC provider enabled, on MySQL or MariaDB
-  with the documented collation. Two-factor authentication on the target account stopped the
-  takeover completing. Nothing to do on upgrade.
-
-  Reported by [@choewonwoo1817](https://github.com/choewonwoo1817).
-- **Microsoft sign-in now needs one more claim before it will trust an address.** Naming your tenant
-  says which directory vouched for a sign-in; it never said the person owns the address they
-  presented. Inside your own tenant a member or an invited guest could present a colleague's — an
-  administrator's — and have their Microsoft account attached to it. ProjectSend now also requires
-  the `xms_edov` claim, which is Microsoft's own answer to that question.
-
-  *Who this affected:* only installations with Microsoft sign-in enabled. **There is something to do
-  — see the Important section at the top.** Nobody is locked out: accounts already linked to Microsoft keep working
-  untouched, because they are matched on the account itself rather than on the address.
-
-  Reported by [@archnexus707](https://github.com/archnexus707).
-- **Changing your own email address now asks for your password.** It did not, and that address is
-  where a password reset is sent — so anybody who got hold of a signed-in session could point the
-  account at their own inbox, request a reset, and keep the account for good. Deleting your account
-  from the same screen has always asked; this is the same question on the door that leads to the
-  same place.
-
-  *Who this affected:* every installation. Nothing else on the profile screen changed — a name, a
-  timezone or a custom field still saves with no password. An account that signs in through a
-  directory or an identity provider can no longer change its address here at all, and is told why:
-  that address belongs to the directory, and the local password those accounts hold is one nobody
-  knows.
-
-  Reported by [@Noorkhalel](https://github.com/Noorkhalel).
-- **A staff member limited to some clients can no longer see or change other people's groups.** The
-  groups list showed every group on the installation — name, description and member count — whatever
-  the viewer's roster, and a group that nothing had been shared with yet could be renamed, deleted or
-  made public by somebody with no relationship to any of its members. Making one public is the part
-  that mattered: whatever is shared with the group afterwards becomes reachable without signing in.
-
-  *Who this affected:* only installations using a role with client scoping turned on. If every staff
-  role on your installation sees all clients, nothing changed for you. Groups holding at least one of
-  a scoped viewer's own clients stay visible and editable to them, exactly as before; groups holding
-  none of them are now hidden and refused. The API behaves the same way as the screens do.
-
+  administrators.** Reported by [@ry2811](https://github.com/ry2811).
+- **Uploading into a public folder now needs a permission that says so.** Reported by
+  [@skeletonsec](https://github.com/skeletonsec).
+- **Moving a file into a public folder now needs that same permission.** Reported by
+  [@skeletonsec](https://github.com/skeletonsec).
+- **A staff member limited to some clients can no longer see or change other people's groups.**
   Reported by [@Drescargot](https://github.com/Drescargot).
-- **A public gallery no longer renders the same thumbnail several times at once.** The first visit
-  to a page of large images started one full-size decode per thumbnail in parallel, which on a
-  memory-limited server could exhaust it — and because a decode that dies writes nothing, the page
-  stayed broken on reload. One render now happens and the rest wait for it.
-- **`PROJECTSEND_CAPTCHA_DISABLED` no longer reads a "no" as a "yes".** Any value other than `true`
-  or `1` — including `no`, `off`, and a misspelling — used to switch the CAPTCHA off on the login
-  and registration forms. Only an explicit `true` or `1` does now; everything else leaves it on.
-
+- **Deleting a client can no longer hand their files to a client you do not manage.** Reported by
+  [@skeletonsec](https://github.com/skeletonsec).
+- **Erasing a staff account no longer hands their files to a client.**
+- **An interrupted upload can no longer park unlimited bytes on the server.** Reported by
+  [@ry2811](https://github.com/ry2811).
+- **The password reset screen no longer says whether an email address has an account here.**
+- **An expired password reset link now says so before asking for a new password.**
+- **A Docker upgrade no longer fails when external storage is already configured.**
+  [#1770](https://github.com/projectsend/projectsend/issues/1770).
+- **A public gallery no longer renders the same thumbnail several times at once.**
+- **`PROJECTSEND_CAPTCHA_DISABLED` no longer reads a "no" as a "yes".**
 
 ## 2.4.0 — 8 September 2026
 

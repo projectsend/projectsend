@@ -14,6 +14,15 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
+    # If every page returns a 500 and storage/logs/ is empty, Apache could
+    # not work out which directory this file is serving, and the rule below
+    # rewrites to a path that does not exist — over and over, until Apache
+    # gives up. Some shared hosts need to be told. Uncomment the line and
+    # set it to the path ProjectSend is served from: "/" at the domain root,
+    # "/projectsend" in a subdirectory of it.
+    #
+    # RewriteBase /
+
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f

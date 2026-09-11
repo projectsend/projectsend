@@ -324,8 +324,9 @@ like your logo reachable from the web.
 
 ## Step 6 — Point your web server at it
 
-A complete nginx server block. Change `server_name`, and change `/var/www/projectsend` to wherever
-you unpacked the files (there are **three** places, including one inside `/protected-files/`):
+A complete nginx server block below; [Apache is further down](#if-you-are-using-apache). Change
+`server_name`, and change `/var/www/projectsend` to wherever you unpacked the files (there are
+**three** places, including one inside `/protected-files/`):
 
 ```nginx
 server {
@@ -373,6 +374,38 @@ server {
     }
 }
 ```
+
+### If you are using Apache
+
+Two things matter, and both are easy to get wrong:
+
+- **The document root is the `public/` directory**, not the directory you unpacked into. Everything
+  above `public/` — your `.env`, your uploaded files, the application code — has to stay out of
+  reach of any URL.
+- **`AllowOverride All`, and `mod_rewrite` enabled** (`sudo a2enmod rewrite`). ProjectSend ships a
+  `public/.htaccess` that sends every address to the front controller. If Apache is told to ignore
+  it, every page except the home page is a 404.
+
+```apache
+<VirtualHost *:80>
+    ServerName files.example.com
+    DocumentRoot /var/www/projectsend/public
+
+    <Directory /var/www/projectsend/public>
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/projectsend-error.log
+    CustomLog ${APACHE_LOG_DIR}/projectsend-access.log combined
+</VirtualHost>
+```
+
+Downloads work as they are: PHP sends the bytes. If that becomes a capacity problem, `mod_xsendfile`
+hands the job to Apache — see [How downloads are sent](#how-downloads-are-sent).
+
+On shared hosting you usually cannot edit any of this, and `public/.htaccess` is all you have. If
+the site returns a 500 on every page, see [When something goes wrong](#when-something-goes-wrong).
 
 Then check your PHP settings. Large uploads are sent in 20 MB pieces, so PHP never has to handle a
 whole 5 GB file at once — but the pieces still need room. In your `php.ini`:
@@ -580,6 +613,28 @@ names the exact command to run; do that, then reload.
 **Every page is blank, or shows a 500 error.**
 Look in `storage/logs/` — open the newest file, the real error is at the bottom. Nine times out of ten it is
 folder permissions (step 4) or a wrong database password (step 3).
+
+**Every page is a 500, and `storage/logs/` is empty.**
+The empty log is the answer, not a dead end: nothing reached PHP, so ProjectSend had nothing to
+write. The error is your web server's, and it is in your web server's log — on Apache
+`/var/log/apache2/error.log`, or wherever your host puts it. On Apache two causes account for
+almost all of these, and both are about `public/.htaccess`:
+
+- **`Options not allowed here`.** The file starts by turning off directory listings and content
+  negotiation, and your `AllowOverride` does not permit that. Allow it (`AllowOverride All`), or
+  delete the `Options` line — it is hardening, not a requirement.
+- **`Request exceeded the limit of 10 internal redirects`.** Apache cannot work out which directory
+  the file is serving, so the rule that sends every address to `index.php` rewrites to a path that
+  does not exist, and tries again. Uncomment the `RewriteBase` line in `public/.htaccess` and set it
+  to the path ProjectSend is served from — `/` at the domain root, `/projectsend` in a subdirectory.
+  Reported on IONOS by [@Zodiac1978](https://github.com/Zodiac1978) in
+  [#1778](https://github.com/projectsend/projectsend/issues/1778).
+
+**If you edit `public/.htaccess`, write down what you changed.** Updating replaces every file the
+release ships, that one included, so a change that made your site work will be gone after the next
+update and the 500 will come back. If the Apache configuration is yours to edit, put the directives
+in a `<Directory>` block in the vhost instead: they do the same job there, and no update can touch
+them. On shared hosting, where it is not yours, keep the note and re-apply it.
 
 **"Please provide a valid cache path" or "failed to open stream".**
 `storage/` or `bootstrap/cache/` is not writable by the web server user. Step 4.

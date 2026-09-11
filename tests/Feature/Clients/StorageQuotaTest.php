@@ -84,6 +84,42 @@ test('the default storage quota setting prefills a new client\'s quota field', f
     );
 });
 
+test('both client screens show the quota that will actually be enforced, floor included', function () {
+    // The screens present this as what happens, not as a value being
+    // edited, so they have to show the effective number. The edit screen
+    // in particular mirrors quotaMb()'s resolution client-side to draw the
+    // usage bar: handed the raw setting on a floored installation, it
+    // computes an effective quota of 0, prints "unlimited", and hides the
+    // bar entirely — for a client whose next upload is about to be
+    // rejected for exceeding a limit the screen said did not exist.
+    config()->set('projectsend.platform.default_client_quota_mb', 2048);
+    app(Settings::class)->set(Setting::DefaultClientStorageQuotaMb, 0);
+
+    $client = User::factory()->client()->create(['storage_quota_mb' => 0]);
+
+    $this->actingAs($this->admin)->get('/clients/create')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('default_storage_quota_mb', 2048),
+    );
+
+    $this->actingAs($this->admin)->get("/clients/{$client->id}")->assertInertia(
+        fn (AssertableInertia $page) => $page->where('default_storage_quota_mb', 2048),
+    );
+});
+
+test('the settings form still edits the stored setting, never the floor', function () {
+    // The other half, and the reason this is not one change applied
+    // everywhere. That field is read, then written back on save. Prefilled
+    // with the floor, the next save of that page would write the
+    // platform's number into the setting as the administrator's own
+    // choice — where it would outlive the floor being removed.
+    config()->set('projectsend.platform.default_client_quota_mb', 2048);
+    app(Settings::class)->set(Setting::DefaultClientStorageQuotaMb, 0);
+
+    $this->actingAs($this->admin)->get('/system/settings/clients')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('default_client_storage_quota_mb', 0),
+    );
+});
+
 test('clearing the storage quota field to blank on the edit form resets it to inherit the site default', function () {
     app(Settings::class)->set(Setting::DefaultClientStorageQuotaMb, 150);
     $client = User::factory()->client()->create(['storage_quota_mb' => 100]);
@@ -168,6 +204,46 @@ test('ClientStorageUsage::quotaMb() resolves a client with no custom quota to th
     $client = User::factory()->client()->create(['storage_quota_mb' => 0]);
 
     expect(app(ClientStorageUsage::class)->quotaMb($client))->toBe(250);
+});
+
+test('a platform floor holds a client the installation never gave a quota to', function () {
+    // The hole this closes: the setting's own default is 0, 0 means
+    // unlimited, and an account that arrived without an explicit quota --
+    // a self-registered one, say -- inherits it. On an installation a
+    // platform runs for other people that is unmetered hosting one account
+    // away, so a platform may put a floor under it from the environment,
+    // exactly as it sets the seat caps.
+    config()->set('projectsend.platform.default_client_quota_mb', 1);
+    app(Settings::class)->set(Setting::DefaultClientStorageQuotaMb, 0);
+    $client = User::factory()->client()->create(['storage_quota_mb' => 0]);
+    grantUploadPermission($client);
+    makeClientFile($client, 1000 * 1024);
+    $this->actingAs($client);
+
+    $this->postJson('/uploads', [
+        'filename' => 'over-the-floor.pdf',
+        'size' => 200 * 1024,
+        'type' => 'application/pdf',
+    ])->assertJsonValidationErrors('size');
+});
+
+test('a floor is under the setting, never over it', function () {
+    // An administrator who has chosen a number keeps it, including a
+    // larger one. The floor is for the installation that chose nothing.
+    config()->set('projectsend.platform.default_client_quota_mb', 100);
+    app(Settings::class)->set(Setting::DefaultClientStorageQuotaMb, 250);
+    $client = User::factory()->client()->create(['storage_quota_mb' => 0]);
+
+    expect(app(ClientStorageUsage::class)->quotaMb($client))->toBe(250);
+});
+
+test('an install with no platform behind it is unaffected', function () {
+    // Nothing set anywhere is still unlimited. This must not become a
+    // ceiling that appears on self-hosted installs by default.
+    app(Settings::class)->set(Setting::DefaultClientStorageQuotaMb, 0);
+    $client = User::factory()->client()->create(['storage_quota_mb' => 0]);
+
+    expect(app(ClientStorageUsage::class)->quotaMb($client))->toBe(0);
 });
 
 test('ClientStorageUsage::quotaMb() lets a client\'s own custom quota override the site default', function () {

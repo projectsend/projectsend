@@ -6,6 +6,7 @@ namespace App\Modules\Platform\Installation\Console;
 
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Models\File;
 use App\Modules\Identity\TwoFactor\TwoFactorEnforcement;
 use App\Modules\Identity\UserType;
@@ -149,6 +150,28 @@ use Throwable;
  * quota nobody is watching. The installation looks completely healthy
  * while it happens, to its operator and to its administrator alike.
  *
+ * ### `settings` holds the three an outsider has to act on, and no more
+ *
+ * Not a dump of the settings table. Everything here leaves the container,
+ * so each field needs a reason somebody outside would act on it, and
+ * these three have one: they are the settings whose wrong value is
+ * invisible from outside and expensive.
+ *
+ * `two_factor_enforcement` is what the platform sold compared against
+ * what the installation applied. The other two are one question in two
+ * halves -- **who can make an account here, and what that account is
+ * allowed** -- and the answer matters most where it is least visible. On
+ * a shared installation every client is a separate customer, so
+ * self-registration switched on means accounts appearing that nobody
+ * provisioned, and a default quota of zero means those accounts have no
+ * ceiling at all. Both defaults are the permissive ones (see Setting),
+ * which is right for a self-hosted install setting itself up and wrong
+ * for an installation somebody else is operating.
+ *
+ * Neither is a secret: both are on the client settings screen any
+ * administrator can open. What the document adds is that a watcher can
+ * see them without one.
+ *
  * ### A version is a decision, a commit is a fact
  *
  * `build` says which commit this installation was built from. A version
@@ -206,8 +229,12 @@ class StatusCommand extends Command
 
     protected $description = 'Report this installation\'s version, edition, capabilities and seat usage';
 
-    public function handle(CapabilityRegistry $capabilities, SeatAllowance $seats, Settings $settings): int
-    {
+    public function handle(
+        CapabilityRegistry $capabilities,
+        SeatAllowance $seats,
+        Settings $settings,
+        ClientStorageUsage $quotas,
+    ): int {
         $status = [
             'version' => (string) config('projectsend.version'),
             'edition' => $capabilities->edition()->value,
@@ -252,6 +279,25 @@ class StatusCommand extends Command
                 // the middleware enforces would be worse than reporting
                 // none at all.
                 'two_factor_enforcement' => $this->enforcement($settings),
+                // Whether strangers can make themselves an account here.
+                // Read the way RegistrationController reads it, `=== true`
+                // included: `get()` casts a boolean with `(bool)`, so the
+                // only value that is neither true nor false is null, and
+                // null is what the gate treats as closed.
+                'clients_can_register' => $settings->get(Setting::ClientsCanRegister) === true,
+                // What a client with no quota of their own is allowed, in
+                // megabytes. **Zero means unlimited**, which is the whole
+                // reason this is worth reporting: it is the default, it is
+                // the answer for every account created without one asked
+                // for, and nothing else in this document reveals it.
+                //
+                // The *effective* number, through the same method the
+                // upload check resolves it with, rather than the setting
+                // read on its own. A platform can put a floor under it from
+                // the environment, and a document that reported the setting
+                // while the uploads obeyed the floor would say the ceiling
+                // was missing on an installation that has one.
+                'default_client_storage_quota_mb' => $quotas->defaultQuotaMb(),
             ],
             // Cast so an installation with no packages emits {} rather
             // than [] -- an empty PHP array encodes as a list, and a

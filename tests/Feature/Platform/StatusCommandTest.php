@@ -250,6 +250,53 @@ test('an unreadable enforcement value reports none, not something stricter', fun
     expect(statusJson()['settings']['two_factor_enforcement'])->toBe('none');
 });
 
+test('it says whether strangers can make themselves an account', function () {
+    expect(statusJson()['settings']['clients_can_register'])->toBeFalse();
+
+    app(Settings::class)->set(Setting::ClientsCanRegister, true);
+
+    expect(statusJson()['settings']['clients_can_register'])->toBeTrue();
+});
+
+test('a stored null reports as closed rather than as no answer', function () {
+    // `Settings::get()` casts a boolean with `(bool)`, so every value
+    // except null arrives as a real bool -- and null is what makes the
+    // `=== true` in RegistrationController earn its place rather than be
+    // decoration. Reported as false, because false is what the gate does
+    // with it.
+    app(Settings::class)->set(Setting::ClientsCanRegister, null);
+
+    expect(statusJson()['settings']['clients_can_register'])->toBeFalse();
+});
+
+test('it says what a client with no quota of their own is allowed', function () {
+    // Zero is the default and zero means unlimited, so this is reported
+    // as the number it is rather than translated. A watcher that has to
+    // act on "unlimited" needs to be able to see it.
+    expect(statusJson()['settings']['default_client_storage_quota_mb'])->toBe(0);
+
+    app(Settings::class)->set(Setting::DefaultClientStorageQuotaMb, 2048);
+
+    expect(statusJson()['settings']['default_client_storage_quota_mb'])->toBe(2048);
+});
+
+test('a platform floor is reported, because it is what uploads will obey', function () {
+    // Reporting the setting while the upload check obeys the floor would
+    // say the ceiling was missing on an installation that has one.
+    config()->set('projectsend.platform.default_client_quota_mb', 2048);
+
+    expect(statusJson()['settings']['default_client_storage_quota_mb'])->toBe(2048);
+});
+
+test('a chosen setting wins over the platform floor', function () {
+    // The floor is under the setting, not over it. An administrator who
+    // has picked a number keeps it.
+    config()->set('projectsend.platform.default_client_quota_mb', 2048);
+    app(Settings::class)->set(Setting::DefaultClientStorageQuotaMb, 5120);
+
+    expect(statusJson()['settings']['default_client_storage_quota_mb'])->toBe(5120);
+});
+
 // --------------------------------------------- what core cannot answer alone
 
 test('a package can report what core has no way to know', function () {

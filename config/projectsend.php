@@ -81,6 +81,19 @@ return [
         // read at all and that is how TRUSTED_PROXIES came to silently do
         // nothing.
         'two_factor_enforcement' => env('PROJECTSEND_TWO_FACTOR_ENFORCEMENT'),
+
+        // A floor under what a client with no quota of their own gets, in
+        // megabytes. Not a setting, for the same reason the seat caps above
+        // are not: it is the shape of what the platform sold rather than a
+        // preference the installation's administrator is expressing, and an
+        // administrator who has chosen a number keeps it — see
+        // ClientStorageUsage::defaultQuotaMb().
+        //
+        // It exists because the setting's own default is 0, and 0 means
+        // unlimited. On an installation a platform runs for other people
+        // that is one account away from unmetered hosting, and the account
+        // does not have to be one the platform created.
+        'default_client_quota_mb' => env('PROJECTSEND_PLATFORM_DEFAULT_CLIENT_QUOTA_MB'),
     ],
 
     'uploads' => [

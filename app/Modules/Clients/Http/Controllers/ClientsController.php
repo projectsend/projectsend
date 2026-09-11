@@ -122,7 +122,20 @@ class ClientsController extends Controller
 
         return Inertia::render('clients/create', [
             'custom_fields' => $this->customFieldDefinitions(),
-            'default_storage_quota_mb' => (int) $this->settings->get(Setting::DefaultClientStorageQuotaMb),
+            // The resolved default, not the raw setting: a platform can put
+            // a floor under it from the environment, and both screens
+            // present this as what will actually happen rather than as a
+            // value being edited. The edit screen mirrors quotaMb()'s
+            // resolution client-side to draw the usage bar, and handing it
+            // the effective number is what keeps that mirror correct
+            // without it having to know floors exist.
+            //
+            // The Client settings form deliberately still reads the raw
+            // setting (ClientSettingsController): that field is edited and
+            // saved back, so prefilling it with a floor would write the
+            // platform's number into the setting as the administrator's own
+            // choice, where it would outlive the floor.
+            'default_storage_quota_mb' => $this->storageUsage->defaultQuotaMb(),
         ]);
     }
 
@@ -216,7 +229,8 @@ class ClientsController extends Controller
                 'storage_quota_mb' => $client->storage_quota_mb,
                 'two_factor_enabled' => $client->hasTwoFactorEnabled(),
             ],
-            'default_storage_quota_mb' => (int) $this->settings->get(Setting::DefaultClientStorageQuotaMb),
+            // Resolved, not raw — see create() above.
+            'default_storage_quota_mb' => $this->storageUsage->defaultQuotaMb(),
             'storage_used_mb' => (int) ceil($this->storageUsage->usedBytes($client) / 1024 / 1024),
             'custom_fields' => $this->customFieldDefinitions(),
             'custom_field_values' => ClientCustomFieldValue::query()

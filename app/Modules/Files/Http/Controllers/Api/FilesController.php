@@ -311,9 +311,12 @@ class FilesController extends Controller
             'download_limit_scope' => ['sometimes', Rule::enum(DownloadLimitScope::class)],
         ]);
 
-        // Reparenting through update() must respect the same library scope as
+        // Reparenting through update() must respect the same two rules as
         // the web move()/bulkUpdate() paths: the destination folder must be
-        // one this user can see. Only enforced when folder_id actually
+        // one this user can see, and one they may put content into. A public
+        // destination publishes what lands in it, so the second question is
+        // the one `upload_public` exists to ask and store() above already
+        // asks (GHSA-rxf8-wh8v-jm9j). Only enforced when folder_id actually
         // changes, so re-saving a file that already sits in an out-of-scope
         // folder (reachable via a direct client share) still works. The
         // integer rule admits numeric strings, so cast before the strict
@@ -322,7 +325,9 @@ class FilesController extends Controller
             $validated['folder_id'] = (int) $validated['folder_id'];
 
             if ($validated['folder_id'] !== $file->folder_id) {
-                $this->scope->folders($user)->findOrFail($validated['folder_id']);
+                $destination = $this->scope->folders($user)->whereKey($validated['folder_id'])->firstOrFail();
+
+                abort_unless(Folder::uploadableBy($user, $destination), 403);
             }
         }
 

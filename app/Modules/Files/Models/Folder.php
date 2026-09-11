@@ -152,15 +152,26 @@ class Folder extends Model
     }
 
     /**
-     * Whether $user may upload a new file directly into $folder (null =
-     * loose at the root, always allowed).
+     * Whether $user may put content into $folder (null = loose at the
+     * root, always allowed).
+     *
+     * **Read the name as "may place into", not "may upload into".** Every
+     * way a file arrives in a folder has to come through here, and the
+     * name cost us one advisory already: the publication rule below was
+     * written for GHSA-237r-jx85-j3hr and wired into the upload paths
+     * alone, because those are what the name suggested. Moving a file in,
+     * bulk-moving a selection in, reparenting one through the edit form,
+     * and dragging a whole folder into a public parent all put content
+     * somewhere too, and none of them asked (GHSA-rxf8-wh8v-jm9j). They
+     * ask now. Anything new that writes a `folder_id` or a `parent_id`
+     * belongs on this list.
      *
      * Staff are held to the library boundary they are held to everywhere
      * else: an unscoped staff member may use any folder, a client-scoped
-     * one only the folders StaffLibraryScope already shows them. This is
-     * the only place that decides it: every upload path — the web form,
-     * the API and the chunked flow the browser actually posts to — comes
-     * through here rather than checking folder_id for itself.
+     * one only the folders StaffLibraryScope already shows them. Callers
+     * that have already resolved the destination through
+     * StaffLibraryScope::folders() have answered that half — the two are
+     * the same query — and call this for the publication half.
      *
      * For a client this is unchanged, and is still the whole of the
      * check: they own the folder, or it is a public folder that opts into

@@ -402,7 +402,20 @@ class FoldersController extends Controller
             'parent_id' => Rules::folderId(),
         ]);
 
-        $newParent = $this->resolveParent($request->user(), $validated['parent_id'] ?? null);
+        $user = $request->user();
+        $newParent = $this->resolveParent($user, $validated['parent_id'] ?? null);
+
+        // A folder carries its contents with it, and a folder inside a
+        // public one is public — isEffectivelyPublic() reads the whole
+        // ancestry. So dropping a private folder into a public parent
+        // publishes every file in its subtree at once, which is the same
+        // act the upload path refuses without `upload_public`. The flag on
+        // this screen is already guarded (update() above leaves public
+        // state alone without the permission); the placement was not
+        // (GHSA-rxf8-wh8v-jm9j).
+        if ($user !== null) {
+            abort_unless(Folder::uploadableBy($user, $newParent), 403);
+        }
 
         $this->folders->move($folder, $newParent);
 

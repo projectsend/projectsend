@@ -38,6 +38,21 @@ installation from starting.
 
 **Fixed**
 
+- **Moving a file into a public folder now needs the same permission as uploading one there.** A
+  file in a public folder is public — that is what the folder means, and it applies to anything
+  inside it, at any depth. Uploading into one was already refused to staff who are not allowed to
+  publish. Moving something in was not: dragging a file there, bulk-moving a selection there,
+  changing the folder on the edit screen, or dragging a whole folder into a public one all published
+  the content without asking. A member of staff who had been given editing rights and deliberately
+  not been given "Upload public files" could put confidential files on the anonymous public site by
+  choosing where they landed. All four now refuse, and so does the same edit through the API.
+
+  *Who this affected:* installations with public folders and a staff role that can edit files but is
+  not meant to publish. Roles that can publish are unaffected and nothing about moving files into
+  ordinary folders changes. Nothing to do on upgrade, but if you have public folders it is worth a
+  look through them for anything that should not be there.
+
+  Reported by [@skeletonsec](https://github.com/skeletonsec).
 - **An interrupted upload can no longer park unlimited bytes on the server.** A resumable upload
   says up front how big the file is, and that number is what gets weighed against the maximum file
   size and the client's storage quota. Only the finished file was held to it. The parts arriving in

@@ -286,7 +286,11 @@ class FilesController extends Controller
         // an out-of-scope folder (reachable via a direct client share) still
         // works.
         if ($folderId !== null && $folderId !== $file->folder_id) {
-            $this->scope->folders($user)->findOrFail($folderId);
+            $destination = $this->scope->folders($user)->whereKey($folderId)->firstOrFail();
+
+            // And one they may publish into, if it is public. Reparenting
+            // through the edit form is the same privileged write as move().
+            abort_unless(Folder::uploadableBy($user, $destination), 403);
         }
 
         // Normalised into the shape ApplyFileEdits reads, then handed
@@ -344,9 +348,18 @@ class FilesController extends Controller
         $folderId = $validated['folder_id'] ?? null;
         $user = $request->user();
 
-        // The target folder must be one the mover can actually see.
-        if ($folderId !== null && $user !== null) {
-            $this->scope->folders($user)->findOrFail($folderId);
+        // The target folder must be one the mover can actually see, and one
+        // they are allowed to put content into. Those are two questions:
+        // a file in a public folder is published by being there, so the
+        // destination reaches the property `upload_public` guards without
+        // anybody touching the switch. Asking only the first let an editor
+        // who is deliberately not allowed to publish do it by dragging
+        // (GHSA-rxf8-wh8v-jm9j — the move half of GHSA-237r-jx85-j3hr,
+        // whose fix was wired into the upload paths and no further).
+        if ($folderId !== null && $user !== null && $folderId !== $file->folder_id) {
+            $destination = $this->scope->folders($user)->whereKey($folderId)->firstOrFail();
+
+            abort_unless(Folder::uploadableBy($user, $destination), 403);
         }
 
         $file->update(['folder_id' => $folderId]);
@@ -403,13 +416,19 @@ class FilesController extends Controller
             && ($validated['remove_category_ids'] ?? []) === [];
         abort_if($touchesNothing, 422, __('Change at least one field before applying a bulk edit.'));
 
-        // The target folder must be one this user can actually see — same
-        // rule move() already applies to a single file's target.
+        // The target folder must be one this user can actually see, and one
+        // they may put content into — the same two questions move() asks of
+        // a single file's target. Checked once, on the destination, rather
+        // than per file: the destination is one folder for the whole batch,
+        // and if putting content there publishes it then no file in the
+        // batch may go.
         $targetFolderId = null;
         if ($validated['folder_action'] === 'move') {
             $targetFolderId = $validated['folder_id'] ?? null;
             if ($targetFolderId !== null) {
-                $this->scope->folders($user)->findOrFail($targetFolderId);
+                $destination = $this->scope->folders($user)->whereKey($targetFolderId)->firstOrFail();
+
+                abort_unless(Folder::uploadableBy($user, $destination), 403);
             }
         }
 

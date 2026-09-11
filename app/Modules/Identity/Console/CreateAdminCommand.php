@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Identity\Erasure\AvailableEmailRule;
+use App\Modules\Identity\FirstAdministrator;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\UserType;
@@ -30,7 +31,14 @@ class CreateAdminCommand extends Command
 
     public function handle(): int
     {
-        if ($this->option('if-none') && User::query()->where('type', UserType::Staff)->exists()) {
+        $ifNone = (bool) $this->option('if-none');
+
+        // Asked early so an unattended boot does not prompt for a name and
+        // a password it is about to throw away. It is asked again below,
+        // under a lock, because this read on its own has the same hole the
+        // setup screen had: two containers coming up against one database
+        // both see no staff and both create an administrator.
+        if ($ifNone && $this->staffExists()) {
             $this->info('A staff user already exists; nothing to do.');
 
             return self::SUCCESS;
@@ -57,20 +65,36 @@ class CreateAdminCommand extends Command
             return self::FAILURE;
         }
 
-        $user = User::create([
-            'type' => UserType::Staff,
-            'active' => true,
-            'role_id' => Role::query()->where('name', SystemRole::SystemAdministrator->value)->value('id'),
-            'name' => $name,
-            'email' => $email,
-            'password' => $password,
-        ]);
+        $create = function () use ($name, $email, $password): User {
+            $user = User::create([
+                'type' => UserType::Staff,
+                'active' => true,
+                'role_id' => Role::query()->where('name', SystemRole::SystemAdministrator->value)->value('id'),
+                'name' => $name,
+                'email' => $email,
+                'password' => $password,
+            ]);
 
-        // forceFill, for the reason SetupController gives beside it:
-        // email_verified_at is not in User::$fillable, so passing it into
-        // create() lost it without a word. Whoever provisioned this
-        // container supplied the address themselves.
-        $user->forceFill(['email_verified_at' => now()])->save();
+            // forceFill, for the reason SetupController gives beside it:
+            // email_verified_at is not in User::$fillable, so passing it
+            // into create() lost it without a word. Whoever provisioned
+            // this container supplied the address themselves.
+            $user->forceFill(['email_verified_at' => now()])->save();
+
+            return $user;
+        };
+
+        // Without --if-none an operator is asking for an administrator
+        // outright, whoever else exists, so there is nothing to claim.
+        $user = $ifNone
+            ? FirstAdministrator::claim(fn (): bool => ! $this->staffExists(), $create)
+            : $create();
+
+        if ($user === null) {
+            $this->info('A staff user already exists; nothing to do.');
+
+            return self::SUCCESS;
+        }
 
         app(ActivityLogger::class)->log(Action::UserCreated, null, $user);
 
@@ -88,5 +112,13 @@ class CreateAdminCommand extends Command
         $this->info("Administrator {$user->email} created.");
 
         return self::SUCCESS;
+    }
+
+    /**
+     * @phpstan-impure another process can create one between two calls
+     */
+    private function staffExists(): bool
+    {
+        return User::query()->where('type', UserType::Staff)->exists();
     }
 }

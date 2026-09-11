@@ -38,6 +38,23 @@ installation from starting.
 
 **Fixed**
 
+- **Two people filling in the first-run setup screen at the same moment can no longer both become
+  administrators.** The screen asked the database whether the installation already had a staff user,
+  and only some time later — after hashing a password, which is deliberately slow — created one. Two
+  requests arriving together both got the answer "no", so both created a System Administrator. The
+  attack that follows is quiet: the operator's own setup succeeds and looks entirely normal, and a
+  stranger who timed their submission to land alongside it walks away with a second, permanent
+  administrator account on the installation. Setup now claims the installation before it writes
+  anything, and a request that arrives second creates nothing at all — not even the site name.
+
+  *Who this affected:* only an installation in the window between being reachable on the network and
+  being set up, which is why this is worth closing rather than a reason to worry about an install
+  that is already running. If yours went up some time ago, the thing to check is simply that
+  **Users** lists only the administrators you expect. The same window existed in the
+  `projectsend:admin --if-none` command that containers use to provision themselves, and is closed
+  the same way. Nothing to do on upgrade.
+
+  Reported by [@ry2811](https://github.com/ry2811).
 - **The password reset screen no longer says whether an email address has an account here.** Asking
   to reset a password already answers "a link will be sent if the account exists" without confirming
   either way; the screen the link leads to did confirm it, twice — once by showing a form for an

@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Modules\Identity\UserType;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Support\Facades\DB;
 use Inertia\Testing\AssertableInertia;
 
 test('a fresh install redirects every page to setup', function () {
@@ -178,4 +180,66 @@ test('projectsend:admin does not overwrite an already-configured recipient list'
     ])->assertSuccessful();
 
     expect(app(Settings::class)->get(Setting::AdminNotificationEmails))->toBe(['existing@example.com']);
+});
+
+/**
+ * GHSA-w3w9-prpw-qx77. Two setup requests arriving together both read "no
+ * staff user" and both insert a System Administrator, so a stranger racing
+ * the operator's own submission ends up with a permanent account while the
+ * operator's install looks perfectly normal.
+ *
+ * Real concurrency is not available inside one test, so the interleaving is
+ * staged instead: the winning administrator appears from a query listener,
+ * after this request has already made its "is setup complete" check and
+ * before it inserts anything. That is precisely the window, and the fix is
+ * the only thing that closes it — asking the question again with the claim
+ * held.
+ */
+function interruptWithAnAdministrator(string $email): void
+{
+    $done = false;
+
+    DB::listen(function (QueryExecuted $query) use (&$done, $email): void {
+        if ($done || ! str_contains($query->sql, 'roles')) {
+            return;
+        }
+
+        $done = true;
+
+        User::factory()->create(['email' => $email]);
+    });
+}
+
+test('a setup request that loses the race creates no second administrator', function () {
+    app(Settings::class)->set(Setting::SiteName, 'The Operator Site');
+
+    interruptWithAnAdministrator('winner@example.com');
+
+    $this->post('/setup', [
+        'site_name' => 'Intruder Site',
+        'name' => 'Intruder',
+        'email' => 'intruder@example.com',
+        'password' => 'super-secret-password',
+        'password_confirmation' => 'super-secret-password',
+    ])->assertRedirect(route('home'));
+
+    expect(User::query()->where('type', UserType::Staff)->count())->toBe(1)
+        ->and(User::query()->sole()->email)->toBe('winner@example.com')
+        // The loser writes nothing at all, so it cannot rename the
+        // installation on its way out either.
+        ->and(app(Settings::class)->get(Setting::SiteName))->toBe('The Operator Site');
+});
+
+test('projectsend:admin --if-none creates nothing when an administrator appears mid-run', function () {
+    interruptWithAnAdministrator('winner@example.com');
+
+    $this->artisan('projectsend:admin', [
+        '--if-none' => true,
+        '--name' => 'Second Admin',
+        '--email' => 'second@example.com',
+        '--password' => 'super-secret-password',
+    ])->assertSuccessful();
+
+    expect(User::query()->where('type', UserType::Staff)->count())->toBe(1)
+        ->and(User::query()->sole()->email)->toBe('winner@example.com');
 });

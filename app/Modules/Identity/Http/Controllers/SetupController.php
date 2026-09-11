@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Identity\FirstAdministrator;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\UserType;
@@ -54,25 +55,46 @@ class SetupController extends Controller
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
-        $this->settings->set(Setting::SiteName, $validated['site_name']);
+        // The check above is not enough on its own: it is a plain read, and
+        // between it and the insert a second setup request can do the same
+        // read and insert an administrator of its own. Everything this
+        // request writes therefore happens inside the claim, so a request
+        // that loses the race writes nothing at all — not the site name
+        // either. See FirstAdministrator.
+        $admin = FirstAdministrator::claim(
+            fn (): bool => ! $this->setupIsComplete(),
+            function () use ($validated): User {
+                $this->settings->set(Setting::SiteName, $validated['site_name']);
 
-        $admin = User::create([
-            'type' => UserType::Staff,
-            'active' => true,
-            'role_id' => Role::query()->where('name', SystemRole::SystemAdministrator->value)->value('id'),
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => $validated['password'],
-        ]);
+                $admin = User::create([
+                    'type' => UserType::Staff,
+                    'active' => true,
+                    'role_id' => Role::query()->where('name', SystemRole::SystemAdministrator->value)->value('id'),
+                    'name' => $validated['name'],
+                    'email' => $validated['email'],
+                    'password' => $validated['password'],
+                ]);
 
-        // forceFill, not part of the create() array: email_verified_at is
-        // deliberately absent from User::$fillable, so mass assignment
-        // dropped it in silence and this account was never marked
-        // verified. The first administrator typed their own address into
-        // the form in front of them; there is nobody to confirm it to.
-        // (Inert today, since MustVerifyEmail is not enabled on the model,
-        // but the column is what a later switch would read.)
-        $admin->forceFill(['email_verified_at' => now()])->save();
+                // forceFill, not part of the create() array:
+                // email_verified_at is deliberately absent from
+                // User::$fillable, so mass assignment dropped it in silence
+                // and this account was never marked verified. The first
+                // administrator typed their own address into the form in
+                // front of them; there is nobody to confirm it to. (Inert
+                // today, since MustVerifyEmail is not enabled on the model,
+                // but the column is what a later switch would read.)
+                $admin->forceFill(['email_verified_at' => now()])->save();
+
+                return $admin;
+            },
+        );
+
+        // Somebody else finished setup while this request was in flight.
+        // Theirs is the administrator that exists; this one is sent to the
+        // login screen like any other visitor to an installed site.
+        if ($admin === null) {
+            return redirect()->route('home');
+        }
 
         // v1 logged installation as action 0; setup is a recorded action.
         $this->activity->log(Action::SetupCompleted, $admin);
@@ -112,6 +134,9 @@ class SetupController extends Controller
      * The middleware and this must agree — one of them saying "not set
      * up" while the other says "set up" is either a redirect loop or an
      * open form.
+     *
+     * @phpstan-impure asking twice can honestly give two answers, which is
+     * the entire reason store() asks a second time under a lock
      */
     private function setupIsComplete(): bool
     {

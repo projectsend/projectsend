@@ -2045,7 +2045,6 @@
     "Create account": "创建账户",
     "Create your account": "创建你的账户",
     "Group (optional)": "群组（可选）",
-    "History (:count pending)": "历史（:count 个待处理）",
     "How long a staff-sent invitation stays valid before the invited address has to ask for a new one.": "团队发出的邀请在多久之后失效，之后受邀地址需要重新申请。",
     "If that invitation can still be resent, a new one is on its way.": "如果该邀请仍可重新发送，新的邀请已在路上。",
     "Invitation links expire after (hours)": "邀请链接有效期（小时）",
@@ -2073,5 +2072,6 @@
     "This invitation is no longer valid. Ask whoever invited you to send a new one.": "此邀请已失效。请让邀请你的人重新发送一份。",
     "You've been invited to register": "邀请你注册",
     "You've been invited to register a client account. The link below will let you set your own password.": "你受邀注册客户账户。通过下面的链接可以设置你自己的密码。",
-    "Your account has been created. You will be able to log in once it is approved.": "你的账户已创建，通过审核后即可登录。"
+    "Your account has been created. You will be able to log in once it is approved.": "你的账户已创建，通过审核后即可登录。",
+    "Invite a client to share files with": "邀请一位与你共享文件的客户"
 }

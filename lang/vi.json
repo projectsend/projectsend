@@ -2045,7 +2045,6 @@
     "Create account": "Tạo tài khoản",
     "Create your account": "Tạo tài khoản của bạn",
     "Group (optional)": "Nhóm (tùy chọn)",
-    "History (:count pending)": "Lịch sử (:count đang chờ)",
     "How long a staff-sent invitation stays valid before the invited address has to ask for a new one.": "Lời mời do nhân sự gửi còn hiệu lực bao lâu trước khi địa chỉ được mời phải xin lời mời mới.",
     "If that invitation can still be resent, a new one is on its way.": "Nếu lời mời đó vẫn có thể gửi lại, một lời mời mới đang trên đường tới.",
     "Invitation links expire after (hours)": "Liên kết mời hết hạn sau (giờ)",
@@ -2073,5 +2072,6 @@
     "This invitation is no longer valid. Ask whoever invited you to send a new one.": "Lời mời này không còn hiệu lực. Hãy nhờ người đã mời bạn gửi lời mời mới.",
     "You've been invited to register": "Bạn được mời đăng ký",
     "You've been invited to register a client account. The link below will let you set your own password.": "Bạn được mời đăng ký tài khoản khách hàng. Liên kết bên dưới sẽ cho phép bạn tự đặt mật khẩu.",
-    "Your account has been created. You will be able to log in once it is approved.": "Tài khoản của bạn đã được tạo. Bạn có thể đăng nhập khi tài khoản được duyệt."
+    "Your account has been created. You will be able to log in once it is approved.": "Tài khoản của bạn đã được tạo. Bạn có thể đăng nhập khi tài khoản được duyệt.",
+    "Invite a client to share files with": "Mời một khách hàng để chia sẻ tệp"
 }

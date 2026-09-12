@@ -277,11 +277,13 @@ Route::middleware(['auth'])->group(function () {
     // Invite shares create_clients rather than a capability of its own,
     // same reasoning as the note above: an installation that may add a
     // client by hand may also ask one to set their own password.
-    Route::get('clients/invite', [InvitationController::class, 'create'])->middleware(['staff', 'can:create_clients'])->name('invitations.create');
-    Route::post('clients/invite', [InvitationController::class, 'store'])->middleware(['staff', 'can:create_clients'])->name('invitations.store');
-    // Cancelling is the same authority as sending: whoever may invite
-    // somebody may take it back.
-    Route::delete('clients/invite/{invitation}', [InvitationController::class, 'destroy'])->middleware(['staff', 'can:create_clients'])->name('invitations.destroy');
+    // Sending and cancelling are the same authority, and so is reading the
+    // history: whoever may invite somebody may see who has been invited
+    // and take it back.
+    Route::get('clients/invitations', [InvitationController::class, 'index'])->middleware(['staff', 'can:create_clients'])->name('invitations.index');
+    Route::get('clients/invitations/create', [InvitationController::class, 'create'])->middleware(['staff', 'can:create_clients'])->name('invitations.create');
+    Route::post('clients/invitations', [InvitationController::class, 'store'])->middleware(['staff', 'can:create_clients'])->name('invitations.store');
+    Route::delete('clients/invitations/{invitation}', [InvitationController::class, 'destroy'])->middleware(['staff', 'can:create_clients'])->name('invitations.destroy');
     Route::get('clients/{client}/files', [ClientFilesController::class, 'index'])->middleware(['staff', 'can:edit_clients'])->name('clients.files');
     Route::get('clients/{client}', [ClientsController::class, 'edit'])->middleware(['staff', 'can:edit_clients'])->name('clients.edit');
     Route::patch('clients/{client}', [ClientsController::class, 'update'])->middleware(['staff', 'can:edit_clients'])->name('clients.update');

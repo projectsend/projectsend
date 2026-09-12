@@ -2045,7 +2045,6 @@
     "Create account": "Crea el compte",
     "Create your account": "Crea el teu compte",
     "Group (optional)": "Grup (opcional)",
-    "History (:count pending)": "Historial (pendents: :count)",
     "How long a staff-sent invitation stays valid before the invited address has to ask for a new one.": "Quant de temps continua sent vàlida una invitació enviada per l'equip abans que l'adreça convidada n'hagi de demanar una de nova.",
     "If that invitation can still be resent, a new one is on its way.": "Si aquesta invitació encara es pot reenviar, ja n'hi ha una de nova en camí.",
     "Invitation links expire after (hours)": "Les invitacions caduquen al cap de (hores)",
@@ -2073,5 +2072,6 @@
     "This invitation is no longer valid. Ask whoever invited you to send a new one.": "Aquesta invitació ja no és vàlida. Demana a qui t'ha convidat que te n'enviï una de nova.",
     "You've been invited to register": "T'han convidat a registrar-te",
     "You've been invited to register a client account. The link below will let you set your own password.": "T'han convidat a registrar un compte de client. L'enllaç de sota et permetrà triar la teva pròpia contrasenya.",
-    "Your account has been created. You will be able to log in once it is approved.": "S'ha creat el teu compte. Podràs iniciar la sessió quan s'aprovi."
+    "Your account has been created. You will be able to log in once it is approved.": "S'ha creat el teu compte. Podràs iniciar la sessió quan s'aprovi.",
+    "Invite a client to share files with": "Convida un client amb qui compartir fitxers"
 }

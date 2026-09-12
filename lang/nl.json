@@ -2045,7 +2045,6 @@
     "Create account": "Account aanmaken",
     "Create your account": "Maak je account aan",
     "Group (optional)": "Groep (optioneel)",
-    "History (:count pending)": "Geschiedenis (:count in behandeling)",
     "How long a staff-sent invitation stays valid before the invited address has to ask for a new one.": "Hoe lang een door het team verstuurde uitnodiging geldig blijft voordat het uitgenodigde adres een nieuwe moet aanvragen.",
     "If that invitation can still be resent, a new one is on its way.": "Als die uitnodiging nog opnieuw verstuurd kan worden, is er al een nieuwe onderweg.",
     "Invitation links expire after (hours)": "Uitnodigingslinks verlopen na (uren)",
@@ -2073,5 +2072,6 @@
     "This invitation is no longer valid. Ask whoever invited you to send a new one.": "Deze uitnodiging is niet meer geldig. Vraag degene die je heeft uitgenodigd om een nieuwe.",
     "You've been invited to register": "Je bent uitgenodigd om je te registreren",
     "You've been invited to register a client account. The link below will let you set your own password.": "Je bent uitgenodigd om een klantaccount te registreren. Via de onderstaande link kun je je eigen wachtwoord instellen.",
-    "Your account has been created. You will be able to log in once it is approved.": "Je account is aangemaakt. Je kunt inloggen zodra het is goedgekeurd."
+    "Your account has been created. You will be able to log in once it is approved.": "Je account is aangemaakt. Je kunt inloggen zodra het is goedgekeurd.",
+    "Invite a client to share files with": "Nodig een klant uit om bestanden mee te delen"
 }

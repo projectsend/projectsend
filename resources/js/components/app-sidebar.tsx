@@ -19,6 +19,7 @@ import {
     KeyRound,
     LayoutGrid,
     ListChecks,
+    MailPlus,
     MessageSquare,
     Settings,
     ShieldCheck,
@@ -118,6 +119,19 @@ export function AppSidebar() {
             title: t('Custom fields'),
             url: '/client-custom-fields',
             icon: ListChecks,
+        });
+    }
+
+    if (can('create_clients')) {
+        // No badge, unlike the two queues below it: an outstanding
+        // invitation is waiting on the person who was invited, not on
+        // anybody here. A number beside this would say "you have three
+        // things to do" about three things nobody in this installation can
+        // act on.
+        clientItems.push({
+            title: t('Invitations'),
+            url: '/clients/invitations',
+            icon: MailPlus,
         });
     }
 

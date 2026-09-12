@@ -2045,7 +2045,6 @@
     "Create account": "Создать учётную запись",
     "Create your account": "Создайте учётную запись",
     "Group (optional)": "Группа (необязательно)",
-    "History (:count pending)": "История (ожидают: :count)",
     "How long a staff-sent invitation stays valid before the invited address has to ask for a new one.": "Сколько времени приглашение, отправленное командой, остаётся действительным, прежде чем приглашённому адресу придётся запросить новое.",
     "If that invitation can still be resent, a new one is on its way.": "Если это приглашение ещё можно отправить повторно, новое уже в пути.",
     "Invitation links expire after (hours)": "Ссылки-приглашения действуют (часов)",
@@ -2073,5 +2072,6 @@
     "This invitation is no longer valid. Ask whoever invited you to send a new one.": "Это приглашение больше не действует. Попросите того, кто вас пригласил, отправить новое.",
     "You've been invited to register": "Вас пригласили зарегистрироваться",
     "You've been invited to register a client account. The link below will let you set your own password.": "Вас пригласили зарегистрировать учётную запись клиента. Ссылка ниже позволит вам задать собственный пароль.",
-    "Your account has been created. You will be able to log in once it is approved.": "Ваша учётная запись создана. Вы сможете войти, как только её одобрят."
+    "Your account has been created. You will be able to log in once it is approved.": "Ваша учётная запись создана. Вы сможете войти, как только её одобрят.",
+    "Invite a client to share files with": "Пригласите клиента, с которым будете делиться файлами"
 }

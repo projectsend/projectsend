@@ -22,11 +22,11 @@ beforeEach(function () {
 test('staff can send an invitation and it emails the invited address', function () {
     Notification::fake();
 
-    $this->actingAs($this->admin)->post('/clients/invite', [
+    $this->actingAs($this->admin)->post('/clients/invitations', [
         'email' => 'invited@example.com',
         'name' => 'Invited Person',
         'group_id' => 0,
-    ])->assertRedirect(route('clients.index'));
+    ])->assertRedirect(route('invitations.index'));
 
     $invitation = Invitation::query()->where('email', 'invited@example.com')->sole();
     expect($invitation->name)->toBe('Invited Person')
@@ -47,7 +47,7 @@ test('a storage quota set on the invitation carries through to the account it cr
     // $this->post() otherwise preserves whatever PHP type the test itself
     // wrote — hiding exactly the mismatch a browser's actual POST would
     // hit against a strictly-typed collaborator.
-    $this->actingAs($this->admin)->post('/clients/invite', [
+    $this->actingAs($this->admin)->post('/clients/invitations', [
         'email' => 'invited@example.com',
         'group_id' => 0,
         'storage_quota_mb' => '500',
@@ -70,7 +70,7 @@ test('a storage quota set on the invitation carries through to the account it cr
 });
 
 test('leaving the storage quota blank inherits the site default, same as self-registration', function () {
-    $this->actingAs($this->admin)->post('/clients/invite', [
+    $this->actingAs($this->admin)->post('/clients/invitations', [
         'email' => 'invited@example.com',
         'group_id' => 0,
     ]);
@@ -82,10 +82,10 @@ test('leaving the storage quota blank inherits the site default, same as self-re
 test('inviting an already-invited address supersedes the earlier invitation instead of leaving two live tokens', function () {
     $first = Invitation::issue('invited@example.com', null, null, $this->admin, now()->addDay());
 
-    $this->actingAs($this->admin)->post('/clients/invite', [
+    $this->actingAs($this->admin)->post('/clients/invitations', [
         'email' => 'invited@example.com',
         'group_id' => 0,
-    ])->assertRedirect(route('clients.index'));
+    ])->assertRedirect(route('invitations.index'));
 
     expect($first->fresh()->status)->toBe(Invitation::STATUS_SUPERSEDED)
         ->and(Invitation::query()->pending()->where('email', 'invited@example.com')->count())->toBe(1);
@@ -100,7 +100,7 @@ test('inviting an already-invited address supersedes the earlier invitation inst
 test('an invitation cannot be sent to an address that already has an account', function () {
     $existing = User::factory()->client()->create(['email' => 'taken@example.com']);
 
-    $this->actingAs($this->admin)->post('/clients/invite', [
+    $this->actingAs($this->admin)->post('/clients/invitations', [
         'email' => 'taken@example.com',
         'group_id' => 0,
     ])->assertSessionHasErrors('email');
@@ -113,8 +113,8 @@ test('an invitation cannot be sent to an address that already has an account', f
 test('clients cannot send invitations', function () {
     $this->actingAs(User::factory()->client()->create());
 
-    $this->get('/clients/invite')->assertRedirect(route('dashboard'));
-    $this->post('/clients/invite', ['email' => 'x@example.com', 'group_id' => 0])->assertForbidden();
+    $this->get('/clients/invitations')->assertRedirect(route('dashboard'));
+    $this->post('/clients/invitations', ['email' => 'x@example.com', 'group_id' => 0])->assertForbidden();
 });
 
 test('a valid invitation link shows the redemption form with the email locked', function () {
@@ -276,7 +276,7 @@ test('a full installation refuses to send an invitation it could not honour', fu
     config()->set('projectsend.platform.max_clients', 1);
     User::factory()->client()->create();
 
-    $this->actingAs($this->admin)->post('/clients/invite', [
+    $this->actingAs($this->admin)->post('/clients/invitations', [
         'email' => 'invited@example.com',
         'group_id' => 0,
     ])->assertSessionHasErrors('email');
@@ -314,17 +314,15 @@ test('the invitations screen is a history: every invitation ever sent, whatever 
     Invitation::issue('replaced@example.com', null, null, $this->admin, now()->addDay())
         ->forceFill(['status' => Invitation::STATUS_SUPERSEDED])->save();
 
-    $this->actingAs($this->admin)->get('/clients/invite')->assertInertia(
+    $this->actingAs($this->admin)->get('/clients/invitations')->assertInertia(
         fn (AssertableInertia $page) => $page
-            ->component('clients/invite')
+            ->component('clients/invitations')
             ->has('invitations', 5)
-            // Only the one that is live and unexpired counts as waiting.
-            ->where('pending_count', 1)
             ->where('filters.status', null),
     );
 
     // Newest first, and each row carries the state the screen labels it by.
-    $states = collect($this->actingAs($this->admin)->get('/clients/invite')->viewData('page')['props']['invitations'])
+    $states = collect($this->actingAs($this->admin)->get('/clients/invitations')->viewData('page')['props']['invitations'])
         ->pluck('state', 'email');
 
     expect($states->all())->toBe([
@@ -344,27 +342,24 @@ test('the history can be filtered down to one status', function () {
 
     // "Waiting" and "Expired" are the same stored status told apart by the
     // clock, which is the pair worth proving the filter gets right.
-    $this->actingAs($this->admin)->get('/clients/invite?status=pending')->assertInertia(
+    $this->actingAs($this->admin)->get('/clients/invitations?status=pending')->assertInertia(
         fn (AssertableInertia $page) => $page
             ->has('invitations', 1)
             ->where('invitations.0.email', 'live@example.com')
-            ->where('filters.status', 'pending')
-            // Unchanged by the filter: it answers "is anybody waiting",
-            // not "how many rows am I looking at".
-            ->where('pending_count', 1),
+            ->where('filters.status', 'pending'),
     );
 
-    $this->actingAs($this->admin)->get('/clients/invite?status=expired')->assertInertia(
+    $this->actingAs($this->admin)->get('/clients/invitations?status=expired')->assertInertia(
         fn (AssertableInertia $page) => $page->has('invitations', 1)->where('invitations.0.email', 'stale@example.com'),
     );
 
-    $this->actingAs($this->admin)->get('/clients/invite?status=revoked')->assertInertia(
+    $this->actingAs($this->admin)->get('/clients/invitations?status=revoked')->assertInertia(
         fn (AssertableInertia $page) => $page->has('invitations', 1)->where('invitations.0.email', 'gone@example.com'),
     );
 });
 
 test('an unknown status filter is refused rather than quietly ignored', function () {
-    $this->actingAs($this->admin)->get('/clients/invite?status=whatever')->assertSessionHasErrors('status');
+    $this->actingAs($this->admin)->get('/clients/invitations?status=whatever')->assertSessionHasErrors('status');
 });
 
 test('staff can revoke an invitation, and the revoked link is dead for good', function () {
@@ -459,10 +454,10 @@ test('a staff member sending a new invitation starts the renewal allowance again
 
     $spent = Invitation::issue('invited@example.com', null, null, $this->admin, now()->addDay(), resends: 3);
 
-    $this->actingAs($this->admin)->post('/clients/invite', [
+    $this->actingAs($this->admin)->post('/clients/invitations', [
         'email' => 'invited@example.com',
         'group_id' => 0,
-    ])->assertRedirect(route('clients.index'));
+    ])->assertRedirect(route('invitations.index'));
 
     $fresh = Invitation::query()->pending()->where('email', 'invited@example.com')->sole();
     expect($fresh->resends)->toBe(0)
@@ -472,4 +467,14 @@ test('a staff member sending a new invitation starts the renewal allowance again
     $this->post("/invite/{$fresh->token}/resend")->assertRedirect();
 
     expect(Invitation::query()->pending()->where('email', 'invited@example.com')->sole()->resends)->toBe(1);
+});
+
+test('the invite form and the history are separate screens', function () {
+    $this->actingAs($this->admin)->get('/clients/invitations/create')->assertInertia(
+        fn (AssertableInertia $page) => $page->component('clients/invite')->has('groups')->missing('invitations'),
+    );
+
+    $this->actingAs($this->admin)->get('/clients/invitations')->assertInertia(
+        fn (AssertableInertia $page) => $page->component('clients/invitations')->has('invitations')->missing('groups'),
+    );
 });

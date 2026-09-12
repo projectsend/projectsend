@@ -54,7 +54,7 @@ class InvitationController extends Controller
         Invitation::STATUS_SUPERSEDED,
     ];
 
-    public function create(Request $request): Response
+    public function index(Request $request): Response
     {
         $validated = $request->validate([
             'status' => ['nullable', 'string', Rule::in(self::FILTERABLE_STATES)],
@@ -91,19 +91,10 @@ class InvitationController extends Controller
                 'state' => $invitation->state(),
             ]);
 
-        return Inertia::render('clients/invite', [
-            'groups' => Group::query()->orderBy('name')->get(['id', 'name']),
-            // Resolved, not raw — see ClientsController::create()'s note on
-            // the same prop: this is what will actually happen, and the
-            // form's own field mirrors this resolution to draw its hint.
-            'default_storage_quota_mb' => $this->storageUsage->defaultQuotaMb(),
+        return Inertia::render('clients/invitations', [
             'invitations' => $invitations->items(),
             'pagination' => Pagination::meta($invitations),
             'filters' => ['status' => $status],
-            // Counted over the whole table rather than the filtered page:
-            // it is the "anything waiting for me?" number, and it must not
-            // change because somebody narrowed the list.
-            'pending_count' => Invitation::query()->pending()->where('expires_at', '>=', now())->count(),
         ]);
     }
 
@@ -118,6 +109,17 @@ class InvitationController extends Controller
             'expired' => $query->pending()->where('expires_at', '<', now()),
             default => $query->where('status', $state),
         };
+    }
+
+    public function create(): Response
+    {
+        return Inertia::render('clients/invite', [
+            'groups' => Group::query()->orderBy('name')->get(['id', 'name']),
+            // Resolved, not raw — see ClientsController::create()'s note on
+            // the same prop: this is what will actually happen, and the
+            // form's own field mirrors this resolution to draw its hint.
+            'default_storage_quota_mb' => $this->storageUsage->defaultQuotaMb(),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -159,7 +161,7 @@ class InvitationController extends Controller
 
         $this->activity->log(Action::ClientInvited, context: ['email' => $invitation->email]);
 
-        return redirect()->route('clients.index')->with('success', __('Invitation sent.'));
+        return redirect()->route('invitations.index')->with('success', __('Invitation sent.'));
     }
 
     /**

@@ -2045,7 +2045,6 @@
     "Create account": "Hesap oluştur",
     "Create your account": "Hesabınızı oluşturun",
     "Group (optional)": "Grup (isteğe bağlı)",
-    "History (:count pending)": "Geçmiş (:count bekliyor)",
     "How long a staff-sent invitation stays valid before the invited address has to ask for a new one.": "Ekibin gönderdiği bir davetin, davet edilen adresin yenisini istemesi gerekene kadar ne kadar süre geçerli kalacağı.",
     "If that invitation can still be resent, a new one is on its way.": "O davet hâlâ yeniden gönderilebiliyorsa, yenisi yola çıktı.",
     "Invitation links expire after (hours)": "Davet bağlantıları şu süre sonunda dolar (saat)",
@@ -2073,5 +2072,6 @@
     "This invitation is no longer valid. Ask whoever invited you to send a new one.": "Bu davet artık geçerli değil. Sizi davet eden kişiden yenisini göndermesini isteyin.",
     "You've been invited to register": "Kaydolmaya davet edildiniz",
     "You've been invited to register a client account. The link below will let you set your own password.": "Bir müşteri hesabı oluşturmaya davet edildiniz. Aşağıdaki bağlantı kendi parolanızı belirlemenizi sağlar.",
-    "Your account has been created. You will be able to log in once it is approved.": "Hesabınız oluşturuldu. Onaylandığında giriş yapabileceksiniz."
+    "Your account has been created. You will be able to log in once it is approved.": "Hesabınız oluşturuldu. Onaylandığında giriş yapabileceksiniz.",
+    "Invite a client to share files with": "Dosya paylaşacağınız bir müşteriyi davet edin"
 }

@@ -2045,7 +2045,6 @@
     "Create account": "アカウントを作成",
     "Create your account": "アカウントの作成",
     "Group (optional)": "グループ (任意)",
-    "History (:count pending)": "履歴 (保留中 :count 件)",
     "How long a staff-sent invitation stays valid before the invited address has to ask for a new one.": "スタッフが送った招待が有効な期間。これを過ぎると、招待された相手は新しい招待をリクエストする必要があります。",
     "If that invitation can still be resent, a new one is on its way.": "その招待をまだ再送できる場合は、新しい招待を送信しました。",
     "Invitation links expire after (hours)": "招待リンクの有効期間 (時間)",
@@ -2073,5 +2072,6 @@
     "This invitation is no longer valid. Ask whoever invited you to send a new one.": "この招待は無効になりました。招待した相手に新しい招待を送ってもらってください。",
     "You've been invited to register": "登録のご招待",
     "You've been invited to register a client account. The link below will let you set your own password.": "クライアントアカウントの登録に招待されました。下のリンクからご自身のパスワードを設定できます。",
-    "Your account has been created. You will be able to log in once it is approved.": "アカウントを作成しました。承認されるとログインできます。"
+    "Your account has been created. You will be able to log in once it is approved.": "アカウントを作成しました。承認されるとログインできます。",
+    "Invite a client to share files with": "ファイルを共有するクライアントを招待します"
 }

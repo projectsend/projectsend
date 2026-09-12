@@ -2045,7 +2045,6 @@
     "Create account": "Fungua akaunti",
     "Create your account": "Fungua akaunti yako",
     "Group (optional)": "Kikundi (hiari)",
-    "History (:count pending)": "Historia (zinasubiri: :count)",
     "How long a staff-sent invitation stays valid before the invited address has to ask for a new one.": "Muda ambao mwaliko uliotumwa na wafanyakazi hubaki halali kabla anwani iliyoalikwa kuomba mwingine.",
     "If that invitation can still be resent, a new one is on its way.": "Kama mwaliko huo bado unaweza kutumwa tena, mpya unakuja.",
     "Invitation links expire after (hours)": "Viungo vya mwaliko huisha baada ya (saa)",
@@ -2073,5 +2072,6 @@
     "This invitation is no longer valid. Ask whoever invited you to send a new one.": "Mwaliko huu si halali tena. Mwombe aliyekualika akutumie mpya.",
     "You've been invited to register": "Umealikwa kujisajili",
     "You've been invited to register a client account. The link below will let you set your own password.": "Umealikwa kusajili akaunti ya mteja. Kiungo kilicho hapa chini kitakuruhusu kuweka nenosiri lako mwenyewe.",
-    "Your account has been created. You will be able to log in once it is approved.": "Akaunti yako imeundwa. Utaweza kuingia mara itakapoidhinishwa."
+    "Your account has been created. You will be able to log in once it is approved.": "Akaunti yako imeundwa. Utaweza kuingia mara itakapoidhinishwa.",
+    "Invite a client to share files with": "Alika mteja wa kushirikiana naye mafaili"
 }

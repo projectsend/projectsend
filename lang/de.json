@@ -2045,7 +2045,6 @@
     "Create account": "Konto erstellen",
     "Create your account": "Erstellen Sie Ihr Konto",
     "Group (optional)": "Gruppe (optional)",
-    "History (:count pending)": "Verlauf (:count ausstehend)",
     "How long a staff-sent invitation stays valid before the invited address has to ask for a new one.": "Wie lange eine vom Team verschickte Einladung gültig bleibt, bevor die eingeladene Adresse eine neue anfordern muss.",
     "If that invitation can still be resent, a new one is on its way.": "Falls diese Einladung noch einmal verschickt werden kann, ist eine neue bereits unterwegs.",
     "Invitation links expire after (hours)": "Einladungslinks laufen ab nach (Stunden)",
@@ -2073,5 +2072,6 @@
     "This invitation is no longer valid. Ask whoever invited you to send a new one.": "Diese Einladung ist nicht mehr gültig. Bitten Sie die Person, die Sie eingeladen hat, um eine neue.",
     "You've been invited to register": "Sie wurden zur Registrierung eingeladen",
     "You've been invited to register a client account. The link below will let you set your own password.": "Sie wurden eingeladen, ein Kundenkonto zu registrieren. Über den Link unten können Sie Ihr eigenes Passwort festlegen.",
-    "Your account has been created. You will be able to log in once it is approved.": "Ihr Konto wurde erstellt. Sie können sich anmelden, sobald es genehmigt wurde."
+    "Your account has been created. You will be able to log in once it is approved.": "Ihr Konto wurde erstellt. Sie können sich anmelden, sobald es genehmigt wurde.",
+    "Invite a client to share files with": "Laden Sie einen Kunden ein, mit dem Sie Dateien teilen"
 }

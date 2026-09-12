@@ -2045,7 +2045,6 @@
     "Create account": "Buat akun",
     "Create your account": "Buat akun Anda",
     "Group (optional)": "Grup (opsional)",
-    "History (:count pending)": "Riwayat (:count tertunda)",
     "How long a staff-sent invitation stays valid before the invited address has to ask for a new one.": "Berapa lama undangan yang dikirim staf tetap berlaku sebelum alamat yang diundang harus meminta yang baru.",
     "If that invitation can still be resent, a new one is on its way.": "Jika undangan itu masih bisa dikirim ulang, yang baru sedang dalam perjalanan.",
     "Invitation links expire after (hours)": "Tautan undangan kedaluwarsa setelah (jam)",
@@ -2073,5 +2072,6 @@
     "This invitation is no longer valid. Ask whoever invited you to send a new one.": "Undangan ini tidak berlaku lagi. Mintalah orang yang mengundang Anda untuk mengirim yang baru.",
     "You've been invited to register": "Anda diundang untuk mendaftar",
     "You've been invited to register a client account. The link below will let you set your own password.": "Anda diundang untuk mendaftarkan akun klien. Tautan di bawah ini memungkinkan Anda menetapkan kata sandi sendiri.",
-    "Your account has been created. You will be able to log in once it is approved.": "Akun Anda telah dibuat. Anda bisa masuk setelah akun disetujui."
+    "Your account has been created. You will be able to log in once it is approved.": "Akun Anda telah dibuat. Anda bisa masuk setelah akun disetujui.",
+    "Invite a client to share files with": "Undang klien untuk berbagi berkas"
 }

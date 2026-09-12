@@ -1,6 +1,6 @@
 import { type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
 
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import Heading from '@/components/heading';
@@ -15,6 +15,8 @@ import { Select, SelectContent, SelectItem, SelectValue, SelectTrigger } from '@
 import { useFormatDate } from '@/hooks/use-format-date';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
+
+type Tab = 'send' | 'pending';
 
 interface InvitationFormData {
     [key: string]: string;
@@ -46,6 +48,10 @@ interface ClientsInviteProps {
 export default function ClientsInvite({ groups, default_storage_quota_mb, invitations, pagination }: ClientsInviteProps) {
     const { t } = useTranslation();
     const { dateTime } = useFormatDate();
+    // ?tab=pending opens on the list, so a link can point at the half it
+    // means — the same reason the theming settings read their own tab from
+    // the query string. Anything unrecognised falls back to the form.
+    const [tab, setTab] = useState<Tab>(new URLSearchParams(window.location.search).get('tab') === 'pending' ? 'pending' : 'send');
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: t('Clients'), href: '/clients' },
@@ -73,7 +79,28 @@ export default function ClientsInvite({ groups, default_storage_quota_mb, invita
             <div className="px-4 py-6">
                 <Heading title={t('Invite client')} description={t('Invite a client to share files with')} />
 
-                <form onSubmit={submit} className="grid max-w-md gap-6">
+                <nav className="mb-6 flex gap-1 border-b">
+                    {(['send', 'pending'] as Tab[]).map((tabKey) => (
+                        <button
+                            type="button"
+                            key={tabKey}
+                            onClick={() => setTab(tabKey)}
+                            className={`border-b-2 px-3 py-2 text-sm ${tab === tabKey ? 'border-primary text-foreground font-medium' : 'text-muted-foreground border-transparent'}`}
+                        >
+                            {tabKey === 'send'
+                                ? t('Send an invitation')
+                                : // Counted in the label rather than left to be
+                                  // discovered: the reason to open this tab is
+                                  // that something is waiting in it.
+                                  t('Pending invitations (:count)', { count: pagination.total })}
+                        </button>
+                    ))}
+                </nav>
+
+                {/* Hidden rather than unmounted, the same as the staff account
+                    form's tabs: switching to the list and back must not throw
+                    away a half-typed invitation. */}
+                <form onSubmit={submit} className={`grid max-w-md gap-6 ${tab === 'send' ? '' : 'hidden'}`}>
                     <div className="grid gap-2">
                         <Label htmlFor="email">{t('Email address')}</Label>
                         <Input
@@ -140,53 +167,63 @@ export default function ClientsInvite({ groups, default_storage_quota_mb, invita
                     </div>
                 </form>
 
-                <div className="mt-10">
-                    <Heading
-                        title={t('Outstanding invitations')}
-                        description={t('Links that have been sent and not used yet. Revoking one stops it working for good.')}
-                    />
+                {tab === 'pending' && (
+                    <div>
+                        <p className="text-muted-foreground mb-4 text-sm">
+                            {t('Links that have been sent and not used yet. Revoking one stops it working for good.')}
+                        </p>
 
-                    <TableShell
-                        columns={[t('Email address'), t('Group'), t('Invited by'), t('Sent'), t('Expires'), null]}
-                        isEmpty={invitations.length === 0}
-                        emptyMessage={<>{t('No invitations are waiting to be used.')}</>}
-                    >
-                        {invitations.map((invitation) => (
-                            <tr key={invitation.id} className="border-b last:border-0">
-                                <td className="px-4 py-2.5 font-medium">
-                                    {invitation.email}
-                                    {invitation.name && <span className="text-muted-foreground ml-2 font-normal">{invitation.name}</span>}
-                                </td>
-                                <td className="text-muted-foreground px-4 py-2.5">{invitation.group ?? '—'}</td>
-                                <td className="text-muted-foreground px-4 py-2.5">{invitation.invited_by ?? '—'}</td>
-                                <td className="text-muted-foreground px-4 py-2.5">{dateTime(invitation.created_at)}</td>
-                                <td className="text-muted-foreground px-4 py-2.5">
-                                    {invitation.expired ? <Badge variant="destructive">{t('Expired')}</Badge> : dateTime(invitation.expires_at)}
-                                </td>
-                                <td className="px-4 py-2.5">
-                                    <div className="flex justify-end">
-                                        <ConfirmDialog
-                                            trigger={
-                                                <Button size="sm" variant="destructive">
-                                                    {t('Revoke')}
-                                                </Button>
-                                            }
-                                            title={t('Revoke this invitation?')}
-                                            description={t(
-                                                'The link sent to :email stops working, and cannot be renewed by whoever holds it. You can send a new invitation at any time.',
-                                                { email: invitation.email },
-                                            )}
-                                            confirmLabel={t('Revoke')}
-                                            onConfirm={() => router.delete(route('invitations.destroy', invitation.id))}
-                                        />
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </TableShell>
+                        <TableShell
+                            columns={[t('Email address'), t('Group'), t('Invited by'), t('Sent'), t('Expires'), null]}
+                            isEmpty={invitations.length === 0}
+                            emptyMessage={<>{t('No invitations are waiting to be used.')}</>}
+                        >
+                            {invitations.map((invitation) => (
+                                <tr key={invitation.id} className="border-b last:border-0">
+                                    <td className="px-4 py-2.5 font-medium">
+                                        {invitation.email}
+                                        {invitation.name && <span className="text-muted-foreground ml-2 font-normal">{invitation.name}</span>}
+                                    </td>
+                                    <td className="text-muted-foreground px-4 py-2.5">{invitation.group ?? '—'}</td>
+                                    <td className="text-muted-foreground px-4 py-2.5">{invitation.invited_by ?? '—'}</td>
+                                    <td className="text-muted-foreground px-4 py-2.5">{dateTime(invitation.created_at)}</td>
+                                    <td className="text-muted-foreground px-4 py-2.5">
+                                        {invitation.expired ? <Badge variant="destructive">{t('Expired')}</Badge> : dateTime(invitation.expires_at)}
+                                    </td>
+                                    <td className="px-4 py-2.5">
+                                        <div className="flex justify-end">
+                                            <ConfirmDialog
+                                                trigger={
+                                                    <Button size="sm" variant="destructive">
+                                                        {t('Revoke')}
+                                                    </Button>
+                                                }
+                                                title={t('Revoke this invitation?')}
+                                                description={t(
+                                                    'The link sent to :email stops working, and cannot be renewed by whoever holds it. You can send a new invitation at any time.',
+                                                    { email: invitation.email },
+                                                )}
+                                                confirmLabel={t('Revoke')}
+                                                // preserveState so the page comes back on this tab
+                                                // rather than on the form: revoking redirects back
+                                                // here, and landing on the other half after acting
+                                                // on this one reads as having lost the list.
+                                                onConfirm={() =>
+                                                    router.delete(route('invitations.destroy', invitation.id), {
+                                                        preserveState: true,
+                                                        preserveScroll: true,
+                                                    })
+                                                }
+                                            />
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </TableShell>
 
-                    <Pagination meta={pagination} />
-                </div>
+                        <Pagination meta={pagination} />
+                    </div>
+                )}
             </div>
         </AppLayout>
     );

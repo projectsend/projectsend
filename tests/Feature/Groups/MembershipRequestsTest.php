@@ -179,6 +179,7 @@ test('the client settings screen validates the group options', function () {
         'clients_auto_group' => $group->id,
         'clients_can_select_group' => 'public',
         'clients_membership_deny_cooldown_days' => 0,
+        'client_invitation_expiry_hours' => 72,
         'default_client_storage_quota_mb' => 0,
         'clients_can_preview_files' => true,
     ])->assertSessionDoesntHaveErrors();

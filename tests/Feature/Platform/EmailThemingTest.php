@@ -111,3 +111,20 @@ test('a listener that hides attribution strips the line from outgoing mail', fun
     expect($html)->not->toContain('Powered by ProjectSend')
         ->and($html)->toContain('All rights reserved');
 });
+
+test('the site name replaces the app name in the header and the salutation', function () {
+    // The default "Powered by ProjectSend" attribution line stays either
+    // way — this is about the header logo's alt text and the "Regards,"
+    // signature, not that fixed string, so it is disabled here to keep
+    // the assertion about one thing.
+    Event::listen(ResolvingAttribution::class, function (ResolvingAttribution $event): void {
+        $event->visible = false;
+    });
+
+    app(Settings::class)->set(Setting::SiteName, 'Renamed Installation');
+
+    $html = renderThemedNotificationHtml();
+
+    expect($html)->toContain('Renamed Installation')
+        ->and($html)->not->toContain('ProjectSend');
+});

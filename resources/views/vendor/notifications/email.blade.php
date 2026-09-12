@@ -1,17 +1,23 @@
-{{-- Laravel's notification email view, published so the subcopy can spell
-     the action URL out differently in each half of the message.
+{{-- Laravel's notification email view, published for two reasons.
 
-     Upstream writes `[$url]($url)` there. That is right for the HTML half
-     and wrong for the text one, where nothing parses markdown: it arrives
-     as literal brackets around a duplicated address, which is what a
-     badly-built phishing mail looks like — on a password reset, often the
-     first mail an installation ever sends anybody. The x-mail::action-url
-     component resolves to a different file per half, which is how every
-     other component in this message already handles the same problem.
+     The subcopy needs to spell the action URL out differently in each
+     half of the message. Upstream writes `[$url]($url)` there. That is
+     right for the HTML half and wrong for the text one, where nothing
+     parses markdown: it arrives as literal brackets around a duplicated
+     address, which is what a badly-built phishing mail looks like — on a
+     password reset, often the first mail an installation ever sends
+     anybody. The x-mail::action-url component resolves to a different
+     file per half, which is how every other component in this message
+     already handles the same problem.
+
+     The salutation's fallback needs to read the installation's own name
+     rather than the one baked into config('app.name') at install time —
+     the same reason resources/views/vendor/mail/*/message.blade.php are
+     published.
 
      This is a copy of a framework view, so it does not follow Laravel
      forward on its own. If an upgrade changes the notification layout,
-     re-copy it and re-apply the one-line change below. --}}
+     re-copy it and re-apply the changes below. --}}
 <x-mail::message>
 {{-- Greeting --}}
 @if (! empty($greeting))
@@ -53,8 +59,12 @@
 @if (! empty($salutation))
 {{ $salutation }}
 @else
+<?php
+    $siteName = app(\App\Modules\Platform\Settings\Settings::class)->get(\App\Modules\Platform\Settings\Setting::SiteName);
+    $siteName = is_string($siteName) ? $siteName : 'ProjectSend';
+?>
 @lang('Regards,')<br>
-{{ config('app.name') }}
+{{ $siteName }}
 @endif
 
 {{-- Subcopy --}}

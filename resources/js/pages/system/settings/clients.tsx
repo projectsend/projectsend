@@ -18,6 +18,7 @@ interface ClientSettingsProps {
     clients_auto_group: number;
     clients_can_select_group: string;
     clients_membership_deny_cooldown_days: number;
+    client_invitation_expiry_hours: number;
     default_client_storage_quota_mb: number;
     clients_can_preview_files: boolean;
     groups: { id: number; name: string }[];
@@ -29,6 +30,7 @@ export default function ClientSettings({
     clients_auto_group,
     clients_can_select_group,
     clients_membership_deny_cooldown_days,
+    client_invitation_expiry_hours,
     default_client_storage_quota_mb,
     clients_can_preview_files,
     groups,
@@ -46,6 +48,7 @@ export default function ClientSettings({
         clients_auto_group: String(clients_auto_group),
         clients_can_select_group: clients_can_select_group,
         clients_membership_deny_cooldown_days: String(clients_membership_deny_cooldown_days),
+        client_invitation_expiry_hours: String(client_invitation_expiry_hours),
         default_client_storage_quota_mb: String(default_client_storage_quota_mb),
         clients_can_preview_files: clients_can_preview_files,
     });
@@ -155,6 +158,23 @@ export default function ClientSettings({
                         />
                         <p className="text-muted-foreground text-sm">{t('Set to 0 to allow requesting again immediately.')}</p>
                         <InputError message={errors.clients_membership_deny_cooldown_days} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="client_invitation_expiry_hours">{t('Invitation links expire after (hours)')}</Label>
+                        <Input
+                            id="client_invitation_expiry_hours"
+                            type="number"
+                            min={1}
+                            max={720}
+                            className="w-32"
+                            value={data.client_invitation_expiry_hours}
+                            onChange={(e) => setData('client_invitation_expiry_hours', e.target.value)}
+                        />
+                        <p className="text-muted-foreground text-sm">
+                            {t('How long a staff-sent invitation stays valid before the invited address has to ask for a new one.')}
+                        </p>
+                        <InputError message={errors.client_invitation_expiry_hours} />
                     </div>
 
                     <div className="grid gap-2">

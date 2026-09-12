@@ -40,6 +40,8 @@ enum Action: string
     case SocialAccountUnlinked = 'social.account_unlinked';
     case ClientApproved = 'client.approved';
     case ClientDenied = 'client.denied';
+    case ClientInvited = 'client.invited';
+    case ClientInvitationRedeemed = 'client.invitation_redeemed';
     // Files
     case FileUploaded = 'file.uploaded';
     case FileUpdated = 'file.updated';
@@ -165,6 +167,8 @@ enum Action: string
             self::ClientSelfRegistered => 'Registered a new client account',
             self::ClientApproved => 'Approved the account request of ":subject"',
             self::ClientDenied => 'Denied the account request of ":name"',
+            self::ClientInvited => 'Invited :email to register a client account',
+            self::ClientInvitationRedeemed => 'Registered a client account from an invitation',
             self::FileUploaded => 'Uploaded the file ":subject"',
             self::FileUpdated => 'Updated the file ":subject"',
             self::FileDeleted => 'Deleted the file ":name"',
@@ -267,6 +271,8 @@ enum Action: string
             self::ClientSelfRegistered => 'A client registered an account',
             self::ClientApproved => 'A client account request was approved',
             self::ClientDenied => 'A client account request was denied',
+            self::ClientInvited => 'A client was invited to register an account',
+            self::ClientInvitationRedeemed => 'A client registered an account from an invitation',
             self::FileUploaded => 'A file was uploaded',
             self::FileUpdated => 'A file was updated',
             self::FileDeleted => 'A file was deleted',

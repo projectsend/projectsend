@@ -43,6 +43,7 @@ enum Action: string
     case ClientInvited = 'client.invited';
     case ClientInvitationRedeemed = 'client.invitation_redeemed';
     case ClientInvitationRevoked = 'client.invitation_revoked';
+    case ClientInvitationResent = 'client.invitation_resent';
     // Files
     case FileUploaded = 'file.uploaded';
     case FileUpdated = 'file.updated';
@@ -171,6 +172,7 @@ enum Action: string
             self::ClientInvited => 'Invited :email to register a client account',
             self::ClientInvitationRedeemed => 'Registered a client account from an invitation',
             self::ClientInvitationRevoked => 'Revoked the invitation sent to :email',
+            self::ClientInvitationResent => 'A new invitation link was requested for :email',
             self::FileUploaded => 'Uploaded the file ":subject"',
             self::FileUpdated => 'Updated the file ":subject"',
             self::FileDeleted => 'Deleted the file ":name"',
@@ -276,6 +278,7 @@ enum Action: string
             self::ClientInvited => 'A client was invited to register an account',
             self::ClientInvitationRedeemed => 'A client registered an account from an invitation',
             self::ClientInvitationRevoked => 'An invitation was revoked before it was used',
+            self::ClientInvitationResent => 'An invited person asked for a replacement link',
             self::FileUploaded => 'A file was uploaded',
             self::FileUpdated => 'A file was updated',
             self::FileDeleted => 'A file was deleted',

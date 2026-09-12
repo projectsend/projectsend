@@ -11,6 +11,7 @@ use App\Modules\Groups\Models\Group;
 use App\Modules\Identity\UserType;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Facades\Notification;
 use Inertia\Testing\AssertableInertia;
 
@@ -378,4 +379,57 @@ test('clients cannot revoke invitations', function () {
         ->assertForbidden();
 
     expect($invitation->fresh()->status)->toBe(Invitation::STATUS_PENDING);
+});
+
+test('an invitation can only be renewed by the person holding it so many times', function () {
+    Notification::fake();
+
+    // The route's own throttle allows three of these a minute, which is
+    // the fourth request this test needs to make. It is a separate limit
+    // with a separate job — this test is about the one that does not reset
+    // after sixty seconds.
+    $this->withoutMiddleware(ThrottleRequests::class);
+
+    Invitation::issue('invited@example.com', null, null, $this->admin, now()->subMinute());
+
+    // Three renewals, each on the link the previous one issued, which is
+    // what somebody following the emails would actually do.
+    foreach (range(1, 3) as $round) {
+        $current = Invitation::query()->pending()->where('email', 'invited@example.com')->sole();
+        $this->post("/invite/{$current->token}/resend")->assertRedirect();
+
+        expect(Invitation::query()->pending()->where('email', 'invited@example.com')->sole()->resends)->toBe($round);
+    }
+
+    Notification::assertSentOnDemandTimes(ClientInvitationNotification::class, 3);
+    expect(ActivityLog::query()->where('action', Action::ClientInvitationResent)->count())->toBe(3);
+
+    // The fourth is refused, in the same words as every other refusal this
+    // door gives, and sends nothing.
+    Notification::fake();
+    $fourth = Invitation::query()->pending()->where('email', 'invited@example.com')->sole();
+    $this->post("/invite/{$fourth->token}/resend")->assertRedirect();
+
+    Notification::assertNothingSent();
+    expect(Invitation::query()->pending()->where('email', 'invited@example.com')->sole()->token)->toBe($fourth->token);
+});
+
+test('a staff member sending a new invitation starts the renewal allowance again', function () {
+    Notification::fake();
+
+    $spent = Invitation::issue('invited@example.com', null, null, $this->admin, now()->addDay(), resends: 3);
+
+    $this->actingAs($this->admin)->post('/clients/invite', [
+        'email' => 'invited@example.com',
+        'group_id' => 0,
+    ])->assertRedirect(route('clients.index'));
+
+    $fresh = Invitation::query()->pending()->where('email', 'invited@example.com')->sole();
+    expect($fresh->resends)->toBe(0)
+        ->and($spent->fresh()->status)->toBe(Invitation::STATUS_SUPERSEDED);
+
+    $this->post('/logout');
+    $this->post("/invite/{$fresh->token}/resend")->assertRedirect();
+
+    expect(Invitation::query()->pending()->where('email', 'invited@example.com')->sole()->resends)->toBe(1);
 });

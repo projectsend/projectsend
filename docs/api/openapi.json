@@ -3533,6 +3533,7 @@
                     "client.invited",
                     "client.invitation_redeemed",
                     "client.invitation_revoked",
+                    "client.invitation_resent",
                     "file.uploaded",
                     "file.updated",
                     "file.deleted",

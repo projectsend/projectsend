@@ -6,6 +6,7 @@ namespace App\Modules\Clients\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
+use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientProvisioning;
 use App\Modules\Clients\Models\Invitation;
 use App\Modules\Clients\Notifications\ClientInvitationNotification;
@@ -30,8 +31,26 @@ use Inertia\Response;
  */
 class InvitationRedemptionController extends Controller
 {
+    /**
+     * How many times an invitation may be renewed by the person holding
+     * it, before a staff member has to send a new one.
+     *
+     * Without a limit, expiry stops meaning anything: whoever holds a dead
+     * link can re-arm it, so the window an operator configured is only as
+     * short as the longest anybody bothers to wait. Three is enough for
+     * somebody who genuinely keeps missing it, and short enough that a link
+     * sitting somewhere it should not be — a forwarded thread, a shared
+     * inbox, a mailbox that changed hands — eventually stops answering on
+     * its own, as the expiry setting says it will.
+     *
+     * Revoking is the immediate version of the same decision, and does not
+     * wait for this: see InvitationController::destroy().
+     */
+    private const SELF_RESEND_LIMIT = 3;
+
     public function __construct(
         private readonly ClientProvisioning $provisioning,
+        private readonly ActivityLogger $activity,
         private readonly Settings $settings,
     ) {}
 
@@ -121,13 +140,24 @@ class InvitationRedemptionController extends Controller
      * is the one door on the flow an anonymous visitor can knock on
      * repeatedly, so it must not become a way to learn which addresses
      * were ever invited.
+     *
+     * The new link goes to the address on the invitation, never to whoever
+     * asked, so holding a leaked URL gets nobody a working one. What this
+     * does spend is the operator's expiry window, which is why
+     * SELF_RESEND_LIMIT caps how often it can be spent, and why staff can
+     * end it outright by revoking.
      */
     public function resend(Request $request): RedirectResponse
     {
         $token = (string) $request->route('token');
         $invitation = $this->findUsable($token, includingExpired: true);
 
-        if ($invitation !== null) {
+        // Spent, unknown, revoked, or renewed as often as it may be: all
+        // four answer the same sentence below, and none of them sends
+        // anything. Only the last of the four is a link whose holder did
+        // nothing wrong, and telling them apart here would tell a guesser
+        // which addresses this installation has invited.
+        if ($invitation !== null && $invitation->resends < self::SELF_RESEND_LIMIT) {
             $fresh = Invitation::issue(
                 email: $invitation->email,
                 name: $invitation->name,
@@ -135,11 +165,20 @@ class InvitationRedemptionController extends Controller
                 invitedBy: $invitation->invitedBy,
                 expiresAt: now()->addHours((int) $this->settings->get(Setting::ClientInvitationExpiryHours)),
                 storageQuotaMb: $invitation->storage_quota_mb,
+                resends: $invitation->resends + 1,
             );
 
             Notification::route('mail', $fresh->email)->notify(
                 new ClientInvitationNotification($fresh->name ?? $fresh->email, $fresh->token),
             );
+
+            // Nobody is signed in, so this records no actor — which is the
+            // point of logging it. Sending and redeeming were already in
+            // the trail; renewing was the one step that moved an invitation
+            // along with no staff member behind it and left no trace.
+            // Bounded by the limit above, so an anonymous door cannot flood
+            // the log.
+            $this->activity->log(Action::ClientInvitationResent, context: ['email' => $fresh->email]);
         }
 
         return back()->with('status', __('If that invitation can still be resent, a new one is on its way.'));

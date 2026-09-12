@@ -29,6 +29,7 @@ use Illuminate\Support\Str;
  * @property string $email
  * @property string $token
  * @property string $status
+ * @property int $resends
  * @property int $storage_quota_mb
  * @property int|null $group_id
  * @property int|null $invited_by_id
@@ -69,8 +70,14 @@ class Invitation extends Model
      * for the same address first — one live token per address at a time,
      * whether this is staff sending a second invite or the invited person
      * asking for a new link after the first expired.
+     *
+     * @param  int  $resends  How many self-resends this link already stands
+     *                        on. Staff leave it at zero; the resend door
+     *                        passes the previous invitation's count plus
+     *                        one, which is what makes the limit apply to
+     *                        the chain rather than to a single row.
      */
-    public static function issue(string $email, ?string $name, ?Group $group, ?User $invitedBy, Carbon $expiresAt, int $storageQuotaMb = 0): self
+    public static function issue(string $email, ?string $name, ?Group $group, ?User $invitedBy, Carbon $expiresAt, int $storageQuotaMb = 0, int $resends = 0): self
     {
         self::query()->pending()->where('email', $email)->update(['status' => self::STATUS_SUPERSEDED]);
 
@@ -79,6 +86,10 @@ class Invitation extends Model
             'email' => $email,
             'token' => Str::random(40),
             'status' => self::STATUS_PENDING,
+            // Zero from staff, and deliberately: sending an invitation is
+            // somebody deciding to, which starts the allowance again. Only
+            // a self-resend carries the previous count forward.
+            'resends' => $resends,
             'storage_quota_mb' => $storageQuotaMb,
             'group_id' => $group?->id,
             'invited_by_id' => $invitedBy?->id,

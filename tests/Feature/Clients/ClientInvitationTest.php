@@ -238,3 +238,35 @@ test('resending an expired invitation issues a fresh token and emails it, withou
     $this->post('/invite/not-a-real-token/resend')->assertRedirect();
     Notification::assertNothingSent();
 });
+
+test('an invitation whose address was taken while the link was live refuses rather than failing on the unique index', function () {
+    $invitation = Invitation::issue('invited@example.com', null, null, $this->admin, now()->addDay());
+
+    // Staff got impatient, or the person used the public form instead.
+    User::factory()->client()->create(['email' => 'invited@example.com']);
+
+    $this->post("/invite/{$invitation->token}", [
+        'token' => $invitation->token,
+        'name' => 'Invited Person',
+        'password' => 'super-secret-password',
+        'password_confirmation' => 'super-secret-password',
+    ])->assertSessionHasErrors('token');
+
+    expect(User::query()->where('email', 'invited@example.com')->count())->toBe(1)
+        ->and($invitation->fresh()->status)->toBe(Invitation::STATUS_PENDING);
+});
+
+test('an address held by a deleted account is still taken, the same as it is everywhere else', function () {
+    $invitation = Invitation::issue('invited@example.com', null, null, $this->admin, now()->addDay());
+
+    User::factory()->client()->create(['email' => 'invited@example.com'])->delete();
+
+    $this->post("/invite/{$invitation->token}", [
+        'token' => $invitation->token,
+        'name' => 'Invited Person',
+        'password' => 'super-secret-password',
+        'password_confirmation' => 'super-secret-password',
+    ])->assertSessionHasErrors('token');
+
+    expect(User::query()->where('email', 'invited@example.com')->exists())->toBeFalse();
+});

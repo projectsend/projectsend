@@ -69,6 +69,24 @@ class InvitationRedemptionController extends Controller
             ]);
         }
 
+        // An invitation is live for days, and the address it names can be
+        // taken in the meantime — staff got impatient and made the account
+        // by hand, or the person registered through the public form. The
+        // unique index on users.email spans trashed rows, so provision()
+        // would raise a QueryException here rather than refusing: a 500 on
+        // the screen of somebody who has just typed a password. Every other
+        // caller with no form to validate asks this first, for this reason
+        // — see ClientProvisioning::addressIsFree().
+        if (! $this->provisioning->addressIsFree($invitation->email)) {
+            throw ValidationException::withMessages([
+                // Says what happened, because the person holding this link
+                // already knows the address is theirs — it is the one the
+                // invitation was sent to. There is nothing here to disclose
+                // that the invitation itself did not.
+                'token' => [__('An account already exists for this email address. Try signing in instead, or reset your password.')],
+            ]);
+        }
+
         $client = $this->provisioning->provision(
             name: $validated['name'],
             email: $invitation->email,

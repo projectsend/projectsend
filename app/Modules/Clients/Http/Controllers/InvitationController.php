@@ -16,6 +16,7 @@ use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use App\Support\Pagination;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
@@ -37,21 +38,43 @@ class InvitationController extends Controller
         private readonly SeatAllowance $seats,
     ) {}
 
-    public function create(): Response
+    /**
+     * Every state the status filter accepts. What each one means lives in
+     * applyStateFilter() alone: two of them narrow the same stored status
+     * by the clock, and a second copy of that rule is how the filter and
+     * the badge start disagreeing about a row whose expiry just passed.
+     *
+     * @var list<string>
+     */
+    private const FILTERABLE_STATES = [
+        'pending',
+        'expired',
+        Invitation::STATUS_REDEEMED,
+        Invitation::STATUS_REVOKED,
+        Invitation::STATUS_SUPERSEDED,
+    ];
+
+    public function create(Request $request): Response
     {
-        // Outstanding means pending, expired ones included. An expired
-        // invitation is not inert: until it is revoked, whoever holds the
-        // link can ask for a fresh one, so a screen that hid them would
-        // hide exactly the rows worth acting on.
+        $validated = $request->validate([
+            'status' => ['nullable', 'string', Rule::in(self::FILTERABLE_STATES)],
+        ]);
+
+        $status = $validated['status'] ?? null;
+
+        // Every invitation ever sent, not only the live ones. The list is a
+        // history: what was sent, what became of it, and who is still
+        // waiting. A screen that showed only what is outstanding cannot
+        // answer "did we ever invite this person", which is the question
+        // somebody actually arrives with.
         $invitations = Invitation::query()
-            ->pending()
+            ->when($status !== null, fn (Builder $query) => $this->applyStateFilter($query, (string) $status))
             ->with(['group:id,name', 'invitedBy:id,name'])
-            // Soonest to expire first, which puts the already-expired rows
-            // at the top — the ones somebody can still ask to have renewed,
-            // and so the ones worth deciding about. Ties broken by id
-            // because a batch sent in one minute shares an expiry.
-            ->orderBy('expires_at')
-            ->orderBy('id')
+            // Newest first, the order a history is read in. What is urgent
+            // rather than recent is reachable through the status filter,
+            // and the Expires column says the rest.
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
             ->paginate(25)
             ->withQueryString()
             ->through(fn (Invitation $invitation): array => [
@@ -62,7 +85,10 @@ class InvitationController extends Controller
                 'invited_by' => $invitation->invitedBy?->name,
                 'created_at' => $invitation->created_at?->toIso8601String(),
                 'expires_at' => $invitation->expires_at->toIso8601String(),
-                'expired' => $invitation->isExpired(),
+                // What the screen labels the row, and what the filter above
+                // selects on — one definition, so the badge and the filter
+                // cannot disagree about a row whose expiry just passed.
+                'state' => $invitation->state(),
             ]);
 
         return Inertia::render('clients/invite', [
@@ -73,7 +99,25 @@ class InvitationController extends Controller
             'default_storage_quota_mb' => $this->storageUsage->defaultQuotaMb(),
             'invitations' => $invitations->items(),
             'pagination' => Pagination::meta($invitations),
+            'filters' => ['status' => $status],
+            // Counted over the whole table rather than the filtered page:
+            // it is the "anything waiting for me?" number, and it must not
+            // change because somebody narrowed the list.
+            'pending_count' => Invitation::query()->pending()->where('expires_at', '>=', now())->count(),
         ]);
+    }
+
+    /**
+     * @param  Builder<Invitation>  $query
+     * @return Builder<Invitation>
+     */
+    private function applyStateFilter(Builder $query, string $state): Builder
+    {
+        return match ($state) {
+            'pending' => $query->pending()->where('expires_at', '>=', now()),
+            'expired' => $query->pending()->where('expires_at', '<', now()),
+            default => $query->where('status', $state),
+        };
     }
 
     public function store(Request $request): RedirectResponse

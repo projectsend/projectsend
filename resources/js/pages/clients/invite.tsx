@@ -5,6 +5,7 @@ import { FormEventHandler, useState } from 'react';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
+import { FilterField, ListToolbar } from '@/components/list-toolbar';
 import { Pagination, PaginationMeta } from '@/components/pagination';
 import { TableShell } from '@/components/table-shell';
 import { Badge } from '@/components/ui/badge';
@@ -13,10 +14,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectValue, SelectTrigger } from '@/components/ui/select';
 import { useFormatDate } from '@/hooks/use-format-date';
+import { ALL, useListQuery } from '@/hooks/use-list-query';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
 
-type Tab = 'send' | 'pending';
+type Tab = 'history' | 'send';
+
+/**
+ * What a row is, as the server decided it — "expired" among them, which is
+ * not a stored status. See Invitation::state().
+ */
+type InvitationState = 'pending' | 'expired' | 'redeemed' | 'revoked' | 'superseded';
 
 interface InvitationFormData {
     [key: string]: string;
@@ -34,8 +42,7 @@ interface InvitationRow {
     invited_by: string | null;
     created_at: string | null;
     expires_at: string;
-    /** Past its expiry but still revocable — see the note on the list below. */
-    expired: boolean;
+    state: InvitationState;
 }
 
 interface ClientsInviteProps {
@@ -43,20 +50,52 @@ interface ClientsInviteProps {
     default_storage_quota_mb: number;
     invitations: InvitationRow[];
     pagination: PaginationMeta;
+    filters: { status: string | null };
+    /** Live invitations across the whole table, not this filtered page. */
+    pending_count: number;
 }
 
-export default function ClientsInvite({ groups, default_storage_quota_mb, invitations, pagination }: ClientsInviteProps) {
+export default function ClientsInvite({
+    groups,
+    default_storage_quota_mb,
+    invitations,
+    pagination,
+    filters,
+    pending_count,
+}: ClientsInviteProps) {
     const { t } = useTranslation();
     const { dateTime } = useFormatDate();
-    // ?tab=pending opens on the list, so a link can point at the half it
-    // means — the same reason the theming settings read their own tab from
-    // the query string. Anything unrecognised falls back to the form.
-    const [tab, setTab] = useState<Tab>(new URLSearchParams(window.location.search).get('tab') === 'pending' ? 'pending' : 'send');
+    // The history opens first: arriving here, the question is usually "who
+    // have we already invited" — including the one you were about to invite
+    // again. ?tab=send goes straight to the form for anything that means to
+    // link at it, and anything unrecognised falls back to the history.
+    const [tab, setTab] = useState<Tab>(new URLSearchParams(window.location.search).get('tab') === 'send' ? 'send' : 'history');
+
+    const { values, set, reset, hasFilters } = useListQuery('invitations.create', { status: filters.status ?? ALL }, { status: ALL });
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: t('Clients'), href: '/clients' },
-        { title: t('Invite client'), href: '/clients/invite' },
+        { title: t('Invitations'), href: '/clients/invite' },
     ];
+
+    // Every state a row can be in, said once. "Expired" and "Replaced" are
+    // the two a reader needs told apart: one is a link that simply ran out,
+    // the other was retired by a newer invitation to the same address.
+    const stateLabels: Record<InvitationState, string> = {
+        pending: t('Waiting'),
+        expired: t('Expired'),
+        redeemed: t('Accepted'),
+        revoked: t('Revoked'),
+        superseded: t('Replaced'),
+    };
+
+    const stateVariants: Record<InvitationState, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+        pending: 'default',
+        expired: 'destructive',
+        redeemed: 'secondary',
+        revoked: 'outline',
+        superseded: 'outline',
+    };
 
     const { data, setData, post, processing, errors } = useForm<InvitationFormData>({
         email: '',
@@ -77,10 +116,10 @@ export default function ClientsInvite({ groups, default_storage_quota_mb, invita
             <Head title={t('Invite client')} />
 
             <div className="px-4 py-6">
-                <Heading title={t('Invite client')} description={t('Invite a client to share files with')} />
+                <Heading title={t('Invitations')} description={t('People invited to register a client account, and what became of each invitation')} />
 
                 <nav className="mb-6 flex gap-1 border-b">
-                    {(['send', 'pending'] as Tab[]).map((tabKey) => (
+                    {(['history', 'send'] as Tab[]).map((tabKey) => (
                         <button
                             type="button"
                             key={tabKey}
@@ -89,10 +128,11 @@ export default function ClientsInvite({ groups, default_storage_quota_mb, invita
                         >
                             {tabKey === 'send'
                                 ? t('Send an invitation')
-                                : // Counted in the label rather than left to be
-                                  // discovered: the reason to open this tab is
-                                  // that something is waiting in it.
-                                  t('Pending invitations (:count)', { count: pagination.total })}
+                                : // The count is of live invitations, not of the
+                                  // rows below: the history is mostly settled, and
+                                  // the number worth carrying in a label is the one
+                                  // that says whether anybody is still waiting.
+                                  t('History (:count waiting)', { count: pending_count })}
                         </button>
                     ))}
                 </nav>
@@ -167,16 +207,30 @@ export default function ClientsInvite({ groups, default_storage_quota_mb, invita
                     </div>
                 </form>
 
-                {tab === 'pending' && (
+                {tab === 'history' && (
                     <div>
-                        <p className="text-muted-foreground mb-4 text-sm">
-                            {t('Links that have been sent and not used yet. Revoking one stops it working for good.')}
-                        </p>
+                        <ListToolbar showClear={hasFilters} onClear={reset}>
+                            <FilterField label={t('Status')} htmlFor="invitations-status">
+                                <Select value={values.status} onValueChange={(v) => set('status', v)}>
+                                    <SelectTrigger id="invitations-status" className="w-48">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value={ALL}>{t('All statuses')}</SelectItem>
+                                        <SelectItem value="pending">{stateLabels.pending}</SelectItem>
+                                        <SelectItem value="expired">{stateLabels.expired}</SelectItem>
+                                        <SelectItem value="redeemed">{stateLabels.redeemed}</SelectItem>
+                                        <SelectItem value="revoked">{stateLabels.revoked}</SelectItem>
+                                        <SelectItem value="superseded">{stateLabels.superseded}</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </FilterField>
+                        </ListToolbar>
 
                         <TableShell
-                            columns={[t('Email address'), t('Group'), t('Invited by'), t('Sent'), t('Expires'), null]}
+                            columns={[t('Email address'), t('Status'), t('Group'), t('Invited by'), t('Sent'), t('Expires'), null]}
                             isEmpty={invitations.length === 0}
-                            emptyMessage={<>{t('No invitations are waiting to be used.')}</>}
+                            emptyMessage={<>{hasFilters ? t('No invitations match this filter.') : t('No invitations have been sent yet.')}</>}
                         >
                             {invitations.map((invitation) => (
                                 <tr key={invitation.id} className="border-b last:border-0">
@@ -184,37 +238,49 @@ export default function ClientsInvite({ groups, default_storage_quota_mb, invita
                                         {invitation.email}
                                         {invitation.name && <span className="text-muted-foreground ml-2 font-normal">{invitation.name}</span>}
                                     </td>
+                                    <td className="px-4 py-2.5">
+                                        <Badge variant={stateVariants[invitation.state]}>{stateLabels[invitation.state]}</Badge>
+                                    </td>
                                     <td className="text-muted-foreground px-4 py-2.5">{invitation.group ?? '—'}</td>
                                     <td className="text-muted-foreground px-4 py-2.5">{invitation.invited_by ?? '—'}</td>
                                     <td className="text-muted-foreground px-4 py-2.5">{dateTime(invitation.created_at)}</td>
                                     <td className="text-muted-foreground px-4 py-2.5">
-                                        {invitation.expired ? <Badge variant="destructive">{t('Expired')}</Badge> : dateTime(invitation.expires_at)}
+                                        {/* Only a live link has an expiry worth reading.
+                                            On a settled row the date is still stored and
+                                            still true, and saying it invites somebody to
+                                            wonder what expires about an invitation that
+                                            was accepted. */}
+                                        {invitation.state === 'pending' || invitation.state === 'expired' ? dateTime(invitation.expires_at) : '—'}
                                     </td>
                                     <td className="px-4 py-2.5">
                                         <div className="flex justify-end">
-                                            <ConfirmDialog
-                                                trigger={
-                                                    <Button size="sm" variant="destructive">
-                                                        {t('Revoke')}
-                                                    </Button>
-                                                }
-                                                title={t('Revoke this invitation?')}
-                                                description={t(
-                                                    'The link sent to :email stops working, and cannot be renewed by whoever holds it. You can send a new invitation at any time.',
-                                                    { email: invitation.email },
-                                                )}
-                                                confirmLabel={t('Revoke')}
-                                                // preserveState so the page comes back on this tab
-                                                // rather than on the form: revoking redirects back
-                                                // here, and landing on the other half after acting
-                                                // on this one reads as having lost the list.
-                                                onConfirm={() =>
-                                                    router.delete(route('invitations.destroy', invitation.id), {
-                                                        preserveState: true,
-                                                        preserveScroll: true,
-                                                    })
-                                                }
-                                            />
+                                            {/* Only a live link can be revoked. A settled
+                                                row is history, and offering a button that
+                                                would 404 is worse than offering none. */}
+                                            {(invitation.state === 'pending' || invitation.state === 'expired') && (
+                                                <ConfirmDialog
+                                                    trigger={
+                                                        <Button size="sm" variant="destructive">
+                                                            {t('Revoke')}
+                                                        </Button>
+                                                    }
+                                                    title={t('Revoke this invitation?')}
+                                                    description={t(
+                                                        'The link sent to :email stops working, and cannot be renewed by whoever holds it. You can send a new invitation at any time.',
+                                                        { email: invitation.email },
+                                                    )}
+                                                    confirmLabel={t('Revoke')}
+                                                    // preserveState so the page comes back on this
+                                                    // tab, and on the filter the person was reading,
+                                                    // rather than on the form.
+                                                    onConfirm={() =>
+                                                        router.delete(route('invitations.destroy', invitation.id), {
+                                                            preserveState: true,
+                                                            preserveScroll: true,
+                                                        })
+                                                    }
+                                                />
+                                            )}
                                         </div>
                                     </td>
                                 </tr>

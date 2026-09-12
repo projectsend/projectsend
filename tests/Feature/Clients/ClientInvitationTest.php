@@ -302,29 +302,69 @@ test('a seat taken between invitation and redemption refuses on a field the form
         ->and($invitation->fresh()->status)->toBe(Invitation::STATUS_PENDING);
 });
 
-test('the invite screen lists outstanding invitations, expired ones included', function () {
+test('the invitations screen is a history: every invitation ever sent, whatever became of it', function () {
     $group = Group::query()->create(['name' => 'Invited Clients']);
 
     Invitation::issue('live@example.com', 'Live Person', $group, $this->admin, now()->addDay());
     Invitation::issue('stale@example.com', null, null, $this->admin, now()->subDay());
-
-    // Neither of these is outstanding any more, and neither should be listed.
     Invitation::issue('spent@example.com', null, null, $this->admin, now()->addDay())
         ->forceFill(['status' => Invitation::STATUS_REDEEMED])->save();
     Invitation::issue('gone@example.com', null, null, $this->admin, now()->addDay())
         ->forceFill(['status' => Invitation::STATUS_REVOKED])->save();
+    Invitation::issue('replaced@example.com', null, null, $this->admin, now()->addDay())
+        ->forceFill(['status' => Invitation::STATUS_SUPERSEDED])->save();
 
     $this->actingAs($this->admin)->get('/clients/invite')->assertInertia(
         fn (AssertableInertia $page) => $page
             ->component('clients/invite')
-            ->has('invitations', 2)
-            ->where('invitations.0.email', 'stale@example.com')
-            ->where('invitations.0.expired', true)
-            ->where('invitations.1.email', 'live@example.com')
-            ->where('invitations.1.expired', false)
-            ->where('invitations.1.group', 'Invited Clients')
-            ->where('invitations.1.invited_by', $this->admin->name),
+            ->has('invitations', 5)
+            // Only the one that is live and unexpired counts as waiting.
+            ->where('pending_count', 1)
+            ->where('filters.status', null),
     );
+
+    // Newest first, and each row carries the state the screen labels it by.
+    $states = collect($this->actingAs($this->admin)->get('/clients/invite')->viewData('page')['props']['invitations'])
+        ->pluck('state', 'email');
+
+    expect($states->all())->toBe([
+        'replaced@example.com' => 'superseded',
+        'gone@example.com' => 'revoked',
+        'spent@example.com' => 'redeemed',
+        'stale@example.com' => 'expired',
+        'live@example.com' => 'pending',
+    ]);
+});
+
+test('the history can be filtered down to one status', function () {
+    Invitation::issue('live@example.com', null, null, $this->admin, now()->addDay());
+    Invitation::issue('stale@example.com', null, null, $this->admin, now()->subDay());
+    Invitation::issue('gone@example.com', null, null, $this->admin, now()->addDay())
+        ->forceFill(['status' => Invitation::STATUS_REVOKED])->save();
+
+    // "Waiting" and "Expired" are the same stored status told apart by the
+    // clock, which is the pair worth proving the filter gets right.
+    $this->actingAs($this->admin)->get('/clients/invite?status=pending')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->has('invitations', 1)
+            ->where('invitations.0.email', 'live@example.com')
+            ->where('filters.status', 'pending')
+            // Unchanged by the filter: it answers "is anybody waiting",
+            // not "how many rows am I looking at".
+            ->where('pending_count', 1),
+    );
+
+    $this->actingAs($this->admin)->get('/clients/invite?status=expired')->assertInertia(
+        fn (AssertableInertia $page) => $page->has('invitations', 1)->where('invitations.0.email', 'stale@example.com'),
+    );
+
+    $this->actingAs($this->admin)->get('/clients/invite?status=revoked')->assertInertia(
+        fn (AssertableInertia $page) => $page->has('invitations', 1)->where('invitations.0.email', 'gone@example.com'),
+    );
+});
+
+test('an unknown status filter is refused rather than quietly ignored', function () {
+    $this->actingAs($this->admin)->get('/clients/invite?status=whatever')->assertSessionHasErrors('status');
 });
 
 test('staff can revoke an invitation, and the revoked link is dead for good', function () {

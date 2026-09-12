@@ -103,6 +103,30 @@ class Invitation extends Model
     }
 
     /**
+     * What a person reading a list of invitations should be told this one
+     * is — which is not quite `status`.
+     *
+     * "Expired" is not a stored status and deliberately is not one: nothing
+     * writes it, a row becomes expired by the clock passing rather than by
+     * anybody acting, and a stored value would need a scheduled task to
+     * stay true. But it is the distinction somebody scanning the list cares
+     * about most, so it is derived here, once, rather than in the screen
+     * and again in the filter — the two would eventually disagree about the
+     * edge.
+     *
+     * @return 'pending'|'expired'|'redeemed'|'revoked'|'superseded'
+     */
+    public function state(): string
+    {
+        return match ($this->status) {
+            self::STATUS_PENDING => $this->isExpired() ? 'expired' : 'pending',
+            self::STATUS_REDEEMED => 'redeemed',
+            self::STATUS_REVOKED => 'revoked',
+            default => 'superseded',
+        };
+    }
+
+    /**
      * @param  Builder<Invitation>  $query
      * @return Builder<Invitation>
      */

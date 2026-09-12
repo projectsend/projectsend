@@ -300,3 +300,82 @@ test('a seat taken between invitation and redemption refuses on a field the form
     expect(User::query()->where('email', 'invited@example.com')->exists())->toBeFalse()
         ->and($invitation->fresh()->status)->toBe(Invitation::STATUS_PENDING);
 });
+
+test('the invite screen lists outstanding invitations, expired ones included', function () {
+    $group = Group::query()->create(['name' => 'Invited Clients']);
+
+    Invitation::issue('live@example.com', 'Live Person', $group, $this->admin, now()->addDay());
+    Invitation::issue('stale@example.com', null, null, $this->admin, now()->subDay());
+
+    // Neither of these is outstanding any more, and neither should be listed.
+    Invitation::issue('spent@example.com', null, null, $this->admin, now()->addDay())
+        ->forceFill(['status' => Invitation::STATUS_REDEEMED])->save();
+    Invitation::issue('gone@example.com', null, null, $this->admin, now()->addDay())
+        ->forceFill(['status' => Invitation::STATUS_REVOKED])->save();
+
+    $this->actingAs($this->admin)->get('/clients/invite')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->component('clients/invite')
+            ->has('invitations', 2)
+            ->where('invitations.0.email', 'stale@example.com')
+            ->where('invitations.0.expired', true)
+            ->where('invitations.1.email', 'live@example.com')
+            ->where('invitations.1.expired', false)
+            ->where('invitations.1.group', 'Invited Clients')
+            ->where('invitations.1.invited_by', $this->admin->name),
+    );
+});
+
+test('staff can revoke an invitation, and the revoked link is dead for good', function () {
+    Notification::fake();
+
+    $invitation = Invitation::issue('invited@example.com', null, null, $this->admin, now()->addDay());
+
+    $this->actingAs($this->admin)
+        ->delete(route('invitations.destroy', $invitation))
+        ->assertRedirect();
+
+    expect($invitation->fresh()->status)->toBe(Invitation::STATUS_REVOKED)
+        ->and(ActivityLog::query()->where('action', Action::ClientInvitationRevoked)->exists())->toBeTrue();
+
+    $this->post('/logout');
+
+    // The three things a live token could do, all refused.
+    $this->get("/invite/{$invitation->token}")->assertInertia(
+        fn (AssertableInertia $page) => $page->where('expired', true),
+    );
+
+    $this->post("/invite/{$invitation->token}", [
+        'token' => $invitation->token,
+        'name' => 'Invited Person',
+        'password' => 'super-secret-password',
+        'password_confirmation' => 'super-secret-password',
+    ])->assertSessionHasErrors('token');
+
+    $this->post("/invite/{$invitation->token}/resend")->assertRedirect();
+    Notification::assertNothingSent();
+
+    expect(Invitation::query()->pending()->where('email', 'invited@example.com')->exists())->toBeFalse()
+        ->and(User::query()->where('email', 'invited@example.com')->exists())->toBeFalse();
+});
+
+test('an invitation that is not outstanding cannot be revoked', function () {
+    $invitation = Invitation::issue('invited@example.com', null, null, $this->admin, now()->addDay());
+    $invitation->forceFill(['status' => Invitation::STATUS_REDEEMED])->save();
+
+    $this->actingAs($this->admin)
+        ->delete(route('invitations.destroy', $invitation))
+        ->assertNotFound();
+
+    expect($invitation->fresh()->status)->toBe(Invitation::STATUS_REDEEMED);
+});
+
+test('clients cannot revoke invitations', function () {
+    $invitation = Invitation::issue('invited@example.com', null, null, $this->admin, now()->addDay());
+
+    $this->actingAs(User::factory()->client()->create())
+        ->delete(route('invitations.destroy', $invitation))
+        ->assertForbidden();
+
+    expect($invitation->fresh()->status)->toBe(Invitation::STATUS_PENDING);
+});

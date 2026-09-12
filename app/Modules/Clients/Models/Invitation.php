@@ -47,6 +47,14 @@ class Invitation extends Model
     // and when, stays intact.
     public const STATUS_SUPERSEDED = 'superseded';
 
+    // Cancelled by staff before anybody used it — the wrong address, or a
+    // decision taken back. Distinct from superseded because it is the only
+    // one of the two that was somebody's intention: a revoked invitation is
+    // never re-issued, where a superseded one was retired precisely so a
+    // fresh link could take its place. Both are outside pending(), so the
+    // redemption and resend doors refuse either without asking which.
+    public const STATUS_REVOKED = 'revoked';
+
     protected $guarded = [];
 
     protected function casts(): array

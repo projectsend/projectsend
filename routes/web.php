@@ -279,6 +279,9 @@ Route::middleware(['auth'])->group(function () {
     // client by hand may also ask one to set their own password.
     Route::get('clients/invite', [InvitationController::class, 'create'])->middleware(['staff', 'can:create_clients'])->name('invitations.create');
     Route::post('clients/invite', [InvitationController::class, 'store'])->middleware(['staff', 'can:create_clients'])->name('invitations.store');
+    // Cancelling is the same authority as sending: whoever may invite
+    // somebody may take it back.
+    Route::delete('clients/invite/{invitation}', [InvitationController::class, 'destroy'])->middleware(['staff', 'can:create_clients'])->name('invitations.destroy');
     Route::get('clients/{client}/files', [ClientFilesController::class, 'index'])->middleware(['staff', 'can:edit_clients'])->name('clients.files');
     Route::get('clients/{client}', [ClientsController::class, 'edit'])->middleware(['staff', 'can:edit_clients'])->name('clients.edit');
     Route::patch('clients/{client}', [ClientsController::class, 'update'])->middleware(['staff', 'can:edit_clients'])->name('clients.update');

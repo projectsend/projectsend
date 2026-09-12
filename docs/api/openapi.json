@@ -3532,6 +3532,7 @@
                     "client.denied",
                     "client.invited",
                     "client.invitation_redeemed",
+                    "client.invitation_revoked",
                     "file.uploaded",
                     "file.updated",
                     "file.deleted",

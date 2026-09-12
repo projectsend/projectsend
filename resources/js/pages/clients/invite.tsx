@@ -1,13 +1,18 @@
 import { type BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+import { ConfirmDialog } from '@/components/confirm-dialog';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
+import { Pagination, PaginationMeta } from '@/components/pagination';
+import { TableShell } from '@/components/table-shell';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectValue, SelectTrigger } from '@/components/ui/select';
+import { useFormatDate } from '@/hooks/use-format-date';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
 
@@ -19,13 +24,28 @@ interface InvitationFormData {
     storage_quota_mb: string;
 }
 
+interface InvitationRow {
+    id: number;
+    name: string | null;
+    email: string;
+    group: string | null;
+    invited_by: string | null;
+    created_at: string | null;
+    expires_at: string;
+    /** Past its expiry but still revocable — see the note on the list below. */
+    expired: boolean;
+}
+
 interface ClientsInviteProps {
     groups: { id: number; name: string }[];
     default_storage_quota_mb: number;
+    invitations: InvitationRow[];
+    pagination: PaginationMeta;
 }
 
-export default function ClientsInvite({ groups, default_storage_quota_mb }: ClientsInviteProps) {
+export default function ClientsInvite({ groups, default_storage_quota_mb, invitations, pagination }: ClientsInviteProps) {
     const { t } = useTranslation();
+    const { dateTime } = useFormatDate();
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: t('Clients'), href: '/clients' },
@@ -119,6 +139,54 @@ export default function ClientsInvite({ groups, default_storage_quota_mb }: Clie
                         </Button>
                     </div>
                 </form>
+
+                <div className="mt-10">
+                    <Heading
+                        title={t('Outstanding invitations')}
+                        description={t('Links that have been sent and not used yet. Revoking one stops it working for good.')}
+                    />
+
+                    <TableShell
+                        columns={[t('Email address'), t('Group'), t('Invited by'), t('Sent'), t('Expires'), null]}
+                        isEmpty={invitations.length === 0}
+                        emptyMessage={<>{t('No invitations are waiting to be used.')}</>}
+                    >
+                        {invitations.map((invitation) => (
+                            <tr key={invitation.id} className="border-b last:border-0">
+                                <td className="px-4 py-2.5 font-medium">
+                                    {invitation.email}
+                                    {invitation.name && <span className="text-muted-foreground ml-2 font-normal">{invitation.name}</span>}
+                                </td>
+                                <td className="text-muted-foreground px-4 py-2.5">{invitation.group ?? '—'}</td>
+                                <td className="text-muted-foreground px-4 py-2.5">{invitation.invited_by ?? '—'}</td>
+                                <td className="text-muted-foreground px-4 py-2.5">{dateTime(invitation.created_at)}</td>
+                                <td className="text-muted-foreground px-4 py-2.5">
+                                    {invitation.expired ? <Badge variant="destructive">{t('Expired')}</Badge> : dateTime(invitation.expires_at)}
+                                </td>
+                                <td className="px-4 py-2.5">
+                                    <div className="flex justify-end">
+                                        <ConfirmDialog
+                                            trigger={
+                                                <Button size="sm" variant="destructive">
+                                                    {t('Revoke')}
+                                                </Button>
+                                            }
+                                            title={t('Revoke this invitation?')}
+                                            description={t(
+                                                'The link sent to :email stops working, and cannot be renewed by whoever holds it. You can send a new invitation at any time.',
+                                                { email: invitation.email },
+                                            )}
+                                            confirmLabel={t('Revoke')}
+                                            onConfirm={() => router.delete(route('invitations.destroy', invitation.id))}
+                                        />
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </TableShell>
+
+                    <Pagination meta={pagination} />
+                </div>
             </div>
         </AppLayout>
     );

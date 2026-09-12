@@ -15,6 +15,7 @@ use App\Modules\Identity\Erasure\AvailableEmailRule;
 use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use App\Support\Pagination;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
@@ -38,12 +39,40 @@ class InvitationController extends Controller
 
     public function create(): Response
     {
+        // Outstanding means pending, expired ones included. An expired
+        // invitation is not inert: until it is revoked, whoever holds the
+        // link can ask for a fresh one, so a screen that hid them would
+        // hide exactly the rows worth acting on.
+        $invitations = Invitation::query()
+            ->pending()
+            ->with(['group:id,name', 'invitedBy:id,name'])
+            // Soonest to expire first, which puts the already-expired rows
+            // at the top — the ones somebody can still ask to have renewed,
+            // and so the ones worth deciding about. Ties broken by id
+            // because a batch sent in one minute shares an expiry.
+            ->orderBy('expires_at')
+            ->orderBy('id')
+            ->paginate(25)
+            ->withQueryString()
+            ->through(fn (Invitation $invitation): array => [
+                'id' => $invitation->id,
+                'name' => $invitation->name,
+                'email' => $invitation->email,
+                'group' => $invitation->group?->name,
+                'invited_by' => $invitation->invitedBy?->name,
+                'created_at' => $invitation->created_at?->toIso8601String(),
+                'expires_at' => $invitation->expires_at->toIso8601String(),
+                'expired' => $invitation->isExpired(),
+            ]);
+
         return Inertia::render('clients/invite', [
             'groups' => Group::query()->orderBy('name')->get(['id', 'name']),
             // Resolved, not raw — see ClientsController::create()'s note on
             // the same prop: this is what will actually happen, and the
             // form's own field mirrors this resolution to draw its hint.
             'default_storage_quota_mb' => $this->storageUsage->defaultQuotaMb(),
+            'invitations' => $invitations->items(),
+            'pagination' => Pagination::meta($invitations),
         ]);
     }
 
@@ -87,5 +116,34 @@ class InvitationController extends Controller
         $this->activity->log(Action::ClientInvited, context: ['email' => $invitation->email]);
 
         return redirect()->route('clients.index')->with('success', __('Invitation sent.'));
+    }
+
+    /**
+     * Cancels an invitation nobody has used yet.
+     *
+     * Until this existed, letting one expire was the only way to take it
+     * back — and the expired page's own "send me a new one" button undid
+     * that, silently, for anybody still holding the link. Revoking is the
+     * decision that button cannot reverse: STATUS_REVOKED is outside
+     * pending(), which is the scope both the redemption and the resend
+     * doors look through.
+     *
+     * The row is kept rather than deleted, for the reason
+     * Invitation::STATUS_SUPERSEDED is kept: the activity log names who
+     * invited this address and when, and that trail should still lead
+     * somewhere.
+     */
+    public function destroy(Invitation $invitation): RedirectResponse
+    {
+        // Already spent, already superseded, already revoked: there is
+        // nothing left to cancel, and saying so is better than reporting a
+        // success that changed nothing.
+        abort_unless($invitation->status === Invitation::STATUS_PENDING, 404);
+
+        $invitation->forceFill(['status' => Invitation::STATUS_REVOKED])->save();
+
+        $this->activity->log(Action::ClientInvitationRevoked, context: ['email' => $invitation->email]);
+
+        return back()->with('success', __('Invitation revoked.'));
     }
 }

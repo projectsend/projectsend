@@ -3530,6 +3530,8 @@
                     "social.account_unlinked",
                     "client.approved",
                     "client.denied",
+                    "client.invited",
+                    "client.invitation_redeemed",
                     "file.uploaded",
                     "file.updated",
                     "file.deleted",

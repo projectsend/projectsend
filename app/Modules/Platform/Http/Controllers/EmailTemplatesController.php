@@ -12,6 +12,7 @@ use App\Modules\Clients\Notifications\AdminClientRegisteredNotification;
 use App\Modules\Clients\Notifications\ClientAccountApprovedNotification;
 use App\Modules\Clients\Notifications\ClientAccountDeniedNotification;
 use App\Modules\Clients\Notifications\ClientAccountEditedNotification;
+use App\Modules\Clients\Notifications\ClientInvitationNotification;
 use App\Modules\Clients\Notifications\ClientWelcomeNotification;
 use App\Modules\Comments\Notifications\CommentDigestNotification;
 use App\Modules\Comments\Notifications\CommentPostedNotification;
@@ -136,6 +137,7 @@ class EmailTemplatesController extends Controller
             EmailTemplateSlot::ClientAccountApproved => (new ClientAccountApprovedNotification)->toMail($notifiable),
             EmailTemplateSlot::ClientAccountDenied => (new ClientAccountDeniedNotification('Jane Client'))->toMail($notifiable),
             EmailTemplateSlot::ClientWelcome => (new ClientWelcomeNotification)->toMail($notifiable),
+            EmailTemplateSlot::ClientInvited => (new ClientInvitationNotification('Jane Client', 'sample-token'))->toMail($notifiable),
             EmailTemplateSlot::ClientAccountEdited => (new ClientAccountEditedNotification)->toMail($notifiable),
             EmailTemplateSlot::AdminClientRegistered => (new AdminClientRegisteredNotification('Jane Client', 'preview@example.com', pendingApproval: false))->toMail($notifiable),
             EmailTemplateSlot::AdminClientUploaded => (new AdminClientUploadedNotification('Jane Client', 'sample-file.pdf', 0))->toMail($notifiable),

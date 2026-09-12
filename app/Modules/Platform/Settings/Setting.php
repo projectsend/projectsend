@@ -30,6 +30,12 @@ enum Setting: string
     // Days a denied membership request blocks re-requesting (0 = none).
     case ClientsMembershipDenyCooldownDays = 'clients_membership_deny_cooldown_days';
 
+    // How long a staff-sent client invitation link stays valid before the
+    // invited address has to ask for a new one. Consumed by
+    // InvitationController and InvitationRedemptionController, wherever a
+    // fresh Invitation is issued.
+    case ClientInvitationExpiryHours = 'client_invitation_expiry_hours';
+
     // Whether the client portal offers inline preview at all — the whole
     // affordance, images included, not just the media types. Staff are
     // never gated by it: it exists so an installation can decide that a
@@ -392,6 +398,7 @@ enum Setting: string
 
             self::ClientsAutoGroup,
             self::ClientsMembershipDenyCooldownDays,
+            self::ClientInvitationExpiryHours,
             self::MaxFileSizeMb,
             self::MaxZipDownloadSizeMb,
             self::DefaultClientStorageQuotaMb,
@@ -462,6 +469,7 @@ enum Setting: string
 
             self::ClientsAutoGroup => 0,
             self::ClientsMembershipDenyCooldownDays => 30,
+            self::ClientInvitationExpiryHours => 72,
             self::MaxFileSizeMb => 2048,
             self::MaxZipDownloadSizeMb => 2048,
             self::DefaultClientStorageQuotaMb => 0,

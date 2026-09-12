@@ -28,6 +28,7 @@ enum EmailTemplateSlot: string
     case ClientAccountApproved = 'client_account_approved';
     case ClientAccountDenied = 'client_account_denied';
     case ClientWelcome = 'client_welcome';
+    case ClientInvited = 'client_invited';
     case ClientAccountEdited = 'client_account_edited';
     case AdminClientRegistered = 'admin_client_registered';
     case AdminClientUploaded = 'admin_client_uploaded';
@@ -48,6 +49,7 @@ enum EmailTemplateSlot: string
             self::ClientAccountApproved => 'Client account approved',
             self::ClientAccountDenied => 'Client account denied',
             self::ClientWelcome => 'Client welcome (staff-created account)',
+            self::ClientInvited => 'Client invitation',
             self::ClientAccountEdited => 'Client account edited',
             self::AdminClientRegistered => 'Admin: new client registered',
             self::AdminClientUploaded => 'Admin: client uploaded a file',
@@ -72,6 +74,7 @@ enum EmailTemplateSlot: string
             self::ClientAccountApproved => 'Your account has been approved',
             self::ClientAccountDenied => 'Your account request was denied',
             self::ClientWelcome => 'Welcome',
+            self::ClientInvited => "You've been invited to register",
             self::ClientAccountEdited => 'Your account was updated',
             self::AdminClientRegistered => 'A new client has registered',
             self::AdminClientUploaded => 'A client uploaded a file',
@@ -94,6 +97,7 @@ enum EmailTemplateSlot: string
             self::ClientAccountApproved => 'Your account request has been approved. You can now log in.',
             self::ClientAccountDenied => "Hello :name,\n\nYour account request has been denied.",
             self::ClientWelcome => 'An account has been created for you. You can log in now.',
+            self::ClientInvited => "Hello :name,\n\nYou've been invited to register a client account. The link below will let you set your own password.",
             self::ClientAccountEdited => 'Your account details were recently changed by an administrator. Contact your administrator if this was not expected.',
             self::AdminClientRegistered => 'A new client account was created: :name (:email).',
             self::AdminClientUploaded => 'The file ":file" was uploaded by :client.',
@@ -119,6 +123,7 @@ enum EmailTemplateSlot: string
             self::CommentDigest => ['count' => 'How many new comments there are'],
             self::ClientAccountApproved, self::ClientWelcome, self::ClientAccountEdited => [],
             self::ClientAccountDenied => ['name' => "The client's name"],
+            self::ClientInvited => ['name' => "The invited person's name, or their email address if none was given"],
             self::AdminClientRegistered => ['name' => "The client's name", 'email' => "The client's email address"],
             self::AdminClientUploaded => ['file' => 'The file name', 'client' => "The uploading client's name"],
             self::GroupMembershipRequested => ['client' => "The client's name", 'group' => 'The group name'],

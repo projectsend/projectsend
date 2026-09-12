@@ -17,7 +17,17 @@ declare global {
 // names that cookie after itself so a neighbouring Laravel app on the same
 // hostname cannot overwrite it — so axios has to be told. Without this,
 // every write 419s the moment a neighbour answers a request.
-axios.defaults.xsrfCookieName = xsrfCookieName();
+//
+// Set on every request rather than once here: an SPA-style Inertia visit
+// (a redirect after a POST, for instance) never re-runs this module, so a
+// value captured once at load can go stale the moment the server rotates
+// the cookie mid-session — the exact failure xsrf.ts's own docblock warns
+// about, and the reason it says to read the name fresh on every call.
+axios.interceptors.request.use((config) => {
+    config.xsrfCookieName = xsrfCookieName();
+
+    return config;
+});
 
 /**
  * The suffix on every browser tab title.

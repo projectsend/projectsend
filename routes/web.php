@@ -10,6 +10,7 @@ use App\Modules\Audit\Http\Controllers\DownloadsController;
 use App\Modules\Clients\Http\Controllers\AccountRequestsController;
 use App\Modules\Clients\Http\Controllers\ClientCustomFieldsController;
 use App\Modules\Clients\Http\Controllers\ClientsController;
+use App\Modules\Clients\Http\Controllers\InvitationController;
 use App\Modules\Comments\Http\Controllers\CommentDeepLinkController;
 use App\Modules\Comments\Http\Controllers\CommentsController;
 use App\Modules\Comments\Http\Controllers\FileCommentsController;
@@ -273,6 +274,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('clients', [ClientsController::class, 'index'])->middleware(['staff', 'can:manage_clients'])->name('clients.index');
     Route::get('clients/create', [ClientsController::class, 'create'])->middleware(['staff', 'can:create_clients'])->name('clients.create');
     Route::post('clients', [ClientsController::class, 'store'])->middleware(['staff', 'can:create_clients'])->name('clients.store');
+    // Invite shares create_clients rather than a capability of its own,
+    // same reasoning as the note above: an installation that may add a
+    // client by hand may also ask one to set their own password.
+    Route::get('clients/invite', [InvitationController::class, 'create'])->middleware(['staff', 'can:create_clients'])->name('invitations.create');
+    Route::post('clients/invite', [InvitationController::class, 'store'])->middleware(['staff', 'can:create_clients'])->name('invitations.store');
     Route::get('clients/{client}/files', [ClientFilesController::class, 'index'])->middleware(['staff', 'can:edit_clients'])->name('clients.files');
     Route::get('clients/{client}', [ClientsController::class, 'edit'])->middleware(['staff', 'can:edit_clients'])->name('clients.edit');
     Route::patch('clients/{client}', [ClientsController::class, 'update'])->middleware(['staff', 'can:edit_clients'])->name('clients.update');

@@ -13,8 +13,8 @@ use App\Modules\Identity\AuthSource;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\UserType;
-use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Seats\SeatAllowance;
+use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Support\Facades\Notification;
 
@@ -75,6 +75,14 @@ class ClientProvisioning
      * @param  array<string, mixed>  $context  Placeholders for the action's
      *                                         log template, e.g. which
      *                                         provider an account came from.
+     * @param  int  $storageQuotaMb  0 means no per-account quota and
+     *                               inherits the site default at
+     *                               enforcement time — see
+     *                               ClientStorageUsage::quotaMb(). Same
+     *                               meaning as ClientAccounts::create()'s
+     *                               parameter of the same name; a caller
+     *                               with no quota to offer (the public
+     *                               registration form, LDAP) leaves it at 0.
      */
     public function provision(
         string $name,
@@ -85,6 +93,7 @@ class ClientProvisioning
         ?string $ldapDn = null,
         ?bool $autoApprove = null,
         array $context = [],
+        int $storageQuotaMb = 0,
     ): User {
         $autoApprove ??= $this->autoApproves();
 
@@ -105,6 +114,7 @@ class ClientProvisioning
             'name' => $name,
             'email' => $email,
             'password' => $password,
+            'storage_quota_mb' => $storageQuotaMb,
         ]);
 
         // Not mass-assignable: where an account's credentials live is a

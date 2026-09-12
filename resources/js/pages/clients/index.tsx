@@ -75,6 +75,11 @@ export default function ClientsIndex({ clients, pagination, filters, reassign_ca
                             </Button>
                         )}
                         {can('create_clients') && (
+                            <Button asChild>
+                                <Link href={route('invitations.create')}>{t('Invite client')}</Link>
+                            </Button>
+                        )}
+                        {can('create_clients') && (
                             <SeatLimitedAction
                                 seats={seats}
                                 href={route('clients.create')}

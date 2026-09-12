@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Modules\Clients\Http\Controllers\InvitationRedemptionController;
 use App\Modules\Clients\Http\Controllers\RegistrationController;
 use App\Modules\Identity\Http\Controllers\SocialLoginController;
 use App\Modules\Identity\Http\Controllers\TwoFactorChallengeController;
@@ -35,6 +36,20 @@ Route::middleware('guest')->group(function () {
 
     Route::post('register', [RegistrationController::class, 'store'])
         ->middleware('throttle:6,1,register');
+
+    Route::get('invite/{token}', [InvitationRedemptionController::class, 'create'])
+        ->name('invitations.show');
+
+    Route::post('invite/{token}', [InvitationRedemptionController::class, 'store'])
+        ->middleware('throttle:6,1,invite-accept')
+        ->name('invitations.accept');
+
+    // Its own bucket, tighter than accepting one: this is the door an
+    // anonymous visitor can knock on repeatedly on purpose, since a real
+    // invitation legitimately expires while nobody is looking.
+    Route::post('invite/{token}/resend', [InvitationRedemptionController::class, 'resend'])
+        ->middleware('throttle:3,1,invite-resend')
+        ->name('invitations.resend');
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');

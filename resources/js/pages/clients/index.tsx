@@ -75,9 +75,11 @@ export default function ClientsIndex({ clients, pagination, filters, reassign_ca
                             </Button>
                         )}
                         {can('create_clients') && (
-                            <Button asChild>
-                                <Link href={route('invitations.create')}>{t('Invite client')}</Link>
-                            </Button>
+                            // Governed by the same limit as "New client": an
+                            // invitation sent by a full installation is a link
+                            // that refuses the person who follows it, which is
+                            // a worse place to meet the limit than this one.
+                            <SeatLimitedAction seats={seats} href={route('invitations.create')} label={t('Invite client')} />
                         )}
                         {can('create_clients') && (
                             <SeatLimitedAction

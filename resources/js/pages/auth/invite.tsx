@@ -83,6 +83,13 @@ export default function AcceptInvitation({ token, email, name, status, expired }
                     <div className="grid gap-2">
                         <Label htmlFor="email">{t('Email address')}</Label>
                         <Input id="email" type="email" value={email} readOnly className="mt-1 block w-full" />
+                        {/* The field is read-only and never submitted, but the
+                            server still refuses on it: a full installation is
+                            SeatAllowance::guardClient()'s refusal, keyed to
+                            `email` the same way every other account form's is.
+                            Without somewhere to render it, the form would
+                            reload saying nothing at all. */}
+                        <InputError message={errors.email} />
                     </div>
 
                     <div className="grid gap-2">

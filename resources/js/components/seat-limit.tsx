@@ -35,8 +35,14 @@ export function SeatLimitedAction({
     href: string;
     label: string;
     /** The count line, worded by the caller: staff seats and client seats
-     *  are different things to a reader. */
-    usage: (seats: SeatState) => string;
+     *  are different things to a reader.
+     *
+     *  Omitted by a second action standing beside one that already says it
+     *  — two buttons governed by the same limit, each captioned with the
+     *  same sentence, reads as two limits. The button still goes dead and
+     *  still carries the reason on hover; the caption next to it explains
+     *  both. */
+    usage?: (seats: SeatState) => string;
 }) {
     const action = seats?.full ? (
         <Button disabled title={seats.message ?? undefined}>
@@ -48,7 +54,7 @@ export function SeatLimitedAction({
         </Button>
     );
 
-    if (!seats) {
+    if (!seats || !usage) {
         return action;
     }
 

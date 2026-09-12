@@ -270,3 +270,33 @@ test('an address held by a deleted account is still taken, the same as it is eve
 
     expect(User::query()->where('email', 'invited@example.com')->exists())->toBeFalse();
 });
+
+test('a full installation refuses to send an invitation it could not honour', function () {
+    config()->set('projectsend.platform.max_clients', 1);
+    User::factory()->client()->create();
+
+    $this->actingAs($this->admin)->post('/clients/invite', [
+        'email' => 'invited@example.com',
+        'group_id' => 0,
+    ])->assertSessionHasErrors('email');
+
+    expect(Invitation::query()->where('email', 'invited@example.com')->exists())->toBeFalse();
+});
+
+test('a seat taken between invitation and redemption refuses on a field the form can show', function () {
+    $invitation = Invitation::issue('invited@example.com', null, null, $this->admin, now()->addDay());
+
+    // The last seat goes while the link is in somebody's inbox.
+    config()->set('projectsend.platform.max_clients', 1);
+    User::factory()->client()->create();
+
+    $this->post("/invite/{$invitation->token}", [
+        'token' => $invitation->token,
+        'name' => 'Invited Person',
+        'password' => 'super-secret-password',
+        'password_confirmation' => 'super-secret-password',
+    ])->assertSessionHasErrors('email');
+
+    expect(User::query()->where('email', 'invited@example.com')->exists())->toBeFalse()
+        ->and($invitation->fresh()->status)->toBe(Invitation::STATUS_PENDING);
+});

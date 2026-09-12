@@ -12,6 +12,7 @@ use App\Modules\Clients\Models\Invitation;
 use App\Modules\Clients\Notifications\ClientInvitationNotification;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Identity\Erasure\AvailableEmailRule;
+use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\RedirectResponse;
@@ -32,6 +33,7 @@ class InvitationController extends Controller
         private readonly ActivityLogger $activity,
         private readonly Settings $settings,
         private readonly ClientStorageUsage $storageUsage,
+        private readonly SeatAllowance $seats,
     ) {}
 
     public function create(): Response
@@ -53,6 +55,14 @@ class InvitationController extends Controller
             'group_id' => ['required', 'integer', Rule::in([0, ...Group::query()->pluck('id')->all()])],
             'storage_quota_mb' => ['nullable', 'integer', 'min:0'],
         ]);
+
+        // Asked here as well as at redemption. An outstanding invitation
+        // is not a client and is not counted as one — the same rule a
+        // pending account request follows — so this refuses sending a link
+        // a full installation could not honour, rather than reserving
+        // anything. The redemption door still guards, because the seat can
+        // be taken by somebody else in the days between.
+        $this->seats->guardClient();
 
         $group = $validated['group_id'] > 0
             ? Group::query()->whereKey($validated['group_id'])->first()

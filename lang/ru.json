@@ -2073,5 +2073,7 @@
     "You've been invited to register": "Вас пригласили зарегистрироваться",
     "You've been invited to register a client account. The link below will let you set your own password.": "Вас пригласили зарегистрировать учётную запись клиента. Ссылка ниже позволит вам задать собственный пароль.",
     "Your account has been created. You will be able to log in once it is approved.": "Ваша учётная запись создана. Вы сможете войти, как только её одобрят.",
-    "Invite a client to share files with": "Пригласите клиента, с которым будете делиться файлами"
+    "Invite a client to share files with": "Пригласите клиента, с которым будете делиться файлами",
+    ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) зарегистрировал учётную запись клиента",
+    "A new client registered an account": "Новый клиент зарегистрировал учётную запись"
 }

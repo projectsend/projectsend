@@ -2073,5 +2073,7 @@
     "You've been invited to register": "Je bent uitgenodigd om je te registreren",
     "You've been invited to register a client account. The link below will let you set your own password.": "Je bent uitgenodigd om een klantaccount te registreren. Via de onderstaande link kun je je eigen wachtwoord instellen.",
     "Your account has been created. You will be able to log in once it is approved.": "Je account is aangemaakt. Je kunt inloggen zodra het is goedgekeurd.",
-    "Invite a client to share files with": "Nodig een klant uit om bestanden mee te delen"
+    "Invite a client to share files with": "Nodig een klant uit om bestanden mee te delen",
+    ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) heeft een klantaccount geregistreerd",
+    "A new client registered an account": "Een nieuwe klant heeft een account geregistreerd"
 }

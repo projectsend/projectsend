@@ -2073,5 +2073,7 @@
     "You've been invited to register": "Bạn được mời đăng ký",
     "You've been invited to register a client account. The link below will let you set your own password.": "Bạn được mời đăng ký tài khoản khách hàng. Liên kết bên dưới sẽ cho phép bạn tự đặt mật khẩu.",
     "Your account has been created. You will be able to log in once it is approved.": "Tài khoản của bạn đã được tạo. Bạn có thể đăng nhập khi tài khoản được duyệt.",
-    "Invite a client to share files with": "Mời một khách hàng để chia sẻ tệp"
+    "Invite a client to share files with": "Mời một khách hàng để chia sẻ tệp",
+    ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) đã đăng ký tài khoản khách hàng",
+    "A new client registered an account": "Một khách hàng mới đã đăng ký tài khoản"
 }

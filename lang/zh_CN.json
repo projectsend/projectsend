@@ -2073,5 +2073,7 @@
     "You've been invited to register": "邀请你注册",
     "You've been invited to register a client account. The link below will let you set your own password.": "你受邀注册客户账户。通过下面的链接可以设置你自己的密码。",
     "Your account has been created. You will be able to log in once it is approved.": "你的账户已创建，通过审核后即可登录。",
-    "Invite a client to share files with": "邀请一位与你共享文件的客户"
+    "Invite a client to share files with": "邀请一位与你共享文件的客户",
+    ":clientName (:clientEmail) registered a client account": ":clientName（:clientEmail）注册了客户账户",
+    "A new client registered an account": "新客户注册了账户"
 }

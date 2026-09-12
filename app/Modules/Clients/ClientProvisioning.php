@@ -12,7 +12,10 @@ use App\Modules\Groups\Models\Group;
 use App\Modules\Identity\AuthSource;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Permissions\SystemRole;
+use App\Modules\Identity\Permissions\Permission;
+use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Identity\UserType;
+use App\Modules\Notifications\Notifier;
 use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -38,6 +41,8 @@ class ClientProvisioning
         private readonly Settings $settings,
         private readonly ActivityLogger $activity,
         private readonly SeatAllowance $seats,
+        private readonly Notifier $notifier,
+        private readonly PermissionChecker $permissions,
     ) {}
 
     /**
@@ -131,6 +136,7 @@ class ClientProvisioning
 
         $this->joinAutoGroup($client);
         $this->notifyAdministrators($client, pending: ! $autoApprove);
+        $this->notifyStaffInApp($client);
 
         return $client;
     }
@@ -151,6 +157,37 @@ class ClientProvisioning
         $group = Group::query()->find($autoGroupId);
 
         $group?->members()->syncWithoutDetaching([$client->id]);
+    }
+
+    /**
+     * The bell, for staff who administer clients.
+     *
+     * Separate from notifyAdministrators() above, and not a replacement for
+     * it: that one emails a list of raw addresses an operator typed into a
+     * setting, which need not correspond to any account in this
+     * installation. This one reaches the people actually signed in, which
+     * is the only place an account arriving unannounced was ever going to
+     * be noticed.
+     *
+     * Recipients are resolved here rather than inside Notifier, which
+     * authorizes nothing by design — see its security contract. Two rules,
+     * and the second is the one worth stating: a client-scoped staff member
+     * is not told. Their whole view is the clients assigned to them, and a
+     * brand-new account is assigned to nobody, so the notification would
+     * link them to a screen they are refused.
+     */
+    private function notifyStaffInApp(User $client): void
+    {
+        $recipients = User::query()
+            ->where('type', UserType::Staff)
+            ->get()
+            ->filter(fn (User $staff): bool => ! $staff->isClientScoped()
+                && $this->permissions->allows($staff, Permission::ManageClients));
+
+        $this->notifier->send('client_registered', $recipients, subject: $client, data: [
+            'clientName' => $client->name,
+            'clientEmail' => $client->email,
+        ]);
     }
 
     private function notifyAdministrators(User $client, bool $pending): void

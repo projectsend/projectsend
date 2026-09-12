@@ -2073,5 +2073,7 @@
     "You've been invited to register": "Kaydolmaya davet edildiniz",
     "You've been invited to register a client account. The link below will let you set your own password.": "Bir müşteri hesabı oluşturmaya davet edildiniz. Aşağıdaki bağlantı kendi parolanızı belirlemenizi sağlar.",
     "Your account has been created. You will be able to log in once it is approved.": "Hesabınız oluşturuldu. Onaylandığında giriş yapabileceksiniz.",
-    "Invite a client to share files with": "Dosya paylaşacağınız bir müşteriyi davet edin"
+    "Invite a client to share files with": "Dosya paylaşacağınız bir müşteriyi davet edin",
+    ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) bir müşteri hesabı oluşturdu",
+    "A new client registered an account": "Yeni bir müşteri hesap oluşturdu"
 }

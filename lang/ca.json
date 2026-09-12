@@ -2073,5 +2073,7 @@
     "You've been invited to register": "T'han convidat a registrar-te",
     "You've been invited to register a client account. The link below will let you set your own password.": "T'han convidat a registrar un compte de client. L'enllaç de sota et permetrà triar la teva pròpia contrasenya.",
     "Your account has been created. You will be able to log in once it is approved.": "S'ha creat el teu compte. Podràs iniciar la sessió quan s'aprovi.",
-    "Invite a client to share files with": "Convida un client amb qui compartir fitxers"
+    "Invite a client to share files with": "Convida un client amb qui compartir fitxers",
+    ":clientName (:clientEmail) registered a client account": "Ha registrat un compte de client :clientName (:clientEmail)",
+    "A new client registered an account": "S'ha registrat un compte de client nou"
 }

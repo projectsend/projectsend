@@ -2073,5 +2073,7 @@
     "You've been invited to register": "Umealikwa kujisajili",
     "You've been invited to register a client account. The link below will let you set your own password.": "Umealikwa kusajili akaunti ya mteja. Kiungo kilicho hapa chini kitakuruhusu kuweka nenosiri lako mwenyewe.",
     "Your account has been created. You will be able to log in once it is approved.": "Akaunti yako imeundwa. Utaweza kuingia mara itakapoidhinishwa.",
-    "Invite a client to share files with": "Alika mteja wa kushirikiana naye mafaili"
+    "Invite a client to share files with": "Alika mteja wa kushirikiana naye mafaili",
+    ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) amesajili akaunti ya mteja",
+    "A new client registered an account": "Mteja mpya amesajili akaunti"
 }

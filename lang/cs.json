@@ -2073,5 +2073,7 @@
     "You've been invited to register": "Byli jste pozváni k registraci",
     "You've been invited to register a client account. The link below will let you set your own password.": "Byli jste pozváni k registraci klientského účtu. Odkaz níže vám umožní zvolit si vlastní heslo.",
     "Your account has been created. You will be able to log in once it is approved.": "Váš účet byl vytvořen. Přihlásit se budete moci, jakmile bude schválen.",
-    "Invite a client to share files with": "Pozvěte klienta, se kterým budete sdílet soubory"
+    "Invite a client to share files with": "Pozvěte klienta, se kterým budete sdílet soubory",
+    ":clientName (:clientEmail) registered a client account": "Klient :clientName (:clientEmail) si zaregistroval účet",
+    "A new client registered an account": "Zaregistroval se nový klient"
 }

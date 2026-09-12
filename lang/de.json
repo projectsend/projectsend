@@ -2073,5 +2073,7 @@
     "You've been invited to register": "Sie wurden zur Registrierung eingeladen",
     "You've been invited to register a client account. The link below will let you set your own password.": "Sie wurden eingeladen, ein Kundenkonto zu registrieren. Über den Link unten können Sie Ihr eigenes Passwort festlegen.",
     "Your account has been created. You will be able to log in once it is approved.": "Ihr Konto wurde erstellt. Sie können sich anmelden, sobald es genehmigt wurde.",
-    "Invite a client to share files with": "Laden Sie einen Kunden ein, mit dem Sie Dateien teilen"
+    "Invite a client to share files with": "Laden Sie einen Kunden ein, mit dem Sie Dateien teilen",
+    ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) hat ein Kundenkonto registriert",
+    "A new client registered an account": "Ein neuer Kunde hat ein Konto registriert"
 }

@@ -8,7 +8,11 @@ use App\Modules\Audit\ActivityLog;
 use App\Modules\Clients\Models\Invitation;
 use App\Modules\Clients\Notifications\ClientInvitationNotification;
 use App\Modules\Groups\Models\Group;
+use App\Modules\Identity\Models\Role;
+use App\Modules\Identity\Models\RolePermission;
+use App\Modules\Identity\Permissions\Permission;
 use App\Modules\Identity\UserType;
+use App\Modules\Notifications\InAppNotification;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Routing\Middleware\ThrottleRequests;
@@ -477,4 +481,44 @@ test('the invite form and the history are separate screens', function () {
     $this->actingAs($this->admin)->get('/clients/invitations')->assertInertia(
         fn (AssertableInertia $page) => $page->component('clients/invitations')->has('invitations')->missing('groups'),
     );
+});
+
+test('redeeming an invitation puts a notification in front of the staff who administer clients', function () {
+    $invitation = Invitation::issue('invited@example.com', null, null, $this->admin, now()->addDay());
+
+    $this->post("/invite/{$invitation->token}", [
+        'token' => $invitation->token,
+        'name' => 'Invited Person',
+        'password' => 'super-secret-password',
+        'password_confirmation' => 'super-secret-password',
+    ])->assertRedirect(route('login'));
+
+    $client = User::query()->where('email', 'invited@example.com')->sole();
+
+    $notification = InAppNotification::query()->where('type', 'client_registered')->sole();
+    expect($notification->user_id)->toBe($this->admin->id)
+        ->and($notification->subject_id)->toBe($client->id)
+        ->and($notification->data['clientName'])->toBe('Invited Person')
+        ->and($notification->data['clientEmail'])->toBe('invited@example.com');
+});
+
+test('a client-scoped staff member is not told about an account assigned to nobody', function () {
+    $role = Role::query()->create(['name' => 'Scoped Manager', 'client_scoped' => true]);
+    RolePermission::query()->insert([
+        ['role_id' => $role->id, 'permission' => Permission::ManageClients->value],
+    ]);
+    $scoped = User::factory()->create(['role_id' => $role->id]);
+
+    $invitation = Invitation::issue('invited@example.com', null, null, $this->admin, now()->addDay());
+
+    $this->post("/invite/{$invitation->token}", [
+        'token' => $invitation->token,
+        'name' => 'Invited Person',
+        'password' => 'super-secret-password',
+        'password_confirmation' => 'super-secret-password',
+    ]);
+
+    expect(InAppNotification::query()->where('type', 'client_registered')->pluck('user_id')->all())
+        ->toBe([$this->admin->id])
+        ->and(InAppNotification::query()->where('user_id', $scoped->id)->exists())->toBeFalse();
 });

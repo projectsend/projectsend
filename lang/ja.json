@@ -2073,5 +2073,7 @@
     "You've been invited to register": "登録のご招待",
     "You've been invited to register a client account. The link below will let you set your own password.": "クライアントアカウントの登録に招待されました。下のリンクからご自身のパスワードを設定できます。",
     "Your account has been created. You will be able to log in once it is approved.": "アカウントを作成しました。承認されるとログインできます。",
-    "Invite a client to share files with": "ファイルを共有するクライアントを招待します"
+    "Invite a client to share files with": "ファイルを共有するクライアントを招待します",
+    ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) がクライアントアカウントを登録しました",
+    "A new client registered an account": "新しいクライアントがアカウントを登録しました"
 }

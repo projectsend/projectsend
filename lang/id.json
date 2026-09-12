@@ -2073,5 +2073,7 @@
     "You've been invited to register": "Anda diundang untuk mendaftar",
     "You've been invited to register a client account. The link below will let you set your own password.": "Anda diundang untuk mendaftarkan akun klien. Tautan di bawah ini memungkinkan Anda menetapkan kata sandi sendiri.",
     "Your account has been created. You will be able to log in once it is approved.": "Akun Anda telah dibuat. Anda bisa masuk setelah akun disetujui.",
-    "Invite a client to share files with": "Undang klien untuk berbagi berkas"
+    "Invite a client to share files with": "Undang klien untuk berbagi berkas",
+    ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) mendaftarkan akun klien",
+    "A new client registered an account": "Klien baru mendaftarkan akun"
 }

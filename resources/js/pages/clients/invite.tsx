@@ -82,7 +82,7 @@ export default function ClientsInvite({
     // the two a reader needs told apart: one is a link that simply ran out,
     // the other was retired by a newer invitation to the same address.
     const stateLabels: Record<InvitationState, string> = {
-        pending: t('Waiting'),
+        pending: t('Pending'),
         expired: t('Expired'),
         redeemed: t('Accepted'),
         revoked: t('Revoked'),
@@ -132,7 +132,7 @@ export default function ClientsInvite({
                                   // rows below: the history is mostly settled, and
                                   // the number worth carrying in a label is the one
                                   // that says whether anybody is still waiting.
-                                  t('History (:count waiting)', { count: pending_count })}
+                                  t('History (:count pending)', { count: pending_count })}
                         </button>
                     ))}
                 </nav>
@@ -202,7 +202,7 @@ export default function ClientsInvite({
 
                     <div>
                         <Button type="submit" disabled={processing}>
-                            {t('Send invitation')}
+                            {t('Send an invitation')}
                         </Button>
                     </div>
                 </form>

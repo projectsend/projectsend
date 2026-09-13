@@ -47,7 +47,7 @@ export function StartPageSelect({
         <div className="grid gap-2">
             <Label htmlFor="start_page">{t('Start page')}</Label>
             <Select value={selected} onValueChange={(v) => onChange(v === INHERIT ? null : v)}>
-                <SelectTrigger id="start_page" className="w-64 max-w-full">
+                <SelectTrigger id="start_page" className="w-full max-w-sm">
                     <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

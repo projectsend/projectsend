@@ -89,7 +89,18 @@ class ShareLinksController extends Controller
             file: $file,
             creator: $user,
             expiresAt: $user->can('set_file_expiration_date') ? $expiresAt : null,
-            maxDownloads: $user->can('limit_downloads') ? $validated['max_downloads'] ?? null : null,
+            // Cast, and null kept as null rather than falling through a
+            // bare (int) that would turn "no cap" into a cap of zero. The
+            // `integer` rule validates a numeric string without converting
+            // it, and this file is strict_types, so an uncast "5" is a
+            // TypeError against `?int $maxDownloads`. Nothing sends one
+            // today only because files/edit.tsx calls Number() first --
+            // which is a fact about a frontend file, not a guarantee this
+            // signature has. It cost a 500 on the client form, where the
+            // same field was typed as a string.
+            maxDownloads: $user->can('limit_downloads') && ($validated['max_downloads'] ?? null) !== null
+                ? (int) $validated['max_downloads']
+                : null,
             token: $validated['token'] ?? null,
         );
 

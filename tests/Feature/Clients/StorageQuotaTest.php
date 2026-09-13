@@ -120,6 +120,27 @@ test('the settings form still edits the stored setting, never the floor', functi
     );
 });
 
+test('creating a client with a quota typed into the form stores it', function () {
+    // The 500 this exists for. `integer` validates a numeric string and
+    // does not convert it, so the form's "2048" reached
+    // ClientAccounts::create()'s `int $storageQuotaMb` under strict_types
+    // and raised a TypeError. Blank was fine -- null ?? 0 is an int -- so
+    // every existing test here went through the one branch that worked,
+    // and it shipped to the whole fleet on 2.4.1.
+    //
+    // post() and not postJson(): a form body is strings, which is the
+    // condition. A JSON number would pass on the unfixed code.
+    $this->actingAs($this->admin)->post('/clients', [
+        'name' => 'Quota Ltd',
+        'email' => 'typed-quota@example.test',
+        'password' => 'a-sufficiently-long-password',
+        'password_confirmation' => 'a-sufficiently-long-password',
+        'storage_quota_mb' => '2048',
+    ])->assertRedirect()->assertSessionDoesntHaveErrors();
+
+    expect(User::query()->where('email', 'typed-quota@example.test')->sole()->storage_quota_mb)->toBe(2048);
+});
+
 test('clearing the storage quota field to blank on the edit form resets it to inherit the site default', function () {
     app(Settings::class)->set(Setting::DefaultClientStorageQuotaMb, 150);
     $client = User::factory()->client()->create(['storage_quota_mb' => 100]);

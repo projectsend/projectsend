@@ -175,6 +175,13 @@ class User extends Authenticatable implements HasLocalePreference
             'ldap_synced_at' => 'datetime',
             'active' => 'boolean',
             'account_requested' => 'boolean',
+            // The column is an unsignedInteger and the docblock above
+            // already promises int. Saying so here is what makes that true
+            // for a reader as well: it is passed straight into typed
+            // signatures (ClientAccounts::create, ClientProvisioning::
+            // provision), and whether a driver hands back 2048 or "2048"
+            // is not something those call sites should depend on.
+            'storage_quota_mb' => 'integer',
             'erase_after' => 'datetime',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',

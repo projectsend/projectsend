@@ -157,6 +157,22 @@ test('creating a client still records every field', function () {
         ->where('user_id', $client->id)->where('client_custom_field_id', $optIn->id)->value('value'))->toBe('0');
 });
 
+test('a client can be created with the quota sent as a string', function () {
+    // Same defect as the staff screen: the `integer` rule accepts "2048"
+    // and hands it on unconverted, into a strict_types call expecting an
+    // int. A JSON number was always fine, which is why the API's own
+    // create test did not see it -- so this sends the quoted form a
+    // form-encoded caller or a cautious JSON serialiser would.
+    $this->withToken($this->token)->postJson('/api/v1/clients', [
+        'name' => 'Acme Ltd',
+        'email' => 'string-quota@acme.test',
+        'password' => 'a-sufficiently-long-password',
+        'storage_quota_mb' => '2048',
+    ])->assertStatus(201);
+
+    expect(User::query()->where('email', 'string-quota@acme.test')->sole()->storage_quota_mb)->toBe(2048);
+});
+
 test('a client can be created', function () {
     $this->withToken($this->token)->postJson('/api/v1/clients', [
         'name' => 'Acme Ltd',

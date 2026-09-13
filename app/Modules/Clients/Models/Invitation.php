@@ -62,6 +62,9 @@ class Invitation extends Model
     {
         return [
             'expires_at' => 'datetime',
+            // Read straight into provision()'s `int $storageQuotaMb` when
+            // the invitation is redeemed -- see the same cast on User.
+            'storage_quota_mb' => 'integer',
         ];
     }
 

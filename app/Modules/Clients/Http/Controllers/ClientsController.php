@@ -158,7 +158,13 @@ class ClientsController extends Controller
             name: $validated['name'],
             email: $validated['email'],
             password: $validated['password'],
-            storageQuotaMb: $validated['storage_quota_mb'] ?? 0,
+            // Cast, because `integer` validates without converting:
+            // $request->validate() hands back the raw input, so a form
+            // field arrives as the string "2048" and this file is
+            // strict_types. Filling the quota in was a 500; leaving it
+            // blank went through null ?? 0 as an int, which is why it
+            // survived to the fleet.
+            storageQuotaMb: (int) ($validated['storage_quota_mb'] ?? 0),
             welcome: false,
         );
 

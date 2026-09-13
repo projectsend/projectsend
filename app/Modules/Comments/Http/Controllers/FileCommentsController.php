@@ -61,7 +61,9 @@ class FileCommentsController extends Controller
             $viewer,
             CommentVisibility::from($validated['visibility']),
             $validated['body'],
-            $this->replyTarget($viewer, $file, $validated['reply_to'] ?? null),
+            // Cast for the reason ShareLinksController gives: `integer`
+            // does not convert, and replyTarget() takes a strict ?int.
+            $this->replyTarget($viewer, $file, isset($validated['reply_to']) ? (int) $validated['reply_to'] : null),
         );
 
         return response()->json($this->payload($viewer, $file), 201);

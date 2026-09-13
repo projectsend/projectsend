@@ -144,7 +144,12 @@ class ClientsController extends Controller
             name: $validated['name'],
             email: $validated['email'],
             password: $validated['password'],
-            storageQuotaMb: $validated['storage_quota_mb'] ?? 0,
+            // As on the staff screen, and for the same reason: the
+            // `integer` rule accepts a numeric string and does not convert
+            // it. A JSON number arrives as an int and was fine; a
+            // form-encoded body or a quoted JSON value is a string, and
+            // this file is strict_types.
+            storageQuotaMb: (int) ($validated['storage_quota_mb'] ?? 0),
             welcome: false,
         );
 

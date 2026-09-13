@@ -2075,5 +2075,19 @@
     "Your account has been created. You will be able to log in once it is approved.": "你的账户已创建，通过审核后即可登录。",
     "Invite a client to share files with": "邀请一位与你共享文件的客户",
     ":clientName (:clientEmail) registered a client account": ":clientName（:clientEmail）注册了客户账户",
-    "A new client registered an account": "新客户注册了账户"
+    "A new client registered an account": "新客户注册了账户",
+    "Account expires": "账户到期时间",
+    "A client account reached its expiry date and was deactivated": "一个客户账户已到期并被停用",
+    "After this day the client can no longer sign in, and the account is deactivated. Their files stay. Leave empty for an account that never expires.": "过了这一天，客户将无法再登录，账户会被停用。其文件会保留。留空表示账户永不过期。",
+    "Deactivate expired client accounts": "停用已过期的客户账户",
+    "Default (:page)": "默认（:page）",
+    "Start page": "起始页",
+    "The client account \":name\" expired and was deactivated": "客户账户“:name”已过期并被停用",
+    "The page you land on after signing in.": "你登录后进入的页面。",
+    "This account expired on :date and can no longer sign in. To let them back in, choose a later date or clear it, and make sure the account is active.": "此账户已于 :date 过期，无法再登录。要恢复其访问权限，请选择更晚的日期或清除日期，并确认账户已启用。",
+    "This date has already passed. Choose a later date, or leave it empty for an account that never expires.": "这个日期已经过去。请选择更晚的日期，或留空表示账户永不过期。",
+    "This role cannot open that page. Give it the \":permission\" permission, or choose another start page.": "此角色无法打开该页面。请授予它“:permission”权限，或选择其他起始页。",
+    "Until :date": "至 :date",
+    "Where people with this role land after signing in. Each person can still choose their own in their profile.": "拥有此角色的人登录后进入的页面。每个人仍可在个人资料中选择自己的起始页。",
+    "Your account has expired.": "你的账户已过期。"
 }

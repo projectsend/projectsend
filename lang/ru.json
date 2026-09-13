@@ -2075,5 +2075,19 @@
     "Your account has been created. You will be able to log in once it is approved.": "Ваша учётная запись создана. Вы сможете войти, как только её одобрят.",
     "Invite a client to share files with": "Пригласите клиента, с которым будете делиться файлами",
     ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) зарегистрировал учётную запись клиента",
-    "A new client registered an account": "Новый клиент зарегистрировал учётную запись"
+    "A new client registered an account": "Новый клиент зарегистрировал учётную запись",
+    "Account expires": "Срок действия учётной записи",
+    "A client account reached its expiry date and was deactivated": "Срок действия учётной записи клиента истёк, и она отключена",
+    "After this day the client can no longer sign in, and the account is deactivated. Their files stay. Leave empty for an account that never expires.": "После этого дня клиент больше не сможет войти, а учётная запись будет отключена. Его файлы сохранятся. Оставьте пустым, чтобы срок действия учётной записи не истекал.",
+    "Deactivate expired client accounts": "Отключать учётные записи клиентов с истёкшим сроком",
+    "Default (:page)": "По умолчанию (:page)",
+    "Start page": "Начальная страница",
+    "The client account \":name\" expired and was deactivated": "Срок действия учётной записи клиента «:name» истёк, и она отключена",
+    "The page you land on after signing in.": "Страница, на которую вы попадаете после входа.",
+    "This account expired on :date and can no longer sign in. To let them back in, choose a later date or clear it, and make sure the account is active.": "Срок действия этой учётной записи истёк :date, войти в неё больше нельзя. Чтобы вернуть доступ, выберите более позднюю дату или очистите поле и убедитесь, что учётная запись активна.",
+    "This date has already passed. Choose a later date, or leave it empty for an account that never expires.": "Эта дата уже прошла. Выберите более позднюю дату или оставьте поле пустым, чтобы срок действия учётной записи не истекал.",
+    "This role cannot open that page. Give it the \":permission\" permission, or choose another start page.": "Эта роль не может открыть эту страницу. Выдайте ей разрешение «:permission» или выберите другую начальную страницу.",
+    "Until :date": "До :date",
+    "Where people with this role land after signing in. Each person can still choose their own in their profile.": "Страница, на которую попадают пользователи с этой ролью после входа. Каждый может выбрать свою в профиле.",
+    "Your account has expired.": "Срок действия вашей учётной записи истёк."
 }

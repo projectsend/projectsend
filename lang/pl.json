@@ -2075,5 +2075,19 @@
     "Your account has been created. You will be able to log in once it is approved.": "Twoje konto zostało utworzone. Zalogujesz się, gdy zostanie zatwierdzone.",
     "Invite a client to share files with": "Zaproś klienta, któremu będziesz udostępniać pliki",
     ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) zarejestrował konto klienta",
-    "A new client registered an account": "Nowy klient zarejestrował konto"
+    "A new client registered an account": "Nowy klient zarejestrował konto",
+    "Account expires": "Konto wygasa",
+    "A client account reached its expiry date and was deactivated": "Konto klienta osiągnęło datę wygaśnięcia i zostało dezaktywowane",
+    "After this day the client can no longer sign in, and the account is deactivated. Their files stay. Leave empty for an account that never expires.": "Po tym dniu klient nie może się już zalogować, a konto zostaje dezaktywowane. Jego pliki pozostają. Zostaw puste, aby konto nigdy nie wygasało.",
+    "Deactivate expired client accounts": "Dezaktywuj wygasłe konta klientów",
+    "Default (:page)": "Domyślne (:page)",
+    "Start page": "Strona startowa",
+    "The client account \":name\" expired and was deactivated": "Konto klienta \":name\" wygasło i zostało dezaktywowane",
+    "The page you land on after signing in.": "Strona, na którą trafiasz po zalogowaniu.",
+    "This account expired on :date and can no longer sign in. To let them back in, choose a later date or clear it, and make sure the account is active.": "To konto wygasło :date i nie może się już zalogować. Aby przywrócić dostęp, wybierz późniejszą datę lub ją wyczyść i upewnij się, że konto jest aktywne.",
+    "This date has already passed. Choose a later date, or leave it empty for an account that never expires.": "Ta data już minęła. Wybierz późniejszą datę albo zostaw puste, aby konto nigdy nie wygasało.",
+    "This role cannot open that page. Give it the \":permission\" permission, or choose another start page.": "Ta rola nie może otworzyć tej strony. Nadaj jej uprawnienie \":permission\" albo wybierz inną stronę startową.",
+    "Until :date": "Do :date",
+    "Where people with this role land after signing in. Each person can still choose their own in their profile.": "Strona, na którą trafiają osoby z tą rolą po zalogowaniu. Każdy nadal może wybrać własną w swoim profilu.",
+    "Your account has expired.": "Twoje konto wygasło."
 }

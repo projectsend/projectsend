@@ -51,12 +51,19 @@ class SignIn
      */
     public function refusalReason(User $user): ?string
     {
-        if ($user->active) {
+        if ($user->maySignIn()) {
             return null;
         }
 
-        return $user->account_requested
-            ? __('Your account request has not been approved yet.')
+        if (! $user->active && $user->account_requested) {
+            return __('Your account request has not been approved yet.');
+        }
+
+        // Ahead of "deactivated", because the hourly sweep also switches
+        // an expired account off — and "expired" is the reason its owner
+        // can do something about, by asking for more time.
+        return $user->hasExpired()
+            ? __('Your account has expired.')
             : __('Your account has been deactivated.');
     }
 

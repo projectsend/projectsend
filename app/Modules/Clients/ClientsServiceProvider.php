@@ -36,5 +36,11 @@ class ClientsServiceProvider extends ServiceProvider
             // was sent to is worse than one that lands a click short.
             url: fn (array $data): string => route('clients.index', ['search' => $data['clientEmail']]),
         ));
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                Console\ExpireClientAccountsCommand::class,
+            ]);
+        }
     }
 }

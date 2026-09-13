@@ -2075,5 +2075,19 @@
     "Your account has been created. You will be able to log in once it is approved.": "S'ha creat el teu compte. Podràs iniciar la sessió quan s'aprovi.",
     "Invite a client to share files with": "Convida un client amb qui compartir fitxers",
     ":clientName (:clientEmail) registered a client account": "Ha registrat un compte de client :clientName (:clientEmail)",
-    "A new client registered an account": "S'ha registrat un compte de client nou"
+    "A new client registered an account": "S'ha registrat un compte de client nou",
+    "Account expires": "El compte caduca",
+    "A client account reached its expiry date and was deactivated": "Un compte de client ha arribat a la seva data de caducitat i s'ha desactivat",
+    "After this day the client can no longer sign in, and the account is deactivated. Their files stay. Leave empty for an account that never expires.": "Després d'aquest dia el client ja no pot iniciar la sessió i el compte es desactiva. Els seus fitxers es conserven. Deixa-ho buit per a un compte que no caduqui mai.",
+    "Deactivate expired client accounts": "Desactiva els comptes de client caducats",
+    "Default (:page)": "Per defecte (:page)",
+    "Start page": "Pàgina d'inici",
+    "The client account \":name\" expired and was deactivated": "El compte de client \":name\" ha caducat i s'ha desactivat",
+    "The page you land on after signing in.": "La pàgina on arribes després d'iniciar la sessió.",
+    "This account expired on :date and can no longer sign in. To let them back in, choose a later date or clear it, and make sure the account is active.": "Aquest compte va caducar el :date i ja no pot iniciar la sessió. Per tornar-li a donar accés, tria una data posterior o esborra-la, i assegura't que el compte és actiu.",
+    "This date has already passed. Choose a later date, or leave it empty for an account that never expires.": "Aquesta data ja ha passat. Tria una data posterior, o deixa-ho buit per a un compte que no caduqui mai.",
+    "This role cannot open that page. Give it the \":permission\" permission, or choose another start page.": "Aquest rol no pot obrir aquesta pàgina. Dona-li el permís \":permission\" o tria una altra pàgina d'inici.",
+    "Until :date": "Fins al :date",
+    "Where people with this role land after signing in. Each person can still choose their own in their profile.": "On arriben les persones amb aquest rol després d'iniciar la sessió. Cada persona pot triar la seva al seu perfil.",
+    "Your account has expired.": "El teu compte ha caducat."
 }

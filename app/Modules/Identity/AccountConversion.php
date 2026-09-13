@@ -260,6 +260,10 @@ class AccountConversion
                 // `ldap_dn` is deliberately kept: it is the record of where
                 // the account came from, and a demotion makes it live again.
                 'auth_source' => AuthSource::Local,
+                // Only client accounts carry an expiry, and no staff screen
+                // shows one. Kept, it would switch a staff member off on a
+                // date nobody who manages staff can see or change.
+                'expires_at' => null,
             ]);
 
             if ($newPassword !== null) {

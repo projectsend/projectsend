@@ -2075,5 +2075,19 @@
     "Your account has been created. You will be able to log in once it is approved.": "Váš účet byl vytvořen. Přihlásit se budete moci, jakmile bude schválen.",
     "Invite a client to share files with": "Pozvěte klienta, se kterým budete sdílet soubory",
     ":clientName (:clientEmail) registered a client account": "Klient :clientName (:clientEmail) si zaregistroval účet",
-    "A new client registered an account": "Zaregistroval se nový klient"
+    "A new client registered an account": "Zaregistroval se nový klient",
+    "Account expires": "Platnost účtu vyprší",
+    "A client account reached its expiry date and was deactivated": "Platnost klientského účtu vypršela a účet byl deaktivován",
+    "After this day the client can no longer sign in, and the account is deactivated. Their files stay. Leave empty for an account that never expires.": "Po tomto dni se klient už nepřihlásí a účet bude deaktivován. Jeho soubory zůstanou. Nechte prázdné, pokud platnost účtu nemá nikdy vypršet.",
+    "Deactivate expired client accounts": "Deaktivovat klientské účty s vypršelou platností",
+    "Default (:page)": "Výchozí (:page)",
+    "Start page": "Úvodní stránka",
+    "The client account \":name\" expired and was deactivated": "Platnost klientského účtu \":name\" vypršela a účet byl deaktivován",
+    "The page you land on after signing in.": "Stránka, na kterou se dostanete po přihlášení.",
+    "This account expired on :date and can no longer sign in. To let them back in, choose a later date or clear it, and make sure the account is active.": "Platnost tohoto účtu vypršela :date a klient se už nemůže přihlásit. Chcete-li mu přístup vrátit, zvolte pozdější datum nebo ho smažte a ujistěte se, že je účet aktivní.",
+    "This date has already passed. Choose a later date, or leave it empty for an account that never expires.": "Toto datum už uplynulo. Zvolte pozdější datum, nebo nechte prázdné, pokud platnost účtu nemá nikdy vypršet.",
+    "This role cannot open that page. Give it the \":permission\" permission, or choose another start page.": "Tato role nemůže tuto stránku otevřít. Přidejte jí oprávnění \":permission\", nebo zvolte jinou úvodní stránku.",
+    "Until :date": "Do :date",
+    "Where people with this role land after signing in. Each person can still choose their own in their profile.": "Kam se lidé s touto rolí dostanou po přihlášení. Každý si může ve svém profilu zvolit vlastní.",
+    "Your account has expired.": "Platnost vašeho účtu vypršela."
 }

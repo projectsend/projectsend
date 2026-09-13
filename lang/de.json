@@ -2075,5 +2075,19 @@
     "Your account has been created. You will be able to log in once it is approved.": "Ihr Konto wurde erstellt. Sie können sich anmelden, sobald es genehmigt wurde.",
     "Invite a client to share files with": "Laden Sie einen Kunden ein, mit dem Sie Dateien teilen",
     ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) hat ein Kundenkonto registriert",
-    "A new client registered an account": "Ein neuer Kunde hat ein Konto registriert"
+    "A new client registered an account": "Ein neuer Kunde hat ein Konto registriert",
+    "Account expires": "Konto läuft ab",
+    "A client account reached its expiry date and was deactivated": "Ein Kundenkonto hat sein Ablaufdatum erreicht und wurde deaktiviert",
+    "After this day the client can no longer sign in, and the account is deactivated. Their files stay. Leave empty for an account that never expires.": "Nach diesem Tag kann sich der Kunde nicht mehr anmelden, und das Konto wird deaktiviert. Seine Dateien bleiben erhalten. Leer lassen für ein Konto, das nie abläuft.",
+    "Deactivate expired client accounts": "Abgelaufene Kundenkonten deaktivieren",
+    "Default (:page)": "Standard (:page)",
+    "Start page": "Startseite",
+    "The client account \":name\" expired and was deactivated": "Das Kundenkonto \":name\" ist abgelaufen und wurde deaktiviert",
+    "The page you land on after signing in.": "Die Seite, auf der Sie nach der Anmeldung landen.",
+    "This account expired on :date and can no longer sign in. To let them back in, choose a later date or clear it, and make sure the account is active.": "Dieses Konto ist am :date abgelaufen und kann sich nicht mehr anmelden. Um den Zugang wiederherzustellen, wählen Sie ein späteres Datum oder leeren Sie das Feld, und stellen Sie sicher, dass das Konto aktiv ist.",
+    "This date has already passed. Choose a later date, or leave it empty for an account that never expires.": "Dieses Datum liegt bereits in der Vergangenheit. Wählen Sie ein späteres Datum oder lassen Sie das Feld leer für ein Konto, das nie abläuft.",
+    "This role cannot open that page. Give it the \":permission\" permission, or choose another start page.": "Diese Rolle kann diese Seite nicht öffnen. Geben Sie ihr die Berechtigung \":permission\" oder wählen Sie eine andere Startseite.",
+    "Until :date": "Bis :date",
+    "Where people with this role land after signing in. Each person can still choose their own in their profile.": "Wo Personen mit dieser Rolle nach der Anmeldung landen. Jede Person kann in ihrem Profil trotzdem eine eigene wählen.",
+    "Your account has expired.": "Ihr Konto ist abgelaufen."
 }

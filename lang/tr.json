@@ -2075,5 +2075,19 @@
     "Your account has been created. You will be able to log in once it is approved.": "Hesabınız oluşturuldu. Onaylandığında giriş yapabileceksiniz.",
     "Invite a client to share files with": "Dosya paylaşacağınız bir müşteriyi davet edin",
     ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) bir müşteri hesabı oluşturdu",
-    "A new client registered an account": "Yeni bir müşteri hesap oluşturdu"
+    "A new client registered an account": "Yeni bir müşteri hesap oluşturdu",
+    "Account expires": "Hesabın sona erme tarihi",
+    "A client account reached its expiry date and was deactivated": "Bir müşteri hesabı sona erme tarihine ulaştı ve devre dışı bırakıldı",
+    "After this day the client can no longer sign in, and the account is deactivated. Their files stay. Leave empty for an account that never expires.": "Bu günden sonra müşteri artık oturum açamaz ve hesap devre dışı bırakılır. Dosyaları kalır. Hiç sona ermeyen bir hesap için boş bırakın.",
+    "Deactivate expired client accounts": "Süresi dolmuş müşteri hesaplarını devre dışı bırak",
+    "Default (:page)": "Varsayılan (:page)",
+    "Start page": "Başlangıç sayfası",
+    "The client account \":name\" expired and was deactivated": "\":name\" müşteri hesabının süresi doldu ve devre dışı bırakıldı",
+    "The page you land on after signing in.": "Oturum açtıktan sonra karşınıza çıkan sayfa.",
+    "This account expired on :date and can no longer sign in. To let them back in, choose a later date or clear it, and make sure the account is active.": "Bu hesabın süresi :date tarihinde doldu ve artık oturum açamaz. Erişimi geri vermek için daha sonraki bir tarih seçin ya da tarihi temizleyin ve hesabın etkin olduğundan emin olun.",
+    "This date has already passed. Choose a later date, or leave it empty for an account that never expires.": "Bu tarih zaten geçti. Daha sonraki bir tarih seçin ya da hiç sona ermeyen bir hesap için boş bırakın.",
+    "This role cannot open that page. Give it the \":permission\" permission, or choose another start page.": "Bu rol o sayfayı açamaz. Role \":permission\" iznini verin ya da başka bir başlangıç sayfası seçin.",
+    "Until :date": ":date tarihine kadar",
+    "Where people with this role land after signing in. Each person can still choose their own in their profile.": "Bu roldeki kişilerin oturum açtıktan sonra karşılaştığı sayfa. Herkes profilinden yine de kendi sayfasını seçebilir.",
+    "Your account has expired.": "Hesabınızın süresi doldu."
 }

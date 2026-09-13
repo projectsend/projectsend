@@ -467,7 +467,7 @@ class MyFilesController extends Controller
             'commentable' => ['sometimes', 'boolean'],
             'categories' => ['array'],
             'categories.*' => ['integer', 'exists:categories,id'],
-            'expires_at' => ['nullable', 'date'],
+            'expires_at' => ['nullable', 'string', 'date'],
             'download_limit' => ['nullable', 'integer', 'min:1'],
             'download_limit_scope' => ['nullable', Rule::enum(DownloadLimitScope::class)],
         ]);

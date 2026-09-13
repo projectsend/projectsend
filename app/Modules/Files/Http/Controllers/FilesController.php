@@ -267,7 +267,7 @@ class FilesController extends Controller
             'slug' => Rules::slug('files', $file->id),
             'categories' => ['array'],
             'categories.*' => ['integer', 'exists:categories,id'],
-            'expires_at' => ['nullable', 'date'],
+            'expires_at' => ['nullable', 'string', 'date'],
             'download_limit' => ['nullable', 'integer', 'min:1'],
             'download_limit_scope' => ['nullable', Rule::enum(DownloadLimitScope::class)],
         ]);
@@ -393,7 +393,7 @@ class FilesController extends Controller
             'description' => ['nullable', 'string', 'max:2000'],
 
             'expiration_action' => ['required', Rule::in(['no_change', 'set', 'clear'])],
-            'expires_at' => ['nullable', 'date', 'required_if:expiration_action,set'],
+            'expires_at' => ['nullable', 'string', 'date', 'required_if:expiration_action,set'],
 
             // `sometimes` rather than `required` like the fields above:
             // a browser still running the previous build would start

@@ -306,7 +306,7 @@ class FilesController extends Controller
             'slug' => Rules::slug('files', $file->id),
             'categories' => ['sometimes', 'array'],
             'categories.*' => ['integer', 'exists:categories,id'],
-            'expires_at' => ['sometimes', 'nullable', 'date'],
+            'expires_at' => ['sometimes', 'nullable', 'string', 'date'],
             'download_limit' => ['sometimes', 'nullable', 'integer', 'min:1'],
             'download_limit_scope' => ['sometimes', Rule::enum(DownloadLimitScope::class)],
         ]);

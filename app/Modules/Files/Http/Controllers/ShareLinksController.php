@@ -44,7 +44,7 @@ class ShareLinksController extends Controller
             // far enough east would be told today's date is in the past
             // while it is plainly still today where they are. The check
             // moves below, onto the instant the date actually resolves to.
-            'expires_at' => ['nullable', 'date'],
+            'expires_at' => ['nullable', 'string', 'date'],
             'max_downloads' => ['nullable', 'integer', 'min:1'],
             // A custom token is optional — leave blank for a random one,
             // same as before. Must not collide with the file's own

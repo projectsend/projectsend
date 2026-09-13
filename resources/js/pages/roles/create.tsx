@@ -4,22 +4,25 @@ import { FormEventHandler } from 'react';
 
 import Heading from '@/components/heading';
 import { PermissionCatalogCategory, RoleForm } from '@/components/role-form';
+import { StartPageSelect, type StartPageOption } from '@/components/start-page-select';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
 
 interface RolesCreateProps {
     catalog: PermissionCatalogCategory[];
+    start_page_options: StartPageOption[];
 }
 
 interface RoleFormData {
-    [key: string]: string | string[] | boolean;
+    [key: string]: string | string[] | boolean | null;
     name: string;
     client_scoped: boolean;
     permissions: string[];
+    start_page: string | null;
 }
 
-export default function RolesCreate({ catalog }: RolesCreateProps) {
+export default function RolesCreate({ catalog, start_page_options }: RolesCreateProps) {
     const { t } = useTranslation();
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -31,6 +34,7 @@ export default function RolesCreate({ catalog }: RolesCreateProps) {
         name: '',
         client_scoped: false,
         permissions: [],
+        start_page: null,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -57,6 +61,15 @@ export default function RolesCreate({ catalog }: RolesCreateProps) {
                         onPermissionsChange={(permissions) => setData('permissions', permissions)}
                         catalog={catalog}
                         errors={errors}
+                    />
+
+                    <StartPageSelect
+                        value={data.start_page}
+                        onChange={(value) => setData('start_page', value)}
+                        options={start_page_options}
+                        grantedPermissions={data.permissions}
+                        error={errors.start_page}
+                        description={t('Where people with this role land after signing in. Each person can still choose their own in their profile.')}
                     />
 
                     <Button type="submit" disabled={processing}>

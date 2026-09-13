@@ -7,6 +7,8 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Identity\AuthSource;
+use App\Modules\Identity\Models\Role;
+use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Identity\Social\SocialAccount;
 use App\Modules\Identity\Social\SocialGateway;
 use App\Modules\Identity\Social\SocialIdentity;
@@ -485,4 +487,15 @@ test('the takeover refusal explains what to do instead', function () {
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('auth/login')
             ->where('flash.error', 'An account already uses this email address, and Google did not confirm that you own it. Sign in with your password and connect Google from your settings instead.'));
+});
+
+test('a provider sign-in lands on the account\'s start page, like a password sign-in', function () {
+    socialSettings();
+    Role::query()
+        ->where('name', SystemRole::Client->value)
+        ->update(['start_page' => 'files']);
+    User::factory()->client()->create(['email' => 'client@example.test']);
+    fakeProvider(identity(email: 'client@example.test', verified: true));
+
+    signInWith()->assertRedirect('/my-files');
 });

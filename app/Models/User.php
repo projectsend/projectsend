@@ -29,6 +29,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property bool $account_requested
  * @property string|null $locale
  * @property string|null $timezone
+ * @property string|null $start_page a StartPage value; see StartPages
  * @property int|null $dashboard_columns
  * @property int $storage_quota_mb
  * @property Carbon|null $erase_after
@@ -55,6 +56,9 @@ class User extends Authenticatable implements HasLocalePreference
         'password',
         'locale',
         'timezone',
+        // A personal preference, like timezone: the profile form fills it
+        // from its own validated request. See StartPages.
+        'start_page',
         'dashboard_columns',
         'storage_quota_mb',
     ];

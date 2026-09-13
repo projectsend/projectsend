@@ -15,6 +15,7 @@ use RuntimeException;
  * @property bool $is_system
  * @property bool $is_administrator
  * @property bool $client_scoped
+ * @property string|null $start_page a StartPage value; see StartPages
  * @property-read int $users_count
  * @property-read int $permissions_count
  */

@@ -8,6 +8,7 @@ import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { PermissionCatalogCategory, RoleForm } from '@/components/role-form';
 import { SavedIndicator } from '@/components/save-button';
+import { StartPageSelect, type StartPageOption } from '@/components/start-page-select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
@@ -22,18 +23,21 @@ interface RolesEditProps {
         client_scoped: boolean;
         users_count: number;
         permissions: string[];
+        start_page: string | null;
     };
     catalog: PermissionCatalogCategory[];
+    start_page_options: StartPageOption[];
 }
 
 interface RoleFormData {
-    [key: string]: string | string[] | boolean;
+    [key: string]: string | string[] | boolean | null;
     name: string;
     client_scoped: boolean;
     permissions: string[];
+    start_page: string | null;
 }
 
-export default function RolesEdit({ role, catalog }: RolesEditProps) {
+export default function RolesEdit({ role, catalog, start_page_options }: RolesEditProps) {
     const { t } = useTranslation();
 
     const displayName = role.is_system ? t(role.name) : role.name;
@@ -47,9 +51,16 @@ export default function RolesEdit({ role, catalog }: RolesEditProps) {
         name: role.name,
         client_scoped: role.client_scoped,
         permissions: role.permissions,
+        start_page: role.start_page,
     });
 
+    // The administrator role's permissions are fixed, so its form sends the
+    // start page alone — anything more is refused by the server.
+    const adminForm = useForm<{ start_page: string | null }>({ start_page: role.start_page });
+
     const deleteForm = useForm({});
+
+    const startPageDescription = t('Where people with this role land after signing in. Each person can still choose their own in their profile.');
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -64,10 +75,35 @@ export default function RolesEdit({ role, catalog }: RolesEditProps) {
                 <Heading title={displayName} description={t(':count accounts have this role', { count: role.users_count })} />
 
                 {role.is_administrator ? (
-                    <Alert>
-                        <ShieldCheck className="size-4" />
-                        <AlertDescription>{t('The administrator role always has every permission and cannot be edited.')}</AlertDescription>
-                    </Alert>
+                    <div className="space-y-6">
+                        <Alert>
+                            <ShieldCheck className="size-4" />
+                            <AlertDescription>{t('The administrator role always has every permission and cannot be edited.')}</AlertDescription>
+                        </Alert>
+
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                adminForm.patch(route('roles.update', role.id));
+                            }}
+                            className="space-y-6"
+                        >
+                            <StartPageSelect
+                                value={adminForm.data.start_page}
+                                onChange={(value) => adminForm.setData('start_page', value)}
+                                options={start_page_options}
+                                error={adminForm.errors.start_page}
+                                description={startPageDescription}
+                            />
+
+                            <div className="flex items-center gap-4">
+                                <Button type="submit" disabled={adminForm.processing}>
+                                    {t('Save')}
+                                </Button>
+                                <SavedIndicator recentlySuccessful={adminForm.recentlySuccessful} />
+                            </div>
+                        </form>
+                    </div>
                 ) : (
                     <form onSubmit={submit} className="space-y-6">
                         <RoleForm
@@ -81,6 +117,15 @@ export default function RolesEdit({ role, catalog }: RolesEditProps) {
                             onPermissionsChange={(permissions) => setData('permissions', permissions)}
                             catalog={catalog}
                             errors={errors}
+                        />
+
+                        <StartPageSelect
+                            value={data.start_page}
+                            onChange={(value) => setData('start_page', value)}
+                            options={start_page_options}
+                            grantedPermissions={data.permissions}
+                            error={errors.start_page}
+                            description={startPageDescription}
                         />
 
                         <div className="flex items-center gap-4">

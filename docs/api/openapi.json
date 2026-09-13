@@ -808,6 +808,14 @@
                                         ],
                                         "minimum": 0
                                     },
+                                    "expires_at": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date-time",
+                                        "description": "When the account stops working; omit or send null for never.\nA bare date (`2026-12-31`) means the end of that day in the\ntoken owner's timezone; a full timestamp is used as given.\nMust be in the future."
+                                    },
                                     "custom_field_values": {
                                         "type": "array",
                                         "items": {
@@ -944,6 +952,14 @@
                                             "null"
                                         ],
                                         "minimum": 0
+                                    },
+                                    "expires_at": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date-time",
+                                        "description": "Send null to remove the expiry. Read the same way as on\ncreate. An account cannot be active with a date that has\npassed, so reactivating an expired client needs a new date\n(or null) in the same request."
                                     },
                                     "custom_field_values": {
                                         "type": "array",
@@ -3534,6 +3550,7 @@
                     "client.invitation_redeemed",
                     "client.invitation_revoked",
                     "client.invitation_resent",
+                    "client.expired",
                     "file.uploaded",
                     "file.updated",
                     "file.deleted",
@@ -3730,6 +3747,13 @@
                         "type": "boolean",
                         "description": "Whether, not what: the state of the second factor is what a\ncaller needs to see before removing it. The secret and the\nrecovery codes stay where they are."
                     },
+                    "expires_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Null when the account never expires. Once this passes the\nclient can no longer sign in, and `active` turns false within\nthe hour."
+                    },
                     "created_at": {
                         "type": [
                             "string",
@@ -3810,6 +3834,7 @@
                     "active",
                     "account_requested",
                     "two_factor_enabled",
+                    "expires_at",
                     "created_at",
                     "updated_at",
                     "storage",

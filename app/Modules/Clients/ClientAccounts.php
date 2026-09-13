@@ -14,6 +14,8 @@ use App\Modules\Identity\UserType;
 use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Creating a client account — the rules and the side effects, shared by
@@ -56,6 +58,9 @@ class ClientAccounts
      *                               enforcement time — see
      *                               ClientStorageUsage::quotaMb(). It does
      *                               not mean unlimited.
+     * @param  Carbon|null  $expiresAt  when the account stops working;
+     *                                   null for never. Must be in the
+     *                                   future — see guardExpiry().
      * @param  bool  $welcome  whether this installation should email the
      *                         new account. A caller that sends its own
      *                         welcome passes false rather than having the
@@ -68,6 +73,7 @@ class ClientAccounts
         int $storageQuotaMb = 0,
         bool $welcome = true,
         string $emailField = 'email',
+        ?Carbon $expiresAt = null,
     ): User {
         // Before anything is written, and deliberately not left to the
         // caller. The platform sets this cap and the platform is also what
@@ -76,6 +82,7 @@ class ClientAccounts
         // that only ran on the surfaces that remembered it would not be a
         // guard.
         $this->seats->guardClient($emailField);
+        $this->guardExpiry($expiresAt, active: true);
 
         $client = User::create([
             'type' => UserType::Client,
@@ -98,7 +105,10 @@ class ClientAccounts
         // confirm and nobody to confirm it to. (Inert today, since
         // MustVerifyEmail is not enabled on the model, but the column is
         // what a later switch would read.)
-        $client->forceFill(['email_verified_at' => now()])->save();
+        //
+        // expires_at is written the same way for its own reason: see the
+        // note on its cast in User.
+        $client->forceFill(['email_verified_at' => now(), 'expires_at' => $expiresAt])->save();
 
         $this->activity->log(Action::UserCreated, subject: $client);
 
@@ -107,5 +117,23 @@ class ClientAccounts
         }
 
         return $client;
+    }
+
+    /**
+     * An account cannot be both active and past its expiry date.
+     *
+     * Every surface that writes either value asks this before saving,
+     * because the combination is not a state anybody means: an account
+     * that looks switched on and refuses every sign-in, until the hourly
+     * sweep quietly switches it off again. Somebody reactivating an
+     * expired client has to give them a new date, or none.
+     */
+    public function guardExpiry(?Carbon $expiresAt, bool $active, string $field = 'expires_at'): void
+    {
+        if ($active && $expiresAt !== null && $expiresAt->isPast()) {
+            throw ValidationException::withMessages([
+                $field => __('This date has already passed. Choose a later date, or leave it empty for an account that never expires.'),
+            ]);
+        }
     }
 }

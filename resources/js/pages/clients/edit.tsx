@@ -4,6 +4,7 @@ import { FormEventHandler } from 'react';
 
 import { AccountContentDeleteDialog, type ReassignCandidate } from '@/components/account-content-delete-dialog';
 import { ClientCustomFieldsSection, type CustomFieldDefinition } from '@/components/client-custom-fields-section';
+import { ClientExpiryField } from '@/components/client-expiry-field';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
@@ -26,6 +27,8 @@ interface ClientsEditProps {
         account_requested: boolean;
         storage_quota_mb: number;
         two_factor_enabled: boolean;
+        expires_at: string | null;
+        expired: boolean;
     };
     default_storage_quota_mb: number;
     storage_used_mb: number;
@@ -43,6 +46,7 @@ interface ClientFormData {
     password: string;
     password_confirmation: string;
     storage_quota_mb: string;
+    expires_at: string;
     custom_field_values: Record<string, string>;
 }
 
@@ -73,6 +77,9 @@ export default function ClientsEdit({
         // input shows the resolved default as a placeholder instead of a
         // number the admin has to know to type themselves.
         storage_quota_mb: client.storage_quota_mb > 0 ? String(client.storage_quota_mb) : '',
+        // Posted back exactly as received when untouched — the server
+        // compares against this string to tell a new date from an old one.
+        expires_at: client.expires_at ?? '',
         custom_field_values: Object.fromEntries(
             custom_fields.map((field) => [field.id, custom_field_values[field.id] ?? (field.type === 'checkbox' ? '0' : '')]),
         ),
@@ -154,6 +161,13 @@ export default function ClientsEdit({
                         <p className="text-muted-foreground text-sm">{t('Activating this account approves its pending request.')}</p>
                     )}
                     <InputError message={errors.active} />
+
+                    <ClientExpiryField
+                        value={data.expires_at}
+                        onChange={(value) => setData('expires_at', value)}
+                        error={errors.expires_at}
+                        expired={client.expired && data.expires_at === (client.expires_at ?? '')}
+                    />
 
                     <div className="grid gap-2">
                         <Label htmlFor="storage_quota_mb">{t('Storage quota (MB)')}</Label>

@@ -90,6 +90,6 @@ class TwoFactorChallengeController extends Controller
 
         $user = User::query()->find($id);
 
-        return $user instanceof User && $user->active && $user->hasTwoFactorEnabled() ? $user : null;
+        return $user instanceof User && $user->maySignIn() && $user->hasTwoFactorEnabled() ? $user : null;
     }
 }

@@ -10,6 +10,7 @@ use App\Modules\Audit\ActivityLog;
 use App\Modules\Files\Access\SharingIdentity;
 use App\Modules\Files\DownloadLimitScope;
 use App\Modules\Files\FileDiskCleanup;
+use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Files\Versions\FileVersions;
 use App\Modules\Groups\Models\Group;
 use App\Support\Concerns\HasUniqueSlug;
@@ -40,6 +41,13 @@ use Illuminate\Support\Carbon;
  * @property string $mime_type
  * @property int $size
  * @property string $checksum
+ * @property ScanStatus $scan_status
+ * @property string|null $scan_note the threat name, or a NotScannedReason
+ * @property Carbon|null $scanned_at
+ * @property string|null $scan_engine
+ * @property int $scan_attempts
+ * @property int|null $released_by
+ * @property Carbon|null $released_at
  * @property bool $public
  * @property Carbon|null $expires_at
  * @property int|null $download_limit
@@ -74,6 +82,13 @@ class File extends Model
     {
         return [
             'public' => 'boolean',
+            // Where this file stands with the virus scanner. Cast to the
+            // enum so nothing compares raw strings — see ScanStatus and
+            // FileAvailability.
+            'scan_status' => ScanStatus::class,
+            'scanned_at' => 'datetime',
+            'released_at' => 'datetime',
+            'scan_attempts' => 'integer',
             'commentable' => 'boolean',
             'expires_at' => 'datetime',
             'download_limit' => 'integer',
@@ -272,6 +287,29 @@ class File extends Model
     }
 
     /**
+     * Files the virus scanner has finished with, one way or another.
+     *
+     * Sits beside notExpired() in every scope that answers "what may this
+     * person be shown", and for the same reason: a file nobody has
+     * checked yet is not a file anybody may be handed. The uploader is
+     * the exception — their own upload stays on their screen while it is
+     * being checked, marked as such, because a file that vanishes for ten
+     * minutes after you send it reads as a failed upload.
+     *
+     * @param  Builder<File>  $query
+     */
+    public function scopeAvailable(Builder $query, ?User $viewer = null): void
+    {
+        $query->where(function (Builder $inner) use ($viewer): void {
+            $inner->whereIn('scan_status', ScanStatus::availableValues());
+
+            if ($viewer !== null) {
+                $inner->orWhere('uploaded_by', $viewer->id);
+            }
+        });
+    }
+
+    /**
      * @param  Builder<File>  $query
      */
     public function scopeNotExpired(Builder $query): void
@@ -352,7 +390,7 @@ class File extends Model
             $outer->orWhere('uploaded_by', $client->id);
         });
 
-        $query->notExpired();
+        $query->notExpired()->available($client);
     }
 
     /**
@@ -393,7 +431,7 @@ class File extends Model
             $outer->orWhereIn('folder_id', $subtreeFolderIds);
         });
 
-        $query->notExpired();
+        $query->notExpired()->available();
     }
 
     /**
@@ -407,7 +445,7 @@ class File extends Model
      */
     public function scopePubliclyVisibleForFolder(Builder $query, Folder $folder): void
     {
-        $query->whereIn('folder_id', $folder->subtreeFolderIds())->notExpired();
+        $query->whereIn('folder_id', $folder->subtreeFolderIds())->notExpired()->available();
     }
 
     /**
@@ -458,6 +496,7 @@ class File extends Model
             ->where(function (Builder $folder) use ($publicFolderSubtreeIds): void {
                 $folder->whereNull('folder_id')->orWhereNotIn('folder_id', $publicFolderSubtreeIds);
             })
-            ->notExpired();
+            ->notExpired()
+            ->available();
     }
 }

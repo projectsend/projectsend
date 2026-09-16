@@ -1,0 +1,321 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Models\User;
+use App\Modules\Audit\Action;
+use App\Modules\Audit\ActivityLog;
+use App\Modules\Files\Jobs\ScanFileJob;
+use App\Modules\Files\Models\File;
+use App\Modules\Files\Scanning\NotScannedReason;
+use App\Modules\Files\Scanning\ScanStatus;
+use App\Modules\Files\Scanning\ScanVerdict;
+use App\Modules\Files\Scanning\VirusScanner;
+use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Settings\Settings;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Tests\Support\FakeVirusScanner;
+
+beforeEach(function () {
+    Storage::fake('files');
+    $this->admin = User::factory()->create();
+
+    // Settings survive RefreshDatabase's rollback in the cache, so every
+    // value this file depends on is stated rather than assumed.
+    app(Settings::class)->set(Setting::VirusScanningEnabled, true);
+    app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://scanner.test:3310');
+    app(Settings::class)->set(Setting::VirusScanMaxSizeMb, 512);
+    app(Settings::class)->set(Setting::VirusUnscannablePolicy, 'allow');
+    app(Settings::class)->set(Setting::VirusScannerDownPolicy, 'allow');
+    app(Settings::class)->set(Setting::VirusScannerWaitMinutes, 10);
+});
+
+function fakeScanner(?ScanVerdict $verdict = null): FakeVirusScanner
+{
+    $scanner = new FakeVirusScanner($verdict);
+    app()->instance(VirusScanner::class, $scanner);
+
+    return $scanner;
+}
+
+/** A stored file with real bytes, as an upload would leave it. */
+function scannableFile(array $overrides = []): File
+{
+    $path = 'uploads/'.Str::uuid()->toString().'.pdf';
+    Storage::disk('files')->put($path, 'some bytes');
+
+    return File::factory()->create(array_merge([
+        'path' => $path,
+        'disk' => 'files',
+        'size' => 10,
+        'scan_status' => ScanStatus::Pending,
+        'checksum' => hash('sha256', $path),
+    ], $overrides));
+}
+
+/** Run the job the way the queue would, with this test's fake scanner. */
+function runScan(File $file): void
+{
+    (new ScanFileJob($file->id))->handle(
+        app(VirusScanner::class),
+        app(App\Modules\Files\Scanning\ScanPolicy::class),
+        app(App\Modules\Files\Scanning\ScanningConfig::class),
+    );
+}
+
+/*
+|--------------------------------------------------------------------------
+| A verdict, and what this installation does with it
+|--------------------------------------------------------------------------
+*/
+
+test('a clean file becomes available', function () {
+    fakeScanner(ScanVerdict::clean('FakeAV 1.0'));
+    $file = scannableFile();
+
+    runScan($file);
+
+    $file->refresh();
+    expect($file->scan_status)->toBe(ScanStatus::Clean)
+        ->and($file->scan_status->isAvailable())->toBeTrue()
+        ->and($file->scanned_at)->not->toBeNull()
+        ->and($file->scan_engine)->toBe('FakeAV 1.0');
+});
+
+test('an infected file is quarantined and logged', function () {
+    fakeScanner(ScanVerdict::infected('Eicar-Test-Signature'));
+    $file = scannableFile();
+
+    runScan($file);
+
+    $file->refresh();
+    expect($file->scan_status)->toBe(ScanStatus::Infected)
+        ->and($file->scan_status->isAvailable())->toBeFalse()
+        ->and($file->scan_note)->toBe('Eicar-Test-Signature');
+
+    $entry = ActivityLog::query()->where('action', Action::FileQuarantined)->sole();
+    expect($entry->context['threat'])->toBe('Eicar-Test-Signature')
+        ->and($entry->context['was_available'])->toBeFalse();
+});
+
+test('a quarantined file loses the thumbnails already rendered from it', function () {
+    fakeScanner(ScanVerdict::infected('Some.Threat'));
+    $file = scannableFile(['mime_type' => 'image/png']);
+
+    $paths = App\Modules\Files\Thumbnails\ThumbnailGenerator::pathsFor($file->id, 'image/png');
+    expect($paths)->not->toBeEmpty();
+
+    foreach ($paths as $path) {
+        Storage::disk('files')->put($path, 'rendered');
+    }
+
+    runScan($file);
+
+    foreach ($paths as $path) {
+        expect(Storage::disk('files')->exists($path))->toBeFalse();
+    }
+});
+
+test('a file the scanner cannot open is allowed through, marked, and logged', function () {
+    fakeScanner(ScanVerdict::encrypted());
+    $file = scannableFile();
+
+    runScan($file);
+
+    $file->refresh();
+    expect($file->scan_status)->toBe(ScanStatus::NotScanned)
+        ->and($file->scan_note)->toBe(NotScannedReason::Encrypted->value)
+        ->and($file->scan_status->isAvailable())->toBeTrue();
+
+    expect(ActivityLog::query()->where('action', Action::FileNotScanned)->count())->toBe(1);
+});
+
+test('the same file is blocked when this installation says to block', function () {
+    app(Settings::class)->set(Setting::VirusUnscannablePolicy, 'block');
+    fakeScanner(ScanVerdict::encrypted());
+    $file = scannableFile();
+
+    runScan($file);
+
+    expect($file->refresh()->scan_status)->toBe(ScanStatus::UnscannableBlocked)
+        ->and($file->scan_status->isAvailable())->toBeFalse();
+});
+
+test('a file larger than the maximum never reaches the scanner at all', function () {
+    app(Settings::class)->set(Setting::VirusScanMaxSizeMb, 1);
+
+    // The real client, deliberately: refusing an oversized file before a
+    // socket is opened is its job, and a fake that answered anyway would
+    // hide the day that check moves or disappears. There is no scanner at
+    // the configured address, so anything but an early refusal here would
+    // come back as "unavailable" instead.
+    $stream = fopen('php://memory', 'r+');
+    $verdict = app(App\Modules\Files\Scanning\ClamAvScanner::class)->scan($stream, 2 * 1024 * 1024);
+    fclose($stream);
+
+    expect($verdict->outcome)->toBe(App\Modules\Files\Scanning\ScanOutcome::TooLarge);
+});
+
+/*
+|--------------------------------------------------------------------------
+| A scanner that is not answering
+|--------------------------------------------------------------------------
+*/
+
+test('a file waits while the scanner is down, then goes through', function () {
+    fakeScanner(ScanVerdict::unavailable('connection refused'));
+    $file = scannableFile();
+
+    runScan($file);
+    expect($file->refresh()->scan_status)->toBe(ScanStatus::Pending);
+
+    // Past the ten minutes this installation is willing to wait.
+    $this->travel(11)->minutes();
+
+    runScan($file);
+
+    $file->refresh();
+    expect($file->scan_status)->toBe(ScanStatus::NotScanned)
+        ->and($file->scan_note)->toBe(NotScannedReason::ScannerUnavailable->value);
+});
+
+test('an installation set to hold keeps waiting however long it takes', function () {
+    app(Settings::class)->set(Setting::VirusScannerDownPolicy, 'hold');
+    fakeScanner(ScanVerdict::unavailable('connection refused'));
+    $file = scannableFile();
+
+    runScan($file);
+    $this->travel(3)->days();
+    runScan($file);
+
+    expect($file->refresh()->scan_status)->toBe(ScanStatus::Pending);
+});
+
+test('an upload identical to a quarantined file is quarantined without a scan', function () {
+    $scanner = fakeScanner(ScanVerdict::clean());
+
+    $known = scannableFile(['scan_status' => ScanStatus::Infected, 'scan_note' => 'Known.Threat']);
+    $copy = scannableFile(['checksum' => $known->checksum]);
+
+    runScan($copy);
+
+    expect($copy->refresh()->scan_status)->toBe(ScanStatus::Infected)
+        ->and($copy->scan_note)->toBe('Known.Threat')
+        ->and($scanner->scans)->toBe(0);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Uploads
+|--------------------------------------------------------------------------
+*/
+
+test('a new upload is pending while scanning is on', function () {
+    fakeScanner();
+
+    $file = app(App\Modules\Files\Uploads\StoreUploadedFile::class)->create(
+        uploader: $this->admin,
+        originalName: 'report.pdf',
+        path: 'uploads/report.pdf',
+        mimeType: 'application/pdf',
+        size: 10,
+        checksum: str_repeat('b', 64),
+    );
+
+    expect($file->scan_status)->toBe(ScanStatus::Pending);
+});
+
+test('a new upload is marked never scanned while scanning is off', function () {
+    app(Settings::class)->set(Setting::VirusScanningEnabled, false);
+    app(Settings::class)->set(Setting::VirusScannerAddress, '');
+
+    $file = app(App\Modules\Files\Uploads\StoreUploadedFile::class)->create(
+        uploader: $this->admin,
+        originalName: 'report.pdf',
+        path: 'uploads/report.pdf',
+        mimeType: 'application/pdf',
+        size: 10,
+        checksum: str_repeat('c', 64),
+    );
+
+    expect($file->scan_status)->toBe(ScanStatus::NotScanned)
+        ->and($file->scan_note)->toBe(NotScannedReason::BeforeScanning->value);
+});
+
+/*
+|--------------------------------------------------------------------------
+| Nothing unchecked leaves the server
+|--------------------------------------------------------------------------
+*/
+
+test('no route serves the bytes of a file that is still being checked', function () {
+    $file = scannableFile(['uploaded_by' => $this->admin->id, 'mime_type' => 'image/png']);
+
+    foreach ([
+        "/files/{$file->id}/download",
+        "/files/{$file->id}/thumbnail",
+        "/files/{$file->id}/preview",
+    ] as $path) {
+        $this->actingAs($this->admin)->get($path)->assertStatus(423, "{$path} served a pending file");
+    }
+});
+
+test('a quarantined file is refused for the same routes', function () {
+    $file = scannableFile(['uploaded_by' => $this->admin->id, 'scan_status' => ScanStatus::Infected, 'scan_note' => 'X']);
+
+    $this->actingAs($this->admin)->get("/files/{$file->id}/download")->assertStatus(423);
+});
+
+test('a clean file downloads normally', function () {
+    $file = scannableFile(['uploaded_by' => $this->admin->id, 'scan_status' => ScanStatus::Clean]);
+
+    $this->actingAs($this->admin)->get("/files/{$file->id}/download")->assertOk();
+});
+
+test('a share link says the file is still being checked', function () {
+    $file = scannableFile();
+    $link = App\Modules\Files\Models\ShareLink::query()->create([
+        'shareable_type' => $file->getMorphClass(),
+        'shareable_id' => $file->id,
+        'token' => Str::random(32),
+        'created_by' => $this->admin->id,
+    ]);
+
+    $this->get("/s/{$link->token}")->assertInertia(
+        fn (Inertia\Testing\AssertableInertia $page) => $page->component('share/show')->where('status', 'checking'),
+    );
+
+    $this->get("/s/{$link->token}/download")->assertRedirect(route('share.show', $link->token));
+});
+
+test('a pending file is not visible to the client it was shared with', function () {
+    $client = User::factory()->client()->create();
+    $file = scannableFile(['uploaded_by' => $this->admin->id]);
+    app(App\Modules\Files\Sharing\FileSharing::class)->assign($file, $client, $client->name);
+
+    expect(File::query()->visibleToClient($client)->count())->toBe(0);
+
+    $file->forceFill(['scan_status' => ScanStatus::Clean])->save();
+
+    expect(File::query()->visibleToClient($client)->count())->toBe(1);
+});
+
+test('a client still sees their own upload while it is being checked', function () {
+    $client = User::factory()->client()->create();
+    $file = scannableFile(['uploaded_by' => $client->id]);
+
+    expect(File::query()->visibleToClient($client)->pluck('id')->all())->toBe([$file->id]);
+});
+
+test('a pending file is left out of a zip', function () {
+    $pending = scannableFile(['uploaded_by' => $this->admin->id]);
+    $clean = scannableFile(['uploaded_by' => $this->admin->id, 'scan_status' => ScanStatus::Clean]);
+
+    $this->actingAs($this->admin)
+        ->postJson('/zip-downloads', ['file_ids' => [$pending->id, $clean->id], 'folder_ids' => []])
+        ->assertOk();
+
+    $zip = App\Modules\Files\Models\ZipDownload::query()->latest('id')->sole();
+    expect($zip->file_ids)->toBe([$clean->id]);
+});

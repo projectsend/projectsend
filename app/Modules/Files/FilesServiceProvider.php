@@ -5,13 +5,18 @@ declare(strict_types=1);
 namespace App\Modules\Files;
 
 use App\Modules\Files\Access\ClientIdentityScope;
+use App\Modules\Files\Events\FileWasStored;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
+use App\Modules\Files\Jobs\ScanFileJob;
 use App\Modules\Files\Notifications\FileShareDigestNotification;
 use App\Modules\Files\Notifications\FileSharedNotification;
 use App\Modules\Files\Notifications\NewVersionAvailableNotification;
 use App\Modules\Files\Notifications\NewVersionDigestNotification;
+use App\Modules\Files\Scanning\ClamAvScanner;
+use App\Modules\Files\Scanning\ScanStatus;
+use App\Modules\Files\Scanning\VirusScanner;
 use App\Modules\Files\Thumbnails\Events\ImageRenderingChanged;
 use App\Modules\Files\Thumbnails\RenderedImageCache;
 use App\Modules\Notifications\NotificationTypeDefinition;
@@ -35,6 +40,12 @@ class FilesServiceProvider extends ServiceProvider
         // Same lifetime, same reason: the identity rule memoises a roster
         // per viewer and the file listings ask it once per row.
         $this->app->scoped(ClientIdentityScope::class);
+
+        // One implementation ships, and the interface exists so the test
+        // suite can state a verdict instead of producing a file that
+        // provokes one — and so a commercial engine can be added later
+        // without touching the job or the policy.
+        $this->app->bind(VirusScanner::class, ClamAvScanner::class);
     }
 
     public function boot(): void
@@ -96,6 +107,17 @@ class FilesServiceProvider extends ServiceProvider
             digestMailMany: NewVersionDigestNotification::class,
             url: fn (array $data): string => route('my-files.index'),
         ));
+
+        // Every upload path converges on FileWasStored, so this is the
+        // one place a scan is started from. Dispatched rather than run
+        // inline: a 5 GB file takes minutes to read, and an upload must
+        // not wait for it — the file is already withheld until the
+        // verdict arrives.
+        Event::listen(FileWasStored::class, function (FileWasStored $event): void {
+            if ($event->file->scan_status === ScanStatus::Pending) {
+                ScanFileJob::dispatch($event->file->id);
+            }
+        });
 
         if ($this->app->runningInConsole()) {
             $this->commands([

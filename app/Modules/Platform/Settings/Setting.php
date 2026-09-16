@@ -175,6 +175,27 @@ enum Setting: string
     // of this stored value — whenever external storage is active; this
     // feature only ever operates on the local disk (see
     // PurgeOrphanFilesCommand and FileRetentionSettingsController).
+    // Virus scanning — see docs/feature-virus-scanning.md and
+    // App\Modules\Files\Scanning\ScanningConfig, which is what reads
+    // these (the address and the on/off switch can both be overruled by a
+    // managed configuration in the environment).
+    case VirusScanningEnabled = 'virus_scanning_enabled';
+    case VirusScannerAddress = 'virus_scanner_address';
+    case VirusScanMaxSizeMb = 'virus_scan_max_size_mb';
+    // 'allow' or 'block' — what happens to a file the scanner cannot open
+    // (too large, or encrypted). Allowing marks it "not scanned" rather
+    // than calling it clean.
+    case VirusUnscannablePolicy = 'virus_unscannable_policy';
+    // 'allow' or 'hold' — what happens to new uploads while the scanner
+    // is unreachable.
+    case VirusScannerDownPolicy = 'virus_scanner_down_policy';
+    // How long a file waits for an unreachable scanner before the policy
+    // above is applied.
+    case VirusScannerWaitMinutes = 'virus_scanner_wait_minutes';
+    // How fast "Scan existing files" works through a library that was
+    // uploaded before scanning was switched on.
+    case VirusScanExistingRatePerMinute = 'virus_scan_existing_rate_per_minute';
+
     case OrphanFilesAutoDeleteEnabled = 'orphan_files_auto_delete_enabled';
     case OrphanFilesDeleteAfterDays = 'orphan_files_delete_after_days';
 
@@ -353,6 +374,9 @@ enum Setting: string
             self::ClientsCanSelectGroup,
             self::TwoFactorEnforcement,
             self::UploadTypeRestriction,
+            self::VirusScannerAddress,
+            self::VirusUnscannablePolicy,
+            self::VirusScannerDownPolicy,
             self::DownloadIpLogging,
             self::CommentsScope,
             self::CommentsAuthors,
@@ -394,6 +418,7 @@ enum Setting: string
             self::CaptchaOnPasswordReset,
             self::CaptchaOnPublicComments,
             self::PasswordRejectBreached,
+            self::VirusScanningEnabled,
             self::GettingStartedPending => SettingType::Boolean,
 
             self::ClientsAutoGroup,
@@ -410,6 +435,9 @@ enum Setting: string
             self::ExpiredFilesDeleteAfterDays,
             self::CommentsEditWindowMinutes,
             self::OrphanFilesDeleteAfterDays,
+            self::VirusScanMaxSizeMb,
+            self::VirusScannerWaitMinutes,
+            self::VirusScanExistingRatePerMinute,
             self::PasswordMinLength => SettingType::Integer,
 
             self::AdminNotificationEmails,
@@ -449,6 +477,9 @@ enum Setting: string
             self::PublicListingEnabled,
             self::ExpiredFilesAutoDeleteEnabled,
             self::PublicCommentsEnabled,
+            // Off until somebody points it at a scanner, or a managed
+            // configuration names one — see ScanningConfig.
+            self::VirusScanningEnabled,
             self::OrphanFilesAutoDeleteEnabled => false,
 
             self::CheckForUpdates,
@@ -482,6 +513,22 @@ enum Setting: string
             self::OrphanFilesDeleteAfterDays => 30,
             self::CommentsEditWindowMinutes => 15,
 
+            // Large enough for ordinary documents and archives, small
+            // enough that one upload does not hold the scanner for
+            // minutes. Must stay under clamd's own StreamMaxLength.
+            self::VirusScanMaxSizeMb => 512,
+            self::VirusScannerWaitMinutes => 10,
+            self::VirusScanExistingRatePerMinute => 60,
+
+            // Both of these let files through, which is the product
+            // owner's decision (2026-09-14): a scanner that cannot answer
+            // must not stop people working. What pays for it is
+            // visibility — every file allowed through this way is marked
+            // "not scanned", and the dashboard and projectsend:status both
+            // say so while it is happening.
+            self::VirusUnscannablePolicy,
+            self::VirusScannerDownPolicy => 'allow',
+
             self::AdminNotificationEmails => [],
 
             // English only out of the box: a fresh install offering
@@ -501,6 +548,10 @@ enum Setting: string
             self::CommentsScope => 'all',
             self::CommentsAuthors => 'staff_and_clients',
             self::PublicListingSlug => 'public',
+            // Empty means no scanner configured here. A managed
+            // configuration in the environment beats this when present —
+            // ScanningConfig, not this default, is what a caller asks.
+            self::VirusScannerAddress => '',
             self::DefaultLocale => '',
             self::Timezone => '',
             self::Theme => 'default',

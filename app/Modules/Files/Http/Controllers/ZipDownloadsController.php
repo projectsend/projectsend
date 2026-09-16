@@ -13,6 +13,7 @@ use App\Modules\Files\Access\DownloadAllowance;
 use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\Jobs\BuildZipDownloadJob;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Scanning\FileAvailability;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Models\ZipDownload;
 use App\Modules\Files\Uploads\StoreUploadedFile;
@@ -45,6 +46,7 @@ class ZipDownloadsController extends Controller
         private readonly ActivityLogger $activity,
         private readonly ViewableFileScope $viewable,
         private readonly DownloadAllowance $allowance,
+        private readonly FileAvailability $availability,
         private readonly Settings $settings,
         private readonly FileDelivery $delivery,
     ) {}
@@ -102,7 +104,11 @@ class ZipDownloadsController extends Controller
         // as many times as they were meant to is the whole point of not
         // hiding exhausted files.
         $selected = $files->count();
-        $files = $files->filter(fn (File $file): bool => $this->allowance->allows($file, $user));
+        // A file still being checked, or quarantined, is left out of the
+        // selection the same way a spent allowance leaves one out: the zip
+        // is bytes leaving the server, and nothing unchecked goes into one.
+        $files = $files->filter(fn (File $file): bool => $this->availability->isAvailable($file)
+            && $this->allowance->allows($file, $user));
 
         abort_if(
             $files->isEmpty() && $folders->isEmpty() && $selected > 0,

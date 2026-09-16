@@ -10,6 +10,7 @@ use App\Modules\Files\Access\DownloadAllowance;
 use App\Modules\Files\Delivery\FileDelivery;
 use App\Modules\Files\Delivery\StoredFileResponse;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Scanning\FileAvailability;
 use App\Modules\Files\Preview\PreviewKind;
 use App\Modules\Files\Preview\PreviewLog;
 use App\Modules\Files\Thumbnails\Events\ResolvingImageRendering;
@@ -78,11 +79,17 @@ class FileThumbnailController extends Controller
         private readonly LocalSourceFile $source,
         private readonly Settings $settings,
         private readonly FileDelivery $delivery,
+        private readonly FileAvailability $availability,
     ) {}
 
     public function thumbnail(Request $request, File $file): Response
     {
         Gate::authorize('view', $file);
+
+        // A rendition is made by an image library reading the file, which
+        // is itself a way in — so an unchecked file is not rendered, not
+        // even as 300 pixels.
+        $this->availability->guardDelivery($file);
 
         // This one route serves both the staff file manager and the client
         // portal — the same URL, told apart only by who is asking. A client
@@ -118,6 +125,8 @@ class FileThumbnailController extends Controller
     public function preview(Request $request, File $file): Response|RedirectResponse
     {
         Gate::authorize('view', $file);
+
+        $this->availability->guardDelivery($file);
 
         // The inline allowlist. See the class docblock and PreviewKind —
         // the stored mime type is sniffed from the bytes, so an allowed

@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Modules\Files;
 
 use App\Modules\Files\Access\ClientIdentityScope;
+use App\Modules\Files\Events\FileBecameAvailable;
 use App\Modules\Files\Events\FileWasStored;
+use App\Modules\Files\Listeners\AnnounceAvailableFile;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
@@ -128,6 +130,11 @@ class FilesServiceProvider extends ServiceProvider
             // screen, which they cannot open.
             url: fn (array $data): string => route('my-files.index'),
         ));
+
+        // The other half of holding an announcement back while a file is
+        // being checked — see FileSharing::assign and
+        // AnnounceAvailableFile.
+        Event::listen(FileBecameAvailable::class, AnnounceAvailableFile::class);
 
         // Every upload path converges on FileWasStored, so this is the
         // one place a scan is started from. Dispatched rather than run

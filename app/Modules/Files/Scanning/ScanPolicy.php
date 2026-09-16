@@ -150,6 +150,12 @@ class ScanPolicy
 
     private function settle(File $file, ScanStatus $status, ?string $note, ?string $engine): ScanStatus
     {
+        // Asked before the write, because what the announcement means is
+        // "this can now be had" and a file that could already be had has
+        // nothing to announce. Without this, re-scanning a file that went
+        // out unscanned would tell its recipients a second time.
+        $wasAvailable = $this->availability->isAvailable($file);
+
         $file->forceFill([
             'scan_status' => $status,
             'scan_note' => $note,
@@ -157,7 +163,9 @@ class ScanPolicy
             'scan_engine' => $engine,
         ])->save();
 
-        $this->availability->markAvailable($file);
+        if (! $wasAvailable) {
+            $this->availability->markAvailable($file);
+        }
 
         return $status;
     }

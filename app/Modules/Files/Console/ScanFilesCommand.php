@@ -45,7 +45,8 @@ class ScanFilesCommand extends Command
         $missed = $this->dispatchFor(
             File::query()
                 ->where('scan_status', ScanStatus::NotScanned)
-                ->where('scan_note', NotScannedReason::ScannerUnavailable->value)
+                ->where('scan_note', NotScannedReason::ScannerUnavailable->value),
+            rescan: true,
         );
 
         $this->info("Re-queued {$waiting} waiting file(s) and {$missed} that were missed while the scanner was down.");
@@ -61,6 +62,7 @@ class ScanFilesCommand extends Command
                     ->where('scan_status', ScanStatus::NotScanned)
                     ->where('scan_note', NotScannedReason::BeforeScanning->value),
                 $limit,
+                rescan: true,
             );
 
             $this->info("Queued {$old} file(s) that had never been scanned.");
@@ -70,9 +72,18 @@ class ScanFilesCommand extends Command
     }
 
     /**
+     * Nothing here changes a file's state before the scanner has spoken.
+     *
+     * An earlier version marked each file pending first, which reads as
+     * tidy and is wrong twice over: pending means "withheld", so a
+     * backfill would have hidden an entire library from its clients for
+     * as long as it ran, and every file would then have been announced to
+     * its recipients a second time when it came back. The job knows which
+     * state it expects instead — see its $rescan.
+     *
      * @param  Builder<File>  $query
      */
-    private function dispatchFor(Builder $query, ?int $limit = null): int
+    private function dispatchFor(Builder $query, ?int $limit = null, bool $rescan = false): int
     {
         if ($limit !== null) {
             $query->limit($limit);
@@ -81,12 +92,7 @@ class ScanFilesCommand extends Command
         $ids = $query->orderBy('id')->pluck('id');
 
         foreach ($ids as $id) {
-            // Back to pending first: the job only acts on a pending file,
-            // which is what stops two runs of this command from scanning
-            // the same file twice.
-            File::query()->whereKey($id)->update(['scan_status' => ScanStatus::Pending->value, 'scan_note' => null]);
-
-            ScanFileJob::dispatch((int) $id);
+            ScanFileJob::dispatch((int) $id, $rescan);
         }
 
         return $ids->count();

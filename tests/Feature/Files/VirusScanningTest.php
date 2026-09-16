@@ -319,3 +319,105 @@ test('a pending file is left out of a zip', function () {
     $zip = App\Modules\Files\Models\ZipDownload::query()->latest('id')->sole();
     expect($zip->file_ids)->toBe([$clean->id]);
 });
+
+/*
+|--------------------------------------------------------------------------
+| Nobody is told about a file they cannot have yet
+|--------------------------------------------------------------------------
+*/
+
+test('sharing a file still being checked tells nobody, and tells them when it clears', function () {
+    fakeScanner(ScanVerdict::clean());
+    $client = User::factory()->client()->create();
+    $file = scannableFile(['uploaded_by' => $this->admin->id]);
+
+    app(App\Modules\Files\Sharing\FileSharing::class)->assign($file, $client, $client->name);
+
+    expect(App\Modules\Notifications\InAppNotification::query()->where('user_id', $client->id)->count())->toBe(0);
+
+    runScan($file);
+
+    expect(App\Modules\Notifications\InAppNotification::query()->where('user_id', $client->id)->where('type', 'file_shared')->count())->toBe(1);
+});
+
+test('a file found infected is never announced', function () {
+    fakeScanner(ScanVerdict::infected('Some.Threat'));
+    $client = User::factory()->client()->create();
+    $file = scannableFile(['uploaded_by' => $this->admin->id]);
+
+    app(App\Modules\Files\Sharing\FileSharing::class)->assign($file, $client, $client->name);
+    runScan($file);
+
+    expect(App\Modules\Notifications\InAppNotification::query()->where('user_id', $client->id)->count())->toBe(0);
+});
+
+test('a share taken back while the file was being checked produces no email afterwards', function () {
+    fakeScanner(ScanVerdict::clean());
+    $client = User::factory()->client()->create();
+    $file = scannableFile(['uploaded_by' => $this->admin->id]);
+
+    $sharing = app(App\Modules\Files\Sharing\FileSharing::class);
+    $sharing->assign($file, $client, $client->name);
+    $sharing->unassign($file, $client, $client->name);
+
+    runScan($file);
+
+    expect(App\Modules\Notifications\InAppNotification::query()->where('user_id', $client->id)->count())->toBe(0);
+});
+
+test('re-scanning a file that was let through keeps it available, and does not announce it twice', function () {
+    // The hourly command asks again about files that went out unchecked
+    // while the scanner was down. Their recipients already have them, so
+    // they must not lose access while the answer comes back, and must not
+    // be told a second time when it does.
+    $client = User::factory()->client()->create();
+    $file = scannableFile([
+        'uploaded_by' => $this->admin->id,
+        'scan_status' => ScanStatus::NotScanned,
+        'scan_note' => NotScannedReason::ScannerUnavailable->value,
+    ]);
+
+    app(App\Modules\Files\Sharing\FileSharing::class)->assign($file, $client, $client->name);
+    expect(App\Modules\Notifications\InAppNotification::query()->where('user_id', $client->id)->count())->toBe(1);
+
+    fakeScanner(ScanVerdict::clean());
+    $this->artisan('projectsend:scan-files')->assertSuccessful();
+
+    // Still theirs throughout, and now actually checked.
+    expect(File::query()->visibleToClient($client)->count())->toBe(1)
+        ->and($file->refresh()->scan_status)->toBe(ScanStatus::Clean)
+        ->and(App\Modules\Notifications\InAppNotification::query()->where('user_id', $client->id)->count())->toBe(1);
+});
+
+test('a backfill never hides the library it is working through', function () {
+    $client = User::factory()->client()->create();
+    $file = scannableFile([
+        'uploaded_by' => $this->admin->id,
+        'scan_status' => ScanStatus::NotScanned,
+        'scan_note' => NotScannedReason::BeforeScanning->value,
+    ]);
+    app(App\Modules\Files\Sharing\FileSharing::class)->assign($file, $client, $client->name);
+
+    // Queued rather than run, which is the state a real backfill spends
+    // almost all of its time in: dispatched, not yet scanned.
+    Illuminate\Support\Facades\Queue::fake();
+    fakeScanner(ScanVerdict::clean());
+
+    $this->artisan('projectsend:scan-files', ['--existing' => true])->assertSuccessful();
+
+    expect($file->refresh()->scan_status)->toBe(ScanStatus::NotScanned)
+        ->and(File::query()->visibleToClient($client)->count())->toBe(1);
+});
+
+test('a released file is announced then, not before', function () {
+    $client = User::factory()->client()->create();
+    $file = scannableFile(['uploaded_by' => $this->admin->id, 'scan_status' => ScanStatus::Infected, 'scan_note' => 'X']);
+
+    app(App\Modules\Files\Sharing\FileSharing::class)->assign($file, $client, $client->name);
+    expect(App\Modules\Notifications\InAppNotification::query()->where('user_id', $client->id)->count())->toBe(0);
+
+    confirmPassword($this->admin);
+    $this->actingAs($this->admin)->post("/files/{$file->id}/release", ['reason' => 'False positive']);
+
+    expect(App\Modules\Notifications\InAppNotification::query()->where('user_id', $client->id)->where('type', 'file_shared')->count())->toBe(1);
+});

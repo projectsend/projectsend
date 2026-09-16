@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Scanning\FileAvailability;
 use App\Modules\Files\Models\FileAssignment;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Notifications\NotificationDigester;
@@ -35,6 +36,7 @@ class FileSharing
         private readonly ActivityLogger $activity,
         private readonly NotificationDigester $digester,
         private readonly Notifier $notifier,
+        private readonly FileAvailability $availability,
     ) {}
 
     /**
@@ -50,6 +52,18 @@ class FileSharing
         ]);
 
         $this->activity->log(Action::FileAssigned, subject: $file, context: ['target' => $targetName]);
+
+        // Sharing itself is never held up — the assignment above is
+        // written, and the file is theirs the moment it can be had. What
+        // waits is the telling: a file still being checked for viruses
+        // cannot be downloaded, so an email now would send somebody to a
+        // page that refuses them, and a file about to be quarantined would
+        // have been announced to everyone before anybody knew. The
+        // announcement goes out from AnnounceAvailableFile instead, on the
+        // event that says the file can be handed over.
+        if (! $this->availability->isAvailable($file)) {
+            return;
+        }
 
         $recipients = $this->recipients($assignable);
 

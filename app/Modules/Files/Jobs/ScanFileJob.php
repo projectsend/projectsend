@@ -48,6 +48,16 @@ class ScanFileJob implements ShouldQueue
 
     public function __construct(
         public readonly int $fileId,
+        /**
+         * A file that has already been through here and is available —
+         * one let through while the scanner was down, or one that
+         * predates scanning. It keeps its current state, and therefore
+         * stays downloadable, until a verdict actually arrives. Marking
+         * it pending first would take a library offline for the length of
+         * a backfill, and would announce every file a second time when it
+         * came back.
+         */
+        public readonly bool $rescan = false,
     ) {
         $this->onQueue('scans');
     }
@@ -69,10 +79,17 @@ class ScanFileJob implements ShouldQueue
     ): void {
         $file = File::query()->find($this->fileId);
 
-        // Deleted while it waited, or already decided by an earlier run
-        // (this job is dispatched from an upload and from the hourly
-        // sweep, and both can land on the same file).
-        if ($file === null || $file->scan_status !== ScanStatus::Pending) {
+        if ($file === null) {
+            return;
+        }
+
+        // Already decided by an earlier run — this job is dispatched from
+        // an upload and from the hourly sweep, and both can land on the
+        // same file. A rescan expects the opposite state: a file that was
+        // allowed through unchecked.
+        $expected = $this->rescan ? ScanStatus::NotScanned : ScanStatus::Pending;
+
+        if ($file->scan_status !== $expected) {
             return;
         }
 

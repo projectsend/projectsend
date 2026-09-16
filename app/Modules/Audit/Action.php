@@ -217,9 +217,13 @@ enum Action: string
             self::CommentDeleted => 'Deleted a comment on the file ":subject"',
             self::CommentApproved => 'Approved a comment on the file ":subject"',
             self::FileImported => 'Imported the orphan file ":subject"',
-            self::FileQuarantined => 'The file ":subject" was quarantined: :threat',
+            // :name rather than :subject, unlike the file actions above
+            // it: these two are written by the scan job, which has no
+            // actor and attaches no subject, so the name has to travel in
+            // the context or the line reads 'The file "" was quarantined'.
+            self::FileQuarantined => 'The file ":name" was quarantined: :threat',
             self::FileReleased => 'Released the quarantined file ":subject" (:reason)',
-            self::FileNotScanned => 'The file ":subject" was not scanned for viruses: :reason',
+            self::FileNotScanned => 'The file ":name" was not scanned for viruses: :reason',
             self::OrphanFileDeleted => 'Deleted the orphan file ":name"',
             self::OrphanFileAutoDeleted => 'Deleted the orphan file ":name"',
             self::ExpiredFileDeleted => 'Deleted the expired file ":name"',

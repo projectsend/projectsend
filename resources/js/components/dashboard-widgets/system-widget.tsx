@@ -117,6 +117,43 @@ function StorageDurabilityNotice({ durability }: { durability: StorageDurability
     return null;
 }
 
+/**
+ * What the scanning row says, and whether it is a warning.
+ *
+ * Four states in one line, because the row is always there: no scanner at
+ * all, one that is not answering, one letting files through, and one
+ * quietly working — which is the common case and the only one that is not
+ * a warning.
+ */
+function scanningRow(
+    scanning: NonNullable<SystemInfo['scanning']>,
+    t: (key: string, replacements?: Record<string, string | number>) => string,
+): { value: string; warning: boolean; title: string } {
+    if (!scanning.configured) {
+        return {
+            value: t('Nothing'),
+            warning: true,
+            title: t('Uploads are passed on without being checked for viruses.'),
+        };
+    }
+
+    const engine = scanning.engine ?? t('A virus scanner');
+
+    if (!scanning.reachable) {
+        return { value: t(':engine (not answering)', { engine }), warning: true, title: t('The scanner could not be reached.') };
+    }
+
+    if (scanning.let_through_24h > 0 || scanning.pending > 0) {
+        return {
+            value: engine,
+            warning: true,
+            title: t('Some files were not checked. Open the virus scanning settings for the detail.'),
+        };
+    }
+
+    return { value: engine, warning: false, title: '' };
+}
+
 export function SystemWidget({ system, onViewReleaseNotes }: { system: SystemInfo; onViewReleaseNotes: () => void }) {
     const { t } = useTranslation();
     const { update_notice } = usePage<SharedData>().props;
@@ -125,30 +162,26 @@ export function SystemWidget({ system, onViewReleaseNotes }: { system: SystemInf
     // Only PHP is worth flagging. The other two are the file being handed
     // to the web server, which is the outcome this is watching for.
     const deliveryNeedsAttention = system.file_delivery.method === 'php';
+    const scanning = system.scanning ? scanningRow(system.scanning, t) : null;
 
     return (
         <div>
             {/* Before the update notice on purpose: losing the files outranks
                 being a version behind. */}
             {durability && <StorageDurabilityNotice durability={durability} />}
-            {system.scanning && (
+            {/* Only for a scanner that is configured and misbehaving. An
+                installation with no scanner at all says so on its own row
+                below, with the same link — two warnings for one fact would
+                make the card noisier without saying more. */}
+            {system.scanning?.configured && scanning?.warning && (
                 <Alert variant="warning" className="mb-3">
                     <ShieldAlert className="size-4" />
                     <AlertTitle>
-                        {!system.scanning.configured
-                            ? t('Uploads are not being checked for viruses')
-                            : system.scanning.reachable
-                              ? t('Files are going out unscanned')
-                              : t('The virus scanner is not answering')}
+                        {system.scanning.reachable ? t('Files are going out unscanned') : t('The virus scanner is not answering')}
                     </AlertTitle>
                     <AlertDescription>
                         <ul className="list-inside list-disc">
-                            {!system.scanning.configured && (
-                                <li>{t('Anything uploaded here — by staff, by clients, or through an upload link — is passed on unchecked.')}</li>
-                            )}
-                            {system.scanning.configured && !system.scanning.reachable && (
-                                <li>{t('Uploads cannot be checked until it is back.')}</li>
-                            )}
+                            {!system.scanning.reachable && <li>{t('Uploads cannot be checked until it is back.')}</li>}
                             {system.scanning.let_through_24h > 0 && (
                                 <li>
                                     {t(':count files were allowed through without being scanned in the last 24 hours.', {
@@ -166,7 +199,7 @@ export function SystemWidget({ system, onViewReleaseNotes }: { system: SystemInf
                             )}
                         </ul>
                         <Link href="/system/settings/virus-scanning" className="mt-1 inline-block underline hover:no-underline">
-                            {system.scanning.configured ? t('Virus scanning settings') : t('Set up virus scanning')}
+                            {t('Virus scanning settings')}
                         </Link>
                     </AlertDescription>
                 </Alert>
@@ -270,6 +303,42 @@ export function SystemWidget({ system, onViewReleaseNotes }: { system: SystemInf
                         )}
                     </dd>
                 </div>
+                {/* Same rule as the row above, and the reason this one is
+                    never hidden: an installation checking nothing looks
+                    exactly like one that is. Absent only where the scanner
+                    is not this installation's to connect. */}
+                {scanning && (
+                    <div className="flex justify-between gap-2">
+                        <dt>
+                            {scanning.warning ? (
+                                <Link
+                                    href="/system/settings/virus-scanning"
+                                    className="font-medium text-amber-600 underline underline-offset-2 hover:no-underline dark:text-amber-500"
+                                    title={scanning.title}
+                                >
+                                    {t('Uploads checked by')}
+                                </Link>
+                            ) : (
+                                <span className="text-muted-foreground">{t('Uploads checked by')}</span>
+                            )}
+                        </dt>
+                        <dd>
+                            {scanning.warning ? (
+                                <Link
+                                    href="/system/settings/virus-scanning"
+                                    className="flex items-center gap-1.5 font-medium text-amber-600 hover:underline dark:text-amber-500"
+                                    aria-label={scanning.title}
+                                    title={scanning.title}
+                                >
+                                    {scanning.value}
+                                    <AlertTriangle className="size-4" />
+                                </Link>
+                            ) : (
+                                <span>{scanning.value}</span>
+                            )}
+                        </dd>
+                    </div>
+                )}
                 {/* Stated even when everything is correct: "my files are on a
                     host directory" is worth being able to confirm at a glance,
                     not only worth warning about when it is false. */}

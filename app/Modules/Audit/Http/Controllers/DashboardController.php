@@ -514,77 +514,69 @@ class DashboardController extends Controller
             // able to confirm at a glance, not only worth warning about
             // when it is false — the same reasoning as storage_durability.
             'file_delivery' => $this->fileDelivery->describe(),
-            // Null when scanning is off, so the card says nothing about a
-            // feature this installation does not use. When it is on, this
-            // is the only place an administrator finds out that the
-            // scanner stopped answering — every other screen looks exactly
-            // as it did, because files keep flowing by design.
-            'scanning' => $this->scanningWarning(),
+            // Always stated, like delivery and storage above it: "my
+            // uploads are checked by ClamAV" is worth confirming at a
+            // glance, not only worth mentioning when it is false. Null
+            // only where this installation does not connect its own
+            // scanner at all.
+            'scanning' => $this->scanningState(),
         ];
     }
 
     /**
-     * What is wrong with virus scanning right now, or null.
+     * Where this installation stands with virus scanning.
      *
-     * Deliberately only the bad news. The settings screen reports the
-     * healthy state; the dashboard exists here to interrupt somebody who
-     * was not looking for it.
+     * Reported whether or not anything is wrong: the System card states
+     * how downloads leave and where files are stored for the same reason,
+     * and "nothing is checking my uploads" is exactly the fact an
+     * administrator will not go looking for.
+     *
+     * Null only when this installation does not connect its own scanner —
+     * on a hosted one that is the platform's infrastructure, and a tenant
+     * reading about it could neither confirm nor fix it. See
+     * Capability::VirusScanningConnect.
      *
      * @return array{configured: bool, reachable: bool, engine: string|null, definitions_age_hours: int|null, let_through_24h: int, pending: int}|null
      */
-    private function scanningWarning(): ?array
+    private function scanningState(): ?array
     {
+        if (! $this->capabilities->has(Capability::VirusScanningConnect)) {
+            return null;
+        }
+
         $config = app(ScanningConfig::class);
 
         if (! $config->enabled()) {
-            // Nothing is checking what this installation accepts. Said
-            // only where somebody could act on it: an installation that
-            // connects its own scanner (community — see
-            // Capability::VirusScanningConnect). On a hosted one the
-            // scanner is the platform's to run, and a tenant reading
-            // "not configured" would be reading about somebody else's
-            // job.
-            return $this->capabilities->has(Capability::VirusScanningConnect)
-                ? [
-                    'configured' => false,
-                    'reachable' => false,
-                    'engine' => null,
-                    'definitions_age_hours' => null,
-                    'let_through_24h' => 0,
-                    'pending' => 0,
-                ]
-                : null;
+            return [
+                'configured' => false,
+                'reachable' => false,
+                'engine' => null,
+                'definitions_age_hours' => null,
+                'let_through_24h' => 0,
+                'pending' => 0,
+            ];
         }
 
         $scanner = app(VirusScanner::class)->status();
-
-        $letThrough = ActivityLog::query()
-            ->where('action', Action::FileNotScanned)
-            ->where('created_at', '>=', now()->subDay())
-            ->count();
-
-        $pending = File::query()
-            ->where('scan_status', ScanStatus::Pending)
-            ->where('created_at', '<=', now()->subHour())
-            ->count();
-
-        $stale = $scanner->definitionsAgeHours();
-
-        // Nothing to say when the scanner is there, current, and nothing
-        // has gone out unchecked.
-        if ($scanner->reachable && $letThrough === 0 && $pending === 0 && ($stale === null || $stale < 72)) {
-            return null;
-        }
 
         return [
             'configured' => true,
             'reachable' => $scanner->reachable,
             'engine' => $scanner->engine,
-            'definitions_age_hours' => $stale,
-            'let_through_24h' => $letThrough,
-            // Files that have been waiting more than an hour: on an
-            // installation set to hold, this is what an outage looks like.
-            'pending' => $pending,
+            'definitions_age_hours' => $scanner->definitionsAgeHours(),
+            // Files that went out unchecked in the last day. Zero is the
+            // only number that means "protected"; anything else is a
+            // scanner that was down, or files nobody could open.
+            'let_through_24h' => ActivityLog::query()
+                ->where('action', Action::FileNotScanned)
+                ->where('created_at', '>=', now()->subDay())
+                ->count(),
+            // Waiting more than an hour: on an installation set to hold,
+            // this is what an outage looks like.
+            'pending' => File::query()
+                ->where('scan_status', ScanStatus::Pending)
+                ->where('created_at', '<=', now()->subHour())
+                ->count(),
         ];
     }
 

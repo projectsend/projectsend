@@ -228,13 +228,13 @@ test('the status command reports an unreachable scanner and what got through', f
         ->and($status['let_through_24h'])->toBe(1);
 });
 
-test('the dashboard says nothing while scanning is healthy, and speaks up when it is not', function () {
+test('the dashboard reports a healthy scanner, and says so when it stops answering', function () {
     app(Settings::class)->set(Setting::VirusScanningEnabled, true);
     app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://scanner.test:3310');
     app()->instance(VirusScanner::class, new FakeVirusScanner);
 
     $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
-        fn (AssertableInertia $page) => $page->where('system.scanning', null),
+        fn (AssertableInertia $page) => $page->where('system.scanning.reachable', true),
     );
 
     app()->instance(VirusScanner::class, (new FakeVirusScanner)->reports(ScannerStatus::unreachable('no answer')));
@@ -273,13 +273,20 @@ test('a hosted installation is not told: the scanner is not its job', function (
     );
 });
 
-test('the notice goes away once a scanner is configured', function () {
+test('a working scanner is still reported, by name', function () {
+    // The row is always there, like the delivery and storage rows beside
+    // it: "my uploads are checked by ClamAV" is worth confirming at a
+    // glance, not only worth saying when it is false.
     app(Settings::class)->set(Setting::VirusScanningEnabled, true);
     app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://scanner.test:3310');
     app()->instance(VirusScanner::class, new FakeVirusScanner);
 
     $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
-        fn (AssertableInertia $page) => $page->where('system.scanning', null),
+        fn (AssertableInertia $page) => $page
+            ->where('system.scanning.configured', true)
+            ->where('system.scanning.reachable', true)
+            ->where('system.scanning.engine', 'FakeAV 1.0')
+            ->where('system.scanning.let_through_24h', 0),
     );
 });
 

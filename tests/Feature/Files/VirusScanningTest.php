@@ -421,3 +421,23 @@ test('a released file is announced then, not before', function () {
 
     expect(App\Modules\Notifications\InAppNotification::query()->where('user_id', $client->id)->where('type', 'file_shared')->count())->toBe(1);
 });
+
+test('the activity log names the file it quarantined', function () {
+    // The scan job has no actor and attaches no subject, so a template
+    // written with :subject renders 'The file "" was quarantined'. Caught
+    // on a real dashboard, not by a test, which is why there is one now.
+    fakeScanner(ScanVerdict::infected('Eicar-Test-Signature'));
+    $file = scannableFile(['name' => 'Contrato firmado']);
+
+    runScan($file);
+
+    $entry = ActivityLog::query()->where('action', Action::FileQuarantined)->sole();
+
+    $presented = app(App\Modules\Audit\ActivityPresenter::class)->present($entry);
+    $line = strtr($presented['template'], collect($presented['replacements'])
+        ->mapWithKeys(fn (string $value, string $key): array => [":{$key}" => $value])
+        ->all());
+
+    expect($line)->toContain('Contrato firmado')
+        ->toContain('Eicar-Test-Signature');
+});

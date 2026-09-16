@@ -18,6 +18,9 @@ use App\Modules\Files\Folders\BreadcrumbBuilder;
 use App\Modules\Files\Folders\FolderService;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Scanning\NotScannedReason;
+use App\Modules\Files\Scanning\ScanningConfig;
+use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Versions\FileVersionLinks;
 use App\Modules\Groups\Models\Group;
@@ -202,6 +205,34 @@ class FoldersController extends Controller
     }
 
     /**
+     * What the scanner made of a file, for a staff member's list.
+     *
+     * Staff see every file they always saw, with its state on it —
+     * withholding applies to recipients, not to the library. Null while
+     * scanning is off so nothing is decorated on an installation that does
+     * not use it.
+     *
+     * @return array{status: string, note: string|null}|null
+     */
+    private function scanState(File $file): ?array
+    {
+        if (! app(ScanningConfig::class)->enabled() && $file->scan_status === ScanStatus::NotScanned) {
+            return null;
+        }
+
+        $note = $file->scan_note;
+
+        return [
+            'status' => $file->scan_status->value,
+            // A reason is a key and is translated here; a threat name is
+            // the scanner's own words and is passed through.
+            'note' => $note === null ? null : (NotScannedReason::tryFrom($note)?->label() !== null
+                ? (string) __(NotScannedReason::from($note)->label())
+                : $note),
+        ];
+    }
+
+    /**
      * @return array<string, mixed>
      */
     private function folderRow(User $user, Folder $folder): array
@@ -253,6 +284,9 @@ class FoldersController extends Controller
             ] : null,
             'public' => $file->isEffectivelyPublic(),
             'expired' => $file->isExpired(),
+            // Null while scanning is off, so a library that does not use
+            // it carries no badge.
+            'scan' => $this->scanState($file),
             // No link at all once expired — the public route 404s past
             // expiry too (see File::scopeNotExpired's callers), so there's
             // no point offering a button that leads to a dead page.

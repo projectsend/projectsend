@@ -202,3 +202,25 @@ test('a token cannot download a file outside its scope', function () {
 
     $this->withToken($token)->getJson("/api/v1/files/{$unrelated->id}/download")->assertForbidden();
 });
+
+test('a file says where it stands with the virus scanner, and can be filtered by it', function () {
+    $pending = File::factory()->create([
+        'uploaded_by' => $this->admin->id,
+        'scan_status' => App\Modules\Files\Scanning\ScanStatus::Pending,
+    ]);
+    File::factory()->create(['uploaded_by' => $this->admin->id]);
+
+    $this->withToken($this->token)->getJson("/api/v1/files/{$pending->id}")
+        ->assertOk()
+        ->assertJsonPath('data.scan.status', 'pending')
+        ->assertJsonPath('data.scan.available', false);
+
+    // The download says "not yet" rather than "no": 423, and the caller
+    // can poll the field above.
+    $this->withToken($this->token)->get("/api/v1/files/{$pending->id}/download")->assertStatus(423);
+
+    $ids = $this->withToken($this->token)->getJson('/api/v1/files?scan_status=pending')
+        ->assertOk()->json('data.*.id');
+
+    expect($ids)->toBe([$pending->id]);
+});

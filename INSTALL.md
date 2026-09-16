@@ -517,6 +517,36 @@ the place to configure it — the settings screen also has a "send test email" b
 save you a lot of guessing. The `MAIL_*` values in `.env` are only used until you fill that screen
 in.
 
+### Virus scanning
+
+ProjectSend can check every upload before anyone can download it. It needs ClamAV, which you install
+from your distribution's packages:
+
+```sh
+sudo apt install clamav-daemon     # Debian/Ubuntu
+sudo dnf install clamav-server     # Fedora/RHEL
+```
+
+Then set these in `/etc/clamav/clamd.conf` (the paths differ per distribution) and restart the
+daemon:
+
+```
+StreamMaxLength 512M
+AlertExceedsMax yes
+AlertEncrypted yes
+AlertEncryptedArchive yes
+AlertEncryptedDoc yes
+```
+
+Those `Alert` lines matter more than they look. Without them ClamAV answers "clean" for a file it
+could not actually open — an encrypted zip, or one past a size limit — and ProjectSend would record
+a scan that never happened.
+
+Log in, go to **System → Settings → Virus scanning**, switch it on, and give it the socket, usually
+`unix:///var/run/clamav/clamd.ctl`. Press **Test scanner**: it sends a harmless standard test file
+and tells you whether the scanner actually detected it. Scanning happens in the background, so the
+queue worker below must be running.
+
 ### Redis
 
 If you have Redis available, it is faster than the database for sessions, cache and queues. Install

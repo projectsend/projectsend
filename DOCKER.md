@@ -362,6 +362,26 @@ restored is a hypothesis, not a backup.
 
 ---
 
+## Virus scanning
+
+Uploads can be checked before anybody can download them. The scanner is an extra container, off
+unless you ask for it:
+
+```sh
+docker compose --profile scanner up -d
+```
+
+Then go to **System → Settings → Virus scanning**, switch it on, and use `tcp://clamav:3310` as the
+address. **Test scanner** sends a harmless standard test file and tells you whether it was actually
+detected.
+
+Two things to know before you turn it on. It needs about **1–1.5 GB of memory**, because the virus
+definitions are held in memory. And the first start downloads those definitions, which takes a few
+minutes — until it finishes, the scanner does not answer, and the Test button says so.
+
+The scanner is reachable only from the application's own network. That is deliberate: ClamAV has no
+password of any kind, so anything that can reach it can use it.
+
 ## Upgrading
 
 With the data outside the containers, an upgrade touches only the containers:

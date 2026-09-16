@@ -13,6 +13,9 @@ use App\Modules\Identity\Permissions\Permission;
 use App\Modules\Identity\Permissions\PermissionCategory;
 use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Identity\Permissions\SystemRole;
+use App\Modules\Identity\StartPage;
+use App\Modules\Identity\StartPages;
+use App\Modules\Identity\UserType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -31,6 +34,7 @@ class RolesController extends Controller
     public function __construct(
         private readonly ActivityLogger $activity,
         private readonly PermissionChecker $permissions,
+        private readonly StartPages $startPages,
     ) {}
 
     public function index(Request $request): Response
@@ -75,6 +79,9 @@ class RolesController extends Controller
     {
         return Inertia::render('roles/create', [
             'catalog' => $this->catalog(),
+            // A role made here is always a staff role: the Client role is
+            // built in, and there is no second one.
+            'start_page_options' => $this->startPages->roleOptions(UserType::Staff),
         ]);
     }
 
@@ -85,9 +92,11 @@ class RolesController extends Controller
             'client_scoped' => ['boolean'],
             'permissions' => ['array'],
             'permissions.*' => [Rule::enum(Permission::class)],
+            'start_page' => $this->startPageRules(UserType::Staff),
         ]);
 
         $this->guardGrantablePermissions($request, $validated['permissions'] ?? []);
+        $this->guardStartPage($validated['start_page'] ?? null, UserType::Staff, $validated['permissions'] ?? []);
 
         $clientScoped = $request->boolean('client_scoped');
         $this->guardScopeRemoval($request, removesScope: ! $clientScoped);
@@ -95,6 +104,7 @@ class RolesController extends Controller
         $role = Role::query()->create([
             'name' => $validated['name'],
             'client_scoped' => $clientScoped,
+            'start_page' => $validated['start_page'] ?? null,
         ]);
 
         $this->syncPermissions($role, $validated['permissions'] ?? []);
@@ -115,17 +125,35 @@ class RolesController extends Controller
                 'client_scoped' => $role->client_scoped,
                 'users_count' => $role->users()->count(),
                 'permissions' => $role->permissions()->pluck('permission')->all(),
+                'start_page' => $role->start_page,
             ],
             'catalog' => $this->catalog(),
+            'start_page_options' => $this->startPages->roleOptions(StartPages::typeOf($role)),
         ]);
     }
 
     public function update(Request $request, Role $role): RedirectResponse
     {
+        $type = StartPages::typeOf($role);
+
+        // The one thing about the administrator role that is not
+        // authority: where its members land. Everything else stays locked,
+        // and a request carrying anything more is refused rather than
+        // quietly half-applied.
         if ($role->is_administrator) {
-            throw ValidationException::withMessages([
-                'permissions' => __('The administrator role always has every permission and cannot be edited.'),
-            ]);
+            if ($request->hasAny(['name', 'client_scoped', 'permissions'])) {
+                throw ValidationException::withMessages([
+                    'permissions' => __('The administrator role always has every permission and cannot be edited.'),
+                ]);
+            }
+
+            $validated = $request->validate(['start_page' => $this->startPageRules($type)]);
+
+            $role->update(['start_page' => $validated['start_page'] ?? null]);
+
+            $this->activity->log(Action::RoleUpdated, subject: $role);
+
+            return back()->with('success', __('Role updated.'));
         }
 
         $validated = $request->validate([
@@ -133,7 +161,11 @@ class RolesController extends Controller
             'client_scoped' => ['boolean'],
             'permissions' => ['array'],
             'permissions.*' => [Rule::enum(Permission::class)],
+            'start_page' => $this->startPageRules($type),
         ]);
+
+        $this->guardStartPage($validated['start_page'] ?? null, $type, $validated['permissions'] ?? []);
+        $role->start_page = $validated['start_page'] ?? null;
 
         // Built-in roles have fixed names and a fixed scope flag; only their
         // permission set is editable. Custom roles can change name + scope.
@@ -157,6 +189,10 @@ class RolesController extends Controller
         $this->guardGrantablePermissions($request, array_values(array_diff($newPermissions, $oldPermissions)));
 
         $this->syncPermissions($role, $newPermissions);
+
+        // Built-in roles skip the update() above, so the start page is
+        // saved here for every role alike.
+        $role->save();
 
         $this->activity->log(Action::RoleUpdated, subject: $role, context: [
             'permissions_added' => array_values(array_diff($newPermissions, $oldPermissions)),
@@ -256,6 +292,36 @@ class RolesController extends Controller
         throw ValidationException::withMessages([
             'client_scoped' => __('Your own role is limited to the clients assigned to you, so a role you create or edit cannot drop that limit.'),
         ]);
+    }
+
+    /**
+     * @return list<mixed>
+     */
+    private function startPageRules(UserType $type): array
+    {
+        return ['nullable', 'string', Rule::in(array_map(fn (StartPage $page): string => $page->value, StartPage::optionsFor($type)))];
+    }
+
+    /**
+     * A role cannot send its members to a page its own permissions keep
+     * them out of. Checked against the permissions saved in the same
+     * request, so granting "Manage clients" and choosing Clients as the
+     * start page is one save, not two. StartPages would fall back to the
+     * dashboard anyway; this says so at the moment it can be fixed.
+     *
+     * @param  list<string>  $permissions
+     */
+    private function guardStartPage(?string $value, UserType $type, array $permissions): void
+    {
+        $required = $value === null ? null : StartPage::tryFrom($value)?->requiredPermission($type);
+
+        if ($required !== null && ! in_array($required->value, $permissions, true)) {
+            throw ValidationException::withMessages([
+                'start_page' => __('This role cannot open that page. Give it the ":permission" permission, or choose another start page.', [
+                    'permission' => __($required->label()),
+                ]),
+            ]);
+        }
     }
 
     /**

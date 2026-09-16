@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useFormatDate } from '@/hooks/use-format-date';
 import { ALL, useListQuery } from '@/hooks/use-list-query';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
@@ -22,6 +23,8 @@ interface ClientRow {
     email: string;
     active: boolean;
     account_requested: boolean;
+    expires_on: string | null;
+    expired: boolean;
     created_at: string | null;
     content: { files: number; folders: number };
 }
@@ -41,6 +44,7 @@ interface ClientsIndexProps {
 
 export default function ClientsIndex({ clients, pagination, filters, reassign_candidates, seats }: ClientsIndexProps) {
     const { t } = useTranslation();
+    const { calendarDate } = useFormatDate();
     const { auth } = usePage<SharedData>().props;
 
     const can = (permission: string) => auth.permissions.includes(permission);
@@ -58,7 +62,20 @@ export default function ClientsIndex({ clients, pagination, filters, reassign_ca
             return <Badge variant="outline">{t('Pending approval')}</Badge>;
         }
 
-        return <Badge variant={client.active ? 'secondary' : 'destructive'}>{client.active ? t('Active') : t('Inactive')}</Badge>;
+        // Ahead of the flag: the sweep that switches an expired account off
+        // runs hourly, and in between the account already refuses sign-ins.
+        if (client.expired) {
+            return <Badge variant="destructive">{t('Expired')}</Badge>;
+        }
+
+        return (
+            <div className="flex flex-wrap items-center gap-2">
+                <Badge variant={client.active ? 'secondary' : 'destructive'}>{client.active ? t('Active') : t('Inactive')}</Badge>
+                {client.active && client.expires_on && (
+                    <span className="text-muted-foreground text-xs">{t('Until :date', { date: calendarDate(client.expires_on) })}</span>
+                )}
+            </div>
+        );
     };
 
     return (

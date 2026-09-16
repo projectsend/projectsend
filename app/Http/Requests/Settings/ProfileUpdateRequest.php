@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Modules\Clients\ClientFieldContext;
 use App\Modules\Clients\ClientPortalCustomFields;
 use App\Modules\Identity\AuthSource;
+use App\Modules\Identity\StartPages;
 use App\Support\Rules;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -65,6 +66,13 @@ class ProfileUpdateRequest extends FormRequest
         ];
 
         $user = $this->user();
+
+        // Only the pages this person can open right now. `sometimes` for
+        // the same reason as timezone; empty clears the choice and follows
+        // the role again.
+        $rules['start_page'] = ['sometimes', 'nullable', 'string', Rule::in(
+            $user === null ? [] : array_column(app(StartPages::class)->personalOptions($user), 'value'),
+        )];
 
         // An account whose credentials live in a directory or at an
         // identity provider holds a local password nobody knows — see

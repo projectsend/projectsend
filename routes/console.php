@@ -14,6 +14,10 @@ Schedule::command('projectsend:purge-erasures')->daily();
 // and the sweep noticing is a gap where somebody cannot upload. Daily made
 // that gap up to two days wide.
 Schedule::command('projectsend:purge-stale-uploads')->hourly();
+// Hourly for the same reason: an expired client still marked active holds
+// a seat on a managed plan. Access itself does not wait for this — see
+// User::maySignIn().
+Schedule::command('projectsend:expire-client-accounts')->hourly();
 Schedule::command('projectsend:purge-zip-downloads')->daily();
 Schedule::command('projectsend:check-for-updates')->daily();
 Schedule::command('projectsend:fetch-news')->daily();

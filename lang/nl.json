@@ -2075,5 +2075,19 @@
     "Your account has been created. You will be able to log in once it is approved.": "Je account is aangemaakt. Je kunt inloggen zodra het is goedgekeurd.",
     "Invite a client to share files with": "Nodig een klant uit om bestanden mee te delen",
     ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) heeft een klantaccount geregistreerd",
-    "A new client registered an account": "Een nieuwe klant heeft een account geregistreerd"
+    "A new client registered an account": "Een nieuwe klant heeft een account geregistreerd",
+    "Account expires": "Account verloopt",
+    "A client account reached its expiry date and was deactivated": "Een klantaccount heeft de vervaldatum bereikt en is gedeactiveerd",
+    "After this day the client can no longer sign in, and the account is deactivated. Their files stay. Leave empty for an account that never expires.": "Na deze dag kan de klant niet meer inloggen en wordt het account gedeactiveerd. De bestanden blijven bewaard. Laat leeg voor een account dat nooit verloopt.",
+    "Deactivate expired client accounts": "Verlopen klantaccounts deactiveren",
+    "Default (:page)": "Standaard (:page)",
+    "Start page": "Startpagina",
+    "The client account \":name\" expired and was deactivated": "Het klantaccount \":name\" is verlopen en gedeactiveerd",
+    "The page you land on after signing in.": "De pagina waar je terechtkomt nadat je bent ingelogd.",
+    "This account expired on :date and can no longer sign in. To let them back in, choose a later date or clear it, and make sure the account is active.": "Dit account is verlopen op :date en kan niet meer inloggen. Om weer toegang te geven, kies je een latere datum of maak je het veld leeg, en zorg je dat het account actief is.",
+    "This date has already passed. Choose a later date, or leave it empty for an account that never expires.": "Deze datum is al voorbij. Kies een latere datum, of laat leeg voor een account dat nooit verloopt.",
+    "This role cannot open that page. Give it the \":permission\" permission, or choose another start page.": "Deze rol kan die pagina niet openen. Geef de rol de machtiging \":permission\", of kies een andere startpagina.",
+    "Until :date": "Tot :date",
+    "Where people with this role land after signing in. Each person can still choose their own in their profile.": "Waar mensen met deze rol terechtkomen na het inloggen. Iedereen kan in zijn profiel nog steeds een eigen pagina kiezen.",
+    "Your account has expired.": "Je account is verlopen."
 }

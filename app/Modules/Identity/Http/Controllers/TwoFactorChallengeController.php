@@ -7,6 +7,7 @@ namespace App\Modules\Identity\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\Identity\SignIn;
+use App\Modules\Identity\StartPages;
 use App\Modules\Identity\TwoFactor\TwoFactorService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,6 +26,7 @@ class TwoFactorChallengeController extends Controller
 {
     public function __construct(
         private readonly TwoFactorService $twoFactor,
+        private readonly StartPages $startPages,
     ) {}
 
     public function create(Request $request): Response|RedirectResponse
@@ -77,7 +79,7 @@ class TwoFactorChallengeController extends Controller
         $request->session()->forget(SignIn::TWO_FACTOR_ID);
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended($this->startPages->pathFor($user));
     }
 
     private function pendingUser(Request $request): ?User
@@ -90,6 +92,6 @@ class TwoFactorChallengeController extends Controller
 
         $user = User::query()->find($id);
 
-        return $user instanceof User && $user->active && $user->hasTwoFactorEnabled() ? $user : null;
+        return $user instanceof User && $user->maySignIn() && $user->hasTwoFactorEnabled() ? $user : null;
     }
 }

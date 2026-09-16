@@ -45,10 +45,16 @@ use App\Modules\Identity\Http\Controllers\UsersController;
 use App\Modules\Notifications\Http\Controllers\NotificationsController;
 use App\Modules\Platform\Http\Controllers\LocaleController;
 use App\Modules\Platform\Http\Controllers\TimezoneController;
+use App\Modules\Identity\StartPages;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect()->route(auth()->check() ? 'dashboard' : 'login');
+// A signed-in visitor goes where signing in would have sent them — their
+// own start page, their role's, or the dashboard (see StartPages).
+Route::get('/', function (Request $request, StartPages $startPages) {
+    $user = $request->user();
+
+    return $user === null ? redirect()->route('login') : redirect($startPages->pathFor($user));
 })->name('home');
 
 Route::put('locale', [LocaleController::class, 'update'])

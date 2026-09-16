@@ -10,6 +10,8 @@ use App\Modules\Clients\ClientFieldContext;
 use App\Modules\Clients\ClientPortalCustomFields;
 use App\Modules\Identity\Erasure\ErasureSchedule;
 use App\Modules\Identity\StaffAccounts;
+use App\Modules\Identity\StartPage;
+use App\Modules\Identity\StartPages;
 use App\Modules\Platform\Localization\TimezoneRegistry;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -26,6 +28,7 @@ class ProfileController extends Controller
         private readonly ClientPortalCustomFields $customFields,
         private readonly TimezoneRegistry $timezones,
         private readonly StaffAccounts $accounts,
+        private readonly StartPages $startPages,
     ) {}
 
     /**
@@ -44,6 +47,12 @@ class ProfileController extends Controller
             // browser was detected as, not something they ever chose.
             'timezone' => $this->timezones->resolve($user),
             'timezones' => $this->timezones->options(),
+            // Stored, not resolved: an empty choice means "follow my role",
+            // and the form has to be able to say that rather than show the
+            // role's page as if the person had picked it.
+            'start_page' => $user->start_page,
+            'start_page_options' => $this->startPages->personalOptions($user),
+            'role_start_page' => (string) __(($this->startPages->roleDefault($user) ?? StartPage::Dashboard)->label($user->type)),
             'custom_fields' => $user->isClient() ? $this->customFields->rows(ClientFieldContext::AccountEdit, $user) : [],
             'custom_field_values' => $user->isClient() ? $this->customFields->values(ClientFieldContext::AccountEdit, $user) : [],
         ]);

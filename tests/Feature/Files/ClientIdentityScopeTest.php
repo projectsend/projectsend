@@ -11,6 +11,7 @@ use App\Modules\Identity\Models\RolePermission;
 use App\Modules\Identity\Permissions\Permission;
 use App\Modules\Identity\Permissions\SystemRole;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Testing\AssertableInertia;
 
 /**
  * A client-scoped staff member may hold a file whose uploader, or whose
@@ -186,6 +187,31 @@ test('the library listing does not describe a stranger uploader', function () {
     $body = $this->actingAs($this->manager)->get('/files')->assertOk()->getContent();
 
     // Not the name, and not the "a client uploaded this" shape either.
+    expect($body)->not->toContain('Offroster Client');
+});
+
+test('the uploader filter does not answer for a client the viewer may not identify', function () {
+    $stranger = fileFromStranger();
+
+    // The listing already withholds this client's name from the row (the
+    // test directly above). Left unguarded, the filter would hand the same
+    // identity back as a row count instead: filtering by an id that returns
+    // a file proves that client uploaded something here, which is the fact
+    // the redaction exists to withhold. So the id matches nothing --
+    // indistinguishable from a client who has uploaded nothing at all.
+    $this->actingAs($this->manager)->get("/files?uploader={$this->offRoster->id}")
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page->has('files', 0));
+
+    // The file itself stays reachable; it is only the question about its
+    // uploader that goes unanswered.
+    $this->actingAs($this->manager)->get('/files')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page->has('files', 1)
+            ->where('files.0.name', $stranger->name));
+
+    // And the dropdown never offers the name in the first place.
+    $body = $this->actingAs($this->manager)->get('/files')->assertOk()->getContent();
     expect($body)->not->toContain('Offroster Client');
 });
 

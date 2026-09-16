@@ -2075,5 +2075,19 @@
     "Your account has been created. You will be able to log in once it is approved.": "Akaunti yako imeundwa. Utaweza kuingia mara itakapoidhinishwa.",
     "Invite a client to share files with": "Alika mteja wa kushirikiana naye mafaili",
     ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) amesajili akaunti ya mteja",
-    "A new client registered an account": "Mteja mpya amesajili akaunti"
+    "A new client registered an account": "Mteja mpya amesajili akaunti",
+    "Account expires": "Akaunti inaisha muda",
+    "A client account reached its expiry date and was deactivated": "Akaunti ya mteja imefikia tarehe yake ya kuisha muda na imezimwa",
+    "After this day the client can no longer sign in, and the account is deactivated. Their files stay. Leave empty for an account that never expires.": "Baada ya siku hii mteja hawezi kuingia tena, na akaunti inazimwa. Mafaili yake yanabaki. Acha wazi ili akaunti isiishe muda kamwe.",
+    "Deactivate expired client accounts": "Zima akaunti za wateja zilizoisha muda",
+    "Default (:page)": "Chaguomsingi (:page)",
+    "Start page": "Ukurasa wa kuanzia",
+    "The client account \":name\" expired and was deactivated": "Akaunti ya mteja \":name\" imeisha muda na imezimwa",
+    "The page you land on after signing in.": "Ukurasa unaofika baada ya kuingia.",
+    "This account expired on :date and can no longer sign in. To let them back in, choose a later date or clear it, and make sure the account is active.": "Akaunti hii iliisha muda tarehe :date na haiwezi kuingia tena. Ili kumrudishia ufikiaji, chagua tarehe ya baadaye au ifute, na hakikisha akaunti inatumika.",
+    "This date has already passed. Choose a later date, or leave it empty for an account that never expires.": "Tarehe hii imeshapita. Chagua tarehe ya baadaye, au acha wazi ili akaunti isiishe muda kamwe.",
+    "This role cannot open that page. Give it the \":permission\" permission, or choose another start page.": "Jukumu hili haliwezi kufungua ukurasa huo. Lipe ruhusa ya \":permission\", au chagua ukurasa mwingine wa kuanzia.",
+    "Until :date": "Hadi :date",
+    "Where people with this role land after signing in. Each person can still choose their own in their profile.": "Mahali ambapo watu wenye jukumu hili hufika baada ya kuingia. Kila mtu bado anaweza kuchagua wake kwenye wasifu wake.",
+    "Your account has expired.": "Akaunti yako imeisha muda."
 }

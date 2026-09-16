@@ -317,6 +317,41 @@ class File extends Model
     }
 
     /**
+     * The query-side twin of isEffectivelyPublic(): narrow to files that
+     * are, or are not, publicly reachable.
+     *
+     * Here rather than in a controller because two surfaces now ask it --
+     * the staff library's visibility filter and /api/v1/files -- and a
+     * predicate that has to agree with isEffectivelyPublic() should not
+     * exist twice. The folder half resolves once into a list of ids rather
+     * than as a correlated subquery, because Folder::scopePubliclyVisible()
+     * already expresses the subtree rule and is the only place it lives.
+     *
+     * The null branch in the private half is not tidiness: `folder_id NOT
+     * IN (...)` is never true for a NULL folder_id, so a file at the
+     * library root would otherwise be neither public nor private and
+     * vanish from both halves of the filter.
+     *
+     * @param  Builder<File>  $query
+     */
+    public function scopeEffectivelyPublic(Builder $query, bool $public): void
+    {
+        $publicFolderIds = Folder::query()->publiclyVisible()->pluck('id')->all();
+
+        if ($public) {
+            $query->where(fn (Builder $inner) => $inner
+                ->where('files.public', true)
+                ->orWhereIn('files.folder_id', $publicFolderIds));
+
+            return;
+        }
+
+        $query->where('files.public', false)->where(fn (Builder $inner) => $inner
+            ->whereNull('files.folder_id')
+            ->orWhereNotIn('files.folder_id', $publicFolderIds));
+    }
+
+    /**
      * A client can access a file that is assigned to them directly or
      * via a group, that sits in a folder shared with them (self or
      * ancestor), or that they uploaded themselves via the portal — the

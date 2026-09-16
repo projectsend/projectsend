@@ -29,9 +29,11 @@ use Laravel\Sanctum\HasApiTokens;
  * @property bool $account_requested
  * @property string|null $locale
  * @property string|null $timezone
+ * @property string|null $start_page a StartPage value; see StartPages
  * @property int|null $dashboard_columns
  * @property int $storage_quota_mb
  * @property Carbon|null $erase_after
+ * @property \Carbon\Carbon|null $expires_at
  * @property-read Role|null $role
  */
 class User extends Authenticatable implements HasLocalePreference
@@ -54,6 +56,9 @@ class User extends Authenticatable implements HasLocalePreference
         'password',
         'locale',
         'timezone',
+        // A personal preference, like timezone: the profile form fills it
+        // from its own validated request. See StartPages.
+        'start_page',
         'dashboard_columns',
         'storage_quota_mb',
     ];
@@ -94,6 +99,32 @@ class User extends Authenticatable implements HasLocalePreference
     public function isClientScoped(): bool
     {
         return $this->isStaff() && $this->role?->client_scoped === true;
+    }
+
+    /**
+     * Whether this account's expiry date has passed. Only client accounts
+     * are given one (see the client screens and /api/v1/clients).
+     */
+    public function hasExpired(): bool
+    {
+        return $this->expires_at !== null && $this->expires_at->isPast();
+    }
+
+    /**
+     * The one question every door into the application asks of an account
+     * that has already proved who it is: sign-in, every web request, every
+     * API request, and the second-factor challenge.
+     *
+     * Expiry is checked here as well as by the hourly sweep that switches
+     * `active` off, and neither is enough alone. The sweep is what keeps
+     * everything else that reads `active` — lists, filters, seat counts —
+     * in step. But a sweep runs on a schedule, and a scheduler that is not
+     * running would leave an expired account working forever. So access
+     * is refused the moment the date passes, whatever the flag says.
+     */
+    public function maySignIn(): bool
+    {
+        return $this->active && ! $this->hasExpired();
     }
 
     public function hasTwoFactorEnabled(): bool
@@ -183,6 +214,10 @@ class User extends Authenticatable implements HasLocalePreference
             // is not something those call sites should depend on.
             'storage_quota_mb' => 'integer',
             'erase_after' => 'datetime',
+            // Deliberately absent from $fillable too: when an account stops
+            // working is decided by staff, never by a payload the account
+            // itself could send (the profile form fills from its request).
+            'expires_at' => 'datetime',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_secret' => 'encrypted',

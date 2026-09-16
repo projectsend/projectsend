@@ -44,6 +44,10 @@ enum Action: string
     case ClientInvitationRedeemed = 'client.invitation_redeemed';
     case ClientInvitationRevoked = 'client.invitation_revoked';
     case ClientInvitationResent = 'client.invitation_resent';
+    // Logged by the hourly sweep, so it has no actor: nobody switched the
+    // account off, its date passed. Distinct from UserDeactivated for the
+    // same reason TwoFactorReset is distinct from TwoFactorDisabled.
+    case ClientExpired = 'client.expired';
     // Files
     case FileUploaded = 'file.uploaded';
     case FileUpdated = 'file.updated';
@@ -173,6 +177,7 @@ enum Action: string
             self::ClientInvitationRedeemed => 'Registered a client account from an invitation',
             self::ClientInvitationRevoked => 'Revoked the invitation sent to :email',
             self::ClientInvitationResent => 'A new invitation link was requested for :email',
+            self::ClientExpired => 'The client account ":name" expired and was deactivated',
             self::FileUploaded => 'Uploaded the file ":subject"',
             self::FileUpdated => 'Updated the file ":subject"',
             self::FileDeleted => 'Deleted the file ":name"',
@@ -279,6 +284,7 @@ enum Action: string
             self::ClientInvitationRedeemed => 'A client registered an account from an invitation',
             self::ClientInvitationRevoked => 'An invitation was revoked before it was used',
             self::ClientInvitationResent => 'An invited person asked for a replacement link',
+            self::ClientExpired => 'A client account reached its expiry date and was deactivated',
             self::FileUploaded => 'A file was uploaded',
             self::FileUpdated => 'A file was updated',
             self::FileDeleted => 'A file was deleted',

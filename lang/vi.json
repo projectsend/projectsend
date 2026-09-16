@@ -2075,5 +2075,19 @@
     "Your account has been created. You will be able to log in once it is approved.": "Tài khoản của bạn đã được tạo. Bạn có thể đăng nhập khi tài khoản được duyệt.",
     "Invite a client to share files with": "Mời một khách hàng để chia sẻ tệp",
     ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) đã đăng ký tài khoản khách hàng",
-    "A new client registered an account": "Một khách hàng mới đã đăng ký tài khoản"
+    "A new client registered an account": "Một khách hàng mới đã đăng ký tài khoản",
+    "Account expires": "Tài khoản hết hạn",
+    "A client account reached its expiry date and was deactivated": "Một tài khoản khách hàng đã đến ngày hết hạn và bị vô hiệu hóa",
+    "After this day the client can no longer sign in, and the account is deactivated. Their files stay. Leave empty for an account that never expires.": "Sau ngày này, khách hàng không thể đăng nhập nữa và tài khoản bị vô hiệu hóa. Các tệp của họ vẫn được giữ. Để trống nếu muốn tài khoản không bao giờ hết hạn.",
+    "Deactivate expired client accounts": "Vô hiệu hóa các tài khoản khách hàng đã hết hạn",
+    "Default (:page)": "Mặc định (:page)",
+    "Start page": "Trang bắt đầu",
+    "The client account \":name\" expired and was deactivated": "Tài khoản khách hàng “:name” đã hết hạn và bị vô hiệu hóa",
+    "The page you land on after signing in.": "Trang bạn thấy sau khi đăng nhập.",
+    "This account expired on :date and can no longer sign in. To let them back in, choose a later date or clear it, and make sure the account is active.": "Tài khoản này đã hết hạn vào :date và không thể đăng nhập nữa. Để cho họ truy cập lại, hãy chọn một ngày muộn hơn hoặc xóa ngày, và đảm bảo tài khoản đang hoạt động.",
+    "This date has already passed. Choose a later date, or leave it empty for an account that never expires.": "Ngày này đã qua. Hãy chọn một ngày muộn hơn, hoặc để trống nếu muốn tài khoản không bao giờ hết hạn.",
+    "This role cannot open that page. Give it the \":permission\" permission, or choose another start page.": "Vai trò này không thể mở trang đó. Hãy cấp quyền “:permission” hoặc chọn một trang bắt đầu khác.",
+    "Until :date": "Đến :date",
+    "Where people with this role land after signing in. Each person can still choose their own in their profile.": "Trang mà người có vai trò này thấy sau khi đăng nhập. Mỗi người vẫn có thể tự chọn trang của mình trong hồ sơ.",
+    "Your account has expired.": "Tài khoản của bạn đã hết hạn."
 }

@@ -34,6 +34,16 @@ class ClamAvScanner implements VirusScanner
     /** 64 KiB — clamd's own read buffer size, and small enough to stream 5 GB without holding it. */
     private const CHUNK = 65536;
 
+    /**
+     * What the daemon said it was, the first time this instance asked.
+     *
+     * Every verdict records the engine and definitions that reached it, so
+     * a stored "clean" can be read back against what knew it. Asking on
+     * every scan would double the connections; asking once per instance
+     * means once per queue job, and the worker is recycled hourly.
+     */
+    private ?string $engine = null;
+
     public function __construct(
         private readonly ScanningConfig $config,
     ) {}
@@ -46,7 +56,7 @@ class ClamAvScanner implements VirusScanner
         // decided not to scan should not spend a connection, and clamd
         // would refuse it anyway once it passed StreamMaxLength.
         if ($max > 0 && $size > $max) {
-            return ScanVerdict::tooLarge();
+            return ScanVerdict::tooLarge($this->engine());
         }
 
         $socket = $this->connect();
@@ -92,7 +102,7 @@ class ClamAvScanner implements VirusScanner
             return ScanVerdict::unavailable(__('The scanner did not answer in time.'));
         }
 
-        return $this->verdictFor($reply);
+        return $this->verdictFor($reply, $this->engine());
     }
 
     public function status(): ScannerStatus
@@ -135,10 +145,8 @@ class ClamAvScanner implements VirusScanner
         return new ScannerStatus(true, trim($parts[0]), $definitions, $built);
     }
 
-    private function verdictFor(string $reply): ScanVerdict
+    private function verdictFor(string $reply, ?string $engine): ScanVerdict
     {
-        $engine = null;
-
         if (str_ends_with($reply, 'OK')) {
             return ScanVerdict::clean($engine);
         }
@@ -170,6 +178,27 @@ class ClamAvScanner implements VirusScanner
         }
 
         return ScanVerdict::unavailable($reply);
+    }
+
+    /**
+     * "ClamAV 1.5.4/28122" — engine and signature database, as recorded
+     * against every verdict. Null when the daemon did not say.
+     */
+    private function engine(): ?string
+    {
+        if ($this->engine !== null) {
+            return $this->engine;
+        }
+
+        $status = $this->status();
+
+        if (! $status->reachable || $status->engine === null) {
+            return null;
+        }
+
+        return $this->engine = $status->definitionsVersion === null
+            ? $status->engine
+            : $status->engine.'/'.$status->definitionsVersion;
     }
 
     /** @return resource|null */

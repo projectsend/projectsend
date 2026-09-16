@@ -441,3 +441,38 @@ test('the activity log names the file it quarantined', function () {
     expect($line)->toContain('Contrato firmado')
         ->toContain('Eicar-Test-Signature');
 });
+
+test('a library from before the scanner is what "scan existing files" actually finds', function () {
+    // The migration gives the column its default and writes no reason, so
+    // every file on every upgraded installation has scan_note = null. A
+    // backfill that looked for the reason found none of them — the whole
+    // feature was inert on exactly the libraries it exists for.
+    $old = File::factory()->create(['scan_status' => ScanStatus::NotScanned, 'scan_note' => null]);
+    $stated = File::factory()->create([
+        'scan_status' => ScanStatus::NotScanned,
+        'scan_note' => NotScannedReason::BeforeScanning->value,
+    ]);
+    $letThrough = File::factory()->create([
+        'scan_status' => ScanStatus::NotScanned,
+        'scan_note' => NotScannedReason::ScannerUnavailable->value,
+    ]);
+
+    $found = File::query()->neverScanned()->pluck('id')->all();
+
+    expect($found)->toContain($old->id)
+        ->toContain($stated->id)
+        // Not this one: it was offered to a scanner that could not answer,
+        // and the hourly sweep already re-scans those.
+        ->not->toContain($letThrough->id);
+});
+
+test('the backfill queues those files', function () {
+    fakeScanner(ScanVerdict::clean());
+    $old = scannableFile(['scan_status' => ScanStatus::NotScanned, 'scan_note' => null]);
+
+    Illuminate\Support\Facades\Queue::fake();
+
+    $this->artisan('projectsend:scan-files', ['--existing' => true])->assertSuccessful();
+
+    Illuminate\Support\Facades\Queue::assertPushed(ScanFileJob::class, fn (ScanFileJob $job): bool => $job->fileId === $old->id);
+});

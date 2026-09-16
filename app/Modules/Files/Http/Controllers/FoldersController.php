@@ -220,7 +220,12 @@ class FoldersController extends Controller
             return null;
         }
 
-        $note = $file->scan_note;
+        // A file from before the scanner existed carries no reason — see
+        // File::scopeNeverScanned — and "Not scanned" with no explanation
+        // is the one badge somebody would have to come and ask about.
+        $note = $file->scan_note ?? ($file->scan_status === ScanStatus::NotScanned
+            ? NotScannedReason::BeforeScanning->value
+            : null);
 
         return [
             'status' => $file->scan_status->value,

@@ -35,6 +35,11 @@ beforeEach(function () {
 test('the screen shows what is configured and what is outstanding', function () {
     File::factory()->create(['scan_status' => ScanStatus::NotScanned, 'scan_note' => NotScannedReason::ScannerUnavailable->value]);
     File::factory()->create(['scan_status' => ScanStatus::NotScanned, 'scan_note' => NotScannedReason::BeforeScanning->value]);
+    // The shape every upgraded installation is actually in: the status
+    // from the column default, and no reason beside it. Counted, or the
+    // "Scan existing files" button sits disabled on a library of
+    // thousands.
+    File::factory()->create(['scan_status' => ScanStatus::NotScanned, 'scan_note' => null]);
     File::factory()->create(['scan_status' => ScanStatus::Infected, 'scan_note' => 'X']);
 
     $this->actingAs($this->admin)->get('/system/settings/virus-scanning')->assertInertia(
@@ -42,7 +47,7 @@ test('the screen shows what is configured and what is outstanding', function () 
             ->component('system/settings/virus-scanning')
             ->where('managed', false)
             ->where('counts.let_through', 1)
-            ->where('counts.never_scanned', 1)
+            ->where('counts.never_scanned', 2)
             ->where('counts.quarantined', 1),
     );
 });

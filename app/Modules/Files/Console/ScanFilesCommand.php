@@ -57,13 +57,7 @@ class ScanFilesCommand extends Command
             // run, since that is how often this command runs.
             $limit = $config->existingScanRatePerMinute() * 60;
 
-            $old = $this->dispatchFor(
-                File::query()
-                    ->where('scan_status', ScanStatus::NotScanned)
-                    ->where('scan_note', NotScannedReason::BeforeScanning->value),
-                $limit,
-                rescan: true,
-            );
+            $old = $this->dispatchFor(File::query()->neverScanned(), $limit, rescan: true);
 
             $this->info("Queued {$old} file(s) that had never been scanned.");
         }

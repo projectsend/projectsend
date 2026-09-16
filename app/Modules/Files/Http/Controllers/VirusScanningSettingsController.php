@@ -211,10 +211,7 @@ class VirusScanningSettingsController extends Controller
                 ScanStatus::Infected->value,
                 ScanStatus::UnscannableBlocked->value,
             ])->count(),
-            'never_scanned' => File::query()
-                ->where('scan_status', ScanStatus::NotScanned)
-                ->where('scan_note', NotScannedReason::BeforeScanning->value)
-                ->count(),
+            'never_scanned' => File::query()->neverScanned()->count(),
             'let_through' => File::query()
                 ->where('scan_status', ScanStatus::NotScanned)
                 ->whereIn('scan_note', [

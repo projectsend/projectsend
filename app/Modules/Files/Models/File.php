@@ -10,6 +10,7 @@ use App\Modules\Audit\ActivityLog;
 use App\Modules\Files\Access\SharingIdentity;
 use App\Modules\Files\DownloadLimitScope;
 use App\Modules\Files\FileDiskCleanup;
+use App\Modules\Files\Scanning\NotScannedReason;
 use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Files\Versions\FileVersions;
 use App\Modules\Groups\Models\Group;
@@ -309,6 +310,27 @@ class File extends Model
                 $inner->orWhere('uploaded_by', $viewer->id);
             }
         });
+    }
+
+    /**
+     * Files nothing has ever looked at.
+     *
+     * Two ways to be one, and the second is the common one: a file stored
+     * while scanning was off carries the reason, and a file that predates
+     * the scanner entirely carries none at all — the migration gives the
+     * column its default and writes no note, and the v1 import inserts
+     * rows the same way. Reading only the reason missed every file on
+     * every real installation, which is exactly the set "Scan existing
+     * files" exists for.
+     *
+     * @param  Builder<File>  $query
+     */
+    public function scopeNeverScanned(Builder $query): void
+    {
+        $query->where('scan_status', ScanStatus::NotScanned)
+            ->where(fn (Builder $inner) => $inner
+                ->whereNull('scan_note')
+                ->orWhere('scan_note', NotScannedReason::BeforeScanning->value));
     }
 
     /**

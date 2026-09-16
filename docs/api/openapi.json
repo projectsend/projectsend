@@ -1797,6 +1797,61 @@
                         }
                     },
                     {
+                        "name": "visibility",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "enum": [
+                                "public",
+                                "private",
+                                null
+                            ]
+                        }
+                    },
+                    {
+                        "name": "role_id",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "downloads",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "enum": [
+                                "none",
+                                "any",
+                                null
+                            ]
+                        }
+                    },
+                    {
+                        "name": "version",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "enum": [
+                                "current",
+                                "outdated",
+                                null
+                            ]
+                        }
+                    },
+                    {
                         "name": "expired",
                         "in": "query",
                         "schema": {

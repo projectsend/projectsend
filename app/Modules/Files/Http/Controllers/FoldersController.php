@@ -165,7 +165,7 @@ class FoldersController extends Controller
                 ->when($downloads === 'any', fn (Builder $q) => $q->whereHas('downloads'))
                 ->when($version === 'current', fn (Builder $q) => $q->whereDoesntHave('nextVersion'))
                 ->when($version === 'outdated', fn (Builder $q) => $q->whereHas('nextVersion'))
-                ->when($visibility !== null, fn (Builder $q) => $this->constrainVisibility($q, $visibility === 'public'))
+                ->when($visibility !== null, fn (Builder $q) => $q->effectivelyPublic($visibility === 'public'))
                 ->orderBy('name');
         } else {
             $current = $request->integer('folder') > 0
@@ -588,43 +588,5 @@ class FoldersController extends Controller
         }
 
         return $this->scope->folders($user)->findOrFail($parentId);
-    }
-
-    /**
-     * Narrow to files that are, or are not, publicly reachable.
-     *
-     * "Public" here means what the row's own badge means --
-     * File::isEffectivelyPublic(), the file's own flag *or* its folder
-     * sitting anywhere in a public folder's live subtree. Filtering on the
-     * `public` column alone would have hidden files the same screen visibly
-     * labels Public, which is a filter that argues with the list it filters.
-     *
-     * The folder half is resolved once into a list of ids rather than as a
-     * correlated subquery, because Folder::scopePubliclyVisible() already
-     * expresses the subtree rule (a LIKE per public folder) and is the only
-     * place that rule should live.
-     *
-     * @param  Builder<File>  $query
-     */
-    private function constrainVisibility(Builder $query, bool $public): void
-    {
-        $publicFolderIds = Folder::query()->publiclyVisible()->pluck('id')->all();
-
-        if ($public) {
-            $query->where(fn (Builder $w) => $w
-                ->where('public', true)
-                ->orWhereIn('folder_id', $publicFolderIds));
-
-            return;
-        }
-
-        // The null branch is not tidiness: `folder_id NOT IN (...)` is never
-        // true for a NULL folder_id, so a file at the library root would
-        // otherwise be neither public nor private and vanish from both
-        // halves of the filter. Proved by removing it -- the private half
-        // then returned nothing at all.
-        $query->where('public', false)->where(fn (Builder $w) => $w
-            ->whereNull('folder_id')
-            ->orWhereNotIn('folder_id', $publicFolderIds));
     }
 }

@@ -227,6 +227,7 @@ export function AppSidebar() {
             { title: t('Storage'), url: '/system/settings/storage', when: settings && capabilities.includes('storage.configure') },
             { title: t('Downloads'), url: '/system/settings/downloads', when: settings },
             { title: t('File retention'), url: '/system/settings/file-retention', when: settings },
+            { title: t('Virus scanning'), url: '/system/settings/virus-scanning', when: settings },
             { title: t('Comments'), url: '/system/settings/comments', when: settings },
             { title: t('Public listing'), url: '/system/settings/public-listing', when: settings },
             { title: t('Privacy'), url: '/system/settings/privacy', when: settings },

@@ -7,6 +7,7 @@ use App\Modules\Comments\Http\Controllers\CommentSettingsController;
 use App\Modules\Files\Http\Controllers\DownloadSettingsController;
 use App\Modules\Files\Http\Controllers\FileRetentionSettingsController;
 use App\Modules\Files\Http\Controllers\UploadSettingsController;
+use App\Modules\Files\Http\Controllers\VirusScanningSettingsController;
 use App\Modules\Identity\Http\Controllers\ApiTokensController;
 use App\Modules\Identity\Http\Controllers\ConnectedAccountsController;
 use App\Modules\Identity\Http\Controllers\LdapSettingsController;
@@ -185,6 +186,15 @@ Route::middleware('auth')->group(function () {
         Route::patch('system/settings/downloads', [DownloadSettingsController::class, 'update'])->name('system-settings.downloads.update');
         Route::get('system/settings/file-retention', [FileRetentionSettingsController::class, 'edit'])->name('system-settings.file-retention.edit');
         Route::patch('system/settings/file-retention', [FileRetentionSettingsController::class, 'update'])->name('system-settings.file-retention.update');
+        Route::get('system/settings/virus-scanning', [VirusScanningSettingsController::class, 'edit'])->name('system-settings.virus-scanning.edit');
+        Route::patch('system/settings/virus-scanning', [VirusScanningSettingsController::class, 'update'])->name('system-settings.virus-scanning.update');
+        // Named buckets, like the email and CAPTCHA test buttons beside
+        // them: both of these reach out or start work, and neither should
+        // be a button somebody can sit on.
+        Route::post('system/settings/virus-scanning/test', [VirusScanningSettingsController::class, 'test'])
+            ->middleware('throttle:12,1,scanner-test')->name('system-settings.virus-scanning.test');
+        Route::post('system/settings/virus-scanning/scan-existing', [VirusScanningSettingsController::class, 'scanExisting'])
+            ->middleware('throttle:6,1,scanner-backfill')->name('system-settings.virus-scanning.scan-existing');
         Route::get('system/settings/comments', [CommentSettingsController::class, 'edit'])->name('system-settings.comments.edit');
         Route::patch('system/settings/comments', [CommentSettingsController::class, 'update'])->name('system-settings.comments.update');
         Route::get('system/settings/email', [EmailSettingsController::class, 'edit'])->name('system-settings.email.edit');

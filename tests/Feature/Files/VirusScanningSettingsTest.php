@@ -117,6 +117,35 @@ test('the test button says when the scanner cannot be reached', function () {
         ->assertSessionHas('scanner_test_result', fn (array $result): bool => $result['ok'] === false);
 });
 
+test('the answer actually reaches the screen', function () {
+    // It did not, at first: the page read a flash prop that nothing
+    // shares, so the button appeared to do nothing at all. The result is
+    // handed over as a page prop, like the CAPTCHA screen's.
+    app()->instance(VirusScanner::class, new FakeVirusScanner(ScanVerdict::infected('Eicar-Test-Signature')));
+
+    $this->actingAs($this->admin)->post('/system/settings/virus-scanning/test');
+
+    $this->actingAs($this->admin)->get('/system/settings/virus-scanning')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('test_result.ok', true),
+    );
+});
+
+test('the screen opens on the scanner tab, and the other one is a link away', function () {
+    $this->actingAs($this->admin)->get('/system/settings/virus-scanning')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('tab', 'scanner'),
+    );
+
+    $this->actingAs($this->admin)->get('/system/settings/virus-scanning?tab=options')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('tab', 'options'),
+    );
+
+    // Anything else is the default rather than an error: a stale
+    // bookmark should open the page, not break it.
+    $this->actingAs($this->admin)->get('/system/settings/virus-scanning?tab=nonsense')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('tab', 'scanner'),
+    );
+});
+
 test('the test button says when the scanner answers but detects nothing', function () {
     // The failure that looks like success: reachable, and blind. Empty or
     // broken virus definitions do exactly this.

@@ -45,9 +45,20 @@ class VirusScanningSettingsController extends Controller
         private readonly ActivityLogger $activity,
     ) {}
 
-    public function edit(): Response
+    public function edit(Request $request): Response
     {
         return Inertia::render('system/settings/virus-scanning', [
+            // Which half of the screen is open. The connection and the
+            // policies are two different jobs — one is done once when the
+            // scanner is set up, the other is revisited — and a single
+            // column of fields with two Save buttons reads as one form
+            // that saves half of itself.
+            'tab' => $request->query('tab') === 'options' ? 'options' : 'scanner',
+            // Read from the session here rather than shared as a flash
+            // prop: HandleInertiaRequests shares `success` and `error` and
+            // nothing else, which is why the Test button appeared to do
+            // nothing at all. Same shape the CAPTCHA screen uses.
+            'test_result' => $request->session()->get('scanner_test_result'),
             'enabled' => $this->config->enabled(),
             'managed' => $this->config->isManaged(),
             'address' => $this->config->isManaged() ? '' : $this->settings->get(Setting::VirusScannerAddress),

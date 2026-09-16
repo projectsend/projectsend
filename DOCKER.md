@@ -372,7 +372,10 @@ docker compose --profile scanner up -d
 ```
 
 Then go to **System → Settings → Virus scanning**, switch it on, and use `tcp://clamav:3310` as the
-address. **Test scanner** sends a harmless standard test file and tells you whether it was actually
+address. On a brand-new installation you can skip that step: uncomment
+`PROJECTSEND_SCANNER_DEFAULT_ADDRESS` in the compose file before the first start and the site comes
+up already pointed at the scanner. It is a starting value, not a lock — the address and the switch
+stay on that screen. **Test scanner** sends a harmless standard test file and tells you whether it was actually
 detected.
 
 Two things to know before you turn it on. It needs about **1–1.5 GB of memory**, because the virus

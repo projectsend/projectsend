@@ -243,3 +243,66 @@ test('the dashboard says nothing while scanning is healthy, and speaks up when i
         fn (AssertableInertia $page) => $page->where('system.scanning.reachable', false),
     );
 });
+
+/*
+|--------------------------------------------------------------------------
+| Nothing is checking what this installation accepts
+|--------------------------------------------------------------------------
+*/
+
+test('an installation with no scanner is told so on the dashboard', function () {
+    $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->where('system.scanning.configured', false)
+            ->where('system.scanning.reachable', false),
+    );
+});
+
+test('a hosted installation is not told: the scanner is not its job', function () {
+    // The capability, not an edition check — see
+    // Capability::VirusScanningConnect. The System card is community-only
+    // in its own right, so on a hosted installation the whole card is
+    // absent and the notice with it; the assertion below is about the
+    // card, and the one on the settings screen (further down) is what
+    // pins the capability itself.
+    config(['projectsend.edition' => App\Modules\Platform\Capabilities\Edition::Cloud]);
+    forgetRequestState();
+
+    $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('system', null),
+    );
+});
+
+test('the notice goes away once a scanner is configured', function () {
+    app(Settings::class)->set(Setting::VirusScanningEnabled, true);
+    app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://scanner.test:3310');
+    app()->instance(VirusScanner::class, new FakeVirusScanner);
+
+    $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('system.scanning', null),
+    );
+});
+
+test('a hosted installation cannot connect a scanner of its own, but keeps its policies', function () {
+    config(['projectsend.edition' => App\Modules\Platform\Capabilities\Edition::Cloud]);
+    forgetRequestState();
+
+    $this->actingAs($this->admin)->get('/system/settings/virus-scanning')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('managed', true),
+    );
+
+    $this->actingAs($this->admin)->post('/system/settings/virus-scanning/test')->assertForbidden();
+
+    $this->actingAs($this->admin)->patch('/system/settings/virus-scanning', [
+        'enabled' => true,
+        'address' => 'tcp://mine:3310',
+        'max_size_mb' => 256,
+        'unscannable_policy' => 'block',
+        'scanner_down_policy' => 'hold',
+        'wait_minutes' => 10,
+        'existing_rate_per_minute' => 60,
+    ])->assertSessionHasNoErrors();
+
+    expect(app(Settings::class)->get(Setting::VirusScannerAddress))->toBe('')
+        ->and(app(Settings::class)->get(Setting::VirusUnscannablePolicy))->toBe('block');
+});

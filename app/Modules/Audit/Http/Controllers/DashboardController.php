@@ -530,14 +530,30 @@ class DashboardController extends Controller
      * healthy state; the dashboard exists here to interrupt somebody who
      * was not looking for it.
      *
-     * @return array{reachable: bool, engine: string|null, definitions_age_hours: int|null, let_through_24h: int, pending: int}|null
+     * @return array{configured: bool, reachable: bool, engine: string|null, definitions_age_hours: int|null, let_through_24h: int, pending: int}|null
      */
     private function scanningWarning(): ?array
     {
         $config = app(ScanningConfig::class);
 
         if (! $config->enabled()) {
-            return null;
+            // Nothing is checking what this installation accepts. Said
+            // only where somebody could act on it: an installation that
+            // connects its own scanner (community — see
+            // Capability::VirusScanningConnect). On a hosted one the
+            // scanner is the platform's to run, and a tenant reading
+            // "not configured" would be reading about somebody else's
+            // job.
+            return $this->capabilities->has(Capability::VirusScanningConnect)
+                ? [
+                    'configured' => false,
+                    'reachable' => false,
+                    'engine' => null,
+                    'definitions_age_hours' => null,
+                    'let_through_24h' => 0,
+                    'pending' => 0,
+                ]
+                : null;
         }
 
         $scanner = app(VirusScanner::class)->status();
@@ -561,6 +577,7 @@ class DashboardController extends Controller
         }
 
         return [
+            'configured' => true,
             'reachable' => $scanner->reachable,
             'engine' => $scanner->engine,
             'definitions_age_hours' => $stale,

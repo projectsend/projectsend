@@ -13,6 +13,8 @@ use App\Modules\Files\Scanning\ScanningConfig;
 use App\Modules\Files\Scanning\ScanOutcome;
 use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Files\Scanning\VirusScanner;
+use App\Modules\Platform\Capabilities\Capability;
+use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\RedirectResponse;
@@ -43,6 +45,7 @@ class VirusScanningSettingsController extends Controller
         private readonly Settings $settings,
         private readonly ScanningConfig $config,
         private readonly ActivityLogger $activity,
+        private readonly CapabilityRegistry $capabilities,
     ) {}
 
     public function edit(Request $request): Response
@@ -60,7 +63,12 @@ class VirusScanningSettingsController extends Controller
             // nothing at all. Same shape the CAPTCHA screen uses.
             'test_result' => $request->session()->get('scanner_test_result'),
             'enabled' => $this->config->enabled(),
-            'managed' => $this->config->isManaged(),
+            // Two different reasons the connection is not this screen's to
+            // change: a managed configuration names the scanner, or this
+            // edition does not connect scanners at all. The screen says
+            // the same thing for both, since to the person reading it
+            // they are the same fact.
+            'managed' => $this->config->isManaged() || ! $this->canConnect(),
             'address' => $this->config->isManaged() ? '' : $this->settings->get(Setting::VirusScannerAddress),
             'max_size_mb' => $this->settings->get(Setting::VirusScanMaxSizeMb),
             'unscannable_policy' => $this->settings->get(Setting::VirusUnscannablePolicy),
@@ -86,7 +94,7 @@ class VirusScanningSettingsController extends Controller
         // A managed installation may still choose its policies. The
         // connection and the switch are not on the screen there, and a
         // request that sends them anyway changes nothing.
-        if (! $this->config->isManaged()) {
+        if (! $this->config->isManaged() && $this->canConnect()) {
             $address = trim((string) ($validated['address'] ?? ''));
 
             // Refused rather than saved and quietly inert: switching this
@@ -123,6 +131,10 @@ class VirusScanningSettingsController extends Controller
      */
     public function test(VirusScanner $scanner): RedirectResponse
     {
+        // Nothing to test where the connection is not this installation's
+        // to make.
+        abort_unless($this->canConnect(), 403);
+
         $status = $scanner->status();
 
         if (! $status->reachable) {
@@ -175,6 +187,17 @@ class VirusScanningSettingsController extends Controller
         \Illuminate\Support\Facades\Artisan::queue('projectsend:scan-files', ['--existing' => true]);
 
         return back()->with('success', __('Scanning existing files has started. It runs in the background.'));
+    }
+
+    /**
+     * Whether this installation connects its own scanner.
+     *
+     * Community only, through the registry rather than an edition check —
+     * see Capability::VirusScanningConnect for the division.
+     */
+    private function canConnect(): bool
+    {
+        return $this->capabilities->has(Capability::VirusScanningConnect);
     }
 
     /**

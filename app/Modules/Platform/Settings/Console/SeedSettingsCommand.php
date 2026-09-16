@@ -60,7 +60,41 @@ class SeedSettingsCommand extends Command
             $this->seedTwoFactorEnforcement($settings, $enforcement);
         }
 
+        $scanner = config('projectsend.scanning.default_address');
+
+        if (is_string($scanner) && trim($scanner) !== '') {
+            $this->seedScanner($settings, trim($scanner));
+        }
+
         return self::SUCCESS;
+    }
+
+    /**
+     * Point a fresh installation at its scanner, and switch scanning on.
+     *
+     * For the operator who brings up the optional scanner container beside
+     * the application: without this they would have to find the settings
+     * screen and type an address the compose file already knows. Unlike
+     * PROJECTSEND_SCANNER_ADDRESS this leaves both the address and the
+     * switch editable afterwards — it is a starting value, not a policy.
+     *
+     * Both are seeded together or neither: an address with scanning off
+     * would look configured and check nothing, and scanning on with no
+     * address would hold every upload.
+     */
+    private function seedScanner(Settings $settings, string $address): void
+    {
+        // The address, asked of the table for the reason given below: its
+        // default is the empty string, so get() cannot tell "never set"
+        // from "deliberately cleared".
+        if (StoredSetting::query()->where('key', Setting::VirusScannerAddress->value)->exists()) {
+            return;
+        }
+
+        $settings->set(Setting::VirusScannerAddress, $address);
+        $settings->set(Setting::VirusScanningEnabled, true);
+
+        $this->info("Virus scanning seeded to '{$address}' and switched on (first boot).");
     }
 
     private function seedTwoFactorEnforcement(Settings $settings, string $value): void

@@ -41,6 +41,8 @@ export interface SystemInfo {
      * the configured behaviour. This is where that gets said out loud.
      */
     scanning: {
+        /** False means no scanner is configured at all. */
+        configured: boolean;
         reachable: boolean;
         engine: string | null;
         definitions_age_hours: number | null;
@@ -133,11 +135,20 @@ export function SystemWidget({ system, onViewReleaseNotes }: { system: SystemInf
                 <Alert variant="warning" className="mb-3">
                     <ShieldAlert className="size-4" />
                     <AlertTitle>
-                        {system.scanning.reachable ? t('Files are going out unscanned') : t('The virus scanner is not answering')}
+                        {!system.scanning.configured
+                            ? t('Uploads are not being checked for viruses')
+                            : system.scanning.reachable
+                              ? t('Files are going out unscanned')
+                              : t('The virus scanner is not answering')}
                     </AlertTitle>
                     <AlertDescription>
                         <ul className="list-inside list-disc">
-                            {!system.scanning.reachable && <li>{t('Uploads cannot be checked until it is back.')}</li>}
+                            {!system.scanning.configured && (
+                                <li>{t('Anything uploaded here — by staff, by clients, or through an upload link — is passed on unchecked.')}</li>
+                            )}
+                            {system.scanning.configured && !system.scanning.reachable && (
+                                <li>{t('Uploads cannot be checked until it is back.')}</li>
+                            )}
                             {system.scanning.let_through_24h > 0 && (
                                 <li>
                                     {t(':count files were allowed through without being scanned in the last 24 hours.', {
@@ -155,7 +166,7 @@ export function SystemWidget({ system, onViewReleaseNotes }: { system: SystemInf
                             )}
                         </ul>
                         <Link href="/system/settings/virus-scanning" className="mt-1 inline-block underline hover:no-underline">
-                            {t('Virus scanning settings')}
+                            {system.scanning.configured ? t('Virus scanning settings') : t('Set up virus scanning')}
                         </Link>
                     </AlertDescription>
                 </Alert>

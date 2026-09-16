@@ -5,30 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { useTranslation } from '@/hooks/use-translation';
 import { type NavGroup, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import {
-    Activity,
-    ArrowLeftRight,
-    BookOpen,
-    Boxes,
-    Contact,
-    Download,
-    FileCode,
-    FileText,
-    FileWarning,
-    History,
-    KeyRound,
-    LayoutGrid,
-    ListChecks,
-    MailPlus,
-    MessageSquare,
-    Settings,
-    ShieldCheck,
-    Tags,
-    Upload,
-    UserCheck,
-    UserPlus,
-    Users,
-} from 'lucide-react';
+import { Activity, ArrowLeftRight, BookOpen, Boxes, Contact, Download, FileCode, FileText, FileWarning, History, KeyRound, LayoutGrid, ListChecks, MailPlus, MessageSquare, Settings, ShieldAlert, ShieldCheck, Tags, Upload, UserCheck, UserPlus, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 export function AppSidebar() {
@@ -86,6 +63,9 @@ export function AppSidebar() {
     }
     if (can('import_orphans')) {
         fileItems.push({ title: t('Import orphan files'), url: '/files/orphans', icon: FileWarning });
+    }
+    if (can('release_quarantined_files')) {
+        fileItems.push({ title: t('Quarantine'), url: '/files/quarantine', icon: ShieldAlert });
     }
     if (can('moderate_comments')) {
         // Just "Comments" — the old "Comments awaiting approval" wrapped

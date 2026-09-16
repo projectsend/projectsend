@@ -56,6 +56,7 @@ class SchedulerMonitoringController extends Controller
             'projectsend:purge-zip-downloads' => (string) __('Purge zip downloads'),
             'projectsend:check-for-updates' => (string) __('Check for updates'),
             'projectsend:fetch-news' => (string) __('Fetch dashboard news'),
+            'projectsend:scan-files' => (string) __('Scan files for viruses'),
             'projectsend:purge-expired-files' => (string) __('Purge expired files'),
             'projectsend:purge-orphan-files' => (string) __('Purge orphan files'),
             'projectsend:purge-api-request-logs' => (string) __('Purge API request logs'),

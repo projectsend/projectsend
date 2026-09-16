@@ -108,6 +108,27 @@ class FilesServiceProvider extends ServiceProvider
             url: fn (array $data): string => route('my-files.index'),
         ));
 
+        // Two audiences, two types, because they need different words and
+        // different links. Staff get a queue to act on; the person who
+        // uploaded gets told their file did not go through.
+        $registry = $this->app->make(NotificationTypeRegistry::class);
+
+        $registry->register(new NotificationTypeDefinition(
+            key: 'file_quarantined',
+            label: 'A file was quarantined by the virus scanner',
+            template: 'A virus was found in ":itemName", uploaded by :uploaderName',
+            url: fn (array $data): string => route('files.quarantine'),
+        ));
+
+        $registry->register(new NotificationTypeDefinition(
+            key: 'upload_blocked',
+            label: 'One of your uploads was blocked',
+            template: 'Your file ":itemName" was blocked: :threat',
+            // Their own files list. Deliberately not the quarantine
+            // screen, which they cannot open.
+            url: fn (array $data): string => route('my-files.index'),
+        ));
+
         // Every upload path converges on FileWasStored, so this is the
         // one place a scan is started from. Dispatched rather than run
         // inline: a 5 GB file takes minutes to read, and an upload must
@@ -121,6 +142,7 @@ class FilesServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->commands([
+                Console\ScanFilesCommand::class,
                 Console\PurgeStaleUploadsCommand::class,
                 Console\PurgeZipDownloadsCommand::class,
                 Console\PurgeExpiredFilesCommand::class,

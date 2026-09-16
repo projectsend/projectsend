@@ -31,6 +31,14 @@ return new class extends Migration
             $table->string('scan_engine')->nullable()->after('scanned_at');
             $table->unsignedInteger('scan_attempts')->default(0)->after('scan_engine');
 
+            // Whether this file could be downloaded before it was
+            // quarantined — true only for one that went out unscanned
+            // while the scanner was unreachable and was caught later.
+            // Recorded on the file because it changes what an
+            // administrator has to do, and because reconstructing it from
+            // the activity log afterwards means reading every entry.
+            $table->boolean('scan_was_available')->default(false)->after('scan_attempts');
+
             // Who overruled a quarantine, and when. The reason they gave
             // is in the activity log; this is what the file itself shows.
             $table->foreignId('released_by')->nullable()->after('scan_attempts')->constrained('users')->nullOnDelete();
@@ -43,7 +51,7 @@ return new class extends Migration
         Schema::table('files', function (Blueprint $table) {
             $table->dropConstrainedForeignId('released_by');
             $table->dropIndex(['scan_status']);
-            $table->dropColumn(['scan_status', 'scan_note', 'scanned_at', 'scan_engine', 'scan_attempts', 'released_at']);
+            $table->dropColumn(['scan_status', 'scan_note', 'scanned_at', 'scan_engine', 'scan_attempts', 'scan_was_available', 'released_at']);
         });
     }
 };

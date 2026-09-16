@@ -46,6 +46,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $scanned_at
  * @property string|null $scan_engine
  * @property int $scan_attempts
+ * @property bool $scan_was_available
  * @property int|null $released_by
  * @property Carbon|null $released_at
  * @property bool $public
@@ -89,6 +90,7 @@ class File extends Model
             'scanned_at' => 'datetime',
             'released_at' => 'datetime',
             'scan_attempts' => 'integer',
+            'scan_was_available' => 'boolean',
             'commentable' => 'boolean',
             'expires_at' => 'datetime',
             'download_limit' => 'integer',

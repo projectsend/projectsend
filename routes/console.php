@@ -17,6 +17,9 @@ Schedule::command('projectsend:purge-stale-uploads')->hourly();
 Schedule::command('projectsend:purge-zip-downloads')->daily();
 Schedule::command('projectsend:check-for-updates')->daily();
 Schedule::command('projectsend:fetch-news')->daily();
+// Hourly, not daily: a file stuck waiting for a scanner is a file nobody
+// can download, and an installation set to hold has no other way forward.
+Schedule::command('projectsend:scan-files')->hourly();
 Schedule::command('projectsend:purge-expired-files')->daily();
 Schedule::command('projectsend:purge-orphan-files')->daily();
 Schedule::command('projectsend:purge-api-request-logs')->daily();

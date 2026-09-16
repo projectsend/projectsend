@@ -30,6 +30,7 @@ class ScanPolicy
         private readonly ScanningConfig $config,
         private readonly FileAvailability $availability,
         private readonly ActivityLogger $activity,
+        private readonly QuarantineNotifier $notifier,
     ) {}
 
     /**
@@ -73,6 +74,8 @@ class ScanPolicy
     {
         $wasAvailable = $this->availability->isAvailable($file);
 
+        $file->forceFill(['scan_was_available' => $wasAvailable])->save();
+
         $this->settle($file, ScanStatus::Infected, $threat, $engine);
         $this->purgeRenditions($file);
 
@@ -86,6 +89,8 @@ class ScanPolicy
             // download history is the only way to know.
             'was_available' => $wasAvailable,
         ]);
+
+        $this->notifier->quarantined($file, $threat);
 
         return ScanStatus::Infected;
     }
@@ -103,6 +108,8 @@ class ScanPolicy
                 'threat' => $reason->label(),
                 'was_available' => false,
             ]);
+
+            $this->notifier->quarantined($file, $reason->label());
 
             return ScanStatus::UnscannableBlocked;
         }

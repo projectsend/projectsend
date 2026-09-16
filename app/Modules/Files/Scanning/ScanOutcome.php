@@ -10,5 +10,8 @@ enum ScanOutcome
     case Infected;
     case TooLarge;
     case Encrypted;
+    /** The file's own bytes could not be read. Nothing to do with the scanner. */
+    case Unreadable;
+
     case Unavailable;
 }

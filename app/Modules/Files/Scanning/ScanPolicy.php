@@ -47,6 +47,7 @@ class ScanPolicy
             ScanOutcome::Infected => $this->quarantine($file, $verdict->detail ?? 'unknown', $verdict->engine),
             ScanOutcome::TooLarge => $this->unscannable($file, NotScannedReason::TooLarge, $verdict->engine),
             ScanOutcome::Encrypted => $this->unscannable($file, NotScannedReason::Encrypted, $verdict->engine),
+            ScanOutcome::Unreadable => $this->unscannable($file, NotScannedReason::Unreadable, $verdict->engine),
             ScanOutcome::Unavailable => $this->unavailable($file, $verdict->detail),
         };
     }

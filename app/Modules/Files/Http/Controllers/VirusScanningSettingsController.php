@@ -17,8 +17,10 @@ use App\Modules\Platform\Capabilities\Capability;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -56,7 +58,9 @@ class VirusScanningSettingsController extends Controller
             // scanner is set up, the other is revisited — and a single
             // column of fields with two Save buttons reads as one form
             // that saves half of itself.
-            'tab' => $request->query('tab') === 'options' ? 'options' : 'scanner',
+            'tab' => in_array($request->query('tab'), ['options', 'activity'], true)
+                ? (string) $request->query('tab')
+                : 'scanner',
             // Read from the session here rather than shared as a flash
             // prop: HandleInertiaRequests shares `success` and `error` and
             // nothing else, which is why the Test button appeared to do
@@ -190,6 +194,61 @@ class VirusScanningSettingsController extends Controller
     }
 
     /**
+     * What the scanner is doing right now, and what it last decided.
+     *
+     * Polled by the Activity tab rather than rendered with the page: a
+     * backfill takes minutes to hours, and a screen that only tells you
+     * where things stood when you opened it is the screen somebody
+     * reloads repeatedly instead of watching.
+     *
+     * JSON rather than an Inertia partial, the way the notification bell
+     * and the zip builder already poll — see use-notification-poll.ts.
+     */
+    public function activity(): JsonResponse
+    {
+        $recent = File::query()
+            ->whereNotNull('scanned_at')
+            ->orderByDesc('scanned_at')
+            ->limit(20)
+            ->get(['id', 'name', 'scan_status', 'scan_note', 'scanned_at', 'scan_engine']);
+
+        $waiting = File::query()->where('scan_status', ScanStatus::Pending)->count();
+
+        // Counted as well as the files above, and this is the half that
+        // makes a backfill visible: re-scanning a file that already went
+        // out unchecked deliberately leaves it available, so it is not
+        // "pending" and a screen watching only that count says nothing is
+        // happening while the queue works through a whole library.
+        $queued = Queue::size('scans');
+
+        return response()->json([
+            // "Something is happening" is the one thing a person watching
+            // this screen wants to know, and it is worth being explicit
+            // about rather than left to be inferred from a count.
+            'running' => $waiting > 0 || $queued > 0,
+            'waiting' => $waiting,
+            'queued' => $queued,
+            'checked_last_hour' => File::query()->where('scanned_at', '>=', now()->subHour())->count(),
+            'last_scanned_at' => $recent->first()?->scanned_at?->toIso8601String(),
+            'never_scanned' => File::query()->neverScanned()->count(),
+            'quarantined' => File::query()->whereIn('scan_status', [
+                ScanStatus::Infected->value,
+                ScanStatus::UnscannableBlocked->value,
+            ])->count(),
+            'recent' => $recent->map(fn (File $file): array => [
+                'id' => $file->id,
+                'name' => $file->name,
+                'status' => $file->scan_status->value,
+                // A reason is a key and is translated; a threat name is
+                // the scanner's own words and is passed through.
+                'note' => $this->noteFor($file),
+                'scanned_at' => $file->scanned_at?->toIso8601String(),
+                'engine' => $file->scan_engine,
+            ])->all(),
+        ]);
+    }
+
+    /**
      * Whether this installation connects its own scanner.
      *
      * Community only, through the registry rather than an edition check —
@@ -198,6 +257,21 @@ class VirusScanningSettingsController extends Controller
     private function canConnect(): bool
     {
         return $this->capabilities->has(Capability::VirusScanningConnect);
+    }
+
+    private function noteFor(File $file): ?string
+    {
+        $note = $file->scan_note;
+
+        if ($note === null) {
+            return $file->scan_status === ScanStatus::NotScanned
+                ? (string) __(NotScannedReason::BeforeScanning->label())
+                : null;
+        }
+
+        $reason = NotScannedReason::tryFrom($note);
+
+        return $reason === null ? $note : (string) __($reason->label());
     }
 
     /**

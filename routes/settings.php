@@ -193,6 +193,11 @@ Route::middleware('auth')->group(function () {
         // be a button somebody can sit on.
         Route::post('system/settings/virus-scanning/test', [VirusScanningSettingsController::class, 'test'])
             ->middleware('throttle:12,1,scanner-test')->name('system-settings.virus-scanning.test');
+        // Polled every few seconds while the Activity tab is open, so it
+        // is a plain JSON read with its own generous bucket rather than
+        // an Inertia render.
+        Route::get('system/settings/virus-scanning/activity', [VirusScanningSettingsController::class, 'activity'])
+            ->middleware('throttle:120,1,scanner-activity')->name('system-settings.virus-scanning.activity');
         Route::post('system/settings/virus-scanning/scan-existing', [VirusScanningSettingsController::class, 'scanExisting'])
             ->middleware('throttle:6,1,scanner-backfill')->name('system-settings.virus-scanning.scan-existing');
         Route::get('system/settings/comments', [CommentSettingsController::class, 'edit'])->name('system-settings.comments.edit');

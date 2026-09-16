@@ -1,5 +1,5 @@
-import { type BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { type BreadcrumbItem, type SharedData } from '@/types';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 
@@ -105,6 +105,7 @@ function ReleaseDialog({ file }: { file: QuarantinedFile }) {
 export default function Quarantine({ files, pagination }: QuarantineProps) {
     const { t } = useTranslation();
     const { dateTime } = useFormatDate();
+    const { auth } = usePage<SharedData>().props;
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: t('All files'), href: '/files' },
@@ -116,7 +117,17 @@ export default function Quarantine({ files, pagination }: QuarantineProps) {
             <Head title={t('Quarantine')} />
 
             <div className="px-4 py-6">
-                <Heading title={t('Quarantine')} description={t('Files the virus scanner refused. Nobody can download these.')} />
+                <div className="flex items-start justify-between">
+                    <Heading title={t('Quarantine')} description={t('Files the virus scanner refused. Nobody can download these.')} />
+
+                    {/* The way back to the screen that decides what gets
+                        refused, for whoever may change it. */}
+                    {auth.permissions.includes('edit_settings') && (
+                        <Button variant="outline" asChild>
+                            <Link href={route('system-settings.virus-scanning.edit')}>{t('Virus scanning settings')}</Link>
+                        </Button>
+                    )}
+                </div>
 
                 {files.some((file) => file.was_available) && (
                     <Alert variant="destructive" className="mb-4">

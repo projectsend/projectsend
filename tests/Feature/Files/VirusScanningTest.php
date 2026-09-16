@@ -476,3 +476,36 @@ test('the backfill queues those files', function () {
 
     Illuminate\Support\Facades\Queue::assertPushed(ScanFileJob::class, fn (ScanFileJob $job): bool => $job->fileId === $old->id);
 });
+
+test('a file whose bytes are gone says so, and is not retried forever', function () {
+    // An orphaned row, or storage that moved. It used to be recorded as
+    // "the scanner could not be reached" — wrong on screen, and wrong in
+    // behaviour: that is the one reason the hourly sweep re-queues, so
+    // every missing file would have been rescanned every hour for good.
+    $scanner = fakeScanner(ScanVerdict::clean());
+    $file = scannableFile();
+    Storage::disk('files')->delete($file->path);
+
+    runScan($file);
+
+    $file->refresh();
+    expect($file->scan_status)->toBe(ScanStatus::NotScanned)
+        ->and($file->scan_note)->toBe(NotScannedReason::Unreadable->value)
+        // Never offered to the scanner: there was nothing to offer.
+        ->and($scanner->scans)->toBe(0);
+
+    Illuminate\Support\Facades\Queue::fake();
+    $this->artisan('projectsend:scan-files')->assertSuccessful();
+    Illuminate\Support\Facades\Queue::assertNothingPushed();
+});
+
+test('an unreadable file is blocked where this installation blocks what it cannot scan', function () {
+    app(App\Modules\Platform\Settings\Settings::class)->set(Setting::VirusUnscannablePolicy, 'block');
+    fakeScanner(ScanVerdict::clean());
+    $file = scannableFile();
+    Storage::disk('files')->delete($file->path);
+
+    runScan($file);
+
+    expect($file->refresh()->scan_status)->toBe(ScanStatus::UnscannableBlocked);
+});

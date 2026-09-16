@@ -160,11 +160,12 @@ class ScanFileJob implements ShouldQueue
         }
 
         if ($stream === null) {
-            // Not the scanner's fault and not a verdict about the file:
-            // treated as "could not be checked", so the installation's
-            // own policy decides, rather than calling a file nobody read
-            // clean.
-            return ScanVerdict::unavailable(__('The file could not be read from storage.'));
+            // Not the scanner's fault, and not something waiting will fix
+            // — an orphaned row, or storage that moved. It goes through
+            // the same policy as a file the scanner could not open, and
+            // deliberately not through the scanner-unavailable path,
+            // which is retried hourly and would retry this forever.
+            return ScanVerdict::unreadable(__('The file could not be read from storage.'));
         }
 
         try {

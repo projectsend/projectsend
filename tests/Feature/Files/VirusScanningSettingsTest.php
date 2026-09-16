@@ -318,3 +318,74 @@ test('a hosted installation cannot connect a scanner of its own, but keeps its p
     expect(app(Settings::class)->get(Setting::VirusScannerAddress))->toBe('')
         ->and(app(Settings::class)->get(Setting::VirusUnscannablePolicy))->toBe('block');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Watching a scan happen
+|--------------------------------------------------------------------------
+*/
+
+test('the activity endpoint says what is running and what was decided', function () {
+    $waiting = File::factory()->create(['scan_status' => ScanStatus::Pending]);
+    $done = File::factory()->create([
+        'name' => 'Contrato',
+        'scan_status' => ScanStatus::Infected,
+        'scan_note' => 'Eicar-Test-Signature',
+        'scanned_at' => now()->subMinute(),
+    ]);
+
+    $body = $this->actingAs($this->admin)->getJson('/system/settings/virus-scanning/activity')->assertOk()->json();
+
+    expect($body['running'])->toBeTrue()
+        ->and($body['waiting'])->toBe(1)
+        ->and($body['checked_last_hour'])->toBe(1)
+        ->and($body['quarantined'])->toBe(1)
+        ->and($body['recent'][0]['name'])->toBe('Contrato')
+        ->and($body['recent'][0]['note'])->toBe('Eicar-Test-Signature');
+
+    expect($waiting->fresh()->scan_status)->toBe(ScanStatus::Pending)
+        ->and($done->fresh()->scan_status)->toBe(ScanStatus::Infected);
+});
+
+test('with nothing waiting it reports the last run rather than nothing at all', function () {
+    File::factory()->create([
+        'scan_status' => ScanStatus::Clean,
+        'scanned_at' => now()->subDays(2),
+    ]);
+
+    $body = $this->actingAs($this->admin)->getJson('/system/settings/virus-scanning/activity')->assertOk()->json();
+
+    expect($body['running'])->toBeFalse()
+        ->and($body['last_scanned_at'])->not->toBeNull()
+        ->and($body['recent'])->toHaveCount(1);
+});
+
+test('a file that was never scanned reads as such rather than as a bare "not scanned"', function () {
+    File::factory()->create(['scan_status' => ScanStatus::NotScanned, 'scan_note' => null, 'scanned_at' => now()]);
+
+    $body = $this->actingAs($this->admin)->getJson('/system/settings/virus-scanning/activity')->assertOk()->json();
+
+    expect($body['recent'][0]['note'])->toContain('before virus scanning');
+});
+
+test('watching a scan needs the same permission as changing its settings', function () {
+    $staff = User::factory()->role(App\Modules\Identity\Permissions\SystemRole::Uploader)->create();
+
+    $this->actingAs($staff)->getJson('/system/settings/virus-scanning/activity')->assertForbidden();
+});
+
+test('a backfill counts as running even though it holds nothing back', function () {
+    // The case the first version of this screen got wrong: re-scanning
+    // files that already went out deliberately leaves them available, so
+    // nothing is "pending" and a screen watching only that said nothing
+    // was happening while the queue worked through a whole library.
+    Illuminate\Support\Facades\Queue::fake();
+
+    App\Modules\Files\Jobs\ScanFileJob::dispatch(1, true);
+
+    $body = $this->actingAs($this->admin)->getJson('/system/settings/virus-scanning/activity')->assertOk()->json();
+
+    expect($body['waiting'])->toBe(0)
+        ->and($body['queued'])->toBe(1)
+        ->and($body['running'])->toBeTrue();
+});

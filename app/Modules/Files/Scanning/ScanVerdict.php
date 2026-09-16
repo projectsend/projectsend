@@ -43,6 +43,12 @@ final class ScanVerdict
         return new self(ScanOutcome::Encrypted, null, $engine);
     }
 
+    /** The file could not be read, so nothing was scanned. */
+    public static function unreadable(string $reason): self
+    {
+        return new self(ScanOutcome::Unreadable, $reason);
+    }
+
     /** The scanner could not be reached, or did not answer in time. */
     public static function unavailable(string $reason): self
     {

@@ -1,5 +1,5 @@
-import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { type BreadcrumbItem, type SharedData } from '@/types';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { CheckCircle2, ShieldAlert, TriangleAlert } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -13,10 +13,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { VirusScanActivity } from '@/components/virus-scan-activity';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
 
-type Tab = 'scanner' | 'options';
+type Tab = 'scanner' | 'options' | 'activity';
 
 interface VirusScanningProps {
     tab: Tab;
@@ -53,6 +54,7 @@ export default function VirusScanningSettings({
     counts,
 }: VirusScanningProps) {
     const { t } = useTranslation();
+    const { auth } = usePage<SharedData>().props;
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: t('Settings'), href: '/system/settings' },
@@ -80,6 +82,7 @@ export default function VirusScanningSettings({
     const tabs: { key: Tab; label: string }[] = [
         { key: 'scanner', label: t('Scanner') },
         { key: 'options', label: t('Options') },
+        { key: 'activity', label: t('Activity') },
     ];
 
     return (
@@ -87,7 +90,24 @@ export default function VirusScanningSettings({
             <Head title={t('Virus scanning')} />
 
             <div className="space-y-6 px-4 py-6">
-                <Heading title={t('Virus scanning')} description={t('Uploaded files are checked before anyone can download them')} />
+                <div className="flex items-start justify-between">
+                    <Heading title={t('Virus scanning')} description={t('Uploaded files are checked before anyone can download them')} />
+
+                    {/* The screen this one leads to: whatever the scanner
+                        actually refused. Only for somebody who may act on
+                        it — the quarantine screen answers 403 otherwise,
+                        and a button that leads to a refusal is worse than
+                        no button. */}
+                    {auth.permissions.includes('release_quarantined_files') && (
+                        <Button variant="outline" asChild>
+                            <Link href={route('files.quarantine')}>
+                                {counts.quarantined > 0
+                                    ? t('Quarantine (:count)', { count: counts.quarantined })
+                                    : t('Quarantine')}
+                            </Link>
+                        </Button>
+                    )}
+                </div>
 
                 {counts.let_through > 0 && (
                     <Alert variant="destructive" className="max-w-xl">
@@ -105,7 +125,7 @@ export default function VirusScanningSettings({
                     {tabs.map(({ key, label }) => (
                         <Link
                             key={key}
-                            href={route('system-settings.virus-scanning.edit', key === 'options' ? { tab: 'options' } : {})}
+                            href={route('system-settings.virus-scanning.edit', key === 'scanner' ? {} : { tab: key })}
                             preserveScroll
                             className={`-mb-px border-b-2 px-3 py-2 text-sm ${
                                 tab === key ? 'border-primary text-foreground font-medium' : 'text-muted-foreground border-transparent'
@@ -314,6 +334,9 @@ export default function VirusScanningSettings({
                         </form>
                     </div>
                 )}
+                {/* Mounted only while the tab is open, which is also what
+                    starts and stops its polling. */}
+                {tab === 'activity' && <VirusScanActivity />}
             </div>
         </AppLayout>
     );

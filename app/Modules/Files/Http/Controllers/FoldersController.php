@@ -21,6 +21,7 @@ use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Versions\FileVersionLinks;
 use App\Modules\Groups\Models\Group;
+use App\Modules\Identity\Models\Role;
 use App\Support\ConcatenatedPagination;
 use App\Support\Pagination;
 use App\Support\PublicUrl;
@@ -84,6 +85,15 @@ class FoldersController extends Controller
             'search' => ['nullable', 'string', 'max:255'],
             'folder' => ['nullable', 'integer'],
             'category' => ['nullable', 'integer', 'exists:categories,id'],
+            'uploader' => ['nullable', 'integer', 'exists:users,id'],
+            'visibility' => ['nullable', 'in:public,private'],
+            'downloads' => ['nullable', 'in:none,any'],
+            'role' => ['nullable', 'integer', 'exists:roles,id'],
+            // "current" is every file nothing has replaced, which includes
+            // a file that was never versioned at all -- it is the current
+            // version of itself. "outdated" is the same word the version
+            // badge uses, so the filter and the row agree.
+            'version' => ['nullable', 'in:current,outdated'],
             // Not a 'boolean' rule: that only accepts true/false/0/1/'0'/'1',
             // rejecting the literal "true"/"" the frontend checkbox sends.
             // $request->boolean() below coerces any of those safely, so
@@ -92,12 +102,25 @@ class FoldersController extends Controller
         $search = trim($validated['search'] ?? '');
         $searching = $search !== '';
         $categoryId = $validated['category'] ?? null;
+        // Cast, because `integer` validates a numeric string without
+        // converting it -- so these arrive as "5" from the query string.
+        // permitsClientId() below takes a strict ?int and 500s on a string,
+        // and the props these become are typed `number | null` on the page.
+        $uploaderId = isset($validated['uploader']) ? (int) $validated['uploader'] : null;
+        $visibility = $validated['visibility'] ?? null;
+        $downloads = $validated['downloads'] ?? null;
+        $roleId = isset($validated['role']) ? (int) $validated['role'] : null;
+        $version = $validated['version'] ?? null;
         $expired = $request->boolean('expired');
 
-        // A search term, a category filter, or the expired-only filter all
-        // switch to a flat view across the whole visible library;
-        // otherwise it's folder browsing.
-        $flat = $searching || $categoryId !== null || $expired;
+        // A search term or any filter switches to a flat view across the
+        // whole visible library; otherwise it's folder browsing. Every
+        // filter here is a property of a *file*, so in flat mode the folder
+        // sequence stays empty unless there is a search term to match names
+        // against -- which is what the existing branch below already does.
+        $flat = $searching || $categoryId !== null || $expired
+            || $uploaderId !== null || $visibility !== null
+            || $downloads !== null || $roleId !== null || $version !== null;
 
         $folderQuery = $this->scope->folders($user)->withCount(['children', 'files']);
         // `downloads` unconditionally — the library has always shown a
@@ -120,6 +143,29 @@ class FoldersController extends Controller
                 ->when($categoryId !== null, fn (Builder $q) => $q
                     ->whereHas('categories', fn (Builder $c) => $c->where('categories.id', $categoryId)))
                 ->when($expired, fn (Builder $q) => $q->expired())
+                // The same guard /api/v1/files puts on `uploaded_by`, and it
+                // is needed for the same reason. A filter is a question, and
+                // this one asks "did user N put anything into my library".
+                // fileRow() already withholds an uploader's name from a
+                // viewer who may not identify them -- so answering this
+                // plainly would hand back, as a row count, precisely the
+                // identity the row itself is redacting. An id this caller
+                // may not identify matches nothing, which is
+                // indistinguishable from someone who has uploaded nothing.
+                ->when($uploaderId !== null && ! $this->identity->permitsClientId($user, $uploaderId),
+                    fn (Builder $q) => $q->whereRaw('1 = 0'))
+                ->when($uploaderId !== null, fn (Builder $q) => $q->where('uploaded_by', $uploaderId))
+                ->when($roleId !== null, fn (Builder $q) => $q
+                    ->whereHas('uploader', fn (Builder $u) => $u->where('role_id', $roleId)))
+                // has/doesn't-have rather than a comparison on the
+                // withCount alias: an aggregate cannot be filtered in a
+                // WHERE, and `downloads_count = 0` in a HAVING would be
+                // applied after the pagination slice above.
+                ->when($downloads === 'none', fn (Builder $q) => $q->whereDoesntHave('downloads'))
+                ->when($downloads === 'any', fn (Builder $q) => $q->whereHas('downloads'))
+                ->when($version === 'current', fn (Builder $q) => $q->whereDoesntHave('nextVersion'))
+                ->when($version === 'outdated', fn (Builder $q) => $q->whereHas('nextVersion'))
+                ->when($visibility !== null, fn (Builder $q) => $this->constrainVisibility($q, $visibility === 'public'))
                 ->orderBy('name');
         } else {
             $current = $request->integer('folder') > 0
@@ -162,6 +208,11 @@ class FoldersController extends Controller
                 'search' => $search !== '' ? $search : null,
                 'folder' => $current?->id,
                 'category' => $categoryId,
+                'uploader' => $uploaderId,
+                'visibility' => $visibility,
+                'downloads' => $downloads,
+                'role' => $roleId,
+                'version' => $version,
                 'expired' => $expired ? 'true' : null,
                 'page' => Pagination::redirectPage($sliced['paginator']),
             ]));
@@ -176,6 +227,15 @@ class FoldersController extends Controller
         // as the comment counts above.
         $versions = $this->versionLinks->forMany($fileRows, $user, fn (File $other): string => route('files.edit', $other, false));
 
+        // Two queries for the whole page, not one per row. `distinct` on an
+        // indexed foreign key rather than a join, because all this needs is
+        // the set of ids -- the names come back with the roles in one go.
+        $uploaders = User::query()
+            ->whereIn('id', $this->scope->files($user)->whereNotNull('uploaded_by')->distinct()->pluck('uploaded_by'))
+            ->with('role')
+            ->orderBy('name')
+            ->get(['id', 'name', 'role_id']);
+
         return Inertia::render('files/index', [
             'folder' => $current === null ? null : ['id' => $current->id, 'name' => $current->name],
             'breadcrumb' => $flat ? [] : $this->breadcrumbs->for($current),
@@ -185,6 +245,11 @@ class FoldersController extends Controller
             'search' => $search,
             'searching' => $flat,
             'category' => $categoryId,
+            'uploader' => $uploaderId,
+            'visibility' => $visibility,
+            'downloads' => $downloads,
+            'role' => $roleId,
+            'version' => $version,
             'expired' => $expired,
             'categories' => Category::query()->orderBy('name')->get(['id', 'name', 'color'])
                 ->map(fn (Category $category): array => ['id' => $category->id, 'name' => $category->name, 'color' => $category->color])->all(),
@@ -194,6 +259,18 @@ class FoldersController extends Controller
             // every folder name and id on the installation.
             'folder_options' => $this->scope->folders($user)->orderBy('path')->orderBy('name')->get()
                 ->map(fn (Folder $folder): array => ['id' => $folder->id, 'name' => $folder->name])->all(),
+            // Only people who actually uploaded something *this viewer can
+            // see*, and their roles taken from the same set. Narrowed for
+            // the reason folder_options directly above is: an unscoped list
+            // would hand a client-scoped staffer the name and id of every
+            // account on the installation, through a filter dropdown.
+            // Through filterClientPairs, so the dropdown never offers a name
+            // this viewer may not be told -- the same rule fileRow() applies
+            // to the uploader on each row, asked once for the whole list.
+            'uploader_options' => $this->identity->filterClientPairs($user, array_values($uploaders
+                ->map(fn (User $uploader): array => ['id' => $uploader->id, 'name' => $uploader->name])->all())),
+            'role_options' => $uploaders->pluck('role')->filter()->unique('id')->sortBy('name')->values()
+                ->map(fn (Role $role): array => ['id' => $role->id, 'name' => $role->name])->all(),
             'can_create_folders' => $user->can('create_own_folders'),
             'can_upload' => $user->can('upload'),
             'can_manage_public' => $user->can('upload_public'),
@@ -511,5 +588,43 @@ class FoldersController extends Controller
         }
 
         return $this->scope->folders($user)->findOrFail($parentId);
+    }
+
+    /**
+     * Narrow to files that are, or are not, publicly reachable.
+     *
+     * "Public" here means what the row's own badge means --
+     * File::isEffectivelyPublic(), the file's own flag *or* its folder
+     * sitting anywhere in a public folder's live subtree. Filtering on the
+     * `public` column alone would have hidden files the same screen visibly
+     * labels Public, which is a filter that argues with the list it filters.
+     *
+     * The folder half is resolved once into a list of ids rather than as a
+     * correlated subquery, because Folder::scopePubliclyVisible() already
+     * expresses the subtree rule (a LIKE per public folder) and is the only
+     * place that rule should live.
+     *
+     * @param  Builder<File>  $query
+     */
+    private function constrainVisibility(Builder $query, bool $public): void
+    {
+        $publicFolderIds = Folder::query()->publiclyVisible()->pluck('id')->all();
+
+        if ($public) {
+            $query->where(fn (Builder $w) => $w
+                ->where('public', true)
+                ->orWhereIn('folder_id', $publicFolderIds));
+
+            return;
+        }
+
+        // The null branch is not tidiness: `folder_id NOT IN (...)` is never
+        // true for a NULL folder_id, so a file at the library root would
+        // otherwise be neither public nor private and vanish from both
+        // halves of the filter. Proved by removing it -- the private half
+        // then returned nothing at all.
+        $query->where('public', false)->where(fn (Builder $w) => $w
+            ->whereNull('folder_id')
+            ->orWhereNotIn('folder_id', $publicFolderIds));
     }
 }

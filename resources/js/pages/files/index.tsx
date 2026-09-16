@@ -100,6 +100,13 @@ interface FilesIndexProps {
     searching: boolean;
     category: number | null;
     categories: CategoryTag[];
+    uploader: number | null;
+    visibility: 'public' | 'private' | null;
+    downloads: 'none' | 'any' | null;
+    role: number | null;
+    version: 'current' | 'outdated' | null;
+    uploader_options: Crumb[];
+    role_options: Crumb[];
     expired: boolean;
     can_create_folders: boolean;
     can_upload: boolean;
@@ -118,6 +125,13 @@ export default function FilesIndex({
     searching,
     category,
     categories,
+    uploader,
+    visibility,
+    downloads,
+    role,
+    version,
+    uploader_options,
+    role_options,
     expired,
     can_create_folders,
     can_upload,
@@ -145,7 +159,7 @@ export default function FilesIndex({
     useEffect(() => {
         setSelectedFileIds(new Set());
         setSelectedFolderIds(new Set());
-    }, [folder?.id, search, category, expired, pagination.page]);
+    }, [folder?.id, search, category, uploader, visibility, downloads, role, version, expired, pagination.page]);
 
     const toggleFile = (id: number) =>
         setSelectedFileIds((current) => {
@@ -178,8 +192,17 @@ export default function FilesIndex({
     // dropping the current folder context.
     const { values, set, reset, hasFilters } = useListQuery(
         'files.index',
-        { search, category: category === null ? ALL : String(category), expired: expired ? 'true' : '' },
-        { search: '', category: ALL, expired: '' },
+        {
+            search,
+            category: category === null ? ALL : String(category),
+            uploader: uploader === null ? ALL : String(uploader),
+            visibility: visibility ?? ALL,
+            downloads: downloads ?? ALL,
+            role: role === null ? ALL : String(role),
+            version: version ?? ALL,
+            expired: expired ? 'true' : '',
+        },
+        { search: '', category: ALL, uploader: ALL, visibility: ALL, downloads: ALL, role: ALL, version: ALL, expired: '' },
     );
 
     // A small drag threshold so clicking action buttons never starts a drag.
@@ -404,6 +427,76 @@ export default function FilesIndex({
                             </Select>
                         </FilterField>
                     )}
+                    {uploader_options.length > 0 && (
+                        <FilterField label={t('Uploaded by')} htmlFor="files-uploader">
+                            <Select value={values.uploader} onValueChange={(v) => set('uploader', v)}>
+                                <SelectTrigger id="files-uploader" className="w-48">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value={ALL}>{t('All users')}</SelectItem>
+                                    {uploader_options.map((u) => (
+                                        <SelectItem key={u.id} value={String(u.id)}>
+                                            {u.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </FilterField>
+                    )}
+                    {role_options.length > 0 && (
+                        <FilterField label={t('Uploader role')} htmlFor="files-role">
+                            <Select value={values.role} onValueChange={(v) => set('role', v)}>
+                                <SelectTrigger id="files-role" className="w-48">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value={ALL}>{t('All roles')}</SelectItem>
+                                    {role_options.map((r) => (
+                                        <SelectItem key={r.id} value={String(r.id)}>
+                                            {r.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </FilterField>
+                    )}
+                    <FilterField label={t('Visibility')} htmlFor="files-visibility">
+                        <Select value={values.visibility} onValueChange={(v) => set('visibility', v)}>
+                            <SelectTrigger id="files-visibility" className="w-40">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={ALL}>{t('All files')}</SelectItem>
+                                <SelectItem value="public">{t('Public')}</SelectItem>
+                                <SelectItem value="private">{t('Private')}</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </FilterField>
+                    <FilterField label={t('Downloads')} htmlFor="files-downloads">
+                        <Select value={values.downloads} onValueChange={(v) => set('downloads', v)}>
+                            <SelectTrigger id="files-downloads" className="w-48">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={ALL}>{t('Any number of downloads')}</SelectItem>
+                                <SelectItem value="none">{t('Never downloaded')}</SelectItem>
+                                <SelectItem value="any">{t('Downloaded at least once')}</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </FilterField>
+                    <FilterField label={t('Version')} htmlFor="files-version">
+                        <Select value={values.version} onValueChange={(v) => set('version', v)}>
+                            <SelectTrigger id="files-version" className="w-44">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={ALL}>{t('All versions')}</SelectItem>
+                                <SelectItem value="current">{t('Current version')}</SelectItem>
+                                <SelectItem value="outdated">{t('Outdated')}</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </FilterField>
                     <FilterField label={t('Expired')} htmlFor="files-expired">
                         <div className="flex h-9 items-center gap-2">
                             <Checkbox

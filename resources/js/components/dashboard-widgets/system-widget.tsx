@@ -1,6 +1,6 @@
 import { type SharedData } from '@/types';
-import { usePage } from '@inertiajs/react';
-import { AlertTriangle, ArrowUpCircle, HardDrive } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import { AlertTriangle, ArrowUpCircle, HardDrive, ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -33,6 +33,20 @@ export interface SystemInfo {
     install_kind: InstallKind;
     /** How downloads leave the server — see FileDeliveryDialog. */
     file_delivery: FileDelivery;
+    /**
+     * Only ever present when something is wrong with virus scanning, and
+     * null when scanning is off. A scanner that has stopped answering
+     * looks, from every other screen, exactly like one that is working:
+     * uploads keep arriving and downloads keep working, because that is
+     * the configured behaviour. This is where that gets said out loud.
+     */
+    scanning: {
+        reachable: boolean;
+        engine: string | null;
+        definitions_age_hours: number | null;
+        let_through_24h: number;
+        pending: number;
+    } | null;
 }
 
 /**
@@ -115,6 +129,37 @@ export function SystemWidget({ system, onViewReleaseNotes }: { system: SystemInf
             {/* Before the update notice on purpose: losing the files outranks
                 being a version behind. */}
             {durability && <StorageDurabilityNotice durability={durability} />}
+            {system.scanning && (
+                <Alert variant="warning" className="mb-3">
+                    <ShieldAlert className="size-4" />
+                    <AlertTitle>
+                        {system.scanning.reachable ? t('Files are going out unscanned') : t('The virus scanner is not answering')}
+                    </AlertTitle>
+                    <AlertDescription>
+                        <ul className="list-inside list-disc">
+                            {!system.scanning.reachable && <li>{t('Uploads cannot be checked until it is back.')}</li>}
+                            {system.scanning.let_through_24h > 0 && (
+                                <li>
+                                    {t(':count files were allowed through without being scanned in the last 24 hours.', {
+                                        count: system.scanning.let_through_24h,
+                                    })}
+                                </li>
+                            )}
+                            {system.scanning.pending > 0 && (
+                                <li>{t(':count files have been waiting to be checked for over an hour.', { count: system.scanning.pending })}</li>
+                            )}
+                            {system.scanning.definitions_age_hours !== null && system.scanning.definitions_age_hours >= 72 && (
+                                <li>
+                                    {t('The virus definitions are :hours hours old.', { hours: system.scanning.definitions_age_hours })}
+                                </li>
+                            )}
+                        </ul>
+                        <Link href="/system/settings/virus-scanning" className="mt-1 inline-block underline hover:no-underline">
+                            {t('Virus scanning settings')}
+                        </Link>
+                    </AlertDescription>
+                </Alert>
+            )}
             {system.update_available && (
                 <Alert variant="warning" className="mb-3">
                     <ArrowUpCircle className="size-4" />

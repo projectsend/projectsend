@@ -17,6 +17,9 @@ use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Delivery\FileDelivery;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Scanning\ScanningConfig;
+use App\Modules\Files\Scanning\ScanStatus;
+use App\Modules\Files\Scanning\VirusScanner;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Identity\UserType;
 use App\Modules\Platform\Capabilities\Capability;
@@ -480,7 +483,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * @return array<string, array<string, bool|string|null>|bool|int|string|null>
+     * @return array<string, array<string, bool|int|string|null>|bool|int|string|null>
      */
     private function systemInfo(): array
     {
@@ -511,6 +514,60 @@ class DashboardController extends Controller
             // able to confirm at a glance, not only worth warning about
             // when it is false — the same reasoning as storage_durability.
             'file_delivery' => $this->fileDelivery->describe(),
+            // Null when scanning is off, so the card says nothing about a
+            // feature this installation does not use. When it is on, this
+            // is the only place an administrator finds out that the
+            // scanner stopped answering — every other screen looks exactly
+            // as it did, because files keep flowing by design.
+            'scanning' => $this->scanningWarning(),
+        ];
+    }
+
+    /**
+     * What is wrong with virus scanning right now, or null.
+     *
+     * Deliberately only the bad news. The settings screen reports the
+     * healthy state; the dashboard exists here to interrupt somebody who
+     * was not looking for it.
+     *
+     * @return array{reachable: bool, engine: string|null, definitions_age_hours: int|null, let_through_24h: int, pending: int}|null
+     */
+    private function scanningWarning(): ?array
+    {
+        $config = app(ScanningConfig::class);
+
+        if (! $config->enabled()) {
+            return null;
+        }
+
+        $scanner = app(VirusScanner::class)->status();
+
+        $letThrough = ActivityLog::query()
+            ->where('action', Action::FileNotScanned)
+            ->where('created_at', '>=', now()->subDay())
+            ->count();
+
+        $pending = File::query()
+            ->where('scan_status', ScanStatus::Pending)
+            ->where('created_at', '<=', now()->subHour())
+            ->count();
+
+        $stale = $scanner->definitionsAgeHours();
+
+        // Nothing to say when the scanner is there, current, and nothing
+        // has gone out unchecked.
+        if ($scanner->reachable && $letThrough === 0 && $pending === 0 && ($stale === null || $stale < 72)) {
+            return null;
+        }
+
+        return [
+            'reachable' => $scanner->reachable,
+            'engine' => $scanner->engine,
+            'definitions_age_hours' => $stale,
+            'let_through_24h' => $letThrough,
+            // Files that have been waiting more than an hour: on an
+            // installation set to hold, this is what an outage looks like.
+            'pending' => $pending,
         ];
     }
 

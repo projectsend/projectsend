@@ -8,6 +8,9 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Scanning\ScanningConfig;
+use App\Modules\Files\Scanning\ScanStatus;
+use App\Modules\Files\Scanning\VirusScanner;
 use App\Modules\Identity\TwoFactor\TwoFactorEnforcement;
 use App\Modules\Identity\UserType;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
@@ -269,6 +272,7 @@ class StatusCommand extends Command
             ],
             'storage' => $this->storage(),
             'usage' => $this->usage(),
+            'scanning' => $this->scanning(),
             'health' => $this->health(),
             'settings' => [
                 // Echoed back rather than assumed: an operator writes the
@@ -333,6 +337,7 @@ class StatusCommand extends Command
         $this->line('Health:       '.$status['health']['pending_migrations'].' migrations pending, '
             .$status['health']['failed_jobs'].' failed jobs, '
             .array_sum(array_filter($status['health']['queues'], 'is_int')).' queued');
+        $this->line('Scanning:     '.$this->scanningSummary($status['scanning']));
         $this->line('Scheduler:    '.($status['health']['scheduler']['last_run_at'] ?? 'never run')
             .' ('.$status['health']['scheduler']['failing'].' failing)');
         $this->line('Last '.self::USAGE_WINDOW_DAYS.'d:     '
@@ -392,6 +397,82 @@ class StatusCommand extends Command
     /**
      * @return array{pending_migrations: int, failed_jobs: int, failed_jobs_latest_at: string|null, queues: array<string, int|null>, scheduler: array{last_run_at: string|null, failing: int}}
      */
+    /**
+     * Whether this installation is actually checking what it accepts.
+     *
+     * The block exists because the honest answer to "are you protected?"
+     * is not a boolean. Scanning can be on, the scanner unreachable, and
+     * every upload sailing through marked "not scanned" — which is the
+     * configured behaviour and looks, from every screen a customer sees,
+     * exactly like a working installation. `let_through_24h` is the
+     * number that gives that away, and `reachable` is measured now rather
+     * than remembered.
+     *
+     * Absent, null and zero stay distinct here as everywhere else in this
+     * document: `enabled: false` is a decision, `reachable: null` is
+     * "nothing to reach because it is off", and `reachable: false` is a
+     * scanner that should be answering and is not.
+     *
+     * @return array<string, mixed>
+     */
+    private function scanning(): array
+    {
+        $config = app(ScanningConfig::class);
+
+        if (! $config->enabled()) {
+            return [
+                'enabled' => false,
+                'managed' => $config->isManaged(),
+                'reachable' => null,
+                'engine' => null,
+                'definitions_age_hours' => null,
+                'pending' => 0,
+                'quarantined' => 0,
+                'let_through_24h' => 0,
+            ];
+        }
+
+        $scanner = app(VirusScanner::class)->status();
+
+        return [
+            'enabled' => true,
+            'managed' => $config->isManaged(),
+            'reachable' => $scanner->reachable,
+            'engine' => $scanner->engine,
+            'definitions_age_hours' => $scanner->definitionsAgeHours(),
+            'pending' => File::query()->where('scan_status', ScanStatus::Pending)->count(),
+            'quarantined' => File::query()->whereIn('scan_status', [
+                ScanStatus::Infected->value,
+                ScanStatus::UnscannableBlocked->value,
+            ])->count(),
+            // Files that went out unchecked in the last day. Zero is the
+            // only number that means "protected"; anything else is a
+            // scanner that was down, or files nobody could open.
+            'let_through_24h' => ActivityLog::query()
+                ->where('action', Action::FileNotScanned)
+                ->where('created_at', '>=', now()->subDay())
+                ->count(),
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $scanning
+     */
+    private function scanningSummary(array $scanning): string
+    {
+        if ($scanning['enabled'] !== true) {
+            return 'off';
+        }
+
+        $reachable = $scanning['reachable'] === true ? 'reachable' : 'UNREACHABLE';
+
+        return "{$reachable}, {$scanning['pending']} waiting, {$scanning['quarantined']} quarantined, "
+            ."{$scanning['let_through_24h']} let through in 24h";
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
     private function health(): array
     {
         return [
@@ -405,6 +486,7 @@ class StatusCommand extends Command
             'queues' => [
                 'default' => $this->queueDepth('default'),
                 'zips' => $this->queueDepth('zips'),
+                'scans' => $this->queueDepth('scans'),
             ],
             'scheduler' => $this->scheduler(),
         ];

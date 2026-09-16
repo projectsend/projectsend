@@ -116,7 +116,26 @@ services:
     volumes:
       - redis-data:/data
 
+  # Virus scanning, off unless you ask for it:
+  #   docker compose --profile scanner up -d
+  # then point Settings → Virus scanning at tcp://clamav:3310.
+  #
+  # Budget about 1-1.5 GB of memory: the virus definitions are held in
+  # memory. The first start downloads them and does not answer until it
+  # has, which the Test button on that screen reports plainly.
+  clamav:
+    image: clamav/clamav:stable
+    restart: unless-stopped
+    # Deliberately no ports. clamd has no authentication and no
+    # encryption, so anything that can reach it can use it, and files
+    # cross that connection in the clear.
+    volumes:
+      - clamav-data:/var/lib/clamav
+    profiles:
+      - scanner
+
 volumes:
   storage:
   db-data:
   redis-data:
+  clamav-data:

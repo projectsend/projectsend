@@ -23,6 +23,13 @@ beforeEach(function () {
     app(Settings::class)->set(Setting::VirusScannerDownPolicy, 'allow');
 
     config()->set('projectsend.scanning.address', null);
+
+    // The dashboard test below lands on the greeting instead of the
+    // dashboard otherwise — and settings survive RefreshDatabase's
+    // rollback in the cache, so both markers are stated rather than
+    // assumed.
+    app(Settings::class)->set(Setting::GettingStartedPending, false);
+    app(Settings::class)->set(Setting::UpdateWelcomeTo, '');
 });
 
 test('the screen shows what is configured and what is outstanding', function () {
@@ -142,4 +149,68 @@ test('only somebody who can edit settings may test or save', function () {
 
     $this->actingAs($staff)->get('/system/settings/virus-scanning')->assertForbidden();
     $this->actingAs($staff)->post('/system/settings/virus-scanning/test')->assertForbidden();
+});
+
+/*
+|--------------------------------------------------------------------------
+| Saying so where nobody is looking
+|--------------------------------------------------------------------------
+*/
+
+/** The scanning block of the status document, as the fleet probe reads it. */
+function scanningStatus(): array
+{
+    Illuminate\Support\Facades\Artisan::call('projectsend:status', ['--json' => true]);
+
+    /** @var array<string, mixed> $document */
+    $document = json_decode(Illuminate\Support\Facades\Artisan::output(), true);
+
+    return $document['scanning'];
+}
+
+test('the status command reports scanning as off when it is off', function () {
+    $this->artisan('projectsend:status')->assertSuccessful();
+
+    // statusJson() lives in StatusCommandTest — Pest loads every test
+    // file into one process, so a second copy here would be a redeclare.
+    $status = scanningStatus();
+
+    expect($status['enabled'])->toBeFalse()
+        // Null, not false: there is nothing to reach. A watcher must be
+        // able to tell that from a scanner that should answer and does not.
+        ->and($status['reachable'])->toBeNull();
+});
+
+test('the status command reports an unreachable scanner and what got through', function () {
+    app(Settings::class)->set(Setting::VirusScanningEnabled, true);
+    app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://nowhere.test:3310');
+    app()->instance(VirusScanner::class, (new FakeVirusScanner)->reports(ScannerStatus::unreachable('no answer')));
+
+    app(App\Modules\Audit\ActivityLogger::class)->logSystem(App\Modules\Audit\Action::FileNotScanned, [
+        'id' => 1, 'name' => 'x', 'reason' => 'scanner_unavailable',
+    ]);
+
+    // statusJson() lives in StatusCommandTest — Pest loads every test
+    // file into one process, so a second copy here would be a redeclare.
+    $status = scanningStatus();
+
+    expect($status['enabled'])->toBeTrue()
+        ->and($status['reachable'])->toBeFalse()
+        ->and($status['let_through_24h'])->toBe(1);
+});
+
+test('the dashboard says nothing while scanning is healthy, and speaks up when it is not', function () {
+    app(Settings::class)->set(Setting::VirusScanningEnabled, true);
+    app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://scanner.test:3310');
+    app()->instance(VirusScanner::class, new FakeVirusScanner);
+
+    $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('system.scanning', null),
+    );
+
+    app()->instance(VirusScanner::class, (new FakeVirusScanner)->reports(ScannerStatus::unreachable('no answer')));
+
+    $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('system.scanning.reachable', false),
+    );
 });

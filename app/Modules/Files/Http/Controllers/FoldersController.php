@@ -108,7 +108,18 @@ class FoldersController extends Controller
         // something on this install is actually limited.
         $fileQuery = $this->allowance->withOwnCount(
             $this->scope->files($user)->with('uploader.role', 'categories', 'folder')
-                ->withCount(['assignments', 'downloads']),
+                ->withCount(['assignments', 'downloads'])
+                // A file the scanner refused, or one whose bytes are gone,
+                // is not a file anybody can work with: every button on its
+                // row leads somewhere that refuses, and the download leads
+                // to an error page. They are listed on the two screens
+                // that exist to act on them — Quarantine, and Files
+                // missing from storage — and left out here.
+                ->whereNotIn('scan_status', [
+                    ScanStatus::Infected->value,
+                    ScanStatus::UnscannableBlocked->value,
+                    ScanStatus::Missing->value,
+                ]),
             $user,
         );
 

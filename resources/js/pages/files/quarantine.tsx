@@ -148,7 +148,13 @@ export default function Quarantine({ files, pagination }: QuarantineProps) {
                     {files.map((file) => (
                         <tr key={file.id} className="border-b last:border-0">
                             <td className="px-4 py-2.5">
-                                <div className="font-medium">{file.name}</div>
+                                {/* The file itself, for somebody deciding
+                                    whether the scanner is right: who it was
+                                    shared with, where it came from. It is no
+                                    longer listed in the library. */}
+                                <Link href={route('files.edit', file.id)} className="font-medium hover:underline">
+                                    {file.name}
+                                </Link>
                                 <div className="text-muted-foreground text-xs">
                                     {file.original_name} · {formatBytes(file.size)}
                                 </div>

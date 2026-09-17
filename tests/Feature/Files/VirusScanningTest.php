@@ -577,3 +577,47 @@ test('a rescan leaves a file that is waiting for its first verdict alone', funct
     expect($scanner->scans)->toBe(0)
         ->and($file->refresh()->scan_status)->toBe(ScanStatus::Pending);
 });
+
+test('the library does not list a file nobody can use', function () {
+    // Every button on such a row leads somewhere that refuses, and the
+    // download leads to an error page. They live on the two screens that
+    // exist to act on them.
+    $clean = scannableFile(['uploaded_by' => $this->admin->id, 'name' => 'Usable', 'scan_status' => ScanStatus::Clean]);
+    $quarantined = scannableFile(['uploaded_by' => $this->admin->id, 'name' => 'Infectado', 'scan_status' => ScanStatus::Infected, 'scan_note' => 'X']);
+    $gone = scannableFile(['uploaded_by' => $this->admin->id, 'name' => 'Sin bytes', 'scan_status' => ScanStatus::Missing]);
+    $waiting = scannableFile(['uploaded_by' => $this->admin->id, 'name' => 'Esperando', 'scan_status' => ScanStatus::Pending]);
+
+    $names = collect($this->actingAs($this->admin)->get('/files')->viewData('page')['props']['files'])->pluck('name');
+
+    expect($names)->toContain('Usable')
+        // Still listed: it is about to be usable, and its uploader should
+        // see where it went.
+        ->toContain('Esperando')
+        ->not->toContain('Infectado')
+        ->not->toContain('Sin bytes');
+
+    expect([$clean->id, $quarantined->id, $gone->id, $waiting->id])->toHaveCount(4);
+});
+
+test('the file editor says why a quarantined file refuses everything', function () {
+    $file = scannableFile(['uploaded_by' => $this->admin->id, 'scan_status' => ScanStatus::Infected, 'scan_note' => 'Eicar-Test-Signature']);
+
+    $this->actingAs($this->admin)->get("/files/{$file->id}")->assertInertia(
+        fn (Inertia\Testing\AssertableInertia $page) => $page
+            ->where('file.scan_status', 'infected')
+            ->where('file.scan_note', 'Eicar-Test-Signature'),
+    );
+});
+
+test('the editor offers no download for a file it cannot produce', function () {
+    $quarantined = scannableFile(['uploaded_by' => $this->admin->id, 'scan_status' => ScanStatus::Infected, 'scan_note' => 'X']);
+    $clean = scannableFile(['uploaded_by' => $this->admin->id, 'scan_status' => ScanStatus::Clean]);
+
+    $this->actingAs($this->admin)->get("/files/{$quarantined->id}")->assertInertia(
+        fn (Inertia\Testing\AssertableInertia $page) => $page->where('file.scan_available', false),
+    );
+
+    $this->actingAs($this->admin)->get("/files/{$clean->id}")->assertInertia(
+        fn (Inertia\Testing\AssertableInertia $page) => $page->where('file.scan_available', true),
+    );
+});

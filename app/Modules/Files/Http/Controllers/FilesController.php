@@ -177,6 +177,18 @@ class FilesController extends Controller
                 // 12th reopens showing the 11th.
                 'expires_at' => $this->expiry->asShown($file, $request->user()),
                 'expired' => $file->isExpired(),
+                // Said on the one screen that still shows a quarantined or
+                // missing file, since the library no longer lists it: a
+                // staff member who followed a link from Quarantine should
+                // not have to work out why the download refuses.
+                'scan_status' => $file->scan_status->value,
+                'scan_note' => $file->scan_note,
+                // Decided here rather than by the page comparing six
+                // states: whether there are bytes to hand over at all.
+                // Every button that would produce them is hidden when
+                // there are not — a download that answers 423 is not an
+                // affordance, it is a trap.
+                'scan_available' => $file->scan_status->isAvailable(),
                 'download_limit' => $file->download_limit,
                 'download_limit_scope' => ($file->download_limit_scope ?? DownloadLimitScope::Total)->value,
                 // The file's total downloads, so the editor can see what

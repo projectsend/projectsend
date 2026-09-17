@@ -1,10 +1,11 @@
 import { type BreadcrumbItem } from '@/types';
-import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { Check, Copy, Download, Eye, File as FileIcon, Loader2, X } from 'lucide-react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { Check, Copy, Download, Eye, File as FileIcon, Loader2, ShieldAlert, X } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
 
 import { CommentThread } from '@/components/comments/comment-thread';
 import { ConfirmDialog } from '@/components/confirm-dialog';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { FilePreviewDialog } from '@/components/file-preview-dialog';
 import { FileVersionField, type ChainEntry, type VersionLink } from '@/components/files/file-version-field';
 import { InheritedSharingNotice, type SharingRoot } from '@/components/files/inherited-sharing-notice';
@@ -93,6 +94,11 @@ interface FilesEditProps {
         slug: string;
         expires_at: string | null;
         expired: boolean;
+    /** What the virus scanner made of it — see the notice at the top of this page. */
+    scan_status?: string;
+    scan_note?: string | null;
+    /** Whether there are bytes to hand over: false hides everything that would ask for them. */
+    scan_available?: boolean;
         download_limit: number | null;
         download_limit_scope: string | null;
         downloads_used: number;
@@ -304,9 +310,41 @@ export default function FilesEdit({
             <Head title={file.name} />
 
             <div className="px-4 py-6">
+                {/* The library no longer lists a quarantined or missing
+                    file, so this is where somebody arrives from Quarantine
+                    or from Files missing from storage — and the page is
+                    full of buttons that will refuse. Say why, once, at the
+                    top. */}
+                {(file.scan_status === 'infected' || file.scan_status === 'unscannable_blocked') && (
+                    <Alert variant="destructive" className="mb-4">
+                        <ShieldAlert className="size-4" />
+                        <AlertTitle>{t('This file is in quarantine')}</AlertTitle>
+                        <AlertDescription>
+                            {t('The virus scanner reported: :threat. Nobody can download it, and it is not listed in the library.', {
+                                threat: file.scan_note ?? t('a threat'),
+                            })}
+                            <Link href="/files/quarantine" className="mt-1 inline-block underline hover:no-underline">
+                                {t('Quarantine')}
+                            </Link>
+                        </AlertDescription>
+                    </Alert>
+                )}
+                {file.scan_status === 'missing' && (
+                    <Alert variant="warning" className="mb-4">
+                        <ShieldAlert className="size-4" />
+                        <AlertTitle>{t('This file is missing from storage')}</AlertTitle>
+                        <AlertDescription>
+                            {t('The record is here and the file itself is not, so nothing can be downloaded. It is not listed in the library.')}
+                            <Link href="/files/orphans?tab=missing" className="mt-1 inline-block underline hover:no-underline">
+                                {t('Files missing from storage')}
+                            </Link>
+                        </AlertDescription>
+                    </Alert>
+                )}
+
                 <div className="flex items-start justify-between">
                     <div className="flex items-start gap-4">
-                        {isPreviewable(file.mime_type) && (
+                        {file.scan_available !== false && isPreviewable(file.mime_type) && (
                             <FilePreviewDialog
                                 previewUrl={route('files.preview', file.id)}
                                 mimeType={file.mime_type}
@@ -335,12 +373,17 @@ export default function FilesEdit({
                         />
                     </div>
                     <div className="flex gap-2">
-                        <Button variant="outline" asChild>
-                            <a href={route('files.download', file.id)}>
-                                <Download className="size-4" />
-                                {t('Download')}
-                            </a>
-                        </Button>
+                        {/* Offered only when there are bytes to hand over.
+                            The notice above says why, so a missing button
+                            is not a mystery. */}
+                        {file.scan_available !== false && (
+                            <Button variant="outline" asChild>
+                                <a href={route('files.download', file.id)}>
+                                    <Download className="size-4" />
+                                    {t('Download')}
+                                </a>
+                            </Button>
+                        )}
                         {can_delete && (
                             <ConfirmDialog
                                 trigger={

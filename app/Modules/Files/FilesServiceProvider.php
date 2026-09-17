@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Modules\Files;
 
 use App\Modules\Files\Access\ClientIdentityScope;
+use App\Models\User;
 use App\Modules\Files\Events\FileBecameAvailable;
+use App\Modules\Files\Folders\ClientHomeFolders;
 use App\Modules\Files\Events\FileWasStored;
 use App\Modules\Files\Listeners\AnnounceAvailableFile;
 use App\Modules\Files\Access\StaffLibraryScope;
@@ -61,6 +63,8 @@ class FilesServiceProvider extends ServiceProvider
     {
         Gate::policy(File::class, FilePolicy::class);
         Gate::policy(Folder::class, FolderPolicy::class);
+
+        $this->keepClientHomeFolders();
 
         // Cached renditions are written once and never revisited, so
         // whoever changes how they render has to say so — otherwise the
@@ -165,5 +169,44 @@ class FilesServiceProvider extends ServiceProvider
                 Console\CheckFileVersionsCommand::class,
             ]);
         }
+    }
+
+    /**
+     * Give a new client their home folder, and keep its name in step.
+     *
+     * On model events rather than in the handful of services that create
+     * and rename clients, because there are more of those than anyone
+     * remembers: ClientAccounts for the staff screens, the API and the
+     * control plane; ClientProvisioning for self-registration, LDAP,
+     * social sign-in and invitation redemption; the profile screen and two
+     * update endpoints for a rename; AccountConversion for a staff member
+     * becoming a client. A rule that had to be repeated in nine places
+     * would be missing from the tenth.
+     *
+     * Here rather than in User::booted() so the identity model does not
+     * have to know the files module exists -- the dependency points one
+     * way, and this is the end that cares.
+     *
+     * Both listeners are cheap when the feature is off: `created` asks the
+     * setting and returns, and `updated` asks whether the name actually
+     * changed before it asks anything else.
+     */
+    private function keepClientHomeFolders(): void
+    {
+        User::created(function (User $user): void {
+            if ($user->isClient()) {
+                $this->app->make(ClientHomeFolders::class)->ensureFor($user);
+            }
+        });
+
+        User::updated(function (User $user): void {
+            // wasChanged, not isDirty: by `updated` the write has happened
+            // and isDirty is empty. A save that did not touch the name --
+            // which is most of them, every sign-in timestamp included --
+            // costs one array lookup and stops here.
+            if ($user->isClient() && $user->wasChanged('name')) {
+                $this->app->make(ClientHomeFolders::class)->syncName($user);
+            }
+        });
     }
 }

@@ -180,6 +180,11 @@ Route::middleware('auth')->group(function () {
         Route::patch('system/settings/security', [SecuritySettingsController::class, 'update'])->name('system-settings.security.update');
         Route::get('system/settings/clients', [ClientSettingsController::class, 'edit'])->name('system-settings.clients.edit');
         Route::patch('system/settings/clients', [ClientSettingsController::class, 'update'])->name('system-settings.clients.update');
+        // A POST rather than part of the PATCH above: it writes a folder per
+        // client, which is not something saving a preferences form should do
+        // as a side effect. See ClientSettingsController::backfillHomeFolders.
+        Route::post('system/settings/clients/home-folders', [ClientSettingsController::class, 'backfillHomeFolders'])
+            ->name('system-settings.clients.home-folders');
         Route::get('system/settings/uploads', [UploadSettingsController::class, 'edit'])->name('system-settings.uploads.edit');
         Route::patch('system/settings/uploads', [UploadSettingsController::class, 'update'])->name('system-settings.uploads.update');
         Route::get('system/settings/downloads', [DownloadSettingsController::class, 'edit'])->name('system-settings.downloads.edit');

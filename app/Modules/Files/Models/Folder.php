@@ -112,6 +112,12 @@ class Folder extends Model
         return $this->created_by === $user->id;
     }
 
+    /** Whether this folder stands in as some client's root. */
+    public function isHome(): bool
+    {
+        return $this->home_for_user_id !== null;
+    }
+
     /**
      * Self or any ancestor is public — the inheritance every file in this
      * folder's subtree relies on (File::isEffectivelyPublic()), and what

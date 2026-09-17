@@ -44,6 +44,22 @@ enum Setting: string
     // PreviewKind and FileThumbnailController::preview.
     case ClientsCanPreviewFiles = 'clients_can_preview_files';
 
+    // Give every new client a folder of their own, named after them, and
+    // treat it as their root: their uploads and the folders they create
+    // land inside it instead of at the top of the library. What the
+    // administrator gets out of it is a /files that reads as one folder
+    // per client rather than a flat pile.
+    //
+    // It is NOT a boundary. A folder staff share with a client is still
+    // theirs to see, alongside their own -- making the home a jail would
+    // silently break every share that already exists. See ClientHomeFolders.
+    //
+    // Off by default, and turning it on changes nothing that already
+    // exists: existing clients get a home only when an administrator asks
+    // for one, with the button beside the switch. A setting that quietly
+    // reorganised a library on save would be one nobody could try.
+    case ClientsHomeFolders = 'clients_home_folders';
+
     // Maximum upload size in MB (0 = unlimited).
     case MaxFileSizeMb = 'max_file_size_mb';
 
@@ -402,6 +418,7 @@ enum Setting: string
 
             self::ClientsCanRegister,
             self::ClientsAutoApprove,
+            self::ClientsHomeFolders,
             self::EmailNotificationsEnabled,
             self::DiscourageSearchIndexing,
             self::PublicListingEnabled,
@@ -481,6 +498,10 @@ enum Setting: string
             // configuration names one — see ScanningConfig.
             self::VirusScanningEnabled,
             self::OrphanFilesAutoDeleteEnabled => false,
+            // Off, because switching it on is a change to how a library is
+            // laid out and that should be somebody's decision rather than
+            // something an upgrade did to them overnight.
+            self::ClientsHomeFolders => false,
 
             self::CheckForUpdates,
             self::FetchNews,

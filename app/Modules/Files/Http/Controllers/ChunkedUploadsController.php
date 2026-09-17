@@ -10,6 +10,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Folders\ClientHomeFolders;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Notifications\AdminClientUploadedNotification;
 use App\Modules\Files\Uploads\LocalPartStore;
@@ -57,6 +58,7 @@ class ChunkedUploadsController extends Controller
         private readonly Notifier $notifier,
         private readonly PermissionChecker $permissions,
         private readonly ActivityLogger $activity,
+        private readonly ClientHomeFolders $homeFolders,
         private readonly FileVersions $versions,
     ) {}
 
@@ -90,6 +92,19 @@ class ChunkedUploadsController extends Controller
         assert($user !== null);
 
         $folder = isset($validated['folder_id']) ? Folder::query()->whereKey($validated['folder_id'])->first() : null;
+
+        // A client uploading without naming a folder lands in their own,
+        // where this installation gives them one. That is what makes the
+        // home a root rather than just another folder: nothing in the
+        // portal has to be told about it for their files to end up there.
+        //
+        // Only when no folder was named. A client who picked a destination
+        // picked it, and uploadableBy() below is still what decides whether
+        // they may -- this chooses a default, it never grants anything.
+        if ($folder === null) {
+            $folder = $this->homeFolders->for($user);
+        }
+
         abort_unless(Folder::uploadableBy($user, $folder), 403);
 
         // One session per file, and a person uploads a handful at a time.

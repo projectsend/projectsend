@@ -17,6 +17,7 @@ use App\Modules\Files\DownloadLimitScope;
 use App\Modules\Files\Editing\ApplyFileEdits;
 use App\Modules\Files\Editing\FileExpiry;
 use App\Modules\Files\Folders\BreadcrumbBuilder;
+use App\Modules\Files\Folders\ClientHomeFolders;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
@@ -70,6 +71,7 @@ class MyFilesController extends Controller
         private readonly PublicThemeRegistry $themes,
         private readonly CapabilityRegistry $capabilities,
         private readonly BreadcrumbBuilder $breadcrumbs,
+        private readonly ClientHomeFolders $homeFolders,
         private readonly CommentingRules $commenting,
         private readonly VisibleCommentScope $comments,
         private readonly DownloadAllowance $allowance,
@@ -105,6 +107,17 @@ class MyFilesController extends Controller
         // Every folder the client may see: staff-shared subtrees plus any
         // folder they created themselves, anywhere in that visible tree.
         $visibleIds = array_values(Folder::query()->visibleToClient($client)->pluck('id')->map(fn ($id): int => (int) $id)->all());
+
+        // Where this installation gives clients a folder of their own, it
+        // stands in for the root: the client opens the portal and sees what
+        // is inside it, not a folder named after themselves that they have
+        // to click through. Their own name is not information to them.
+        //
+        // It does not replace what else they can see. Folders staff shared
+        // with them still sit alongside -- the home is where their own
+        // things live, not a boundary around them.
+        $home = $this->homeFolders->for($client);
+        $homeId = $home?->id;
 
         // A search term, a category filter, or an owner filter all switch to
         // a flat, global view across everything the client may see — same
@@ -146,7 +159,24 @@ class MyFilesController extends Controller
             if ($current === null) {
                 $folders = Folder::query()
                     ->whereIn('id', $visibleIds)
-                    ->where(fn ($q) => $q->whereNull('parent_id')->orWhereNotIn('parent_id', $visibleIds))
+                    ->where(function ($q) use ($visibleIds, $homeId): void {
+                        // The home's own children, standing in for the root's.
+                        if ($homeId !== null) {
+                            $q->where('parent_id', $homeId);
+                        }
+
+                        // Plus the top of every other subtree they can see,
+                        // with the home itself removed -- it is the level
+                        // they are looking at, not something inside it.
+                        $q->{$homeId === null ? 'where' : 'orWhere'}(function ($outer) use ($visibleIds, $homeId): void {
+                            $outer->where(fn ($inner) => $inner
+                                ->whereNull('parent_id')->orWhereNotIn('parent_id', $visibleIds));
+
+                            if ($homeId !== null) {
+                                $outer->where('id', '!=', $homeId);
+                            }
+                        });
+                    })
                     ->orderBy('name');
             } else {
                 $folders = Folder::query()
@@ -161,7 +191,12 @@ class MyFilesController extends Controller
             // own listing) show here with no folder context.
             $filesQuery = File::query()->visibleToClient($client);
             if ($current === null) {
-                $filesQuery->where(fn (Builder $q) => $q->whereNull('folder_id')->orWhereNotIn('folder_id', $visibleIds));
+                $filesQuery->where(fn (Builder $q) => $q
+                    ->whereNull('folder_id')
+                    ->orWhereNotIn('folder_id', $visibleIds)
+                    // Files sitting directly in the home belong to this
+                    // level too, for the same reason its subfolders do.
+                    ->when($homeId !== null, fn (Builder $w) => $w->orWhere('folder_id', $homeId)));
             } else {
                 $filesQuery->where('folder_id', $current->id);
             }
@@ -239,7 +274,10 @@ class MyFilesController extends Controller
 
         return Inertia::render("portal/themes/{$this->themeKey()}/my-files", [
             'folder' => $current === null ? null : ['id' => $current->id, 'name' => $current->name],
-            'breadcrumb' => $flat ? [] : $this->breadcrumbs->visible($current, $visibleIds),
+            // Trimmed of the home, which is the root here and so is not a
+            // step in the trail -- a client browsing their own subfolder
+            // should see "Invoices", not "Acme Ltd / Invoices".
+            'breadcrumb' => $flat ? [] : $this->trimHome($this->breadcrumbs->visible($current, $visibleIds), $home),
             'folders' => $folderRows->map(fn (Folder $folder): array => [
                 'id' => $folder->id,
                 'name' => $folder->name,
@@ -577,5 +615,24 @@ class MyFilesController extends Controller
         $value = $this->settings->get(Setting::Theme);
 
         return $this->themes->resolve(is_string($value) ? $value : 'default', $this->capabilities);
+    }
+
+    /**
+     * Drop the home folder from the front of a breadcrumb.
+     *
+     * Only from the front, and only when it is actually there: a folder
+     * shared with the client from elsewhere in the library has a trail of
+     * its own that the home has nothing to do with.
+     *
+     * @param  list<array{id: int, name: string}>  $trail
+     * @return list<array{id: int, name: string}>
+     */
+    private function trimHome(array $trail, ?Folder $home): array
+    {
+        if ($home === null || $trail === [] || $trail[0]['id'] !== $home->id) {
+            return $trail;
+        }
+
+        return array_slice($trail, 1);
     }
 }

@@ -7,6 +7,7 @@ namespace App\Modules\Files\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Files\Folders\ClientHomeFolders;
 use App\Modules\Files\Folders\FolderService;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
@@ -30,6 +31,7 @@ class MyFoldersController extends Controller
     public function __construct(
         private readonly FolderService $folders,
         private readonly ActivityLogger $activity,
+        private readonly ClientHomeFolders $homeFolders,
     ) {}
 
     public function store(Request $request): RedirectResponse
@@ -51,6 +53,13 @@ class MyFoldersController extends Controller
         if (($validated['parent_id'] ?? null) !== null) {
             $parent = Folder::query()->visibleToClient($client)->whereKey($validated['parent_id'])->firstOrFail();
         }
+
+        // No parent named means the top of what this client sees -- which,
+        // where the installation gives them a home, is inside it rather
+        // than at the root of the library. Without this a client creating a
+        // folder would put it beside the staff folders, which is precisely
+        // the mess the home folder exists to end.
+        $parent ??= $this->homeFolders->for($client);
 
         $folder = $this->folders->create($validated['name'], $parent);
 

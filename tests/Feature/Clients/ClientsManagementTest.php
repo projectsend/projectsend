@@ -156,6 +156,7 @@ test('staff can update client settings and they take effect', function () {
         'client_invitation_expiry_hours' => 72,
         'default_client_storage_quota_mb' => 0,
         'clients_can_preview_files' => true,
+        'clients_home_folders' => false,
     ])->assertRedirect()->assertSessionDoesntHaveErrors();
 
     Auth::logout();

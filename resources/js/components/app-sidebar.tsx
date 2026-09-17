@@ -65,7 +65,15 @@ export function AppSidebar() {
         fileItems.push({ title: t('Import orphan files'), url: '/files/orphans', icon: FileWarning });
     }
     if (can('release_quarantined_files')) {
-        fileItems.push({ title: t('Quarantine'), url: '/files/quarantine', icon: ShieldAlert });
+        // Amber rather than the usual badge colour: the others count work
+        // waiting, this one counts something that went wrong.
+        fileItems.push({
+            title: t('Quarantine'),
+            url: '/files/quarantine',
+            icon: ShieldAlert,
+            badge: pending.quarantine,
+            badgeTone: 'warning',
+        });
     }
     if (can('moderate_comments')) {
         // Just "Comments" — the old "Comments awaiting approval" wrapped

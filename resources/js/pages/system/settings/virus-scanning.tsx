@@ -217,7 +217,16 @@ export default function VirusScanningSettings({
                                         type="button"
                                         variant="outline"
                                         className="w-fit"
-                                        onClick={() => router.post(route('system-settings.virus-scanning.test'), {}, { preserveScroll: true })}
+                                        // The address on screen, not the one on
+                                        // file: the question is whether what is
+                                        // being typed works.
+                                        onClick={() =>
+                                            router.post(
+                                                route('system-settings.virus-scanning.test'),
+                                                { address: data.address },
+                                                { preserveScroll: true },
+                                            )
+                                        }
                                     >
                                         {t('Test scanner')}
                                     </Button>

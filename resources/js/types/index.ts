@@ -25,6 +25,12 @@ export interface NavItem {
     items?: NavItem[];
     badge?: number;
     /**
+     * What the badge is saying. The default reads as "there is work
+     * here"; "warning" reads as "something is wrong here", which is the
+     * difference between a queue and a quarantine.
+     */
+    badgeTone?: 'default' | 'warning';
+    /**
      * Leaves this installation. Rendered as a plain anchor opening in a
      * new tab rather than an Inertia <Link>, which would try to fetch a
      * page component from another origin and fail silently.
@@ -130,6 +136,8 @@ export interface SharedData {
         membership_requests?: number;
         /** Comments held for approval anywhere in this viewer's library. */
         comments?: number;
+        /** Files the scanner refused, waiting for somebody to decide. */
+        quarantine?: number;
         notifications_unread?: number;
     };
     update_notice: {

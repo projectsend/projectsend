@@ -17,6 +17,7 @@ use App\Modules\Files\Notifications\FileSharedNotification;
 use App\Modules\Files\Notifications\NewVersionAvailableNotification;
 use App\Modules\Files\Notifications\NewVersionDigestNotification;
 use App\Modules\Files\Scanning\ClamAvScanner;
+use App\Modules\Files\Scanning\ScanningConfig;
 use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Files\Scanning\VirusScanner;
 use App\Modules\Files\Thumbnails\Events\ImageRenderingChanged;
@@ -42,6 +43,12 @@ class FilesServiceProvider extends ServiceProvider
         // Same lifetime, same reason: the identity rule memoises a roster
         // per viewer and the file listings ask it once per row.
         $this->app->scoped(ClientIdentityScope::class);
+
+        // Scoped, so the settings screen and the scanner it resolves share
+        // one instance: that is what lets the Test button try the address
+        // being typed rather than the one on file. Scoped rather than a
+        // singleton so a queue worker starts each job with a clean one.
+        $this->app->scoped(ScanningConfig::class);
 
         // One implementation ships, and the interface exists so the test
         // suite can state a verdict instead of producing a file that

@@ -140,11 +140,21 @@ class VirusScanningSettingsController extends Controller
      * agreement — so the answer is "it detected something" rather than
      * "it did not complain".
      */
-    public function test(VirusScanner $scanner): RedirectResponse
+    public function test(Request $request, VirusScanner $scanner): RedirectResponse
     {
         // Nothing to test where the connection is not this installation's
         // to make.
         abort_unless($this->canConnect(), 403);
+
+        $typed = trim((string) $request->input('address', ''));
+
+        // What the button is for: the address on screen, which on a first
+        // attempt has never been saved. Falls back to the stored one when
+        // the field is empty, so the button still answers on a screen
+        // somebody has not touched.
+        if ($typed !== '') {
+            $this->config->preview($typed);
+        }
 
         $status = $scanner->status();
 

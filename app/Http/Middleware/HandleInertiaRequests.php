@@ -15,7 +15,9 @@ use App\Modules\Platform\Attribution\Attribution;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Captcha\Captcha;
 use App\Modules\Platform\Installation\Installation;
+use App\Modules\Files\Models\File;
 use App\Modules\Files\Queue\StalledZipBuilds;
+use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Platform\Localization\LocaleRegistry;
 use App\Modules\Platform\Localization\TimezoneRegistry;
 use App\Modules\Platform\OfficialLinks;
@@ -181,6 +183,18 @@ class HandleInertiaRequests extends Middleware
             // here and deliberately kept — the scope owns that rule, and
             // this middleware should not be a second place it lives.
             $counts['comments'] = app(VisibleCommentScope::class)->pendingTotal($user);
+        }
+
+        if ($checker->allows($user, Permission::ReleaseQuarantinedFiles)) {
+            // Deliberately not library-scoped, unlike the comments count
+            // above: a quarantined file is not a file anybody is working
+            // with, it is one somebody has to decide about, and the
+            // permission is already narrow enough that whoever holds it
+            // is meant to see all of them.
+            $counts['quarantine'] = File::query()->whereIn('scan_status', [
+                ScanStatus::Infected->value,
+                ScanStatus::UnscannableBlocked->value,
+            ])->count();
         }
 
         // Unlike the counts above, every authenticated user (staff or

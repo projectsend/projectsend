@@ -40,6 +40,22 @@ class ScanningConfig
         return $this->isManaged() || $this->settings->get(Setting::VirusScanningEnabled) === true;
     }
 
+    /**
+     * An address to use instead of the stored one, for this request only.
+     *
+     * The Test button exists to answer "is *this* address right?", and
+     * the address in question is the one being typed — testing what is
+     * saved would make the button useless exactly when it is needed, on
+     * the first attempt, before anything is saved. Set by
+     * VirusScanningSettingsController::test() and never persisted.
+     */
+    private ?string $preview = null;
+
+    public function preview(string $address): void
+    {
+        $this->preview = trim($address);
+    }
+
     public function isManaged(): bool
     {
         return $this->managedAddress() !== '';
@@ -47,6 +63,13 @@ class ScanningConfig
 
     public function address(): string
     {
+        // Ahead of the managed address too: an operator on a managed
+        // installation has no field to type in, so nothing sets this
+        // there — and where something does, it was asked for.
+        if ($this->preview !== null && $this->preview !== '') {
+            return $this->preview;
+        }
+
         if ($this->isManaged()) {
             return $this->managedAddress();
         }

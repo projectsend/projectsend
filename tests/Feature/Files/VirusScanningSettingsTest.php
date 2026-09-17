@@ -423,3 +423,45 @@ test('an installation that connects its own scanner is', function () {
         fn (AssertableInertia $page) => $page->where('can_test', true),
     );
 });
+
+test('the test button tries the address on screen, not the one on file', function () {
+    // The real client, deliberately: a fake would answer whatever it was
+    // told and prove nothing about which address was used. Neither
+    // address has a scanner behind it, so the answer names the one it
+    // actually tried.
+    app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://saved.invalid:3310');
+
+    $this->actingAs($this->admin)
+        ->post('/system/settings/virus-scanning/test', ['address' => 'tcp://typed.invalid:3310'])
+        ->assertSessionHas('scanner_test_result', fn (array $result): bool => $result['ok'] === false
+            && str_contains($result['message'], 'typed.invalid'));
+
+    // And the stored address is untouched: testing is not saving.
+    expect(app(Settings::class)->get(Setting::VirusScannerAddress))->toBe('tcp://saved.invalid:3310');
+});
+
+test('an empty field falls back to the address on file', function () {
+    app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://saved.invalid:3310');
+
+    $this->actingAs($this->admin)
+        ->post('/system/settings/virus-scanning/test', ['address' => ''])
+        ->assertSessionHas('scanner_test_result', fn (array $result): bool => str_contains($result['message'], 'saved.invalid'));
+});
+
+test('the sidebar carries a count of what is in quarantine', function () {
+    App\Modules\Files\Models\File::factory()->create(['scan_status' => ScanStatus::Infected, 'scan_note' => 'X']);
+    App\Modules\Files\Models\File::factory()->create(['scan_status' => ScanStatus::Clean]);
+
+    $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('pending.quarantine', 1),
+    );
+});
+
+test('somebody who cannot release is not shown the count', function () {
+    $staff = User::factory()->role(App\Modules\Identity\Permissions\SystemRole::Uploader)->create();
+    App\Modules\Files\Models\File::factory()->create(['scan_status' => ScanStatus::Infected, 'scan_note' => 'X']);
+
+    $this->actingAs($staff)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page->missing('pending.quarantine'),
+    );
+});

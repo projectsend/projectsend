@@ -2244,5 +2244,9 @@
     "Why are you releasing it?": "Neden serbest bırakıyorsunuz?",
     "Working. :engine detected the test file as \":threat\".": "Çalışıyor. :engine test dosyasını “:threat” olarak algıladı.",
     "Your file \":itemName\" was blocked: :threat": "“:itemName” dosyanız engellendi: :threat",
-    "{0}Every client already had a folder.|[1,*]:created of :total clients got a folder. :existing already had one.": "{0}Tüm müşterilerin zaten bir klasörü vardı.|[1,*]:total müşteriden :created tanesi klasör aldı. :existing tanesinin zaten vardı."
+    "{0}Every client already had a folder.|[1,*]:created of :total clients got a folder. :existing already had one.": "{0}Tüm müşterilerin zaten bir klasörü vardı.|[1,*]:total müşteriden :created tanesi klasör aldı. :existing tanesinin zaten vardı.",
+    ":engine detects viruses, but reports encrypted archives as clean, so a password-protected zip would get through unchecked. Add AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc and AlertExceedsMax, each set to yes, to its clamd.conf and restart it.": ":engine virüsleri algılıyor ama şifreli arşivleri temiz olarak bildiriyor; parola korumalı bir zip kontrol edilmeden geçer. clamd.conf dosyasına AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc ve AlertExceedsMax seçeneklerini, her birini yes olarak ekleyin ve yeniden başlatın.",
+    "A file in this archive is no longer available. Download the selection again.": "Bu arşivdeki bir dosya artık kullanılamıyor. Seçimi yeniden indirin.",
+    "A scan is already running. Wait for it to finish.": "Zaten bir tarama çalışıyor. Bitmesini bekleyin.",
+    "Something answered at :address, but it is not a ClamAV scanner.": ":address adresinde bir şey yanıt verdi, ancak bu bir ClamAV tarayıcısı değil."
 }

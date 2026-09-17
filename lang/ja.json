@@ -2244,5 +2244,9 @@
     "Why are you releasing it?": "解除する理由は何ですか？",
     "Working. :engine detected the test file as \":threat\".": "正常です。:engine がテストファイルを「:threat」として検出しました。",
     "Your file \":itemName\" was blocked: :threat": "ファイル「:itemName」がブロックされました: :threat",
-    "{0}Every client already had a folder.|[1,*]:created of :total clients got a folder. :existing already had one.": "{0}すべてのクライアントにすでにフォルダーがありました。|[1,*]:total 件のうち :created 件のクライアントにフォルダーを作成しました。:existing 件はすでにありました。"
+    "{0}Every client already had a folder.|[1,*]:created of :total clients got a folder. :existing already had one.": "{0}すべてのクライアントにすでにフォルダーがありました。|[1,*]:total 件のうち :created 件のクライアントにフォルダーを作成しました。:existing 件はすでにありました。",
+    ":engine detects viruses, but reports encrypted archives as clean, so a password-protected zip would get through unchecked. Add AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc and AlertExceedsMax, each set to yes, to its clamd.conf and restart it.": ":engine はウイルスを検出しますが、暗号化されたアーカイブをクリーンと報告するため、パスワード付き zip が検査されずに通過します。clamd.conf に AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc と AlertExceedsMax をそれぞれ yes で追加し、再起動してください。",
+    "A file in this archive is no longer available. Download the selection again.": "このアーカイブ内のファイルは利用できなくなりました。もう一度選択をダウンロードしてください。",
+    "A scan is already running. Wait for it to finish.": "スキャンはすでに実行中です。終了するまでお待ちください。",
+    "Something answered at :address, but it is not a ClamAV scanner.": ":address で応答がありましたが、ClamAV スキャナーではありません。"
 }

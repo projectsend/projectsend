@@ -88,7 +88,7 @@ class FileVersionLinks
         // than failing anywhere near here.
         $successors = File::query()
             ->whereIn('previous_file_id', array_keys($rows))
-            ->get(['id', 'name', 'slug', 'previous_file_id', 'public', 'expires_at', 'folder_id']);
+            ->get(['id', 'name', 'slug', 'previous_file_id', 'public', 'expires_at', 'folder_id', 'scan_status']);
 
         /** @var array<int, File> $candidates */
         $candidates = [];
@@ -99,7 +99,7 @@ class FileVersionLinks
         if ($previousIds !== []) {
             $previous = File::query()
                 ->whereIn('id', array_keys($previousIds))
-                ->get(['id', 'name', 'slug', 'previous_file_id', 'public', 'expires_at', 'folder_id']);
+                ->get(['id', 'name', 'slug', 'previous_file_id', 'public', 'expires_at', 'folder_id', 'scan_status']);
 
             foreach ($previous as $file) {
                 $candidates[$file->id] = $file;
@@ -145,13 +145,13 @@ class FileVersionLinks
         }
 
         // A guest "sees both files" exactly when both are effectively
-        // public and unexpired — the same predicate
+        // public, unexpired and available — the same predicate
         // PublicGroupsController::showFile 404s on, so the badge can never
         // point at a page that would refuse to load.
         if ($viewer === null) {
             $ids = [];
             foreach ($candidates as $candidate) {
-                if ($candidate->isEffectivelyPublic() && ! $candidate->isExpired()) {
+                if ($candidate->isEffectivelyPublic() && ! $candidate->isExpired() && $candidate->scan_status->isAvailable()) {
                     $ids[] = $candidate->id;
                 }
             }

@@ -34,6 +34,9 @@ class ClamAvScanner implements VirusScanner
     /** 64 KiB — clamd's own read buffer size, and small enough to stream 5 GB without holding it. */
     private const CHUNK = 65536;
 
+    /** Seconds to wait for an answer to VERSION. */
+    private const VERSION_TIMEOUT = 10;
+
     /**
      * What the daemon said it was, the first time this instance asked.
      *
@@ -72,9 +75,9 @@ class ClamAvScanner implements VirusScanner
         }
 
         try {
-            fwrite($socket, "zINSTREAM\0");
+            $sent = $this->send($socket, "zINSTREAM\0");
 
-            while (! feof($stream)) {
+            while ($sent && ! feof($stream)) {
                 $chunk = fread($stream, self::CHUNK);
 
                 if ($chunk === false) {
@@ -85,16 +88,20 @@ class ClamAvScanner implements VirusScanner
                     continue;
                 }
 
-                // Big-endian length, then the bytes. A short write here
-                // means clamd hung up mid-stream — usually its own size
-                // limit — and the reply below says which.
-                if (fwrite($socket, pack('N', strlen($chunk)).$chunk) === false) {
-                    break;
-                }
+                // Big-endian length, then the bytes.
+                $sent = $this->send($socket, pack('N', strlen($chunk)).$chunk);
             }
 
-            fwrite($socket, pack('N', 0));
+            if ($sent) {
+                $this->send($socket, pack('N', 0));
+            }
 
+            // Read whether or not every byte went: a write that fails
+            // means clamd hung up mid-stream, and it only does that after
+            // saying why — usually its own size limit. Treating the
+            // failed write as "the scanner is down" instead sent every
+            // file over that limit round the retry loop forever, and past
+            // the unscannable policy.
             $reply = $this->readReply($socket);
         } catch (Throwable $e) {
             return ScanVerdict::unavailable($e->getMessage());
@@ -122,14 +129,16 @@ class ClamAvScanner implements VirusScanner
             return ScannerStatus::unreachable(__(ScannerAddress::message()));
         }
 
-        $socket = $this->connect();
+        // A short wait rather than the scan's: VERSION is answered at once
+        // by anything that is clamd, and the Test button waits on this.
+        $socket = $this->connect(self::VERSION_TIMEOUT);
 
         if ($socket === null) {
             return ScannerStatus::unreachable(__('No answer from :address.', ['address' => $this->config->address()]));
         }
 
         try {
-            fwrite($socket, "zVERSION\0");
+            $this->send($socket, "zVERSION\0");
             $reply = $this->readReply($socket);
         } catch (Throwable $e) {
             return ScannerStatus::unreachable($e->getMessage());
@@ -146,6 +155,16 @@ class ClamAvScanner implements VirusScanner
         // Older builds answer with the engine alone, so every part after
         // the first is optional rather than assumed.
         $parts = explode('/', $reply);
+
+        // Anything listening on the port answers something. Without this a
+        // database or a web server "answered", and the first bytes of its
+        // greeting were shown as the engine's name.
+        if (! str_starts_with($parts[0], 'ClamAV ')) {
+            return ScannerStatus::unreachable(__('Something answered at :address, but it is not a ClamAV scanner.', [
+                'address' => $this->config->address(),
+            ]));
+        }
+
         $definitions = isset($parts[1]) && is_numeric(trim($parts[1])) ? (int) trim($parts[1]) : null;
         $built = null;
 
@@ -162,12 +181,14 @@ class ClamAvScanner implements VirusScanner
 
     private function verdictFor(string $reply, ?string $engine): ScanVerdict
     {
-        if (str_ends_with($reply, 'OK')) {
+        // The whole reply, not its last two letters: "clean" is the one
+        // answer that hands a file out, so nothing else may be read as it.
+        if ($reply === 'stream: OK') {
             return ScanVerdict::clean($engine);
         }
 
         // "stream: Win.Test.EICAR_HDB-1 FOUND"
-        if (str_ends_with($reply, 'FOUND')) {
+        if (str_starts_with($reply, 'stream: ') && str_ends_with($reply, ' FOUND')) {
             $threat = trim(str_replace(['stream:', 'FOUND'], '', $reply));
 
             // Not threats: clamd's way of saying "I could not look
@@ -223,7 +244,7 @@ class ClamAvScanner implements VirusScanner
     }
 
     /** @return resource|null */
-    private function connect(): mixed
+    private function connect(?int $replyTimeout = null): mixed
     {
         $address = $this->config->address();
 
@@ -245,9 +266,35 @@ class ClamAvScanner implements VirusScanner
 
         // Without this a scanner that accepts the connection and then
         // stops answering holds the worker open indefinitely.
-        stream_set_timeout($socket, $this->config->replyTimeoutSeconds());
+        stream_set_timeout($socket, $replyTimeout ?? $this->config->replyTimeoutSeconds());
 
         return $socket;
+    }
+
+    /**
+     * Write all of it, or say that it could not.
+     *
+     * fwrite() may take part of a buffer and return how much, and on a
+     * connection the other end has closed it raises a warning — which the
+     * framework's error handler turns into an exception. Silenced and
+     * checked here instead, so a hang-up reads as a hang-up and the reply
+     * explaining it can still be read.
+     *
+     * @param  resource  $socket
+     */
+    private function send(mixed $socket, string $bytes): bool
+    {
+        while ($bytes !== '') {
+            $written = @fwrite($socket, $bytes);
+
+            if ($written === false || $written === 0) {
+                return false;
+            }
+
+            $bytes = substr($bytes, $written);
+        }
+
+        return true;
     }
 
     /**
@@ -261,7 +308,10 @@ class ClamAvScanner implements VirusScanner
         $reply = '';
 
         while (! feof($socket)) {
-            $byte = fread($socket, 1);
+            // Silenced for the same reason as send(): a connection clamd
+            // has reset raises a warning here, and the framework would
+            // turn that into an exception before the loop could stop.
+            $byte = @fread($socket, 1);
 
             if ($byte === false || $byte === '') {
                 break;

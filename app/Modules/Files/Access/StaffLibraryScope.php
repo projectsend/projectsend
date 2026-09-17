@@ -192,6 +192,21 @@ class StaffLibraryScope
         return $query->whereHas('members', fn (Builder $members) => $members->whereIn('users.id', $clientIds));
     }
 
+    /**
+     * Whose uploads a staff member may be told about when the file is in
+     * nobody's library — a quarantined upload, which no client can see,
+     * so files() never reaches it. Their own and their assigned clients',
+     * or null when unrestricted.
+     *
+     * @return list<int>|null
+     */
+    public function uploaderIds(User $user): ?array
+    {
+        $clientIds = $this->assignableClientIds($user);
+
+        return $clientIds === null ? null : [$user->id, ...$clientIds];
+    }
+
     public function canAssignClient(User $user, User $client): bool
     {
         $ids = $this->assignableClientIds($user);

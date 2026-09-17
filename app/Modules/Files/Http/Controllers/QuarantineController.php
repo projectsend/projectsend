@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace App\Modules\Files\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Scanning\FileAvailability;
 use App\Modules\Files\Scanning\NotScannedReason;
 use App\Modules\Files\Scanning\ScanStatus;
 use App\Support\Pagination;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -36,12 +39,15 @@ class QuarantineController extends Controller
     public function __construct(
         private readonly ActivityLogger $activity,
         private readonly FileAvailability $availability,
+        private readonly StaffLibraryScope $scope,
     ) {}
 
     public function index(Request $request): Response
     {
-        $files = File::query()
-            ->whereIn('scan_status', [ScanStatus::Infected->value, ScanStatus::UnscannableBlocked->value])
+        $user = $request->user();
+        assert($user !== null);
+
+        $files = $this->quarantined($user)
             ->with('uploader')
             ->orderByDesc('scanned_at')
             ->paginate(25)
@@ -84,14 +90,14 @@ class QuarantineController extends Controller
      */
     public function release(Request $request, File $file): RedirectResponse
     {
-        abort_unless($file->scan_status->isQuarantined(), 404);
+        $actor = $request->user();
+        assert($actor !== null);
+
+        abort_unless($this->quarantined($actor)->whereKey($file->id)->exists(), 404);
 
         $validated = $request->validate([
             'reason' => ['required', 'string', 'max:500'],
         ]);
-
-        $actor = $request->user();
-        assert($actor !== null);
 
         $file->forceFill([
             'scan_status' => ScanStatus::Released,
@@ -110,5 +116,26 @@ class QuarantineController extends Controller
         $this->availability->markAvailable($file);
 
         return back()->with('success', __('The file has been released.'));
+    }
+
+    /**
+     * The quarantined files this person may see and release.
+     *
+     * A client-scoped staff member gets their own clients' uploads and
+     * their own, the same boundary as the rest of the library. The
+     * permission alone let one read every quarantined file on the
+     * installation, and release a file belonging to a client they could
+     * not otherwise open.
+     *
+     * @return Builder<File>
+     */
+    private function quarantined(User $user): Builder
+    {
+        $query = File::query()
+            ->whereIn('scan_status', [ScanStatus::Infected->value, ScanStatus::UnscannableBlocked->value]);
+
+        $uploaders = $this->scope->uploaderIds($user);
+
+        return $uploaders === null ? $query : $query->whereIn('uploaded_by', $uploaders);
     }
 }

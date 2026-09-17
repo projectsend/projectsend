@@ -2244,5 +2244,9 @@
     "Why are you releasing it?": "Kwa nini unaitoa?",
     "Working. :engine detected the test file as \":threat\".": "Inafanya kazi. :engine ilitambua faili ya majaribio kama “:threat”.",
     "Your file \":itemName\" was blocked: :threat": "Faili yako “:itemName” imezuiwa: :threat",
-    "{0}Every client already had a folder.|[1,*]:created of :total clients got a folder. :existing already had one.": "{0}Kila mteja tayari alikuwa na folda.|[1,*]Wateja :created kati ya :total wamepata folda. :existing tayari walikuwa nazo."
+    "{0}Every client already had a folder.|[1,*]:created of :total clients got a folder. :existing already had one.": "{0}Kila mteja tayari alikuwa na folda.|[1,*]Wateja :created kati ya :total wamepata folda. :existing tayari walikuwa nazo.",
+    ":engine detects viruses, but reports encrypted archives as clean, so a password-protected zip would get through unchecked. Add AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc and AlertExceedsMax, each set to yes, to its clamd.conf and restart it.": ":engine hutambua virusi, lakini huripoti kumbukumbu zilizosimbwa kuwa safi, kwa hiyo zip yenye nenosiri ingepita bila kukaguliwa. Ongeza AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc na AlertExceedsMax, kila moja likiwa yes, kwenye clamd.conf yake kisha uiwashe upya.",
+    "A file in this archive is no longer available. Download the selection again.": "Faili moja katika kumbukumbu hii halipatikani tena. Pakua uteuzi upya.",
+    "A scan is already running. Wait for it to finish.": "Uchanganuzi tayari unaendelea. Subiri umalizike.",
+    "Something answered at :address, but it is not a ClamAV scanner.": "Kitu kimejibu kwenye :address, lakini si kichanganuzi cha ClamAV."
 }

@@ -138,6 +138,13 @@ services:
     # cross that connection in the clear.
     volumes:
       - clamav-data:/var/lib/clamav
+    # ClamAV's own defaults are not enough: left on them, clamd answers
+    # "OK" for an archive it cannot open, and every password-protected zip
+    # would be recorded as clean. The settings it needs are at the bottom
+    # of this file.
+    configs:
+      - source: clamd-conf
+        target: /etc/clamav/clamd.conf
     profiles:
       - scanner
 
@@ -146,3 +153,25 @@ volumes:
   db-data:
   redis-data:
   clamav-data:
+
+configs:
+  clamd-conf:
+    content: |
+      LogTime yes
+      Foreground yes
+      TCPSocket 3310
+
+      # The largest stream clamd accepts. Keep it at or above "Largest file
+      # to scan" on the settings screen, or larger files are not scanned.
+      StreamMaxLength 512M
+      MaxFileSize 512M
+      MaxScanSize 1024M
+      MaxRecursion 16
+      MaxFiles 10000
+
+      # Report what could not be opened instead of calling it clean. These
+      # four are the reason this file exists.
+      AlertExceedsMax yes
+      AlertEncrypted yes
+      AlertEncryptedArchive yes
+      AlertEncryptedDoc yes

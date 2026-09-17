@@ -174,8 +174,76 @@ test('the test button sends the standard test file, not an empty stream', functi
 
     $this->actingAs($this->admin)->post('/system/settings/virus-scanning/test');
 
-    expect($scanner->scans)->toBe(1)
-        ->and($scanner->sizes[0])->toBe(68);
+    // Then the encrypted archive, once the test file was detected.
+    expect($scanner->scans)->toBe(2)
+        ->and($scanner->sizes[0])->toBe(68)
+        ->and($scanner->sizes[1])->toBe(206);
+});
+
+test('the test button fails a scanner that calls an encrypted archive clean', function () {
+    // clamd on its own defaults: it detects the test file, and answers
+    // "OK" for an archive it cannot open. Every password-protected zip
+    // would have been recorded as clean while this button said "Working".
+    $scanner = (new FakeVirusScanner)->willAnswer(ScanVerdict::infected('Eicar-Test-Signature'), ScanVerdict::clean('FakeAV 1.0'));
+    app()->instance(VirusScanner::class, $scanner);
+
+    $this->actingAs($this->admin)->post('/system/settings/virus-scanning/test')
+        ->assertSessionHas('scanner_test_result', fn (array $result): bool => $result['ok'] === false
+            && str_contains($result['message'], 'AlertEncryptedArchive'));
+});
+
+test('saving tells the queue workers to pick the new settings up', function () {
+    // The scans worker holds settings in memory from the job it started
+    // on. Pointing it at another scanner, or switching scanning off,
+    // changed the screen and nothing else until it was restarted.
+    Illuminate\Support\Facades\Cache::forget('illuminate:queue:restart');
+
+    $this->actingAs($this->admin)->patch('/system/settings/virus-scanning', [
+        'enabled' => true,
+        'address' => 'tcp://clamav:3310',
+        'max_size_mb' => 512,
+        'unscannable_policy' => 'allow',
+        'scanner_down_policy' => 'allow',
+        'wait_minutes' => 10,
+        'existing_rate_per_minute' => 60,
+    ])->assertSessionHasNoErrors();
+
+    expect(Illuminate\Support\Facades\Cache::get('illuminate:queue:restart'))->not->toBeNull();
+});
+
+/** The arguments a queued artisan command was queued with. */
+function queuedCommandArguments(Illuminate\Foundation\Console\QueuedCommand $job): array
+{
+    return (fn (): array => $this->data)->call($job);
+}
+
+test('new scan checks the library again, not only what was never scanned', function () {
+    app(Settings::class)->set(Setting::VirusScanningEnabled, true);
+    app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://scanner.test:3310');
+    Illuminate\Support\Facades\Queue::fake();
+
+    $this->actingAs($this->admin)->post('/system/settings/virus-scanning/scan-existing');
+
+    // --existing, which it ran before, finds nothing on a library that
+    // was scanned once: the button was enabled and did nothing.
+    Illuminate\Support\Facades\Queue::assertPushed(
+        Illuminate\Foundation\Console\QueuedCommand::class,
+        fn ($job): bool => queuedCommandArguments($job) === ['projectsend:scan-files', ['--all' => true]],
+    );
+});
+
+test('new scan is refused while a scan is still working through the queue', function () {
+    app(Settings::class)->set(Setting::VirusScanningEnabled, true);
+    app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://scanner.test:3310');
+    Illuminate\Support\Facades\Queue::fake();
+    App\Modules\Files\Jobs\ScanFileJob::dispatch(1, true);
+
+    $this->actingAs($this->admin)->post('/system/settings/virus-scanning/scan-existing')
+        ->assertSessionHas('error');
+
+    // Each press queued the whole library again; only the screen stopped
+    // a second one.
+    Illuminate\Support\Facades\Queue::assertNotPushed(Illuminate\Foundation\Console\QueuedCommand::class);
 });
 
 test('only somebody who can edit settings may test or save', function () {
@@ -532,3 +600,25 @@ test('the addresses people actually type are accepted', function () {
         expect(app(Settings::class)->get(Setting::VirusScannerAddress))->toBe($address);
     }
 });
+
+test('a retry scheduled for later is not a scan in progress', function () {
+    // What a scanner outage leaves behind: a held file's next attempt,
+    // minutes away. Counted, it showed "Scanning now" and refused a new
+    // scan while nothing at all was running.
+    config(['queue.default' => 'database']);
+    app(Settings::class)->set(Setting::VirusScanningEnabled, true);
+    app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://scanner.test:3310');
+
+    App\Modules\Files\Jobs\ScanFileJob::dispatch(1)->delay(now()->addMinutes(5));
+
+    $this->actingAs($this->admin)->getJson('/system/settings/virus-scanning/activity')
+        ->assertJsonPath('queued', 0)
+        ->assertJsonPath('running', false);
+
+    App\Modules\Files\Jobs\ScanFileJob::dispatch(1);
+
+    $this->actingAs($this->admin)->getJson('/system/settings/virus-scanning/activity')
+        ->assertJsonPath('queued', 1)
+        ->assertJsonPath('running', true);
+});
+

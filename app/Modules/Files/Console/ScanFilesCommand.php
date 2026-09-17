@@ -53,14 +53,16 @@ class ScanFilesCommand extends Command
         $this->info("Re-queued {$waiting} waiting file(s) and {$missed} that were missed while the scanner was down.");
 
         if ($this->option('all')) {
-            // Everything except the two states there is no point asking
-            // about: a file already waiting for its first verdict, and one
-            // whose bytes are not there to read. Files keep their current
-            // state — and stay downloadable — until a new verdict arrives.
+            // Every file somebody can have today. Not a file waiting for
+            // its first verdict, not one with no bytes, and not one in or
+            // released from quarantine — a scan is not how a file leaves
+            // quarantine, and a release is not undone by one. Files keep
+            // their current state, and stay downloadable, until a new
+            // verdict arrives.
             $limit = $config->existingScanRatePerMinute() * 60;
 
             $checked = $this->dispatchFor(
-                File::query()->whereNotIn('scan_status', [ScanStatus::Pending->value, ScanStatus::Missing->value]),
+                File::query()->whereIn('scan_status', ScanFileJob::rescannableValues()),
                 $limit,
                 rescan: true,
             );

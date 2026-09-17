@@ -56,6 +56,13 @@ services:
       SESSION_DRIVER: redis
       QUEUE_CONNECTION: redis
 
+      # Uncomment together with the clamav service at the bottom of this
+      # file. It is written into the settings once, on first boot, so the
+      # site arrives configured — and it stays yours afterwards: the
+      # address and the switch are both on System → Settings → Virus
+      # scanning, and this line is ignored on every later boot.
+      # PROJECTSEND_SCANNER_DEFAULT_ADDRESS: tcp://clamav:3310
+
       # Mail is easier to configure from System → Settings → Email once you
       # are logged in — it has a "send test" button. These are the fallback
       # until then.
@@ -116,7 +123,26 @@ services:
     volumes:
       - redis-data:/data
 
+  # Virus scanning, off unless you ask for it:
+  #   docker compose --profile scanner up -d
+  # then point Settings → Virus scanning at tcp://clamav:3310.
+  #
+  # Budget about 1-1.5 GB of memory: the virus definitions are held in
+  # memory. The first start downloads them and does not answer until it
+  # has, which the Test button on that screen reports plainly.
+  clamav:
+    image: clamav/clamav:stable
+    restart: unless-stopped
+    # Deliberately no ports. clamd has no authentication and no
+    # encryption, so anything that can reach it can use it, and files
+    # cross that connection in the clear.
+    volumes:
+      - clamav-data:/var/lib/clamav
+    profiles:
+      - scanner
+
 volumes:
   storage:
   db-data:
   redis-data:
+  clamav-data:

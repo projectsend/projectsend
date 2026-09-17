@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Event;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Scanning\NotScannedReason;
+use App\Modules\Files\Scanning\ScanStatus;
+use App\Modules\Files\Scanning\ScanningConfig;
 
 /**
  * The single place a stored payload becomes a File record — shared by
@@ -20,6 +23,7 @@ class StoreUploadedFile
 {
     public function __construct(
         private readonly ActivityLogger $activity,
+        private readonly ScanningConfig $scanning,
     ) {}
 
     public function create(
@@ -37,6 +41,8 @@ class StoreUploadedFile
     ): File {
         $originalName = self::sanitizeFilename($originalName);
 
+        $scanning = $this->scanning->enabled();
+
         $file = File::query()->create([
             'uploaded_by' => $uploader->id,
             'folder_id' => $folderId,
@@ -50,6 +56,13 @@ class StoreUploadedFile
             'mime_type' => $mimeType,
             'size' => $size,
             'checksum' => $checksum,
+            // Decided in the same insert as the row rather than a moment
+            // later: a file is unavailable from the instant it exists, or
+            // there is a window in which it is neither scanned nor
+            // withheld. Every upload path arrives here, so this is the
+            // only place that has to be right.
+            'scan_status' => $scanning ? ScanStatus::Pending : ScanStatus::NotScanned,
+            'scan_note' => $scanning ? null : NotScannedReason::BeforeScanning->value,
         ]);
 
         $this->activity->log($action, $uploader, $file);

@@ -1860,6 +1860,20 @@
                                 "null"
                             ]
                         }
+                    },
+                    {
+                        "name": "scan_status",
+                        "in": "query",
+                        "schema": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/components/schemas/ScanStatus"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ]
+                        }
                     }
                 ],
                 "responses": {
@@ -3632,6 +3646,10 @@
                     "folder.made_private",
                     "upload.aborted",
                     "file.imported",
+                    "file.quarantined",
+                    "file.released",
+                    "file.not_scanned",
+                    "file.missing",
                     "orphan_file.deleted",
                     "orphan_file.auto_deleted",
                     "file.expired_deleted",
@@ -4060,6 +4078,36 @@
                     "expired": {
                         "type": "boolean"
                     },
+                    "scan": {
+                        "type": "object",
+                        "description": "What the virus scanner made of this file. `pending` and\n`infected` mean the bytes are not available: the download\nendpoint answers 423 for both, and a caller that has just\nuploaded should poll this rather than the download. `note`\ncarries the threat name, or why a file was not scanned.",
+                        "properties": {
+                            "status": {
+                                "type": "string"
+                            },
+                            "available": {
+                                "type": "boolean"
+                            },
+                            "note": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "scanned_at": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "status",
+                            "available",
+                            "note",
+                            "scanned_at"
+                        ]
+                    },
                     "download_limit": {
                         "type": [
                             "integer",
@@ -4243,6 +4291,7 @@
                     "commentable",
                     "expires_at",
                     "expired",
+                    "scan",
                     "download_limit",
                     "download_limit_scope",
                     "downloads_used",
@@ -4323,6 +4372,20 @@
                     "updated_at"
                 ],
                 "title": "GroupResource"
+            },
+            "ScanStatus": {
+                "type": "string",
+                "description": "Where a file stands with the virus scanner. Availability is not a case here on purpose: three of these mean the file may be served and three mean it may not, and asking FileAvailability rather than comparing cases is what keeps that rule in one place. See docs/feature-virus-scanning.md.\n| |\n|---|\n| `pending` <br/> Waiting to be scanned, or being scanned right now. |\n| `clean` <br/> Scanned, nothing found. |\n| `infected` <br/> A threat was found. Quarantined; `scan_note` is the threat name. |\n| `released` <br/> Was infected, and an administrator decided to allow it anyway. |\n| `not_scanned` <br/> Not checked, and allowed through. `scan_note` is a NotScannedReason. |\n| `unscannable_blocked` <br/> Could not be checked, and this installation blocks those. Quarantined. |\n| `missing` <br/> The row is here and the bytes are not. Its own state rather than a kind of \"not scanned\", because what it means for the file is different: nothing can be served, so nothing is offered. A client listing it and getting an error on the download is worse than not seeing it, and staff need to see it precisely because somebody has to decide what to do about it. |",
+                "enum": [
+                    "pending",
+                    "clean",
+                    "infected",
+                    "released",
+                    "not_scanned",
+                    "unscannable_blocked",
+                    "missing"
+                ],
+                "title": "ScanStatus"
             },
             "StaffUserResource": {
                 "type": "object",

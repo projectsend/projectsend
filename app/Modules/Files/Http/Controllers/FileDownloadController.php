@@ -10,6 +10,7 @@ use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\DownloadAllowance;
 use App\Modules\Files\Delivery\StoredFileResponse;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Scanning\FileAvailability;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -29,11 +30,17 @@ class FileDownloadController extends Controller
         private readonly ActivityLogger $activity,
         private readonly DownloadAllowance $allowance,
         private readonly StoredFileResponse $bytes,
+        private readonly FileAvailability $availability,
     ) {}
 
     public function __invoke(Request $request, File $file): Response|RedirectResponse
     {
         Gate::authorize('view', $file);
+
+        // Before the download limit and before the log: a file the scanner
+        // has not cleared is not served to anybody, and a refusal here is
+        // not a download to count.
+        $this->availability->guardDelivery($file);
 
         // Separate from the policy on purpose: a spent download limit is
         // not "you may not see this file" — the file stays listed, and

@@ -75,6 +75,21 @@ enum Action: string
     case FolderMadePrivate = 'folder.made_private';
     case UploadAborted = 'upload.aborted';
     case FileImported = 'file.imported';
+
+    // Virus scanning. A clean result is not logged: it is the ordinary
+    // outcome of every upload, and a row per upload would bury the ones
+    // that matter. Only the three that need answering are.
+    case FileQuarantined = 'file.quarantined';
+    case FileReleased = 'file.released';
+    // Allowed through without being checked — because the scanner could
+    // not be reached, or the file was too large or encrypted and this
+    // installation allows those. The context says which.
+    case FileNotScanned = 'file.not_scanned';
+
+    // The row is here and the bytes are not. Written by the daily check,
+    // so it has no actor: nobody did this, or nobody who was using the
+    // application did.
+    case FileMissing = 'file.missing';
     case OrphanFileDeleted = 'orphan_file.deleted';
     case OrphanFileAutoDeleted = 'orphan_file.auto_deleted';
     case ExpiredFileDeleted = 'file.expired_deleted';
@@ -212,6 +227,14 @@ enum Action: string
             self::CommentDeleted => 'Deleted a comment on the file ":subject"',
             self::CommentApproved => 'Approved a comment on the file ":subject"',
             self::FileImported => 'Imported the orphan file ":subject"',
+            // :name rather than :subject, unlike the file actions above
+            // it: these two are written by the scan job, which has no
+            // actor and attaches no subject, so the name has to travel in
+            // the context or the line reads 'The file "" was quarantined'.
+            self::FileQuarantined => 'The file ":name" was quarantined: :threat',
+            self::FileReleased => 'Released the quarantined file ":subject" (:reason)',
+            self::FileNotScanned => 'The file ":name" was not scanned for viruses: :reason',
+            self::FileMissing => 'The file ":name" is no longer on the server',
             self::OrphanFileDeleted => 'Deleted the orphan file ":name"',
             self::OrphanFileAutoDeleted => 'Deleted the orphan file ":name"',
             self::ExpiredFileDeleted => 'Deleted the expired file ":name"',
@@ -316,6 +339,10 @@ enum Action: string
             self::CommentDeleted => 'A comment was deleted',
             self::CommentApproved => 'A comment was approved',
             self::FileImported => 'An orphan file was imported',
+            self::FileQuarantined => 'A file was quarantined by the virus scanner',
+            self::FileReleased => 'A quarantined file was released by an administrator',
+            self::FileNotScanned => 'A file was allowed through without being scanned',
+            self::FileMissing => 'A file in the library was found to be missing from storage',
             self::OrphanFileDeleted => 'An orphan file was deleted',
             self::OrphanFileAutoDeleted => 'An orphan file was automatically deleted after its retention grace period passed',
             self::ExpiredFileDeleted => 'An expired file was automatically deleted after its retention grace period passed',

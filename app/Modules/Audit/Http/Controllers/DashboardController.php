@@ -17,6 +17,9 @@ use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Delivery\FileDelivery;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Scanning\ScanningConfig;
+use App\Modules\Files\Scanning\ScanStatus;
+use App\Modules\Files\Scanning\VirusScanner;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Identity\UserType;
 use App\Modules\Platform\Capabilities\Capability;
@@ -480,7 +483,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * @return array<string, array<string, bool|string|null>|bool|int|string|null>
+     * @return array<string, array<string, bool|int|string|null>|bool|int|string|null>
      */
     private function systemInfo(): array
     {
@@ -511,6 +514,73 @@ class DashboardController extends Controller
             // able to confirm at a glance, not only worth warning about
             // when it is false — the same reasoning as storage_durability.
             'file_delivery' => $this->fileDelivery->describe(),
+            // Always stated, like delivery and storage above it: "my
+            // uploads are checked by ClamAV" is worth confirming at a
+            // glance, not only worth mentioning when it is false. Null
+            // only where this installation does not connect its own
+            // scanner at all.
+            'scanning' => $this->scanningState(),
+            // Rows this installation lists and cannot produce. Zero is the
+            // ordinary answer and says nothing on screen; anything else is
+            // somebody's files gone, which is worth interrupting for.
+            'missing_files' => File::query()->where('scan_status', ScanStatus::Missing)->count(),
+        ];
+    }
+
+    /**
+     * Where this installation stands with virus scanning.
+     *
+     * Reported whether or not anything is wrong: the System card states
+     * how downloads leave and where files are stored for the same reason,
+     * and "nothing is checking my uploads" is exactly the fact an
+     * administrator will not go looking for.
+     *
+     * Null only when this installation does not connect its own scanner —
+     * on a hosted one that is the platform's infrastructure, and a tenant
+     * reading about it could neither confirm nor fix it. See
+     * Capability::VirusScanningConnect.
+     *
+     * @return array{configured: bool, reachable: bool, engine: string|null, definitions_age_hours: int|null, let_through_24h: int, pending: int}|null
+     */
+    private function scanningState(): ?array
+    {
+        if (! $this->capabilities->has(Capability::VirusScanningConnect)) {
+            return null;
+        }
+
+        $config = app(ScanningConfig::class);
+
+        if (! $config->enabled()) {
+            return [
+                'configured' => false,
+                'reachable' => false,
+                'engine' => null,
+                'definitions_age_hours' => null,
+                'let_through_24h' => 0,
+                'pending' => 0,
+            ];
+        }
+
+        $scanner = app(VirusScanner::class)->status();
+
+        return [
+            'configured' => true,
+            'reachable' => $scanner->reachable,
+            'engine' => $scanner->engine,
+            'definitions_age_hours' => $scanner->definitionsAgeHours(),
+            // Files that went out unchecked in the last day. Zero is the
+            // only number that means "protected"; anything else is a
+            // scanner that was down, or files nobody could open.
+            'let_through_24h' => ActivityLog::query()
+                ->where('action', Action::FileNotScanned)
+                ->where('created_at', '>=', now()->subDay())
+                ->count(),
+            // Waiting more than an hour: on an installation set to hold,
+            // this is what an outage looks like.
+            'pending' => File::query()
+                ->where('scan_status', ScanStatus::Pending)
+                ->where('created_at', '<=', now()->subHour())
+                ->count(),
         ];
     }
 

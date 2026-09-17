@@ -182,6 +182,44 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Virus scanning
+    |--------------------------------------------------------------------------
+    |
+    | Naming an address here makes scanning *managed*: that scanner is used,
+    | scanning cannot be switched off from the settings screen, and the
+    | connection fields are hidden. It is how a hosted fleet points every
+    | site at one scanning service, and a self-hosted operator who would
+    | rather configure this in the environment than in the database can use
+    | it too. Everything else — what to do with files that cannot be scanned,
+    | and what to do while the scanner is down — stays a setting either way,
+    | because those are the site's decisions rather than the platform's.
+    |
+    | Format: unix:///var/run/clamav/clamd.sock, or tcp://host:3310.
+    |
+    */
+
+    'scanning' => [
+        'address' => env('PROJECTSEND_SCANNER_ADDRESS'),
+
+        // The other way to point an installation at a scanner, and the
+        // opposite of the one above: written into the settings table on
+        // first boot and then owned by whoever administers the
+        // installation, who can change it or switch scanning off like any
+        // other setting. It is what a self-hosted operator who brings up
+        // the optional scanner container wants — the site arrives
+        // configured, without the platform taking the switch away. Ignored
+        // on any boot where the setting already has a value.
+        'default_address' => env('PROJECTSEND_SCANNER_DEFAULT_ADDRESS'),
+
+        // How long to wait for the socket, and then for each reply. A scan
+        // streams the whole file before the reply comes, so the second one
+        // has to allow for the largest file this installation accepts.
+        'connect_timeout' => (int) env('PROJECTSEND_SCANNER_CONNECT_TIMEOUT', 5),
+        'reply_timeout' => (int) env('PROJECTSEND_SCANNER_REPLY_TIMEOUT', 600),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Release identity
     |--------------------------------------------------------------------------
     |

@@ -151,11 +151,14 @@ class FileVersions
      *
      * Candidates come from the previous file's own audience rather than a
      * broad user query, then each is re-checked against both files with the
-     * authoritative visibility scope.
+     * authoritative visibility scope — which is also why this is public:
+     * while the new file is being scanned that scope hides it, so the
+     * audience is empty and nothing is sent. AnnounceAvailableFile asks
+     * again once the file can actually be had.
      *
      * @return Collection<int, User>
      */
-    private function sharedAudience(File $file, File $previous): Collection
+    public function sharedAudience(File $file, File $previous): Collection
     {
         $candidateIds = FileAssignment::query()
             ->where('file_id', $previous->sharingOwnerId())

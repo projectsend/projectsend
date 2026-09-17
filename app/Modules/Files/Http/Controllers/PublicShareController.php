@@ -11,6 +11,8 @@ use App\Modules\Files\Access\DownloadAllowance;
 use App\Modules\Files\Delivery\StoredFileResponse;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Scanning\FileAvailability;
+use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Files\Models\ShareLink;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -29,6 +31,7 @@ class PublicShareController extends Controller
         private readonly ActivityLogger $activity,
         private readonly DownloadAllowance $allowance,
         private readonly StoredFileResponse $bytes,
+        private readonly FileAvailability $availability,
     ) {}
 
     public function show(string $token): InertiaResponse
@@ -45,6 +48,16 @@ class PublicShareController extends Controller
         // so a link outliving it would be a way around that revocation.
         if ($shareLink->isExpired() || $file->isExpired()) {
             return Inertia::render('share/show', ['status' => 'expired']);
+        }
+
+        // A link can be minted the moment a file is stored — the hosted
+        // free plan does exactly that — so the link routinely exists
+        // before the scanner has finished. It says so rather than 404ing:
+        // the visitor was sent a real link and it will work shortly.
+        if (! $this->availability->isAvailable($file)) {
+            return Inertia::render('share/show', [
+                'status' => $file->scan_status === ScanStatus::Pending ? 'checking' : 'unavailable',
+            ]);
         }
 
         // Two separate caps reach the same page: the link's own
@@ -80,6 +93,12 @@ class PublicShareController extends Controller
         $file = $shareLink?->shareable;
 
         if ($shareLink === null || ! $file instanceof File || $shareLink->isExpired() || $file->isExpired()) {
+            return redirect()->route('share.show', $token);
+        }
+
+        // Same for a file still being checked, and for the same reason
+        // the limit is asked before the counter moves.
+        if (! $this->availability->isAvailable($file)) {
             return redirect()->route('share.show', $token);
         }
 

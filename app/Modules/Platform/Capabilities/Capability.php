@@ -29,6 +29,16 @@ enum Capability: string
     // the bucket is provisioned, what goes in it is not.
     case UsersManage = 'users.manage';
     case StorageConfigure = 'storage.configure';
+
+    // Connecting this installation to a virus scanner, and being told on
+    // the dashboard when it has none. Community only, and the division is
+    // the one managed storage already draws: on a hosted installation the
+    // scanner is infrastructure the platform runs, so its address is not a
+    // tenant's to set and its absence is not a tenant's to fix. What stays
+    // on both editions is what to *do* with a file nobody could scan —
+    // that is a decision about somebody's own files, not about
+    // infrastructure. See docs/feature-virus-scanning.md.
+    case VirusScanningConnect = 'scanning.connect';
     case EmailTransportConfigure = 'email.transport.configure';
     case SystemUpdates = 'system.updates';
 
@@ -166,6 +176,7 @@ enum Capability: string
     {
         return match ($this) {
             self::StorageConfigure,
+            self::VirusScanningConnect,
             self::EmailTransportConfigure,
             self::SystemUpdates,
             self::NewsConfigure,

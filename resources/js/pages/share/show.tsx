@@ -8,7 +8,7 @@ import AuthLayout from '@/layouts/auth-layout';
 import { formatBytes } from '@/lib/format-bytes';
 
 interface ShareShowProps {
-    status: 'active' | 'expired' | 'limit_reached' | 'not_found';
+    status: 'active' | 'expired' | 'limit_reached' | 'not_found' | 'checking' | 'unavailable';
     file?: {
         original_name: string;
         size: number;
@@ -26,11 +26,21 @@ export default function ShareShow({ status, file, download_url }: ShareShowProps
                 ? t('This link has expired.')
                 : status === 'limit_reached'
                   ? t('This link has reached its download limit.')
-                  : t("This link doesn't exist or has been revoked.");
+                  : // A link can exist before its file has been checked for
+                    // viruses — on some installations one is created the
+                    // moment a file is uploaded — so this is "come back in a
+                    // minute", not "something is wrong".
+                    status === 'checking'
+                    ? t('This file is still being checked for viruses. Please try again in a few minutes.')
+                    : status === 'unavailable'
+                      ? t('This file is not available.')
+                      : t("This link doesn't exist or has been revoked.");
+
+        const title = status === 'checking' ? t('Almost ready') : t('Link unavailable');
 
         return (
-            <AuthLayout title={t('Link unavailable')} description={description}>
-                <Head title={t('Link unavailable')} />
+            <AuthLayout title={title} description={description}>
+                <Head title={title} />
             </AuthLayout>
         );
     }

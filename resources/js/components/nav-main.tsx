@@ -85,7 +85,13 @@ export function NavMain({ groups = [] }: { groups: NavGroup[] }) {
                                         )}
                                     </SidebarMenuButton>
                                     {item.badge !== undefined && item.badge > 0 && (
-                                        <SidebarMenuBadge className="bg-primary text-primary-foreground peer-hover/menu-button:text-primary-foreground peer-data-[active=true]/menu-button:text-primary-foreground rounded-full">
+                                        <SidebarMenuBadge
+                                            className={
+                                                item.badgeTone === 'warning'
+                                                    ? 'rounded-full bg-amber-500 text-amber-950 peer-hover/menu-button:text-amber-950 peer-data-[active=true]/menu-button:text-amber-950'
+                                                    : 'bg-primary text-primary-foreground peer-hover/menu-button:text-primary-foreground peer-data-[active=true]/menu-button:text-primary-foreground rounded-full'
+                                            }
+                                        >
                                             {item.badge}
                                         </SidebarMenuBadge>
                                     )}

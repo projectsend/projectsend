@@ -91,6 +91,27 @@ services:
       redis:
         condition: service_started
 
+  # Scans get their own worker for the reason zips do: reading a 5 GB file
+  # to the scanner takes minutes, and on the default queue it would sit in
+  # front of every notification email.
+  worker-scans:
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
+      args:
+        WWWUSER: ${WWWUSER:-1000}
+        WWWGROUP: ${WWWGROUP:-1000}
+    command: php artisan queue:work --queue=scans --tries=1
+    volumes:
+      - .:/var/www/html
+      - ../packages:/var/www/packages
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
   scheduler:
     build:
       context: .
@@ -169,6 +190,27 @@ services:
     profiles:
       - dev
 
+  # The virus scanner, off unless you ask for it:
+  #   docker compose --profile scanner up -d
+  # then point Settings → Virus scanning at tcp://clamav:3310.
+  #
+  # It costs about 1-1.5 GB of memory, because the virus definitions are
+  # held in memory, and the first start downloads them before it answers.
+  # That is why this is a profile rather than a service everybody runs.
+  clamav:
+    image: clamav/clamav:stable
+    # No ports. clamd has no authentication and no encryption of any kind,
+    # so anything that can reach it can use it, and file contents cross
+    # that connection in the clear. It is reachable from the application
+    # on this network and from nowhere else.
+    volumes:
+      - clamav-data:/var/lib/clamav
+      - ./docker/clamav/clamd.conf:/etc/clamav/clamd.conf:ro
+    restart: unless-stopped
+    profiles:
+      - scanner
+
 volumes:
   db-data:
   redis-data:
+  clamav-data:

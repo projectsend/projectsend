@@ -7,7 +7,9 @@ namespace App\Modules\Files\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Files\Models\File;
 use App\Modules\Files\OrphanFileScanner;
+use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Files\Uploads\StoreUploadedFile;
 use App\Support\Pagination;
 use Illuminate\Contracts\Filesystem\Filesystem;
@@ -45,6 +47,14 @@ class OrphanFilesController extends Controller
         $validated = $request->validate(['search' => ['nullable', 'string', 'max:255']]);
         $search = trim($validated['search'] ?? '');
 
+        // The mirror image of this screen, on the same screen: bytes with
+        // no row, and rows with no bytes. They are the same fault seen
+        // from either end, and an administrator looking into one has
+        // every reason to look at the other.
+        if ($request->query('tab') === 'missing') {
+            return $this->missing($request);
+        }
+
         // A full disk scan (potentially thousands of entries, across
         // every scanned disk) happens once per request regardless of
         // page — Storage::allFiles() has no server-side paging of its
@@ -75,10 +85,51 @@ class OrphanFilesController extends Controller
         );
 
         return Inertia::render('files/orphans', [
+            'tab' => 'orphans',
             'orphans' => $paginator->items(),
             'pagination' => Pagination::meta($paginator),
             'search' => $search,
             'scanned_disks' => $this->scanner->scannedDisks(),
+            'missing_count' => File::query()->where('scan_status', ScanStatus::Missing)->count(),
+        ]);
+    }
+
+    /**
+     * Files this installation lists and cannot produce.
+     *
+     * Read from the rows rather than from the disk: the daily check
+     * (projectsend:check-missing-files) has already done the comparing,
+     * and repeating a full disk listing on every page load would make
+     * this screen slower the worse the problem is.
+     */
+    private function missing(Request $request): Response
+    {
+        $missing = File::query()
+            ->where('scan_status', ScanStatus::Missing)
+            ->with('uploader')
+            ->orderBy('name')
+            ->paginate(self::PER_PAGE)
+            ->withQueryString();
+
+        $missing->through(fn (File $file): array => [
+            'id' => $file->id,
+            'name' => $file->name,
+            'original_name' => $file->original_name,
+            'size' => $file->size,
+            'disk' => $file->disk,
+            'path' => $file->path,
+            'uploader' => $file->uploader?->name,
+            'created_at' => $file->created_at?->toIso8601String(),
+        ]);
+
+        return Inertia::render('files/orphans', [
+            'tab' => 'missing',
+            'orphans' => [],
+            'pagination' => Pagination::meta($missing),
+            'search' => '',
+            'scanned_disks' => $this->scanner->scannedDisks(),
+            'missing' => $missing->items(),
+            'missing_count' => $missing->total(),
         ]);
     }
 

@@ -13,6 +13,7 @@ import { DetailsPanel, DetailsTarget } from '@/components/details-panel';
 import { DragChip, DragData, DropZone, useFolderDrop, useRowDrag } from '@/components/file-dnd';
 import { FilePreviewDialog } from '@/components/file-preview-dialog';
 import { PreviewAction } from '@/components/preview-action';
+import { ScanBadge, type ScanState } from '@/components/files/scan-badge';
 import { VersionBadge, type VersionLinks } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
 import { FilterField, ListToolbar } from '@/components/list-toolbar';
@@ -60,6 +61,8 @@ interface FileRow {
     public: boolean;
     public_url: string | null;
     expired: boolean;
+    /** What the virus scanner made of it. Null when scanning is off. */
+    scan: ScanState | null;
     assignments_count: number;
     downloads_count: number;
     /**
@@ -811,6 +814,7 @@ function FileRow({
                                     {t('Expired')}
                                 </Badge>
                             )}
+                            <ScanBadge scan={row.scan} />
                             <VersionBadge version={row.version} />
                         </div>
                         <p className="text-muted-foreground text-xs">
@@ -1053,6 +1057,7 @@ function FileCard({
                             {t('Expired')}
                         </Badge>
                     )}
+                    <ScanBadge scan={row.scan} />
                     <VersionBadge version={row.version} />
                 </div>
                 <p className="text-muted-foreground truncate text-xs">

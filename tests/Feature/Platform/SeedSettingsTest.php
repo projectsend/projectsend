@@ -95,3 +95,50 @@ test('the seeded policy is in force for the first account the same boot creates'
     expect(app(Settings::class)->get(Setting::TwoFactorEnforcement))->toBe('staff')
         ->and($admin->hasTwoFactorEnabled())->toBeFalse();
 });
+
+/*
+|--------------------------------------------------------------------------
+| The virus scanner
+|--------------------------------------------------------------------------
+|
+| The opposite of PROJECTSEND_SCANNER_ADDRESS, which is a policy the
+| platform keeps. This is a starting value for an operator who brought up
+| the optional scanner container beside the application: it arrives
+| configured, and stays theirs to change.
+|
+*/
+
+test('a first boot points the installation at the scanner named in its environment', function () {
+    config(['projectsend.scanning.default_address' => 'tcp://clamav:3310']);
+
+    $this->artisan('projectsend:seed-settings')->assertSuccessful();
+
+    $settings = app(App\Modules\Platform\Settings\Settings::class);
+
+    expect($settings->get(App\Modules\Platform\Settings\Setting::VirusScannerAddress))->toBe('tcp://clamav:3310')
+        // Both together: an address with scanning off would look
+        // configured and check nothing.
+        ->and($settings->get(App\Modules\Platform\Settings\Setting::VirusScanningEnabled))->toBeTrue();
+});
+
+test('it never argues with an administrator who has already chosen', function () {
+    $settings = app(App\Modules\Platform\Settings\Settings::class);
+    $settings->set(App\Modules\Platform\Settings\Setting::VirusScannerAddress, '');
+    $settings->set(App\Modules\Platform\Settings\Setting::VirusScanningEnabled, false);
+
+    config(['projectsend.scanning.default_address' => 'tcp://clamav:3310']);
+
+    $this->artisan('projectsend:seed-settings')->assertSuccessful();
+
+    // Cleared on purpose is a decision, and a restart must not undo it.
+    expect($settings->get(App\Modules\Platform\Settings\Setting::VirusScannerAddress))->toBe('')
+        ->and($settings->get(App\Modules\Platform\Settings\Setting::VirusScanningEnabled))->toBeFalse();
+});
+
+test('an installation with no scanner named in its environment is left alone', function () {
+    config(['projectsend.scanning.default_address' => null]);
+
+    $this->artisan('projectsend:seed-settings')->assertSuccessful();
+
+    expect(app(App\Modules\Platform\Settings\Settings::class)->get(App\Modules\Platform\Settings\Setting::VirusScanningEnabled))->toBeFalse();
+});

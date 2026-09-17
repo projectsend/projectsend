@@ -35,6 +35,13 @@ enum Permission: string
     // rather than a key nobody can reach.
     case ModerateComments = 'moderate_comments';
 
+    // Overrule the virus scanner: let a quarantined file out. Its own key
+    // rather than riding on delete_files, because deciding that a threat
+    // report is wrong is a different judgement from deciding a file is no
+    // longer needed — and only the administrator role holds it by
+    // default. See docs/feature-virus-scanning.md.
+    case ReleaseQuarantinedFiles = 'release_quarantined_files';
+
     // Categories
     case CreateCategories = 'create_categories';
     case EditCategories = 'edit_categories';
@@ -95,6 +102,7 @@ enum Permission: string
             self::ImportOrphans => 'Import orphan files',
             self::LimitDownloads => 'Limit download counts',
             self::ModerateComments => 'Moderate comments',
+            self::ReleaseQuarantinedFiles => 'Release quarantined files',
             self::CreateCategories => 'Create categories',
             self::EditCategories => 'Edit categories',
             self::DeleteCategories => 'Delete categories',
@@ -186,6 +194,7 @@ enum Permission: string
             self::ImportOrphans,
             self::LimitDownloads,
             self::ModerateComments => PermissionCategory::Files,
+            self::ReleaseQuarantinedFiles => PermissionCategory::Files,
 
             self::CreateCategories,
             self::EditCategories,

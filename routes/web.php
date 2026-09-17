@@ -29,6 +29,7 @@ use App\Modules\Files\Http\Controllers\FoldersController;
 use App\Modules\Files\Http\Controllers\MyFilesController;
 use App\Modules\Files\Http\Controllers\MyFoldersController;
 use App\Modules\Files\Http\Controllers\OrphanFilesController;
+use App\Modules\Files\Http\Controllers\QuarantineController;
 use App\Modules\Files\Http\Controllers\PublicShareController;
 use App\Modules\Files\Http\Controllers\ShareLinksController;
 use App\Modules\Files\Http\Controllers\ZipDownloadsController;
@@ -127,6 +128,16 @@ Route::middleware(['auth'])->group(function () {
         Route::post('files/orphans/import', [OrphanFilesController::class, 'import'])->name('orphan-files.import');
         Route::post('files/orphans/delete', [OrphanFilesController::class, 'destroy'])->name('orphan-files.delete');
     });
+
+    // Before files/{file}, or "quarantine" is swallowed as a file key —
+    // the same ordering the orphans block above depends on.
+    Route::get('files/quarantine', [QuarantineController::class, 'index'])
+        ->middleware(['staff', 'can:release_quarantined_files'])->name('files.quarantine');
+    // Password confirmation on top of the permission: this is the one
+    // action that deliberately hands out a file the scanner called
+    // malicious, and it is the same bar minting an API token has to clear.
+    Route::post('files/{file}/release', [QuarantineController::class, 'release'])
+        ->middleware(['staff', 'can:release_quarantined_files', 'password.confirm'])->name('files.release');
 
     Route::get('files/{file}', [FilesController::class, 'edit'])->middleware('staff')->name('files.edit');
     Route::get('files/{file}/details', [FileDetailsController::class, 'show'])->middleware('staff')->name('files.details');

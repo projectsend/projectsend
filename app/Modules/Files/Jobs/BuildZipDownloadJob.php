@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Modules\Files\Access\DownloadAllowance;
 use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Scanning\FileAvailability;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Models\ZipDownload;
 use App\Modules\Platform\Settings\Setting;
@@ -114,6 +115,7 @@ class BuildZipDownloadJob implements ShouldQueue
 
         $visible = app(ViewableFileScope::class)->for($requester);
         $allowance = app(DownloadAllowance::class);
+        $availability = app(FileAvailability::class);
 
         try {
             $relativePath = 'zips/'.$zipDownload->id.'.zip';
@@ -148,7 +150,11 @@ class BuildZipDownloadJob implements ShouldQueue
                 // Re-checked here for the same reason visibility is: the
                 // archive is built some time after it was asked for, and
                 // the allowance may have been spent in between.
-                if (! $allowance->allows($file, $requester)) {
+                // Availability is re-checked here for a sharper reason
+                // than the allowance is: a file can be quarantined between
+                // the request and the build, and an archive is exactly how
+                // an infected file would leave anyway.
+                if (! $availability->isAvailable($file) || ! $allowance->allows($file, $requester)) {
                     $skipped[] = ['id' => $file->id, 'name' => $file->name];
 
                     continue;
@@ -382,6 +388,7 @@ class BuildZipDownloadJob implements ShouldQueue
     private function addFolder(ZipArchive $zip, Folder $folder, User $requester, array &$usedNames, array &$tempFiles, Builder $visible, array &$skipped, array &$added): int
     {
         $allowance = app(DownloadAllowance::class);
+        $availability = app(FileAvailability::class);
 
         $subtreeIds = $folder->subtreeFolderIds();
         /** @var Collection<int, Folder> $foldersById */
@@ -403,7 +410,7 @@ class BuildZipDownloadJob implements ShouldQueue
             // inside it whose own allowance is spent — same reason the
             // per-file visibility filter is re-derived rather than
             // inherited from the folder.
-            if (! $allowance->allows($file, $requester)) {
+            if (! $availability->isAvailable($file) || ! $allowance->allows($file, $requester)) {
                 $skipped[] = ['id' => $file->id, 'name' => $file->name];
 
                 continue;

@@ -18,6 +18,7 @@ use App\Modules\Files\Editing\ApplyFileEdits;
 use App\Modules\Files\Editing\FileExpiry;
 use App\Modules\Files\Http\Resources\Api\FileResource;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Storage\ResolvingUploadDisk;
 use App\Modules\Files\Uploads\StoreUploadedFile;
@@ -107,6 +108,10 @@ class FilesController extends Controller
             'downloads' => ['nullable', 'in:none,any'],
             'version' => ['nullable', 'in:current,outdated'],
             'expired' => ['nullable', 'boolean'],
+            // One of pending, clean, infected, released, not_scanned or
+            // unscannable_blocked — so an integration can wait for a file
+            // it just uploaded, or collect what is in quarantine.
+            'scan_status' => ['nullable', 'string', Rule::enum(ScanStatus::class)],
         ]);
 
         $query = $this->viewable->for($user)
@@ -204,6 +209,10 @@ class FilesController extends Controller
         // File::isExpired.
         if ($request->has('expired') && ($filters['expired'] ?? null) !== null) {
             $request->boolean('expired') ? $query->expired() : $query->notExpired();
+        }
+
+        if (($filters['scan_status'] ?? null) !== null) {
+            $query->where('files.scan_status', $filters['scan_status']);
         }
 
         return FileResource::collection($this->polling->paginate($request, $query, 'files'));

@@ -10,6 +10,49 @@ Anything under **⚠️ Important — do these yourself** is something you have 
 we did. It sits at the top of a release for that reason. Older entries call the same section
 **Upgrade notes**.
 
+## 2.5.0 — 17 September 2026
+
+**Added**
+
+- **Uploaded files can be checked for viruses before anyone can download them.**
+- **Files the virus scanner refuses go to a Quarantine screen, where you can read the verdict and
+  release a file if the report is wrong.**
+- **You choose what happens to a file the scanner cannot open, and to uploads arriving while the
+  scanner is unreachable.**
+- **A Test button says which scanner answered and how old its virus definitions are.**
+- **The dashboard says when virus scanning has stopped protecting anything.**
+- **Files uploaded before scanning was switched on can be worked through in the background, at a
+  pace you set.**
+- **Invite a client to set their own password instead of handing them one.** Contributed by
+  [@mash2k3](https://github.com/mash2k3).
+- **Staff who administer clients are notified in the bell when a client account appears.**
+- **Client accounts can expire on a date.** Requested by
+  [@Drardollan](https://github.com/Drardollan) in
+  [#1310](https://github.com/projectsend/projectsend/issues/1310).
+- **Each role, and each person, can choose where they land after signing in.** Requested by
+  [@Zodiac1978](https://github.com/Zodiac1978) in
+  [#1777](https://github.com/projectsend/projectsend/issues/1777).
+- **Each client can be given a folder of their own, which becomes their root.**
+- **The file library filters by uploader, by the uploader's role, by public or private, by whether
+  a file was ever downloaded, and by current or outdated version.**
+- **The same five filters are available through the API.**
+- **Files whose bytes have gone missing from storage are found daily and listed on their own
+  screen.**
+
+**Fixed**
+
+- **Creating a client with a storage quota typed in no longer answers with an error page.**
+- **A file expiry date sent to the API as a number now answers 422 instead of 500.**
+- **A quarantined file, or one missing from storage, is no longer listed in the library with a
+  download that cannot work.**
+- A dependency advisory in the bundled `js-yaml`.
+
+### Issues closed since 2.4.1
+
+- [#1310](https://github.com/projectsend/projectsend/issues/1310) — expire client accounts
+- [#1777](https://github.com/projectsend/projectsend/issues/1777) — customization / branding
+  (start pages)
+
 ## 2.4.1 — 11 September 2026
 
 ### ⚠️ Important — do these yourself

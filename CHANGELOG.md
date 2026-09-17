@@ -19,7 +19,8 @@ we did. It sits at the top of a release for that reason. Older entries call the 
   release a file if the report is wrong.**
 - **You choose what happens to a file the scanner cannot open, and to uploads arriving while the
   scanner is unreachable.**
-- **A Test button says which scanner answered and how old its virus definitions are.**
+- **A Test button says which scanner answered and how old its virus definitions are, and fails a
+  scanner that reports password-protected archives as clean.**
 - **The dashboard says when virus scanning has stopped protecting anything.**
 - **Files uploaded before scanning was switched on can be worked through in the background, at a
   pace you set.**
@@ -38,6 +39,7 @@ we did. It sits at the top of a release for that reason. Older entries call the 
 - **The same five filters are available through the API.**
 - **Files whose bytes have gone missing from storage are found daily and listed on their own
   screen.**
+- **Clients see on each file the date it stops being available.**
 
 **Fixed**
 

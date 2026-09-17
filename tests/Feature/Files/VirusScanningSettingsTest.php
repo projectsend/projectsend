@@ -408,3 +408,18 @@ test('the screen says whether a scan is already under way', function () {
         fn (AssertableInertia $page) => $page->where('counts.queued', 1),
     );
 });
+
+test('a hosted installation is not offered a test it cannot run', function () {
+    config(['projectsend.edition' => App\Modules\Platform\Capabilities\Edition::Cloud]);
+    forgetRequestState();
+
+    $this->actingAs($this->admin)->get('/system/settings/virus-scanning')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('can_test', false),
+    );
+});
+
+test('an installation that connects its own scanner is', function () {
+    $this->actingAs($this->admin)->get('/system/settings/virus-scanning')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('can_test', true),
+    );
+});

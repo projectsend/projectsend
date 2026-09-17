@@ -74,6 +74,12 @@ class VirusScanningSettingsController extends Controller
             // the same thing for both, since to the person reading it
             // they are the same fact.
             'managed' => $this->config->isManaged() || ! $this->canConnect(),
+            // Distinct from `managed`, which covers two different reasons
+            // the address is not editable. A managed installation still
+            // has a scanner worth testing; one that does not connect
+            // scanners at all has nothing to test, and the endpoint says
+            // so with a 403.
+            'can_test' => $this->canConnect(),
             'address' => $this->config->isManaged() ? '' : $this->settings->get(Setting::VirusScannerAddress),
             'max_size_mb' => $this->settings->get(Setting::VirusScanMaxSizeMb),
             'unscannable_policy' => $this->settings->get(Setting::VirusUnscannablePolicy),

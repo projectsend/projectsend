@@ -26,6 +26,8 @@ interface VirusScanningProps {
     enabled: boolean;
     /** The scanner is supplied by the platform: no address to set, and no switch. */
     managed: boolean;
+    /** Whether this installation connects its own scanner, and so has one to test. */
+    can_test: boolean;
     address: string;
     max_size_mb: number;
     unscannable_policy: 'allow' | 'block';
@@ -45,6 +47,7 @@ export default function VirusScanningSettings({
     test_result,
     enabled,
     managed,
+    can_test,
     address,
     max_size_mb,
     unscannable_policy,
@@ -158,32 +161,6 @@ export default function VirusScanningSettings({
 
                 {tab === 'scanner' && (
                     <div className="max-w-xl space-y-6">
-                        {/* Above the form on purpose: these act on the scanner
-                            as it is now, and nothing belongs after a Save
-                            button. */}
-                        <div className="space-y-3 rounded-lg border p-4">
-                            <HeadingSmall
-                                title={t('Check the connection')}
-                                description={t('Sends the standard test file, which is harmless and every scanner recognises.')}
-                            />
-
-                            <Button
-                                type="button"
-                                variant="outline"
-                                className="w-fit"
-                                onClick={() => router.post(route('system-settings.virus-scanning.test'), {}, { preserveScroll: true })}
-                            >
-                                {t('Test scanner')}
-                            </Button>
-
-                            {test_result && (
-                                <Alert variant={test_result.ok ? 'default' : 'destructive'}>
-                                    {test_result.ok ? <CheckCircle2 className="size-4" /> : <TriangleAlert className="size-4" />}
-                                    <AlertDescription>{test_result.message}</AlertDescription>
-                                </Alert>
-                            )}
-                        </div>
-
                         <form onSubmit={submit} className="space-y-6">
                             {managed ? (
                                 <Alert>
@@ -225,6 +202,33 @@ export default function VirusScanningSettings({
                                         <InputError message={errors.address} />
                                     </div>
                                 </>
+                            )}
+
+                            {/* Under the address it tests, and above the
+                                Save button, which nothing goes below. */}
+                            {can_test && (
+                                <div className="space-y-3 rounded-lg border p-4">
+                                    <HeadingSmall
+                                        title={t('Check the connection')}
+                                        description={t('Sends the standard test file, which is harmless and every scanner recognises.')}
+                                    />
+
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="w-fit"
+                                        onClick={() => router.post(route('system-settings.virus-scanning.test'), {}, { preserveScroll: true })}
+                                    >
+                                        {t('Test scanner')}
+                                    </Button>
+
+                                    {test_result && (
+                                        <Alert variant={test_result.ok ? 'default' : 'destructive'}>
+                                            {test_result.ok ? <CheckCircle2 className="size-4" /> : <TriangleAlert className="size-4" />}
+                                            <AlertDescription>{test_result.message}</AlertDescription>
+                                        </Alert>
+                                    )}
+                                </div>
                             )}
 
                             <SaveButton processing={processing} recentlySuccessful={recentlySuccessful} />

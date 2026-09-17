@@ -383,14 +383,7 @@ class VirusScanningSettingsController extends Controller
                 ScanStatus::UnscannableBlocked->value,
             ])->count(),
             'never_scanned' => File::query()->neverScanned()->count(),
-            'let_through' => File::query()
-                ->where('scan_status', ScanStatus::NotScanned)
-                ->whereIn('scan_note', [
-                    NotScannedReason::ScannerUnavailable->value,
-                    NotScannedReason::TooLarge->value,
-                    NotScannedReason::Encrypted->value,
-                ])
-                ->count(),
+            'let_through' => File::query()->letThrough()->count(),
             // What a New scan would actually check — see
             // ScanFileJob::rescannableValues().
             'scannable' => File::query()

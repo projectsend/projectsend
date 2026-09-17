@@ -292,8 +292,10 @@ test('the status command reports an unreachable scanner and what got through', f
     app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://nowhere.test:3310');
     app()->instance(VirusScanner::class, (new FakeVirusScanner)->reports(ScannerStatus::unreachable('no answer')));
 
-    app(App\Modules\Audit\ActivityLogger::class)->logSystem(App\Modules\Audit\Action::FileNotScanned, [
-        'id' => 1, 'name' => 'x', 'reason' => 'scanner_unavailable',
+    File::factory()->create([
+        'scan_status' => ScanStatus::NotScanned,
+        'scan_note' => NotScannedReason::ScannerUnavailable->value,
+        'scanned_at' => now(),
     ]);
 
     // statusJson() lives in StatusCommandTest — Pest loads every test
@@ -624,5 +626,39 @@ test('a retry scheduled for later is not a scan in progress', function () {
     $this->actingAs($this->admin)->getJson('/system/settings/virus-scanning/activity')
         ->assertJsonPath('queued', 1)
         ->assertJsonPath('running', true);
+});
+
+test('"let through" counts files that can still be downloaded unchecked, once each', function () {
+    // What the dashboard reported after a day of real use: 62, for 16
+    // files, none of them downloadable. It counted activity log entries —
+    // one per attempt, and still counting files since deleted, gone
+    // missing or scanned clean.
+    app(Settings::class)->set(Setting::VirusScanningEnabled, true);
+    app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://scanner.test:3310');
+    app()->instance(VirusScanner::class, new FakeVirusScanner);
+
+    $letThrough = fn (array $overrides = []): File => File::factory()->create(array_merge([
+        'scan_status' => ScanStatus::NotScanned,
+        'scan_note' => NotScannedReason::ScannerUnavailable->value,
+        'scanned_at' => now(),
+    ], $overrides));
+
+    $out = $letThrough();
+    $letThrough()->delete();
+    $letThrough(['scan_status' => ScanStatus::Missing, 'scan_note' => null]);
+    $letThrough(['scan_status' => ScanStatus::Clean, 'scan_note' => null]);
+    $letThrough(['scanned_at' => now()->subDays(2)]);
+
+    foreach (range(1, 3) as $attempt) {
+        app(App\Modules\Audit\ActivityLogger::class)->logSystem(App\Modules\Audit\Action::FileNotScanned, [
+            'id' => $out->id, 'name' => $out->name, 'reason' => 'scanner_unavailable',
+        ]);
+    }
+
+    $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('system.scanning.let_through_24h', 1),
+    );
+
+    expect(scanningStatus()['let_through_24h'])->toBe(1);
 });
 

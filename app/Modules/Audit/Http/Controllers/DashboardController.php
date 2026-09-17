@@ -568,12 +568,13 @@ class DashboardController extends Controller
             'reachable' => $scanner->reachable,
             'engine' => $scanner->engine,
             'definitions_age_hours' => $scanner->definitionsAgeHours(),
-            // Files that went out unchecked in the last day. Zero is the
-            // only number that means "protected"; anything else is a
-            // scanner that was down, or files nobody could open.
-            'let_through_24h' => ActivityLog::query()
-                ->where('action', Action::FileNotScanned)
-                ->where('created_at', '>=', now()->subDay())
+            // Files let through unchecked in the last day that can still
+            // be downloaded. Zero is the only number that means
+            // "protected"; anything else is a scanner that was down, or
+            // files nobody could open. See File::scopeLetThrough().
+            'let_through_24h' => File::query()
+                ->letThrough()
+                ->where('scanned_at', '>=', now()->subDay())
                 ->count(),
             // Waiting more than an hour: on an installation set to hold,
             // this is what an outage looks like.

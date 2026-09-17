@@ -320,6 +320,28 @@ class File extends Model
     }
 
     /**
+     * Files people can download that nothing checked: let through while
+     * the scanner was down, or because it could not open them.
+     *
+     * A state, not a history. The dashboard used to count "let through"
+     * entries in the activity log, which counted a file once per attempt,
+     * and went on counting files that had since been deleted, gone
+     * missing or been scanned clean — none of which is going out
+     * unscanned.
+     *
+     * @param  Builder<File>  $query
+     */
+    public function scopeLetThrough(Builder $query): void
+    {
+        $query->where('scan_status', ScanStatus::NotScanned)
+            ->whereIn('scan_note', [
+                NotScannedReason::ScannerUnavailable->value,
+                NotScannedReason::TooLarge->value,
+                NotScannedReason::Encrypted->value,
+            ]);
+    }
+
+    /**
      * Files nothing has ever looked at.
      *
      * Two ways to be one, and the second is the common one: a file stored

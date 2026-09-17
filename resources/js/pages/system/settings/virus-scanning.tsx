@@ -218,7 +218,7 @@ export default function VirusScanningSettings({
                                 <div className="space-y-3 rounded-lg border p-4">
                                     <HeadingSmall
                                         title={t('Check the connection')}
-                                        description={t('Sends the standard test file, which is harmless and every scanner recognises.')}
+                                        description={t('Sends the EICAR test file: a harmless file made only for testing, which every antivirus recognises.')}
                                     />
 
                                     <Button

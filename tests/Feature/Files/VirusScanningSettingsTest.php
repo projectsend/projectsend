@@ -164,8 +164,12 @@ test('the test button says when the scanner answers but detects nothing', functi
 test('the test button confirms a working scanner', function () {
     app()->instance(VirusScanner::class, new FakeVirusScanner(ScanVerdict::infected('Eicar-Test-Signature')));
 
+    // Named, and said to be harmless: "detected the test file" alone
+    // reads like the application shipping something malicious.
     $this->actingAs($this->admin)->post('/system/settings/virus-scanning/test')
-        ->assertSessionHas('scanner_test_result', fn (array $result): bool => $result['ok'] === true);
+        ->assertSessionHas('scanner_test_result', fn (array $result): bool => $result['ok'] === true
+            && str_contains($result['message'], 'EICAR')
+            && str_contains($result['message'], 'harmless'));
 });
 
 test('the test button sends the standard test file, not an empty stream', function () {

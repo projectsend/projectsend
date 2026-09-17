@@ -221,7 +221,7 @@ class VirusScanningSettingsController extends Controller
 
             return back()->with('scanner_test_result', [
                 'ok' => true,
-                'message' => __('Working. :engine detected the test file as ":threat".', [
+                'message' => __('Working. :engine detected the EICAR test file as ":threat". EICAR is a harmless file made only for testing, and every antivirus recognises it.', [
                     'engine' => $status->engine ?? __('The scanner'),
                     'threat' => $verdict->detail ?? '',
                 ]),
@@ -233,7 +233,7 @@ class VirusScanningSettingsController extends Controller
         // exactly the failure nothing else would show.
         return back()->with('scanner_test_result', [
             'ok' => false,
-            'message' => __(':engine answered but did not detect the standard test file. Check that its virus definitions are installed and up to date.', [
+            'message' => __(':engine answered but did not detect the EICAR test file, a harmless file made only for testing. Check that its virus definitions are installed and up to date.', [
                 'engine' => $status->engine ?? __('The scanner'),
             ]),
         ]);

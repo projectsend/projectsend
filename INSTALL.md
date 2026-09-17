@@ -543,7 +543,7 @@ could not actually open — an encrypted zip, or one past a size limit — and P
 a scan that never happened.
 
 Log in, go to **System → Settings → Virus scanning**, switch it on, and give it the socket, usually
-`unix:///var/run/clamav/clamd.ctl`. Press **Test scanner**: it sends a harmless standard test file
+`unix:///var/run/clamav/clamd.ctl`. Press **Test scanner**: it sends EICAR, a harmless file made only for testing,
 and tells you whether the scanner actually detected it. Scanning happens in the background, so the
 queue worker below must be running.
 

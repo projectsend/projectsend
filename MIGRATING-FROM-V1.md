@@ -107,9 +107,12 @@ section on its own.
 ### If you installed from a release zip
 
 ```sh
-composer require projectsend/v1-migration-tool
+composer require projectsend/v1-migration-tool --update-no-dev
 php artisan migrate    # creates the tool's two tables
 ```
+
+`--update-no-dev` keeps Composer from also installing the tools ProjectSend is developed and tested
+with. A release zip leaves them out, and a server has no use for them.
 
 That is the whole installation — there is no `npm run build` to run. The zip ships its assets
 already compiled and deliberately without the toolchain that compiled them, so there is no
@@ -356,8 +359,12 @@ Once you are satisfied:
 
 ```sh
 php artisan projectsend:migrate:reset --drop   # also drops the tool's own tables
-composer remove projectsend/v1-migration-tool
+composer remove projectsend/v1-migration-tool --update-no-dev
 ```
+
+Removing a package makes Composer update the rest, so it needs `--update-no-dev` for the same reason
+as installing did. Leave it off only on a git checkout you develop on. On the Docker image, run it
+the way Step 1 ran `require`: `php /tmp/composer.phar remove …` as `www-data`.
 
 `--drop` throws away the Legacy → ProjectSend id map. **Keep it** if you may ever want to redirect
 old `download.php?id=…` links, because it is the only thing that can resolve them. Removing the

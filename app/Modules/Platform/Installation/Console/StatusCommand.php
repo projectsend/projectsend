@@ -488,6 +488,10 @@ class StatusCommand extends Command
                 'zips' => $this->queueDepth('zips'),
                 'scans' => $this->queueDepth('scans'),
             ],
+            // Rows whose bytes are gone. A fleet-wide jump in this is a
+            // storage fault, not a user one, and nothing else in this
+            // document would show it.
+            'missing_files' => File::query()->where('scan_status', ScanStatus::Missing)->count(),
             'scheduler' => $this->scheduler(),
         ];
     }

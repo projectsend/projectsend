@@ -33,6 +33,17 @@ enum ScanStatus: string
     case UnscannableBlocked = 'unscannable_blocked';
 
     /**
+     * The row is here and the bytes are not.
+     *
+     * Its own state rather than a kind of "not scanned", because what it
+     * means for the file is different: nothing can be served, so nothing
+     * is offered. A client listing it and getting an error on the
+     * download is worse than not seeing it, and staff need to see it
+     * precisely because somebody has to decide what to do about it.
+     */
+    case Missing = 'missing';
+
+    /**
      * Whether a file in this state may be seen and downloaded by people
      * other than staff and its uploader.
      */
@@ -40,7 +51,7 @@ enum ScanStatus: string
     {
         return match ($this) {
             self::Clean, self::Released, self::NotScanned => true,
-            self::Pending, self::Infected, self::UnscannableBlocked => false,
+            self::Pending, self::Infected, self::UnscannableBlocked, self::Missing => false,
         };
     }
 
@@ -75,6 +86,7 @@ enum ScanStatus: string
             self::Released => 'Released by an administrator',
             self::NotScanned => 'Not scanned',
             self::UnscannableBlocked => 'Blocked: could not be scanned',
+            self::Missing => 'Missing from storage',
         };
     }
 }

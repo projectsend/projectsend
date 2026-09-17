@@ -47,7 +47,7 @@ class ScanPolicy
             ScanOutcome::Infected => $this->quarantine($file, $verdict->detail ?? 'unknown', $verdict->engine),
             ScanOutcome::TooLarge => $this->unscannable($file, NotScannedReason::TooLarge, $verdict->engine),
             ScanOutcome::Encrypted => $this->unscannable($file, NotScannedReason::Encrypted, $verdict->engine),
-            ScanOutcome::Unreadable => $this->unscannable($file, NotScannedReason::Unreadable, $verdict->engine),
+            ScanOutcome::Unreadable => $this->missing($file),
             ScanOutcome::Unavailable => $this->unavailable($file, $verdict->detail),
         };
     }
@@ -94,6 +94,22 @@ class ScanPolicy
         $this->notifier->quarantined($file, $threat);
 
         return ScanStatus::Infected;
+    }
+
+    /**
+     * The row is here and the bytes are not.
+     *
+     * Not a scanning verdict at all, and deliberately not run through the
+     * unscannable policy: "allow files nobody could scan" is a decision
+     * about risk, and there is no risk in a file that cannot be served.
+     * What there is, is a problem somebody has to look at — see
+     * MissingFileScanner and the Files → Missing screen.
+     */
+    private function missing(File $file): ScanStatus
+    {
+        $this->settle($file, ScanStatus::Missing, null, null);
+
+        return ScanStatus::Missing;
     }
 
     /** The scanner could not open the file: too large, or encrypted. */

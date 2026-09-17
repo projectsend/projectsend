@@ -520,6 +520,10 @@ class DashboardController extends Controller
             // only where this installation does not connect its own
             // scanner at all.
             'scanning' => $this->scanningState(),
+            // Rows this installation lists and cannot produce. Zero is the
+            // ordinary answer and says nothing on screen; anything else is
+            // somebody's files gone, which is worth interrupting for.
+            'missing_files' => File::query()->where('scan_status', ScanStatus::Missing)->count(),
         ];
     }
 

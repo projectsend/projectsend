@@ -489,8 +489,10 @@ test('a file whose bytes are gone says so, and is not retried forever', function
     runScan($file);
 
     $file->refresh();
-    expect($file->scan_status)->toBe(ScanStatus::NotScanned)
-        ->and($file->scan_note)->toBe(NotScannedReason::Unreadable->value)
+    expect($file->scan_status)->toBe(ScanStatus::Missing)
+        // Withheld: there is nothing to serve, and a client shown a file
+        // whose download fails is worse off than one who never saw it.
+        ->and($file->scan_status->isAvailable())->toBeFalse()
         // Never offered to the scanner: there was nothing to offer.
         ->and($scanner->scans)->toBe(0);
 
@@ -499,13 +501,16 @@ test('a file whose bytes are gone says so, and is not retried forever', function
     Illuminate\Support\Facades\Queue::assertNothingPushed();
 });
 
-test('an unreadable file is blocked where this installation blocks what it cannot scan', function () {
-    app(App\Modules\Platform\Settings\Settings::class)->set(Setting::VirusUnscannablePolicy, 'block');
+test('a missing file is missing whatever the unscannable policy says', function () {
+    // "Allow files nobody could scan" is a decision about risk, and there
+    // is no risk in a file that cannot be served — only a problem
+    // somebody has to look at.
+    app(App\Modules\Platform\Settings\Settings::class)->set(Setting::VirusUnscannablePolicy, 'allow');
     fakeScanner(ScanVerdict::clean());
     $file = scannableFile();
     Storage::disk('files')->delete($file->path);
 
     runScan($file);
 
-    expect($file->refresh()->scan_status)->toBe(ScanStatus::UnscannableBlocked);
+    expect($file->refresh()->scan_status)->toBe(ScanStatus::Missing);
 });

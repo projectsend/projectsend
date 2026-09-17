@@ -150,6 +150,7 @@ class FilesServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 Console\ScanFilesCommand::class,
+                Console\CheckMissingFilesCommand::class,
                 Console\PurgeStaleUploadsCommand::class,
                 Console\PurgeZipDownloadsCommand::class,
                 Console\PurgeExpiredFilesCommand::class,

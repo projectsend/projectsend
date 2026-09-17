@@ -22,6 +22,10 @@ Schedule::command('projectsend:fetch-news')->daily();
 Schedule::command('projectsend:scan-files')->hourly();
 Schedule::command('projectsend:purge-expired-files')->daily();
 Schedule::command('projectsend:purge-orphan-files')->daily();
+// The other half of the orphan question: rows whose bytes are gone. Daily
+// and independent of virus scanning, because an installation with no
+// scanner has exactly the same problem.
+Schedule::command('projectsend:check-missing-files')->daily();
 Schedule::command('projectsend:purge-api-request-logs')->daily();
 Schedule::command('projectsend:purge-failed-jobs')->daily();
 Schedule::command('projectsend:purge-notifications')->daily();

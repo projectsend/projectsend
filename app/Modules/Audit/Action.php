@@ -81,6 +81,11 @@ enum Action: string
     // not be reached, or the file was too large or encrypted and this
     // installation allows those. The context says which.
     case FileNotScanned = 'file.not_scanned';
+
+    // The row is here and the bytes are not. Written by the daily check,
+    // so it has no actor: nobody did this, or nobody who was using the
+    // application did.
+    case FileMissing = 'file.missing';
     case OrphanFileDeleted = 'orphan_file.deleted';
     case OrphanFileAutoDeleted = 'orphan_file.auto_deleted';
     case ExpiredFileDeleted = 'file.expired_deleted';
@@ -224,6 +229,7 @@ enum Action: string
             self::FileQuarantined => 'The file ":name" was quarantined: :threat',
             self::FileReleased => 'Released the quarantined file ":subject" (:reason)',
             self::FileNotScanned => 'The file ":name" was not scanned for viruses: :reason',
+            self::FileMissing => 'The file ":name" is no longer on the server',
             self::OrphanFileDeleted => 'Deleted the orphan file ":name"',
             self::OrphanFileAutoDeleted => 'Deleted the orphan file ":name"',
             self::ExpiredFileDeleted => 'Deleted the expired file ":name"',
@@ -330,6 +336,7 @@ enum Action: string
             self::FileQuarantined => 'A file was quarantined by the virus scanner',
             self::FileReleased => 'A quarantined file was released by an administrator',
             self::FileNotScanned => 'A file was allowed through without being scanned',
+            self::FileMissing => 'A file in the library was found to be missing from storage',
             self::OrphanFileDeleted => 'An orphan file was deleted',
             self::OrphanFileAutoDeleted => 'An orphan file was automatically deleted after its retention grace period passed',
             self::ExpiredFileDeleted => 'An expired file was automatically deleted after its retention grace period passed',

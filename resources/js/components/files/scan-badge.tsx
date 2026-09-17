@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { useTranslation } from '@/hooks/use-translation';
 
 export interface ScanState {
-    status: 'pending' | 'clean' | 'infected' | 'released' | 'not_scanned' | 'unscannable_blocked';
+    status: 'pending' | 'clean' | 'infected' | 'released' | 'not_scanned' | 'unscannable_blocked' | 'missing';
     /** The threat name, or why it was not scanned. Already translated. */
     note: string | null;
 }
@@ -34,6 +34,14 @@ export function ScanBadge({ scan }: { scan: ScanState | null | undefined }) {
         return (
             <Badge variant="destructive" className="text-[11px] font-normal" title={scan.note ?? undefined}>
                 {t('Quarantined')}
+            </Badge>
+        );
+    }
+
+    if (scan.status === 'missing') {
+        return (
+            <Badge variant="destructive" className="text-[11px] font-normal" title={t('The file is no longer in storage.')}>
+                {t('Missing')}
             </Badge>
         );
     }

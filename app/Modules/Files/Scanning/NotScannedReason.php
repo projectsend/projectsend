@@ -25,14 +25,6 @@ enum NotScannedReason: string
     /** Uploaded before scanning was switched on, or while it is off. */
     case BeforeScanning = 'before_scanning';
 
-    /**
-     * The bytes were not there to read — an orphaned row, or storage that
-     * has moved. Its own reason rather than "the scanner could not be
-     * reached", which is what it used to say: that reading is both wrong
-     * on screen and wrong in behaviour, because the hourly sweep retries
-     * an unreachable scanner and would have retried these forever.
-     */
-    case Unreadable = 'unreadable';
 
     public function label(): string
     {
@@ -41,7 +33,6 @@ enum NotScannedReason: string
             self::Encrypted => 'Encrypted, so it could not be scanned',
             self::ScannerUnavailable => 'The scanner could not be reached',
             self::BeforeScanning => 'Uploaded before virus scanning was switched on',
-            self::Unreadable => 'The file itself could not be read from storage',
         };
     }
 }

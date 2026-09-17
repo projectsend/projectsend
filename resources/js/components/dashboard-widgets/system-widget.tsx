@@ -49,6 +49,8 @@ export interface SystemInfo {
         let_through_24h: number;
         pending: number;
     } | null;
+    /** Files in the library whose bytes are gone. Zero is the ordinary answer. */
+    missing_files: number;
 }
 
 /**
@@ -173,6 +175,18 @@ export function SystemWidget({ system, onViewReleaseNotes }: { system: SystemInf
                 installation with no scanner at all says so on its own row
                 below, with the same link — two warnings for one fact would
                 make the card noisier without saying more. */}
+            {system.missing_files > 0 && (
+                <Alert variant="destructive" className="mb-3">
+                    <AlertTriangle className="size-4" />
+                    <AlertTitle>{t(':count files are missing from storage', { count: system.missing_files })}</AlertTitle>
+                    <AlertDescription>
+                        {t('They are listed in the library and cannot be downloaded. Their bytes are not where this installation expects them.')}
+                        <Link href="/files/orphans?tab=missing" className="mt-1 inline-block underline hover:no-underline">
+                            {t('See which files')}
+                        </Link>
+                    </AlertDescription>
+                </Alert>
+            )}
             {system.scanning?.configured && scanning?.warning && (
                 <Alert variant="warning" className="mb-3">
                     <ShieldAlert className="size-4" />

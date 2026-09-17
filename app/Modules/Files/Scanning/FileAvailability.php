@@ -56,9 +56,14 @@ class FileAvailability
             return;
         }
 
-        abort(423, $file->scan_status === ScanStatus::Pending
-            ? __('This file is still being checked for viruses.')
-            : __('This file is not available.'));
+        abort(423, match ($file->scan_status) {
+            ScanStatus::Pending => __('This file is still being checked for viruses.'),
+            // Said plainly, because it is not a refusal: there is nothing
+            // to serve, and whoever hits this can stop looking for a
+            // permission that would let them through.
+            ScanStatus::Missing => __('This file is no longer on the server.'),
+            default => __('This file is not available.'),
+        });
     }
 
     /**

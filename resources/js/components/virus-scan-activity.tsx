@@ -109,6 +109,14 @@ export function VirusScanActivity() {
             );
         }
 
+        if (file.status === 'missing') {
+            return (
+                <Badge variant="destructive" className="gap-1 font-normal">
+                    <ShieldQuestion className="size-3" /> {t('Missing from storage')}
+                </Badge>
+            );
+        }
+
         if (file.status === 'released') {
             return (
                 <Badge variant="secondary" className="font-normal">

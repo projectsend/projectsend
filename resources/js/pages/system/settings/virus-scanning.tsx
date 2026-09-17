@@ -240,7 +240,7 @@ export default function VirusScanningSettings({
                                     </Button>
 
                                     {test_result && (
-                                        <Alert variant={test_result.ok ? 'default' : 'destructive'}>
+                                        <Alert variant={test_result.ok ? 'success' : 'destructive'}>
                                             {test_result.ok ? <CheckCircle2 className="size-4" /> : <TriangleAlert className="size-4" />}
                                             <AlertDescription>{test_result.message}</AlertDescription>
                                         </Alert>

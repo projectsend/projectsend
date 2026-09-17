@@ -169,3 +169,18 @@ test('resolving version links for a page of files does not scale with the row co
     // not that it is exactly three.
     expect($queries)->toBeLessThan(10);
 });
+
+test('a guest is not told about a public version that is not available', function () {
+    $original = File::factory()->public()->create(['uploaded_by' => $this->admin->id, 'name' => 'Rev C']);
+    $revision = File::factory()->public()->create(['uploaded_by' => $this->admin->id, 'name' => 'Rev D']);
+    $this->versions->link($revision, $original, $this->admin);
+
+    $links = app(FileVersionLinks::class);
+    expect($links->for($original, null)['next']['name'] ?? null)->toBe('Rev D');
+
+    // Still being checked, or quarantined: its public page 404s, so the
+    // badge would name a file and link to a page that refuses to load.
+    $revision->forceFill(['scan_status' => App\Modules\Files\Scanning\ScanStatus::Pending])->save();
+
+    expect($links->for($original->refresh(), null)['next'])->toBeNull();
+});

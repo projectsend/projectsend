@@ -72,11 +72,44 @@ test('a file that comes back is checked again rather than left for dead', functi
     app(Settings::class)->set(Setting::VirusScanningEnabled, true);
     app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://scanner.test:3310');
 
+    Illuminate\Support\Facades\Queue::fake();
     $this->artisan('projectsend:check-missing-files')->assertSuccessful();
 
     // Back to the start: nothing here knows what the scanner had decided
     // about bytes that have since been away.
     expect($file->refresh()->scan_status)->toBe(ScanStatus::Pending);
+
+    // And asked about now, rather than at the next hourly sweep — until
+    // then nobody can have it.
+    Illuminate\Support\Facades\Queue::assertPushed(
+        App\Modules\Files\Jobs\ScanFileJob::class,
+        fn (App\Modules\Files\Jobs\ScanFileJob $job): bool => $job->fileId === $file->id && $job->rescan === false,
+    );
+});
+
+test('a quarantined file whose bytes vanish stays quarantined, and does not come back as a new upload', function () {
+    app(Settings::class)->set(Setting::VirusScanningEnabled, true);
+    app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://scanner.test:3310');
+
+    $file = fileWithBytes(['scan_status' => ScanStatus::Infected, 'scan_note' => 'Eicar-Test-Signature']);
+    $path = $file->path;
+
+    // A storage outage: the bytes are away for a day, then back.
+    Storage::disk('files')->delete($path);
+    $this->artisan('projectsend:check-missing-files')->assertSuccessful();
+
+    Storage::disk('files')->put($path, 'some bytes');
+    Illuminate\Support\Facades\Queue::fake();
+    $this->artisan('projectsend:check-missing-files')->assertSuccessful();
+
+    // Marked missing, it lost its threat name, and coming back made it a
+    // pending upload — out of quarantine, a scanner outage away from
+    // being let through, with nobody having released it.
+    $file->refresh();
+    expect($file->scan_status)->toBe(ScanStatus::Infected)
+        ->and($file->scan_note)->toBe('Eicar-Test-Signature');
+
+    Illuminate\Support\Facades\Queue::assertNothingPushed();
 });
 
 test('a file that comes back on an installation with no scanner is simply available again', function () {

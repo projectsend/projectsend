@@ -171,3 +171,47 @@ test('a staff member who uploaded it is told once, as staff', function () {
 
     expect(InAppNotification::query()->where('user_id', $this->admin->id)->count())->toBe(1);
 });
+
+/*
+|--------------------------------------------------------------------------
+| A client-scoped staff member
+|--------------------------------------------------------------------------
+*/
+
+test('a client-scoped staff member sees, releases and hears about only their own clients\' files', function () {
+    $role = Role::query()->create(['name' => 'Reps '.Str::random(4), 'client_scoped' => true]);
+    RolePermission::query()->create(['role_id' => $role->id, 'permission' => Permission::ReleaseQuarantinedFiles->value]);
+    $rep = User::factory()->create(['role_id' => $role->id]);
+
+    $mine = User::factory()->client()->create();
+    $stranger = User::factory()->client()->create();
+    $rep->assignedClients()->sync([$mine->id]);
+
+    $ours = quarantined(['name' => 'Ours', 'uploaded_by' => $mine->id]);
+    $theirs = quarantined(['name' => 'Theirs', 'uploaded_by' => $stranger->id]);
+
+    // The permission alone showed every quarantined file on the
+    // installation, and released one from a client this person could not
+    // otherwise open.
+    $this->actingAs($rep)->get('/files/quarantine')->assertInertia(
+        fn (AssertableInertia $page) => $page->has('files', 1)->where('files.0.name', 'Ours'),
+    );
+
+    confirmPassword($rep);
+    $this->actingAs($rep)->post("/files/{$theirs->id}/release", ['reason' => 'not mine'])->assertNotFound();
+    expect($theirs->refresh()->scan_status)->toBe(ScanStatus::Infected);
+
+    $this->actingAs($rep)->post("/files/{$ours->id}/release", ['reason' => 'false positive'])->assertSessionHasNoErrors();
+    expect($ours->refresh()->scan_status)->toBe(ScanStatus::Released);
+
+    $policy = app(App\Modules\Files\Scanning\ScanPolicy::class);
+    $newTheirs = quarantined(['scan_status' => ScanStatus::Pending, 'scan_note' => null, 'uploaded_by' => $stranger->id]);
+    $newOurs = quarantined(['scan_status' => ScanStatus::Pending, 'scan_note' => null, 'uploaded_by' => $mine->id]);
+    $policy->record($newTheirs, ScanVerdict::infected('Eicar-Test-Signature'));
+    $policy->record($newOurs, ScanVerdict::infected('Eicar-Test-Signature'));
+
+    expect(InAppNotification::query()->where('user_id', $rep->id)->pluck('subject_id')->all())->toBe([$newOurs->id])
+        // An unscoped administrator still hears about both.
+        ->and(InAppNotification::query()->where('user_id', $this->admin->id)->count())->toBe(2);
+});
+

@@ -2244,5 +2244,9 @@
     "Why are you releasing it?": "Waarom geef je het vrij?",
     "Working. :engine detected the test file as \":threat\".": "Werkt. :engine detecteerde het testbestand als “:threat”.",
     "Your file \":itemName\" was blocked: :threat": "Je bestand “:itemName” is geblokkeerd: :threat",
-    "{0}Every client already had a folder.|[1,*]:created of :total clients got a folder. :existing already had one.": "{0}Alle klanten hadden al een map.|[1,*]:created van :total klanten hebben een map gekregen. :existing hadden er al een."
+    "{0}Every client already had a folder.|[1,*]:created of :total clients got a folder. :existing already had one.": "{0}Alle klanten hadden al een map.|[1,*]:created van :total klanten hebben een map gekregen. :existing hadden er al een.",
+    ":engine detects viruses, but reports encrypted archives as clean, so a password-protected zip would get through unchecked. Add AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc and AlertExceedsMax, each set to yes, to its clamd.conf and restart it.": ":engine detecteert virussen, maar meldt versleutelde archieven als schoon, dus een zip met wachtwoord komt ongecontroleerd door. Voeg AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc en AlertExceedsMax, elk op yes, toe aan zijn clamd.conf en herstart hem.",
+    "A file in this archive is no longer available. Download the selection again.": "Een bestand in dit archief is niet meer beschikbaar. Download de selectie opnieuw.",
+    "A scan is already running. Wait for it to finish.": "Er loopt al een scan. Wacht tot die klaar is.",
+    "Something answered at :address, but it is not a ClamAV scanner.": "Er antwoordde iets op :address, maar het is geen ClamAV-scanner."
 }

@@ -2244,5 +2244,9 @@
     "Why are you releasing it?": "Pourquoi le libères-tu ?",
     "Working. :engine detected the test file as \":threat\".": "Fonctionne. :engine a détecté le fichier de test comme « :threat ».",
     "Your file \":itemName\" was blocked: :threat": "Ton fichier « :itemName » a été bloqué : :threat",
-    "{0}Every client already had a folder.|[1,*]:created of :total clients got a folder. :existing already had one.": "{0}Tous les clients avaient déjà un dossier.|[1,*]:created clients sur :total ont reçu un dossier. :existing en avaient déjà un."
+    "{0}Every client already had a folder.|[1,*]:created of :total clients got a folder. :existing already had one.": "{0}Tous les clients avaient déjà un dossier.|[1,*]:created clients sur :total ont reçu un dossier. :existing en avaient déjà un.",
+    ":engine detects viruses, but reports encrypted archives as clean, so a password-protected zip would get through unchecked. Add AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc and AlertExceedsMax, each set to yes, to its clamd.conf and restart it.": ":engine détecte les virus, mais signale les archives chiffrées comme saines : un zip protégé par mot de passe passerait sans être vérifié. Ajoutez AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc et AlertExceedsMax, chacun à yes, à son clamd.conf puis redémarrez-le.",
+    "A file in this archive is no longer available. Download the selection again.": "Un fichier de cette archive n'est plus disponible. Téléchargez à nouveau la sélection.",
+    "A scan is already running. Wait for it to finish.": "Une analyse est déjà en cours. Attendez qu'elle se termine.",
+    "Something answered at :address, but it is not a ClamAV scanner.": "Quelque chose a répondu à :address, mais ce n'est pas un scanner ClamAV."
 }

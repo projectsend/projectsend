@@ -6,6 +6,7 @@ namespace App\Modules\Files\Console;
 
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Files\Jobs\ScanFileJob;
 use App\Modules\Files\MissingFileScanner;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Scanning\NotScannedReason;
@@ -37,7 +38,20 @@ class CheckMissingFilesCommand extends Command
         $newlyGone = 0;
 
         foreach (array_chunk($gone, 200) as $chunk) {
-            foreach (File::query()->whereIn('id', $chunk)->where('scan_status', '!=', ScanStatus::Missing)->get() as $file) {
+            // Not a quarantined file. It is unavailable already, and
+            // marking it missing would wipe the threat name and then, when
+            // the bytes came back, send it round as a fresh upload — out
+            // of quarantine with nobody having released it.
+            $candidates = File::query()
+                ->whereIn('id', $chunk)
+                ->whereNotIn('scan_status', [
+                    ScanStatus::Missing->value,
+                    ScanStatus::Infected->value,
+                    ScanStatus::UnscannableBlocked->value,
+                ])
+                ->get();
+
+            foreach ($candidates as $file) {
                 // Stamped like any other verdict: this is the moment the
                 // file was last looked at, and without it a missing file
                 // never appears in the Activity list — which is exactly
@@ -63,6 +77,15 @@ class CheckMissingFilesCommand extends Command
             File::query()->whereIn('id', $chunk)->update($scanning->enabled()
                 ? ['scan_status' => ScanStatus::Pending->value, 'scan_note' => null]
                 : ['scan_status' => ScanStatus::NotScanned->value, 'scan_note' => NotScannedReason::BeforeScanning->value]);
+
+            // Straight to the scanner rather than left for the hourly
+            // sweep, which kept a file that had come back unavailable for
+            // up to an hour for no reason.
+            if ($scanning->enabled()) {
+                foreach ($chunk as $id) {
+                    ScanFileJob::dispatch($id);
+                }
+            }
         }
 
         $this->info(sprintf(

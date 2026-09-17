@@ -528,6 +528,9 @@ test('a new scan checks files that already have a verdict', function () {
     ]);
     $waiting = scannableFile(['scan_status' => ScanStatus::Pending]);
     $gone = scannableFile(['scan_status' => ScanStatus::Missing]);
+    $infected = scannableFile(['scan_status' => ScanStatus::Infected, 'scan_note' => 'X']);
+    $blocked = scannableFile(['scan_status' => ScanStatus::UnscannableBlocked, 'scan_note' => NotScannedReason::Encrypted->value]);
+    $released = scannableFile(['scan_status' => ScanStatus::Released, 'scan_note' => 'X']);
 
     Illuminate\Support\Facades\Queue::fake();
 
@@ -537,8 +540,12 @@ test('a new scan checks files that already have a verdict', function () {
         Illuminate\Support\Facades\Queue::assertPushed(ScanFileJob::class, fn (ScanFileJob $job): bool => $job->fileId === $file->id);
     }
 
-    // Nothing to re-ask about a file with no bytes.
-    Illuminate\Support\Facades\Queue::assertNotPushed(ScanFileJob::class, fn (ScanFileJob $job): bool => $job->fileId === $gone->id);
+    // Nothing to re-ask about a file with no bytes. Nor about one in
+    // quarantine, which leaves it by being released and not by a scan, or
+    // one somebody released, which a scan does not undo.
+    foreach ([$gone, $infected, $blocked, $released] as $file) {
+        Illuminate\Support\Facades\Queue::assertNotPushed(ScanFileJob::class, fn (ScanFileJob $job): bool => $job->fileId === $file->id);
+    }
 
     // The one already waiting is picked up by the ordinary sweep at the
     // top of the command, as a first scan rather than as a rescan — the
@@ -620,4 +627,110 @@ test('the editor offers no download for a file it cannot produce', function () {
     $this->actingAs($this->admin)->get("/files/{$clean->id}")->assertInertia(
         fn (Inertia\Testing\AssertableInertia $page) => $page->where('file.scan_available', true),
     );
+});
+
+/*
+|--------------------------------------------------------------------------
+| Nothing but a release takes a file out of quarantine
+|--------------------------------------------------------------------------
+*/
+
+/** Run the job as a rescan, the way New scan and the hourly sweep queue it. */
+function runRescan(File $file): void
+{
+    (new ScanFileJob($file->id, true))->handle(
+        app(VirusScanner::class),
+        app(App\Modules\Files\Scanning\ScanPolicy::class),
+        app(App\Modules\Files\Scanning\ScanningConfig::class),
+    );
+}
+
+test('a rescan leaves a quarantined file in quarantine, whatever the scanner says', function () {
+    // The case that got out: an old infected file rescanned while clamd
+    // was restarting. Its wait window had long passed, so "unavailable"
+    // went straight to the allow policy and the file became downloadable.
+    foreach ([
+        ScanVerdict::unavailable('down'),
+        ScanVerdict::tooLarge(),
+        ScanVerdict::encrypted(),
+        ScanVerdict::clean(),
+    ] as $verdict) {
+        foreach ([ScanStatus::Infected, ScanStatus::UnscannableBlocked, ScanStatus::Released] as $state) {
+            $scanner = fakeScanner($verdict);
+            $file = scannableFile(['scan_status' => $state, 'scan_note' => 'Eicar-Test-Signature', 'created_at' => now()->subYear()]);
+
+            runRescan($file);
+
+            expect($file->refresh()->scan_status)->toBe($state, "{$state->value} after {$verdict->outcome->name}")
+                ->and($scanner->scans)->toBe(0);
+        }
+    }
+});
+
+test('a rescan the scanner cannot answer leaves the file as it was', function () {
+    fakeScanner(ScanVerdict::unavailable('down'));
+    $file = scannableFile(['scan_status' => ScanStatus::Clean, 'created_at' => now()->subYear()]);
+
+    runRescan($file);
+
+    expect($file->refresh()->scan_status)->toBe(ScanStatus::Clean);
+});
+
+test('a rescan that finds scanning switched off changes nothing', function () {
+    app(Settings::class)->set(Setting::VirusScanningEnabled, false);
+    $scanner = fakeScanner(ScanVerdict::clean());
+    $clean = scannableFile(['scan_status' => ScanStatus::Clean]);
+    $infected = scannableFile(['scan_status' => ScanStatus::Infected, 'scan_note' => 'X']);
+
+    runRescan($clean);
+    runRescan($infected);
+
+    expect($clean->refresh()->scan_status)->toBe(ScanStatus::Clean)
+        ->and($infected->refresh()->scan_status)->toBe(ScanStatus::Infected)
+        ->and($scanner->scans)->toBe(0);
+});
+
+test('a client does not see their own upload once it is quarantined or gone', function () {
+    // Listed, it offered a download that answered with an error page. The
+    // uploader hears about a blocked upload by notification.
+    $client = User::factory()->client()->create();
+    $waiting = scannableFile(['uploaded_by' => $client->id]);
+    scannableFile(['uploaded_by' => $client->id, 'scan_status' => ScanStatus::Infected, 'scan_note' => 'X']);
+    scannableFile(['uploaded_by' => $client->id, 'scan_status' => ScanStatus::UnscannableBlocked]);
+    scannableFile(['uploaded_by' => $client->id, 'scan_status' => ScanStatus::Missing]);
+
+    expect(File::query()->visibleToClient($client)->pluck('id')->all())->toBe([$waiting->id]);
+});
+
+test('an archive built before one of its files was quarantined is refused', function () {
+    $file = scannableFile(['uploaded_by' => $this->admin->id, 'scan_status' => ScanStatus::Clean]);
+
+    $zipId = $this->actingAs($this->admin)->postJson('/zip-downloads', ['file_ids' => [$file->id]])->assertOk()->json('id');
+    $this->actingAs($this->admin)->getJson("/zip-downloads/{$zipId}")->assertJsonPath('status', 'ready');
+
+    // A rescan with newer definitions, after the zip was ready.
+    $file->forceFill(['scan_status' => ScanStatus::Infected, 'scan_note' => 'Newly.Known'])->save();
+
+    $this->actingAs($this->admin)->get("/zip-downloads/{$zipId}/download")->assertStatus(423);
+});
+
+test('nobody can comment on a public file that is not available', function () {
+    app(Settings::class)->set(Setting::PublicListingEnabled, true);
+    app(Settings::class)->set(Setting::PublicListingSlug, 'public');
+    app(Settings::class)->set(Setting::CommentsScope, 'all');
+    app(Settings::class)->set(Setting::CommentsAuthors, 'everyone');
+    app(Settings::class)->set(Setting::PublicCommentsEnabled, true);
+    app(Settings::class)->set(Setting::CaptchaProvider, 'none');
+
+    $group = App\Modules\Groups\Models\Group::query()->create(['name' => 'Showcase', 'public' => true]);
+    $file = File::factory()->public()->create(['uploaded_by' => $this->admin->id, 'scan_status' => ScanStatus::Clean]);
+    shareFileWithGroup($file, $group);
+
+    $this->getJson("/public/files/{$file->slug}/comments")->assertOk();
+
+    $file->forceFill(['scan_status' => ScanStatus::Infected, 'scan_note' => 'X'])->save();
+
+    // Same answer as the file's own public page, which does not exist for
+    // a file nobody can have.
+    $this->getJson("/public/files/{$file->slug}/comments")->assertNotFound();
 });

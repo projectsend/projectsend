@@ -7,6 +7,7 @@ namespace App\Modules\Files\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Files\Jobs\ScanFileJob;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Scanning\NotScannedReason;
 use App\Modules\Files\Scanning\ScannerAddress;
@@ -45,6 +46,13 @@ use Inertia\Response;
  */
 class VirusScanningSettingsController extends Controller
 {
+    /**
+     * A zip holding check.txt ("ProjectSend checks that the scanner
+     * reports encrypted archives."), encrypted with the password
+     * "projectsend". Made with `zip -P`.
+     */
+    private const ENCRYPTED_ARCHIVE = 'UEsDBBQACQAIAACon1toMefdSgAAAEAAAAAJAAAAY2hlY2sudHh0prvUiniNGfEwEalXOcDbsYylfm2yAcyjplSfHJqk2sSxcVWFx0omz5AvASvSRdDbfeSQ+CC2qu6JEP/NYbBKy+g5t2nJr4swpv9QSwcIaDHn3UoAAABAAAAAUEsBAh4DFAAJAAgAAKifW2gx591KAAAAQAAAAAkAAAAAAAAAAQAAALSBAAAAAGNoZWNrLnR4dFBLBQYAAAAAAQABADcAAACBAAAAAAA=';
+
     public function __construct(
         private readonly Settings $settings,
         private readonly ScanningConfig $config,
@@ -132,6 +140,13 @@ class VirusScanningSettingsController extends Controller
         $this->settings->set(Setting::VirusScannerWaitMinutes, (int) $validated['wait_minutes']);
         $this->settings->set(Setting::VirusScanExistingRatePerMinute, (int) $validated['existing_rate_per_minute']);
 
+        // The scans worker is the one process that acts on every setting
+        // above, and it holds them in memory from the job it started on.
+        // Without this, switching scanning off or pointing it at another
+        // scanner changed the screen and nothing else until somebody
+        // restarted the worker.
+        Artisan::call('queue:restart');
+
         $this->activity->log(Action::SettingsUpdated, context: ['section' => 'virus_scanning']);
 
         return back();
@@ -191,6 +206,19 @@ class VirusScanningSettingsController extends Controller
         fclose($stream);
 
         if ($verdict->outcome === ScanOutcome::Infected) {
+            // Detecting is half of it. A clamd left on its own defaults
+            // answers "OK" for an archive it could not open, and every
+            // encrypted zip would be recorded as clean — while this test
+            // passed. So ask it about one.
+            if ($this->passesEncryptedArchives($scanner)) {
+                return back()->with('scanner_test_result', [
+                    'ok' => false,
+                    'message' => __(':engine detects viruses, but reports encrypted archives as clean, so a password-protected zip would get through unchecked. Add AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc and AlertExceedsMax, each set to yes, to its clamd.conf and restart it.', [
+                        'engine' => $status->engine ?? __('The scanner'),
+                    ]),
+                ]);
+            }
+
             return back()->with('scanner_test_result', [
                 'ok' => true,
                 'message' => __('Working. :engine detected the test file as ":threat".', [
@@ -212,17 +240,28 @@ class VirusScanningSettingsController extends Controller
     }
 
     /**
-     * Queue every file that has never been scanned.
+     * Check every file people can download again.
      *
-     * The work itself is the hourly command's, so this button does not
-     * hold a request open for a library of any size, and the pace is the
-     * setting above rather than "as fast as the queue will go".
+     * The work itself is the command's, so this button does not hold a
+     * request open for a library of any size, and the pace is the setting
+     * above rather than "as fast as the queue will go".
      */
     public function scanExisting(): RedirectResponse
     {
         abort_unless($this->config->enabled(), 422);
 
-        Artisan::queue('projectsend:scan-files', ['--existing' => true]);
+        // The screen disables the button while a scan is working through
+        // the queue. Refused here too, because each press queues the whole
+        // library again, and the throttle alone allows six a minute.
+        if ($this->scansInQueue() > 0) {
+            return redirect()
+                ->route('system-settings.virus-scanning.edit', ['tab' => 'activity'])
+                ->with('error', __('A scan is already running. Wait for it to finish.'));
+        }
+
+        // --all rather than --existing: this is "New scan", and on a
+        // library already scanned once --existing finds nothing to do.
+        Artisan::queue('projectsend:scan-files', ['--all' => true]);
 
         // Onto the tab that shows it happening rather than back where they
         // were: somebody who just started a scan wants to watch it, and a
@@ -258,7 +297,7 @@ class VirusScanningSettingsController extends Controller
         // out unchecked deliberately leaves it available, so it is not
         // "pending" and a screen watching only that count says nothing is
         // happening while the queue works through a whole library.
-        $queued = Queue::size('scans');
+        $queued = $this->scansInQueue();
 
         return response()->json([
             // "Something is happening" is the one thing a person watching
@@ -285,6 +324,25 @@ class VirusScanningSettingsController extends Controller
                 'engine' => $file->scan_engine,
             ])->all(),
         ]);
+    }
+
+    /**
+     * Scan jobs waiting to run or running now.
+     *
+     * Not size(), which counts delayed jobs too. A file held while the
+     * scanner was down leaves a retry scheduled for up to five minutes
+     * after the scanner is back and the file already checked, and for
+     * that long the screen said "Scanning now" and refused a new scan.
+     */
+    private function scansInQueue(): int
+    {
+        $queue = Queue::connection();
+
+        if (method_exists($queue, 'pendingSize') && method_exists($queue, 'reservedSize')) {
+            return (int) $queue->pendingSize('scans') + (int) $queue->reservedSize('scans');
+        }
+
+        return $queue->size('scans');
     }
 
     /**
@@ -333,16 +391,37 @@ class VirusScanningSettingsController extends Controller
                     NotScannedReason::Encrypted->value,
                 ])
                 ->count(),
-            // What a New scan would actually check: everything except a
-            // file already waiting for its first verdict, and one whose
-            // bytes are gone.
+            // What a New scan would actually check — see
+            // ScanFileJob::rescannableValues().
             'scannable' => File::query()
-                ->whereNotIn('scan_status', [ScanStatus::Pending->value, ScanStatus::Missing->value])
+                ->whereIn('scan_status', ScanFileJob::rescannableValues())
                 ->count(),
             // So the New scan button can refuse a second scan while one is
             // still working through the queue.
-            'queued' => Queue::size('scans'),
+            'queued' => $this->scansInQueue(),
         ];
+    }
+
+    /**
+     * Whether the scanner calls a password-protected zip clean.
+     *
+     * The archive holds one line of text and nothing else; what matters
+     * is only that it cannot be opened without the password. A scanner
+     * set up as documented answers "encrypted".
+     */
+    private function passesEncryptedArchives(VirusScanner $scanner): bool
+    {
+        $archive = (string) base64_decode(self::ENCRYPTED_ARCHIVE, true);
+
+        $stream = fopen('php://temp', 'r+');
+        assert($stream !== false);
+        fwrite($stream, $archive);
+        rewind($stream);
+
+        $verdict = $scanner->scan($stream, strlen($archive));
+        fclose($stream);
+
+        return $verdict->outcome === ScanOutcome::Clean;
     }
 
     private function eicar(): string

@@ -376,7 +376,11 @@ address. On a brand-new installation you can skip that step: uncomment
 `PROJECTSEND_SCANNER_DEFAULT_ADDRESS` in the compose file before the first start and the site comes
 up already pointed at the scanner. It is a starting value, not a lock — the address and the switch
 stay on that screen. **Test scanner** sends a harmless standard test file and tells you whether it was actually
-detected.
+detected. It also sends a password-protected zip, and fails if the scanner calls it clean.
+
+The compose file gives the scanner the settings ProjectSend needs, in the `configs` section at the
+bottom. Keep them if you change that file. On its own defaults ClamAV reports an archive it cannot
+open as clean, so a password-protected zip would get through unchecked.
 
 Two things to know before you turn it on. It needs about **1–1.5 GB of memory**, because the virus
 definitions are held in memory. And the first start downloads those definitions, which takes a few

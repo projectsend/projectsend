@@ -90,16 +90,26 @@ class ScanFileJob implements ShouldQueue
             return;
         }
 
-        // A rescan checks a file again whatever it said last — after new
-        // definitions, or because somebody asked. The one state it leaves
-        // alone is a file already waiting for its first verdict, which
-        // belongs to the job above.
-        if ($this->rescan && $file->scan_status === ScanStatus::Pending) {
+        // A rescan asks again about a file people can have today — after
+        // new definitions, or because somebody asked. Nothing else:
+        //
+        // - a file waiting for its first verdict belongs to the job above;
+        // - a quarantined file leaves quarantine only by being released,
+        //   and a rescan that came back "the scanner is down" or "too
+        //   large" would otherwise have let it out through the policy for
+        //   those answers;
+        // - a released file stays released (see QuarantineController);
+        // - a missing file has no bytes to read.
+        if ($this->rescan && ! self::rescannable($file->scan_status)) {
             return;
         }
 
         if (! $config->enabled()) {
-            $policy->markNeverScanned($file);
+            // A rescan that finds scanning switched off has learned
+            // nothing, and a file already checked keeps its verdict.
+            if (! $this->rescan) {
+                $policy->markNeverScanned($file);
+            }
 
             return;
         }
@@ -121,6 +131,13 @@ class ScanFileJob implements ShouldQueue
 
         $verdict = $this->read($file, $scanner);
 
+        // Same reasoning for a rescan the scanner could not answer: the
+        // file keeps the verdict it had. One let through while the scanner
+        // was down still says so, and the hourly sweep asks again.
+        if ($this->rescan && $verdict->outcome === ScanOutcome::Unavailable) {
+            return;
+        }
+
         if ($verdict->outcome === ScanOutcome::Unavailable && $this->keepWaiting($file, $config)) {
             $file->forceFill(['scan_attempts' => $file->scan_attempts + 1])->save();
 
@@ -134,6 +151,23 @@ class ScanFileJob implements ShouldQueue
         }
 
         $policy->record($file, $verdict);
+    }
+
+    /**
+     * The states a rescan may act on: the ones a person can download.
+     * Shared with ScanFilesCommand and the settings screen's count, so
+     * what "New scan" says it will check is what it checks.
+     *
+     * @return list<string>
+     */
+    public static function rescannableValues(): array
+    {
+        return [ScanStatus::Clean->value, ScanStatus::NotScanned->value];
+    }
+
+    private static function rescannable(ScanStatus $status): bool
+    {
+        return in_array($status->value, self::rescannableValues(), true);
     }
 
     /**

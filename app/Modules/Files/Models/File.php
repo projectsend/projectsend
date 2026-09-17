@@ -295,9 +295,14 @@ class File extends Model
      * Sits beside notExpired() in every scope that answers "what may this
      * person be shown", and for the same reason: a file nobody has
      * checked yet is not a file anybody may be handed. The uploader is
-     * the exception — their own upload stays on their screen while it is
-     * being checked, marked as such, because a file that vanishes for ten
-     * minutes after you send it reads as a failed upload.
+     * the exception while it is being checked — their own upload stays on
+     * their screen, because a file that vanishes for ten minutes after
+     * you send it reads as a failed upload.
+     *
+     * Only while it is being checked. A quarantined or missing upload
+     * stayed listed for its uploader too, with a download button that
+     * answered with an error page; they are told about a blocked upload
+     * by notification instead, and there is nothing to offer them here.
      *
      * @param  Builder<File>  $query
      */
@@ -307,7 +312,9 @@ class File extends Model
             $inner->whereIn('scan_status', ScanStatus::availableValues());
 
             if ($viewer !== null) {
-                $inner->orWhere('uploaded_by', $viewer->id);
+                $inner->orWhere(fn (Builder $own) => $own
+                    ->where('uploaded_by', $viewer->id)
+                    ->where('scan_status', ScanStatus::Pending));
             }
         });
     }

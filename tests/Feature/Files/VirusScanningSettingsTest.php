@@ -389,3 +389,22 @@ test('a backfill counts as running even though it holds nothing back', function 
         ->and($body['queued'])->toBe(1)
         ->and($body['running'])->toBeTrue();
 });
+
+test('starting a scan lands on the tab that shows it happening', function () {
+    // A button whose screen looks unchanged afterwards reads as a button
+    // that did nothing.
+    app(Settings::class)->set(Setting::VirusScanningEnabled, true);
+    app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://scanner.test:3310');
+
+    $this->actingAs($this->admin)->post('/system/settings/virus-scanning/scan-existing')
+        ->assertRedirect(route('system-settings.virus-scanning.edit', ['tab' => 'activity']));
+});
+
+test('the screen says whether a scan is already under way', function () {
+    Illuminate\Support\Facades\Queue::fake();
+    App\Modules\Files\Jobs\ScanFileJob::dispatch(1, true);
+
+    $this->actingAs($this->admin)->get('/system/settings/virus-scanning')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('counts.queued', 1),
+    );
+});

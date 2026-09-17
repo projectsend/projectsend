@@ -98,15 +98,35 @@ export default function VirusScanningSettings({
                         it — the quarantine screen answers 403 otherwise,
                         and a button that leads to a refusal is worse than
                         no button. */}
-                    {auth.permissions.includes('release_quarantined_files') && (
-                        <Button variant="outline" asChild>
-                            <Link href={route('files.quarantine')}>
-                                {counts.quarantined > 0
-                                    ? t('Quarantine (:count)', { count: counts.quarantined })
-                                    : t('Quarantine')}
-                            </Link>
+                    <div className="flex items-start gap-2">
+                        {auth.permissions.includes('release_quarantined_files') && (
+                            <Button variant="outline" asChild>
+                                <Link href={route('files.quarantine')}>
+                                    {counts.quarantined > 0
+                                        ? t('Quarantine (:count)', { count: counts.quarantined })
+                                        : t('Quarantine')}
+                                </Link>
+                            </Button>
+                        )}
+
+                        {/* The screen's one action, where an action belongs.
+                            Disabled rather than hidden when there is nothing
+                            to do, so it can say why. */}
+                        <Button
+                            type="button"
+                            disabled={!enabled || counts.never_scanned === 0}
+                            title={
+                                !enabled
+                                    ? t('Switch scanning on first.')
+                                    : counts.never_scanned === 0
+                                      ? t('Every file has already been checked.')
+                                      : t(':count files have never been checked.', { count: counts.never_scanned })
+                            }
+                            onClick={() => router.post(route('system-settings.virus-scanning.scan-existing'), {}, { preserveScroll: false })}
+                        >
+                            {t('New scan')}
                         </Button>
-                    )}
+                    </div>
                 </div>
 
                 {counts.let_through > 0 && (
@@ -214,30 +234,6 @@ export default function VirusScanningSettings({
 
                 {tab === 'options' && (
                     <div className="max-w-xl space-y-6">
-                        <div className="space-y-3 rounded-lg border p-4">
-                            <HeadingSmall
-                                title={t('Files already here')}
-                                description={t('Anything uploaded before scanning was switched on has never been checked.')}
-                            />
-
-                            <p className="text-muted-foreground text-sm">
-                                {t('Never scanned: :never · Being checked: :pending · In quarantine: :quarantined', {
-                                    never: counts.never_scanned,
-                                    pending: counts.pending,
-                                    quarantined: counts.quarantined,
-                                })}
-                            </p>
-
-                            <Button
-                                type="button"
-                                variant="outline"
-                                disabled={!enabled || counts.never_scanned === 0}
-                                onClick={() => router.post(route('system-settings.virus-scanning.scan-existing'), {}, { preserveScroll: true })}
-                            >
-                                {t('Scan existing files')}
-                            </Button>
-                        </div>
-
                         <form onSubmit={submit} className="space-y-6">
                             <div className="grid gap-2">
                                 <Label htmlFor="max_size_mb">{t('Largest file to scan (MB)')}</Label>
@@ -325,7 +321,7 @@ export default function VirusScanningSettings({
                                     onChange={(e) => setData('existing_rate_per_minute', Number(e.target.value))}
                                 />
                                 <p className="text-muted-foreground text-sm">
-                                    {t('Applies to the button above, so a backfill does not starve the scanner of new uploads.')}
+                                    {t('The pace of a New scan, so working through a whole library does not starve the scanner of new uploads.')}
                                 </p>
                                 <InputError message={errors.existing_rate_per_minute} />
                             </div>

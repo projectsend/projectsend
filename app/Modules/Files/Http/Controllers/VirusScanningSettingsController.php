@@ -18,6 +18,7 @@ use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Queue;
@@ -188,9 +189,14 @@ class VirusScanningSettingsController extends Controller
     {
         abort_unless($this->config->enabled(), 422);
 
-        \Illuminate\Support\Facades\Artisan::queue('projectsend:scan-files', ['--existing' => true]);
+        Artisan::queue('projectsend:scan-files', ['--existing' => true]);
 
-        return back()->with('success', __('Scanning existing files has started. It runs in the background.'));
+        // Onto the tab that shows it happening rather than back where they
+        // were: somebody who just started a scan wants to watch it, and a
+        // screen that looks unchanged reads as a button that did nothing.
+        return redirect()
+            ->route('system-settings.virus-scanning.edit', ['tab' => 'activity'])
+            ->with('success', __('The scan has started.'));
     }
 
     /**
@@ -294,6 +300,9 @@ class VirusScanningSettingsController extends Controller
                     NotScannedReason::Encrypted->value,
                 ])
                 ->count(),
+            // So the New scan button can refuse a second scan while one is
+            // still working through the queue.
+            'queued' => Queue::size('scans'),
         ];
     }
 

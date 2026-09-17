@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Identity\SignIn;
+use App\Modules\Identity\StartPages;
 use App\Modules\Identity\Social\SocialAuthenticator;
 use App\Modules\Identity\Social\SocialGateway;
 use App\Modules\Identity\Social\SocialIdentity;
@@ -40,6 +41,7 @@ class SocialLoginController extends Controller
         private readonly SocialAuthenticator $authenticator,
         private readonly SignIn $signIn,
         private readonly ActivityLogger $activity,
+        private readonly StartPages $startPages,
     ) {}
 
     /**
@@ -128,7 +130,7 @@ class SocialLoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended($this->startPages->pathFor($resolution->user));
     }
 
     private function begin(Request $request, string $provider, string $intent): Response

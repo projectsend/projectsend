@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Files\Folders\FolderService;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
 use App\Modules\Identity\Permissions\Permission;
@@ -106,6 +107,77 @@ test('filters narrow the listing', function () {
         ->and($ids("uploaded_by={$other->id}"))->toBe([$byOther->id])
         ->and($ids('expired=1'))->toBe([$expired->id])
         ->and($ids('expired=0'))->not->toContain($expired->id);
+});
+
+test('the new filters narrow the listing the same way the staff library does', function () {
+    $uploader = User::factory()->role(SystemRole::Uploader)->create();
+
+    $grabbed = File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'grabbed']);
+    $untouched = File::factory()->create(['uploaded_by' => $uploader->id, 'name' => 'untouched']);
+    $superseded = File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'draft one']);
+    $current = File::factory()->create([
+        'uploaded_by' => $this->admin->id,
+        'name' => 'draft two',
+        'previous_file_id' => $superseded->id,
+        'version_root_id' => $superseded->id,
+    ]);
+
+    ActivityLog::query()->create([
+        'actor_id' => $this->admin->id,
+        'action' => Action::FileDownloaded,
+        'subject_type' => $grabbed->getMorphClass(),
+        'subject_id' => $grabbed->id,
+        'created_at' => now(),
+    ]);
+
+    $ids = fn (string $query) => $this->withToken($this->token)->getJson("/api/v1/files?{$query}")->assertOk()->json('data.*.id');
+
+    expect($ids('downloads=any'))->toBe([$grabbed->id])
+        ->and($ids('downloads=none'))->not->toContain($grabbed->id)
+        ->and($ids('downloads=none'))->toContain($untouched->id)
+        ->and($ids('version=outdated'))->toBe([$superseded->id])
+        ->and($ids('version=current'))->toContain($current->id)
+        ->and($ids('version=current'))->not->toContain($superseded->id)
+        ->and($ids("role_id={$uploader->role_id}"))->toBe([$untouched->id]);
+});
+
+test('visibility asks the effective question and public still asks the column', function () {
+    $folder = app(FolderService::class)->create('Brochures', null);
+    $folder->update(['public' => true]);
+
+    $flagged = File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'flagged', 'public' => true]);
+    $inherited = File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'inherited', 'public' => false, 'folder_id' => $folder->id]);
+    $private = File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'plain', 'public' => false]);
+
+    $ids = fn (string $query) => $this->withToken($this->token)->getJson("/api/v1/files?{$query}")->assertOk()->json('data.*.id');
+
+    // The whole reason both exist. `public` reads the column, so the file
+    // that is public only by inheritance is absent -- and callers already
+    // depend on that answer, which is why its meaning was left alone.
+    expect($ids('public=1'))->toBe([$flagged->id])
+        ->and($ids('public=1'))->not->toContain($inherited->id);
+
+    // `visibility` reads File::isEffectivelyPublic(), which is what the
+    // badge on the staff row means, so the inherited one counts.
+    expect($ids('visibility=public'))->toContain($flagged->id)
+        ->and($ids('visibility=public'))->toContain($inherited->id)
+        ->and($ids('visibility=private'))->toBe([$private->id]);
+});
+
+test('a client-scoped token cannot use the new filters to reach past its own library', function () {
+    $manager = User::factory()->role(SystemRole::ClientManager)->create();
+    $token = $manager->createToken('t', [Permission::Upload->value])->plainTextToken;
+
+    // Nothing here is the manager's: a file they did not upload, for a
+    // client they do not hold. Every filter must still come back empty --
+    // a filter narrows a library, it never widens one.
+    $stranger = User::factory()->create();
+    File::factory()->create(['uploaded_by' => $stranger->id, 'name' => 'not theirs', 'public' => true]);
+
+    foreach (['downloads=none', 'version=current', 'visibility=public', 'visibility=private', "role_id={$stranger->role_id}"] as $query) {
+        expect($this->withToken($token)->getJson("/api/v1/files?{$query}")->assertOk()->json('data'))
+            ->toBe([], "filter '{$query}' leaked past the client-scoped boundary");
+    }
 });
 
 test('a malformed updated_since is rejected rather than ignored', function () {

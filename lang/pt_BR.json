@@ -2075,5 +2075,19 @@
     "Your account has been created. You will be able to log in once it is approved.": "Sua conta foi criada. Você poderá entrar assim que ela for aprovada.",
     "Invite a client to share files with": "Convide um cliente com quem compartilhar arquivos",
     ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) cadastrou uma conta de cliente",
-    "A new client registered an account": "Um novo cliente cadastrou uma conta"
+    "A new client registered an account": "Um novo cliente cadastrou uma conta",
+    "Account expires": "A conta expira",
+    "A client account reached its expiry date and was deactivated": "Uma conta de cliente chegou à data de expiração e foi desativada",
+    "After this day the client can no longer sign in, and the account is deactivated. Their files stay. Leave empty for an account that never expires.": "Depois deste dia, o cliente não consegue mais entrar e a conta é desativada. Os arquivos dele continuam. Deixe em branco para uma conta que nunca expira.",
+    "Deactivate expired client accounts": "Desativar contas de cliente expiradas",
+    "Default (:page)": "Padrão (:page)",
+    "Start page": "Página inicial",
+    "The client account \":name\" expired and was deactivated": "A conta de cliente \":name\" expirou e foi desativada",
+    "The page you land on after signing in.": "A página em que você chega depois de entrar.",
+    "This account expired on :date and can no longer sign in. To let them back in, choose a later date or clear it, and make sure the account is active.": "Esta conta expirou em :date e não consegue mais entrar. Para devolver o acesso, escolha uma data posterior ou limpe o campo, e confira se a conta está ativa.",
+    "This date has already passed. Choose a later date, or leave it empty for an account that never expires.": "Esta data já passou. Escolha uma data posterior ou deixe em branco para uma conta que nunca expira.",
+    "This role cannot open that page. Give it the \":permission\" permission, or choose another start page.": "Esta função não consegue abrir essa página. Dê a ela a permissão \":permission\" ou escolha outra página inicial.",
+    "Until :date": "Até :date",
+    "Where people with this role land after signing in. Each person can still choose their own in their profile.": "Onde as pessoas com esta função chegam depois de entrar. Cada pessoa ainda pode escolher a sua no próprio perfil.",
+    "Your account has expired.": "Sua conta expirou."
 }

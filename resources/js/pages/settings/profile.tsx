@@ -6,6 +6,7 @@ import { ClientCustomFieldsSection, type CustomFieldDefinition } from '@/compone
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
 import { SaveButton } from '@/components/save-button';
+import { StartPageSelect, type StartPageOption } from '@/components/start-page-select';
 import { TimezonePicker, type TimezoneOption } from '@/components/timezone-picker';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,6 +21,9 @@ export default function Profile({
     custom_field_values,
     timezone,
     timezones,
+    start_page,
+    start_page_options,
+    role_start_page,
 }: {
     mustVerifyEmail: boolean;
     status?: string;
@@ -27,6 +31,10 @@ export default function Profile({
     custom_field_values: Record<string, string>;
     timezone: string;
     timezones: TimezoneOption[];
+    start_page: string | null;
+    start_page_options: StartPageOption[];
+    /** The page this person lands on when they choose nothing, already translated. */
+    role_start_page: string;
 }) {
     const { t } = useTranslation();
     const { auth } = usePage<SharedData>().props;
@@ -43,6 +51,7 @@ export default function Profile({
         email: auth.user.email,
         custom_field_values,
         timezone,
+        start_page,
         current_password: '',
     });
 
@@ -133,6 +142,15 @@ export default function Profile({
 
                             <InputError className="mt-2" message={errors.timezone} />
                         </div>
+
+                        <StartPageSelect
+                            value={data.start_page}
+                            onChange={(value) => setData('start_page', value)}
+                            options={start_page_options}
+                            inheritLabel={t('Default (:page)', { page: role_start_page })}
+                            error={errors.start_page}
+                            description={t('The page you land on after signing in.')}
+                        />
 
                         <ClientCustomFieldsSection
                             fields={custom_fields}

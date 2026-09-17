@@ -190,6 +190,36 @@ shares a timestamp with another.
 **Polling cannot see deletions.** A deleted row simply stops appearing. If you need to react to
 deletions, that is what webhooks will be for; they are not built yet.
 
+### Narrowing the file listing
+
+`GET /api/v1/files` takes these, in any combination:
+
+| Parameter | Narrows to |
+|---|---|
+| `search` | name, description or original filename containing the term |
+| `folder_id` | files directly in that folder |
+| `category_id` | files carrying that category |
+| `uploaded_by` | files uploaded by that user |
+| `role_id` | files whose uploader holds that role |
+| `downloads` | `none` — never downloaded · `any` — downloaded at least once |
+| `version` | `current` — nothing has replaced it · `outdated` — a newer upload has |
+| `visibility` | `public` — reachable by anyone with the link · `private` — not |
+| `public` | the file's own public flag, `true` or `false` |
+| `expired` | past its expiry date, or not |
+
+Two of those overlap and it is worth being deliberate about which you send. **`visibility`** asks
+whether a file is *actually* reachable by a stranger holding the link — its own flag, or a public
+folder anywhere above it. **`public`** tests only the file's own flag, so it will not return a file
+that is public purely because of the folder it sits in. `visibility` is the one that matches what an
+administrator sees on screen; `public` is kept as it always behaved for callers already using it.
+
+`version=current` includes files that were never versioned at all — a file with no history is the
+current version of itself.
+
+`uploaded_by` is answered narrowly for a client-scoped token: an id belonging to a client that token
+may not identify matches nothing, which is deliberately indistinguishable from a client who has
+uploaded nothing. Filters never widen a library, only narrow one.
+
 ---
 
 ## Reacting to things that happen

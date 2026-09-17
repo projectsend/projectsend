@@ -2075,5 +2075,19 @@
     "Your account has been created. You will be able to log in once it is approved.": "アカウントを作成しました。承認されるとログインできます。",
     "Invite a client to share files with": "ファイルを共有するクライアントを招待します",
     ":clientName (:clientEmail) registered a client account": ":clientName (:clientEmail) がクライアントアカウントを登録しました",
-    "A new client registered an account": "新しいクライアントがアカウントを登録しました"
+    "A new client registered an account": "新しいクライアントがアカウントを登録しました",
+    "Account expires": "アカウントの有効期限",
+    "A client account reached its expiry date and was deactivated": "クライアントアカウントが有効期限に達し、無効化されました",
+    "After this day the client can no longer sign in, and the account is deactivated. Their files stay. Leave empty for an account that never expires.": "この日を過ぎると、クライアントはサインインできなくなり、アカウントは無効化されます。ファイルは残ります。期限なしのアカウントにするには空欄のままにしてください。",
+    "Deactivate expired client accounts": "期限切れのクライアントアカウントを無効化",
+    "Default (:page)": "既定 (:page)",
+    "Start page": "開始ページ",
+    "The client account \":name\" expired and was deactivated": "クライアントアカウント「:name」の有効期限が切れ、無効化されました",
+    "The page you land on after signing in.": "サインイン後に表示されるページです。",
+    "This account expired on :date and can no longer sign in. To let them back in, choose a later date or clear it, and make sure the account is active.": "このアカウントは :date に期限切れとなり、サインインできません。再びアクセスできるようにするには、より後の日付を選ぶか日付を消去し、アカウントが有効になっていることを確認してください。",
+    "This date has already passed. Choose a later date, or leave it empty for an account that never expires.": "この日付はすでに過ぎています。より後の日付を選ぶか、期限なしのアカウントにするには空欄のままにしてください。",
+    "This role cannot open that page. Give it the \":permission\" permission, or choose another start page.": "このロールはそのページを開けません。「:permission」の権限を付与するか、別の開始ページを選んでください。",
+    "Until :date": ":date まで",
+    "Where people with this role land after signing in. Each person can still choose their own in their profile.": "このロールのユーザーがサインイン後に表示されるページです。各ユーザーはプロフィールで自分用のページを選ぶこともできます。",
+    "Your account has expired.": "アカウントの有効期限が切れました。"
 }

@@ -53,6 +53,7 @@ class SchedulerMonitoringController extends Controller
         return [
             'projectsend:purge-erasures' => (string) __('Purge erased accounts'),
             'projectsend:purge-stale-uploads' => (string) __('Purge stale chunked uploads'),
+            'projectsend:expire-client-accounts' => (string) __('Deactivate expired client accounts'),
             'projectsend:purge-zip-downloads' => (string) __('Purge zip downloads'),
             'projectsend:check-for-updates' => (string) __('Check for updates'),
             'projectsend:fetch-news' => (string) __('Fetch dashboard news'),

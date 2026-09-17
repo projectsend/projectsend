@@ -10,8 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * The token twin of Identity's EnsureAccountIsActive: deactivating an
- * account revokes its API access on the very next request, without anyone
- * having to hunt down the tokens it minted.
+ * account, or its expiry date passing, revokes its API access on the very
+ * next request, without anyone having to hunt down the tokens it minted.
  *
  * Deleted accounts need no equivalent — users are soft-deleted and the
  * default query scope means Sanctum simply fails to resolve the tokenable,
@@ -26,7 +26,7 @@ class EnsureApiAccountIsActive
     {
         $user = $request->user();
 
-        if ($user !== null && ! $user->active) {
+        if ($user !== null && ! $user->maySignIn()) {
             abort(401);
         }
 

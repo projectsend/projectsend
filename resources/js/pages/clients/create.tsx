@@ -3,6 +3,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 import { ClientCustomFieldsSection, type CustomFieldDefinition } from '@/components/client-custom-fields-section';
+import { ClientExpiryField } from '@/components/client-expiry-field';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,7 @@ interface ClientFormData {
     password: string;
     password_confirmation: string;
     storage_quota_mb: string;
+    expires_at: string;
     custom_field_values: Record<string, string>;
 }
 
@@ -43,6 +45,7 @@ export default function ClientsCreate({ custom_fields, default_storage_quota_mb 
         // Empty = inherit the site default rather than baking in today's
         // numeric value — see the field's own hint text below.
         storage_quota_mb: '',
+        expires_at: '',
         custom_field_values: Object.fromEntries(custom_fields.map((field) => [field.id, field.type === 'checkbox' ? '0' : ''])),
     });
 
@@ -124,6 +127,8 @@ export default function ClientsCreate({ custom_fields, default_storage_quota_mb 
                         </p>
                         <InputError message={errors.storage_quota_mb} />
                     </div>
+
+                    <ClientExpiryField value={data.expires_at} onChange={(value) => setData('expires_at', value)} error={errors.expires_at} />
 
                     <ClientCustomFieldsSection
                         fields={custom_fields}

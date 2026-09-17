@@ -79,6 +79,10 @@ class ClientResource extends JsonResource
             // caller needs to see before removing it. The secret and the
             // recovery codes stay where they are.
             'two_factor_enabled' => $this->hasTwoFactorEnabled(),
+            // Null when the account never expires. Once this passes the
+            // client can no longer sign in, and `active` turns false within
+            // the hour.
+            'expires_at' => $this->expires_at?->toIso8601String(),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

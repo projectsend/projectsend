@@ -12,6 +12,7 @@ use App\Modules\Clients\ClientAccounts;
 use App\Modules\Clients\ClientCustomFieldType;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Platform\Localization\DateInput;
 use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Clients\Models\ClientCustomField;
 use App\Modules\Clients\Models\ClientCustomFieldValue;
@@ -51,6 +52,7 @@ class ClientsController extends Controller
         private readonly SeatAllowance $seats,
         private readonly ClientAccounts $clients,
         private readonly ErasureSchedule $erasure,
+        private readonly DateInput $dates,
     ) {}
 
     public function index(Request $request): Response
@@ -89,6 +91,12 @@ class ClientsController extends Controller
             'email' => $client->email,
             'active' => $client->active,
             'account_requested' => $client->account_requested,
+            // A calendar day in the viewer's zone, as the edit form shows
+            // it, plus whether it has passed: the sweep that switches an
+            // expired account off runs hourly, and the list should not
+            // call an account that already refuses sign-ins "Active".
+            'expires_on' => $this->dates->asShown($client->expires_at, $viewer),
+            'expired' => $client->hasExpired(),
             'created_at' => $client->created_at?->toIso8601String(),
             'content' => $content[$client->id] ?? ['files' => 0, 'folders' => 0],
         ]);
@@ -146,7 +154,11 @@ class ClientsController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', new AvailableEmailRule],
             'password' => ['required', 'confirmed', Password::defaults()],
             'storage_quota_mb' => ['nullable', 'integer', 'min:0'],
+            'expires_at' => ['nullable', 'string', 'date'],
         ], $this->customFieldRules()));
+
+        $creator = $request->user();
+        assert($creator !== null);
 
         // The seat guard, the type, the role, and the quota's "0 means
         // inherit the site default" all live in ClientAccounts, shared
@@ -166,10 +178,8 @@ class ClientsController extends Controller
             // survived to the fleet.
             storageQuotaMb: (int) ($validated['storage_quota_mb'] ?? 0),
             welcome: false,
+            expiresAt: $this->dates->instant($validated['expires_at'] ?? null, $creator),
         );
-
-        $creator = $request->user();
-        assert($creator !== null);
 
         // A client-scoped creator would otherwise lose the client they just
         // made. guardTarget() answers 404 for anything off their roster, so
@@ -234,6 +244,10 @@ class ClientsController extends Controller
                 'account_requested' => $client->account_requested,
                 'storage_quota_mb' => $client->storage_quota_mb,
                 'two_factor_enabled' => $client->hasTwoFactorEnabled(),
+                // update() compares the posted value against this same
+                // string — see there.
+                'expires_at' => $this->dates->asShown($client->expires_at, $request->user()),
+                'expired' => $client->hasExpired(),
             ],
             // Resolved, not raw — see create() above.
             'default_storage_quota_mb' => $this->storageUsage->defaultQuotaMb(),
@@ -260,7 +274,26 @@ class ClientsController extends Controller
             'active' => ['required', 'boolean'],
             'password' => ['nullable', 'confirmed', Password::defaults()],
             'storage_quota_mb' => ['nullable', 'integer', 'min:0'],
+            'expires_at' => ['nullable', 'string', 'date'],
         ], $this->customFieldRules()));
+
+        $editor = $request->user();
+        assert($editor !== null);
+
+        // The form was rendered with the stored instant read back as a day
+        // in the editor's zone, and posts that string again with every
+        // other edit. Only a different string is a new date; re-deriving
+        // an unchanged one would move the expiry by the difference between
+        // two editors' zones each time either of them renamed the client.
+        // Same rule as a file's expiry (FilesController::update).
+        $postedExpiry = $validated['expires_at'] ?? null;
+        $expiresAt = $postedExpiry !== $this->dates->asShown($client->expires_at, $editor)
+            ? $this->dates->instant($postedExpiry, $editor)
+            : $client->expires_at;
+
+        // Request::boolean(), not the validated value: `boolean` accepts
+        // "1" and "0" without converting them.
+        $this->clients->guardExpiry($expiresAt, active: $request->boolean('active'));
 
         $wasActive = $client->active;
         $passwordChanged = is_string($validated['password'] ?? null) && $validated['password'] !== '';
@@ -275,6 +308,8 @@ class ClientsController extends Controller
             // 0 = inherit the site default, same as a brand-new client.
             'storage_quota_mb' => $validated['storage_quota_mb'] ?? 0,
         ]);
+
+        $client->expires_at = $expiresAt;
 
         // Activating a pending account through the edit screen counts as
         // approval and clears the request flag — which is the moment a

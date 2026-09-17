@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * A deactivated account loses access immediately, not at next login:
- * any open session is terminated on the following request.
+ * A deactivated or expired account loses access immediately, not at next
+ * login: any open session is terminated on the following request.
  */
 class EnsureAccountIsActive
 {
@@ -20,14 +20,16 @@ class EnsureAccountIsActive
     {
         $user = $request->user();
 
-        if ($user !== null && ! $user->active) {
+        if ($user !== null && ! $user->maySignIn()) {
             Auth::guard('web')->logout();
 
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
             return WriteSafeRedirect::apply($request, redirect()->route('login')->withErrors([
-                'email' => __('Your account has been deactivated.'),
+                'email' => $user->hasExpired()
+                    ? __('Your account has expired.')
+                    : __('Your account has been deactivated.'),
             ]));
         }
 

@@ -3,10 +3,14 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Modules\Audit\Action;
+use App\Modules\Audit\ActivityLog;
 use App\Modules\Files\Folders\FolderService;
+use App\Modules\Files\Models\File;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Groups\Models\MembershipRequest;
 use App\Modules\Identity\Models\Role;
+use App\Modules\Identity\Permissions\SystemRole;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia;
@@ -107,6 +111,108 @@ test('the files list searches globally and flat across folders, paginated', func
         ->has('files', 1)
         ->where('files.0.name', 'AlphaReport')
         ->has('pagination'));
+});
+
+test('the files list filters by uploader, and by the uploader\'s role', function () {
+    $this->actingAs($this->admin);
+
+    // Through the factory state rather than a name lookup: the built-in
+    // roles are materialized on demand, so querying for one by name in a
+    // fresh database returns null -- which made the role filter fall
+    // through as "no filter" and quietly pass on the wrong rows.
+    $editor = User::factory()->role(SystemRole::Uploader)->create();
+    File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'ByAdmin']);
+    File::factory()->create(['uploaded_by' => $editor->id, 'name' => 'ByEditor']);
+
+    $this->get("/files?uploader={$editor->id}")->assertInertia(fn (AssertableInertia $page) => $page
+        ->where('searching', true)
+        ->has('files', 1)
+        ->where('files.0.name', 'ByEditor'));
+
+    // The role filter reaches the same file through who uploaded it rather
+    // than through the file itself -- a different join, so it gets its own
+    // assertion instead of being assumed from the one above.
+    $this->get("/files?role={$editor->role_id}")->assertInertia(fn (AssertableInertia $page) => $page
+        ->has('files', 1)
+        ->where('files.0.name', 'ByEditor'));
+
+    // Both dropdowns are built from files this viewer can see, so both
+    // uploaders are offered and each role appears once.
+    $this->get('/files')->assertInertia(fn (AssertableInertia $page) => $page
+        ->has('uploader_options', 2)
+        ->has('role_options', 2));
+});
+
+test('the files list filters by public and private, counting a public folder as public', function () {
+    $this->actingAs($this->admin);
+
+    $publicFolder = app(FolderService::class)->create('Brochures', null);
+    $publicFolder->update(['public' => true]);
+
+    File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'FlaggedPublic', 'public' => true]);
+    File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'InPublicFolder', 'public' => false, 'folder_id' => $publicFolder->id]);
+    File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'PlainPrivate', 'public' => false]);
+
+    // The file in the public folder counts as public even though its own
+    // flag is false -- the same rule the row's own badge uses. Filtering on
+    // the column alone would have hidden a file this screen labels Public.
+    $this->get('/files?visibility=public')->assertInertia(fn (AssertableInertia $page) => $page
+        ->has('files', 2)
+        ->where('files.0.name', 'FlaggedPublic')
+        ->where('files.1.name', 'InPublicFolder'));
+
+    // And the private half must not lose the file sitting at the library
+    // root: `folder_id NOT IN (...)` is never true for a NULL folder_id.
+    $this->get('/files?visibility=private')->assertInertia(fn (AssertableInertia $page) => $page
+        ->has('files', 1)
+        ->where('files.0.name', 'PlainPrivate'));
+});
+
+test('the files list separates files that were never downloaded from those that were', function () {
+    $this->actingAs($this->admin);
+
+    $downloaded = File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'Grabbed']);
+    File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'Untouched']);
+
+    ActivityLog::query()->create([
+        'actor_id' => $this->admin->id,
+        'action' => Action::FileDownloaded,
+        'subject_type' => $downloaded->getMorphClass(),
+        'subject_id' => $downloaded->id,
+        'created_at' => now(),
+    ]);
+
+    $this->get('/files?downloads=none')->assertInertia(fn (AssertableInertia $page) => $page
+        ->has('files', 1)
+        ->where('files.0.name', 'Untouched'));
+
+    $this->get('/files?downloads=any')->assertInertia(fn (AssertableInertia $page) => $page
+        ->has('files', 1)
+        ->where('files.0.name', 'Grabbed'));
+});
+
+test('the files list separates current versions from outdated ones', function () {
+    $this->actingAs($this->admin);
+
+    $original = File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'DraftOne']);
+    File::factory()->create([
+        'uploaded_by' => $this->admin->id,
+        'name' => 'DraftTwo',
+        'previous_file_id' => $original->id,
+        'version_root_id' => $original->id,
+    ]);
+    File::factory()->create(['uploaded_by' => $this->admin->id, 'name' => 'NeverVersioned']);
+
+    // A file nothing replaced is current, and that includes one that was
+    // never versioned at all -- it is the current version of itself.
+    $this->get('/files?version=current')->assertInertia(fn (AssertableInertia $page) => $page
+        ->has('files', 2)
+        ->where('files.0.name', 'DraftTwo')
+        ->where('files.1.name', 'NeverVersioned'));
+
+    $this->get('/files?version=outdated')->assertInertia(fn (AssertableInertia $page) => $page
+        ->has('files', 1)
+        ->where('files.0.name', 'DraftOne'));
 });
 
 test('the account and membership request queues are searchable', function () {

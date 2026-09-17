@@ -103,6 +103,10 @@ class FilesController extends Controller
             'uploaded_by' => ['nullable', 'integer'],
             'search' => ['nullable', 'string', 'max:255'],
             'public' => ['nullable', 'boolean'],
+            'visibility' => ['nullable', 'in:public,private'],
+            'role_id' => ['nullable', 'integer'],
+            'downloads' => ['nullable', 'in:none,any'],
+            'version' => ['nullable', 'in:current,outdated'],
             'expired' => ['nullable', 'boolean'],
             // One of pending, clean, infected, released, not_scanned or
             // unscannable_blocked — so an integration can wait for a file
@@ -144,8 +148,56 @@ class FilesController extends Controller
                 ->orWhere('files.original_name', 'like', "%{$search}%"));
         }
 
+        // Two overlapping questions, kept apart on purpose.
+        //
+        // `public` has always tested the column, and callers depend on that,
+        // so its meaning is left exactly as it was -- changing what an
+        // existing filter answers is a breaking change for everybody already
+        // asking it, whatever the new answer is.
+        //
+        // `visibility` is the question the staff library's own filter asks:
+        // File::isEffectivelyPublic(), the flag *or* a public folder anywhere
+        // above the file. That is what the badge on a row means, so it is
+        // what an integration comparing itself to the screen will expect.
+        // Prefer it; `public` remains for compatibility.
         if ($request->has('public') && ($filters['public'] ?? null) !== null) {
             $query->where('files.public', $request->boolean('public'));
+        }
+
+        if (($filters['visibility'] ?? null) !== null) {
+            $query->effectivelyPublic($filters['visibility'] === 'public');
+        }
+
+        // No identity guard here, unlike `uploaded_by` directly above, and
+        // the difference is what the answer discloses. `uploaded_by` names a
+        // person: a non-empty result confirms *which* client uploaded a file
+        // whose uploader the response is redacting, which is the redaction
+        // undone. A role names nobody. The files in the result are ones this
+        // caller may already read, and learning that one of them came from
+        // somebody holding the Client role narrows to a set the caller could
+        // have guessed. Same reasoning, and same absence of a guard, as the
+        // staff library's own role filter -- the two surfaces must not
+        // disagree about what a role reveals.
+        if (($filters['role_id'] ?? null) !== null) {
+            $query->whereHas('uploader', fn (Builder $uploader) => $uploader->where('role_id', (int) $filters['role_id']));
+        }
+
+        // has/doesn't-have rather than a comparison on a count: an aggregate
+        // cannot be filtered in a WHERE, and a HAVING would be applied after
+        // the page has already been sliced.
+        if (($filters['downloads'] ?? null) !== null) {
+            $filters['downloads'] === 'none'
+                ? $query->whereDoesntHave('downloads')
+                : $query->whereHas('downloads');
+        }
+
+        // "current" includes a file that was never versioned at all -- it is
+        // the current version of itself. "outdated" is the word the version
+        // badge uses, so the filter and the row agree.
+        if (($filters['version'] ?? null) !== null) {
+            $filters['version'] === 'current'
+                ? $query->whereDoesntHave('nextVersion')
+                : $query->whereHas('nextVersion');
         }
 
         // Expiry is a filter, not a default: staff see expired files in the

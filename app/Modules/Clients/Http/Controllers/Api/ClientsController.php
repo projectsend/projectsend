@@ -13,6 +13,7 @@ use App\Modules\Clients\ClientAccounts;
 use App\Modules\Clients\ClientCustomFieldType;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Platform\Localization\DateInput;
 use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Clients\Http\Resources\Api\ClientResource;
 use App\Modules\Clients\Models\ClientCustomField;
@@ -62,6 +63,7 @@ class ClientsController extends Controller
         private readonly SeatAllowance $seats,
         private readonly ClientAccounts $clients,
         private readonly ErasureSchedule $erasure,
+        private readonly DateInput $dates,
     ) {}
 
     public function index(Request $request): AnonymousResourceCollection
@@ -130,10 +132,18 @@ class ClientsController extends Controller
             // installation may be refused on another.
             'password' => ['required', Password::defaults()],
             'storage_quota_mb' => ['nullable', 'integer', 'min:0'],
+            // When the account stops working; omit or send null for never.
+            // A bare date (`2026-12-31`) means the end of that day in the
+            // token owner's timezone; a full timestamp is used as given.
+            // Must be in the future.
+            'expires_at' => ['nullable', 'string', 'date'],
             'custom_field_values' => ['array'],
         ]);
 
         $validated['custom_field_values'] = $this->validateCustomFieldValues($request);
+
+        $creator = $request->user();
+        assert($creator !== null);
 
         // The invariants — the seat guard, the type, the role, the quota's
         // "0 means inherit" — live in ClientAccounts, shared with the staff
@@ -151,10 +161,8 @@ class ClientsController extends Controller
             // this file is strict_types.
             storageQuotaMb: (int) ($validated['storage_quota_mb'] ?? 0),
             welcome: false,
+            expiresAt: $this->dates->instant($validated['expires_at'] ?? null, $creator),
         );
-
-        $creator = $request->user();
-        assert($creator !== null);
 
         // A client-scoped creator would otherwise lose the client they just
         // made. guardTarget() answers 404 for anything off their roster, so
@@ -191,6 +199,11 @@ class ClientsController extends Controller
             'active' => ['sometimes', 'boolean'],
             'password' => ['sometimes', 'nullable', Password::defaults()],
             'storage_quota_mb' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            // Send null to remove the expiry. Read the same way as on
+            // create. An account cannot be active with a date that has
+            // passed, so reactivating an expired client needs a new date
+            // (or null) in the same request.
+            'expires_at' => ['sometimes', 'nullable', 'string', 'date'],
             'custom_field_values' => ['sometimes', 'array'],
         ]);
 
@@ -207,6 +220,26 @@ class ClientsController extends Controller
 
         if (array_key_exists('storage_quota_mb', $validated)) {
             $client->storage_quota_mb = $validated['storage_quota_mb'] ?? 0;
+        }
+
+        // Asked only when this request touches one of the two values, so a
+        // PATCH renaming a client whose date passed an hour ago is not
+        // refused over a field it never sent. Resolved with boolean() for
+        // the reason given in the web controller.
+        if (array_key_exists('expires_at', $validated) || array_key_exists('active', $validated)) {
+            $editor = $request->user();
+            assert($editor !== null);
+
+            $expiresAt = array_key_exists('expires_at', $validated)
+                ? $this->dates->instant($validated['expires_at'], $editor)
+                : $client->expires_at;
+
+            $this->clients->guardExpiry(
+                $expiresAt,
+                active: array_key_exists('active', $validated) ? $request->boolean('active') : $client->active,
+            );
+
+            $client->expires_at = $expiresAt;
         }
 
         // Approval, and so the moment the seat is spent — same rule the

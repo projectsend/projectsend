@@ -10,6 +10,7 @@ import { VersionBadge } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
 import { Pagination } from '@/components/pagination';
 import { FileDownloadStats } from '@/components/portal/file-download-stats';
+import { FileExpiry } from '@/components/portal/file-expiry';
 import { FileRowActions } from '@/components/portal/file-row-actions';
 import { FolderRowActions } from '@/components/portal/folder-row-actions';
 import { NewFolderButton } from '@/components/portal/new-folder-button';
@@ -239,6 +240,12 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
                                                 <>
                                                     {' · '}
                                                     <FileDownloadStats file={file} />
+                                                </>
+                                            )}
+                                            {file.expires_at !== null && (
+                                                <>
+                                                    {' · '}
+                                                    <FileExpiry file={file} />
                                                 </>
                                             )}
                                         </p>

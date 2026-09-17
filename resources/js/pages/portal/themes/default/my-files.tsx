@@ -11,6 +11,7 @@ import { VersionBadge } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
 import { Pagination } from '@/components/pagination';
 import { FileDownloadStats } from '@/components/portal/file-download-stats';
+import { FileExpiry } from '@/components/portal/file-expiry';
 import { FileRowActions } from '@/components/portal/file-row-actions';
 import { FolderRowActions } from '@/components/portal/folder-row-actions';
 import { NewFolderButton } from '@/components/portal/new-folder-button';
@@ -222,6 +223,12 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                                     <FileDownloadStats file={file} />
                                                 </>
                                             )}
+                                            {file.expires_at !== null && (
+                                                <>
+                                                    {' · '}
+                                                    <FileExpiry file={file} />
+                                                </>
+                                            )}
                                         </p>
                                         <CategoryBadges categories={file.categories} className="mt-1" />
                                     </div>
@@ -355,6 +362,11 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                         {file.downloads !== null && (
                                             <p className="text-muted-foreground truncate text-xs">
                                                 <FileDownloadStats file={file} />
+                                            </p>
+                                        )}
+                                        {file.expires_at !== null && (
+                                            <p className="text-muted-foreground truncate text-xs">
+                                                <FileExpiry file={file} />
                                             </p>
                                         )}
                                         <CategoryBadges categories={file.categories} className="mt-1" />

@@ -1,9 +1,11 @@
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
+import { Info } from 'lucide-react';
 import { useState } from 'react';
 
 import { NewVersionPicker } from '@/components/files/new-version-picker';
 import Heading from '@/components/heading';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import ChunkedUploadDashboard from '@/components/uploads/chunked-upload-dashboard';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
@@ -11,6 +13,8 @@ import PortalLayout from '@/layouts/portal-layout';
 import { formatBytes } from '@/lib/format-bytes';
 
 interface PortalUploadProps {
+    /** Rules to read before uploading, one sentence each. See ResolvingUploadNotice. */
+    notice: string[];
     allowed_extensions: string[] | null;
     max_file_size_mb: number;
     part_size_mb: number;
@@ -23,6 +27,7 @@ interface PortalUploadProps {
 }
 
 export default function PortalUpload({
+    notice,
     allowed_extensions,
     max_file_size_mb,
     part_size_mb,
@@ -56,6 +61,17 @@ export default function PortalUpload({
                 />
 
                 {folder !== null && <p className="text-muted-foreground mb-4 text-sm">{t('Uploading into ":name".', { name: folder.name })}</p>}
+
+                {notice.length > 0 && (
+                    <Alert className="mb-6">
+                        <Info className="size-4" />
+                        <AlertDescription>
+                            {notice.map((line) => (
+                                <p key={line}>{line}</p>
+                            ))}
+                        </AlertDescription>
+                    </Alert>
+                )}
 
                 {quota_bytes !== null && (
                     <div className="border-primary/20 bg-primary/5 mb-6 rounded-lg border p-4">

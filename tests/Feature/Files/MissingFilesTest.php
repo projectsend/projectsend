@@ -49,6 +49,10 @@ test('the daily check finds a row whose bytes are gone, and says so once', funct
     $entry = ActivityLog::query()->where('action', Action::FileMissing)->sole();
     expect($entry->context['name'])->toBe('Contrato');
 
+    // Stamped like any other verdict, so it shows up on the Activity tab
+    // rather than being decided somewhere nobody can see.
+    expect($gone->refresh()->scanned_at)->not->toBeNull();
+
     // Run again: the file is still gone, and that is not news.
     $this->artisan('projectsend:check-missing-files')->assertSuccessful();
 

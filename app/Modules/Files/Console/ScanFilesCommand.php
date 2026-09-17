@@ -24,7 +24,8 @@ use Illuminate\Database\Eloquent\Builder;
 class ScanFilesCommand extends Command
 {
     protected $signature = 'projectsend:scan-files
-        {--existing : also work through files that were never scanned because scanning was off}';
+        {--existing : also work through files that were never scanned because scanning was off}
+        {--all : check every file again, whatever it said last}';
 
     protected $description = 'Scan files that are waiting, were missed, or were never checked (runs hourly)';
 
@@ -50,6 +51,24 @@ class ScanFilesCommand extends Command
         );
 
         $this->info("Re-queued {$waiting} waiting file(s) and {$missed} that were missed while the scanner was down.");
+
+        if ($this->option('all')) {
+            // Everything except the two states there is no point asking
+            // about: a file already waiting for its first verdict, and one
+            // whose bytes are not there to read. Files keep their current
+            // state — and stay downloadable — until a new verdict arrives.
+            $limit = $config->existingScanRatePerMinute() * 60;
+
+            $checked = $this->dispatchFor(
+                File::query()->whereNotIn('scan_status', [ScanStatus::Pending->value, ScanStatus::Missing->value]),
+                $limit,
+                rescan: true,
+            );
+
+            $this->info("Queued {$checked} file(s) to be checked again.");
+
+            return self::SUCCESS;
+        }
 
         if ($this->option('existing')) {
             // Paced, because this can be a whole library at once and the

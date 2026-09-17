@@ -49,13 +49,13 @@ class ScanFileJob implements ShouldQueue
     public function __construct(
         public readonly int $fileId,
         /**
-         * A file that has already been through here and is available —
-         * one let through while the scanner was down, or one that
-         * predates scanning. It keeps its current state, and therefore
-         * stays downloadable, until a verdict actually arrives. Marking
-         * it pending first would take a library offline for the length of
-         * a backfill, and would announce every file a second time when it
-         * came back.
+         * A file that has already been through here — one let through
+         * while the scanner was down, one that predates scanning, or one
+         * being checked again on purpose. It keeps its current state, and
+         * therefore stays downloadable, until a verdict actually arrives.
+         * Marking it pending first would take a library offline for the
+         * length of a backfill, and would announce every file a second
+         * time when it came back.
          */
         public readonly bool $rescan = false,
     ) {
@@ -83,13 +83,18 @@ class ScanFileJob implements ShouldQueue
             return;
         }
 
-        // Already decided by an earlier run — this job is dispatched from
-        // an upload and from the hourly sweep, and both can land on the
-        // same file. A rescan expects the opposite state: a file that was
-        // allowed through unchecked.
-        $expected = $this->rescan ? ScanStatus::NotScanned : ScanStatus::Pending;
+        // A new upload is only scanned while it is still pending: this job
+        // is dispatched from the upload and from the hourly sweep, and
+        // both can land on the same file.
+        if (! $this->rescan && $file->scan_status !== ScanStatus::Pending) {
+            return;
+        }
 
-        if ($file->scan_status !== $expected) {
+        // A rescan checks a file again whatever it said last — after new
+        // definitions, or because somebody asked. The one state it leaves
+        // alone is a file already waiting for its first verdict, which
+        // belongs to the job above.
+        if ($this->rescan && $file->scan_status === ScanStatus::Pending) {
             return;
         }
 

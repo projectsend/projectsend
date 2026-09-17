@@ -39,6 +39,10 @@ interface VirusScanningProps {
         quarantined: number;
         never_scanned: number;
         let_through: number;
+        /** What a New scan would check: everything with bytes and a verdict to revisit. */
+        scannable: number;
+        /** Jobs still on the scans queue: a scan already under way. */
+        queued: number;
     };
 }
 
@@ -117,13 +121,17 @@ export default function VirusScanningSettings({
                             to do, so it can say why. */}
                         <Button
                             type="button"
-                            disabled={!enabled || counts.never_scanned === 0}
+                            disabled={!enabled || counts.scannable === 0 || counts.queued > 0}
                             title={
                                 !enabled
                                     ? t('Switch scanning on first.')
-                                    : counts.never_scanned === 0
-                                      ? t('Every file has already been checked.')
-                                      : t(':count files have never been checked.', { count: counts.never_scanned })
+                                    : counts.queued > 0
+                                      ? t('A scan is already running.')
+                                      : counts.scannable === 0
+                                        ? t('There is nothing to scan.')
+                                        : t('Checks all :count files again, including the ones already checked.', {
+                                              count: counts.scannable,
+                                          })
                             }
                             onClick={() => router.post(route('system-settings.virus-scanning.scan-existing'), {}, { preserveScroll: false })}
                         >

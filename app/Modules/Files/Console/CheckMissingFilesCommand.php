@@ -38,7 +38,15 @@ class CheckMissingFilesCommand extends Command
 
         foreach (array_chunk($gone, 200) as $chunk) {
             foreach (File::query()->whereIn('id', $chunk)->where('scan_status', '!=', ScanStatus::Missing)->get() as $file) {
-                $file->forceFill(['scan_status' => ScanStatus::Missing, 'scan_note' => null])->save();
+                // Stamped like any other verdict: this is the moment the
+                // file was last looked at, and without it a missing file
+                // never appears in the Activity list — which is exactly
+                // where somebody watching would look for it.
+                $file->forceFill([
+                    'scan_status' => ScanStatus::Missing,
+                    'scan_note' => null,
+                    'scanned_at' => now(),
+                ])->save();
 
                 $activity->logSystem(Action::FileMissing, ['id' => $file->id, 'name' => $file->name]);
                 $newlyGone++;

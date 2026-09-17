@@ -40,7 +40,7 @@ export function ScanBadge({ scan }: { scan: ScanState | null | undefined }) {
 
     if (scan.status === 'missing') {
         return (
-            <Badge variant="destructive" className="text-[11px] font-normal" title={t('The file is no longer in storage.')}>
+            <Badge variant="warning" className="text-[11px] font-normal" title={t('The file is no longer in storage.')}>
                 {t('Missing')}
             </Badge>
         );
@@ -55,7 +55,7 @@ export function ScanBadge({ scan }: { scan: ScanState | null | undefined }) {
     }
 
     return (
-        <Badge variant="outline" className="text-[11px] font-normal" title={scan.note ?? undefined}>
+        <Badge variant="warning" className="text-[11px] font-normal" title={scan.note ?? undefined}>
             {t('Not scanned')}
         </Badge>
     );

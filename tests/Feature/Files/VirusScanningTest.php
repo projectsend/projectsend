@@ -514,3 +514,66 @@ test('a missing file is missing whatever the unscannable policy says', function 
 
     expect($file->refresh()->scan_status)->toBe(ScanStatus::Missing);
 });
+
+test('a new scan checks files that already have a verdict', function () {
+    // "New scan" after an engine update means "check my library again".
+    // The first version only queued files nothing had ever looked at, so
+    // on a library already scanned once the button did nothing — and was
+    // disabled for saying so.
+    fakeScanner(ScanVerdict::clean());
+    $clean = scannableFile(['scan_status' => ScanStatus::Clean]);
+    $letThrough = scannableFile([
+        'scan_status' => ScanStatus::NotScanned,
+        'scan_note' => NotScannedReason::TooLarge->value,
+    ]);
+    $waiting = scannableFile(['scan_status' => ScanStatus::Pending]);
+    $gone = scannableFile(['scan_status' => ScanStatus::Missing]);
+
+    Illuminate\Support\Facades\Queue::fake();
+
+    $this->artisan('projectsend:scan-files', ['--all' => true])->assertSuccessful();
+
+    foreach ([$clean, $letThrough] as $file) {
+        Illuminate\Support\Facades\Queue::assertPushed(ScanFileJob::class, fn (ScanFileJob $job): bool => $job->fileId === $file->id);
+    }
+
+    // Nothing to re-ask about a file with no bytes.
+    Illuminate\Support\Facades\Queue::assertNotPushed(ScanFileJob::class, fn (ScanFileJob $job): bool => $job->fileId === $gone->id);
+
+    // The one already waiting is picked up by the ordinary sweep at the
+    // top of the command, as a first scan rather than as a rescan — the
+    // distinction the job itself turns on.
+    Illuminate\Support\Facades\Queue::assertPushed(
+        ScanFileJob::class,
+        fn (ScanFileJob $job): bool => $job->fileId === $waiting->id && $job->rescan === false,
+    );
+});
+
+test('a rescan of a clean file re-checks it, and finds what is there now', function () {
+    // What an engine update is for: the same bytes, a newer opinion.
+    fakeScanner(ScanVerdict::infected('Newly.Known.Threat'));
+    $file = scannableFile(['scan_status' => ScanStatus::Clean]);
+
+    (new ScanFileJob($file->id, true))->handle(
+        app(VirusScanner::class),
+        app(App\Modules\Files\Scanning\ScanPolicy::class),
+        app(App\Modules\Files\Scanning\ScanningConfig::class),
+    );
+
+    expect($file->refresh()->scan_status)->toBe(ScanStatus::Infected)
+        ->and($file->scan_note)->toBe('Newly.Known.Threat');
+});
+
+test('a rescan leaves a file that is waiting for its first verdict alone', function () {
+    $scanner = fakeScanner(ScanVerdict::clean());
+    $file = scannableFile(['scan_status' => ScanStatus::Pending]);
+
+    (new ScanFileJob($file->id, true))->handle(
+        app(VirusScanner::class),
+        app(App\Modules\Files\Scanning\ScanPolicy::class),
+        app(App\Modules\Files\Scanning\ScanningConfig::class),
+    );
+
+    expect($scanner->scans)->toBe(0)
+        ->and($file->refresh()->scan_status)->toBe(ScanStatus::Pending);
+});

@@ -93,9 +93,12 @@ export function VirusScanActivity() {
     }
 
     const badge = (file: ScannedFile) => {
+        // Green, amber, red: checked and fine, checked and could not be
+        // read, checked and found something. The colour says which before
+        // the words do.
         if (file.status === 'clean') {
             return (
-                <Badge variant="secondary" className="gap-1 font-normal">
+                <Badge variant="success" className="gap-1 font-normal">
                     <CheckCircle2 className="size-3" /> {t('Clean')}
                 </Badge>
             );
@@ -111,7 +114,7 @@ export function VirusScanActivity() {
 
         if (file.status === 'missing') {
             return (
-                <Badge variant="destructive" className="gap-1 font-normal">
+                <Badge variant="warning" className="gap-1 font-normal">
                     <ShieldQuestion className="size-3" /> {t('Missing from storage')}
                 </Badge>
             );
@@ -126,7 +129,7 @@ export function VirusScanActivity() {
         }
 
         return (
-            <Badge variant="outline" className="gap-1 font-normal">
+            <Badge variant="warning" className="gap-1 font-normal">
                 <ShieldQuestion className="size-3" /> {file.note ?? t('Not scanned')}
             </Badge>
         );

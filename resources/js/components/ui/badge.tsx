@@ -12,6 +12,11 @@ const badgeVariants = cva(
                 secondary: 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
                 destructive: 'border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80',
                 success: 'border-transparent bg-success text-success-foreground hover:bg-success/80',
+                // Amber, matching the warning alert: something to look at,
+                // not something that failed. The two are different
+                // answers and a reader should not have to read the words
+                // to tell them apart.
+                warning: 'border-transparent bg-amber-500 text-amber-950 hover:bg-amber-500/80 dark:bg-amber-500 dark:text-amber-950',
                 outline: 'text-foreground',
             },
         },

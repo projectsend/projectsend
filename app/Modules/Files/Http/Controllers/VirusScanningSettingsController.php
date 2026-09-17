@@ -333,6 +333,12 @@ class VirusScanningSettingsController extends Controller
                     NotScannedReason::Encrypted->value,
                 ])
                 ->count(),
+            // What a New scan would actually check: everything except a
+            // file already waiting for its first verdict, and one whose
+            // bytes are gone.
+            'scannable' => File::query()
+                ->whereNotIn('scan_status', [ScanStatus::Pending->value, ScanStatus::Missing->value])
+                ->count(),
             // So the New scan button can refuse a second scan while one is
             // still working through the queue.
             'queued' => Queue::size('scans'),

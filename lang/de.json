@@ -2248,5 +2248,6 @@
     ":engine detects viruses, but reports encrypted archives as clean, so a password-protected zip would get through unchecked. Add AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc and AlertExceedsMax, each set to yes, to its clamd.conf and restart it.": ":engine erkennt Viren, meldet verschlüsselte Archive aber als sauber, sodass eine passwortgeschützte ZIP-Datei ungeprüft durchkäme. Füge AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc und AlertExceedsMax, jeweils auf yes gesetzt, zu seiner clamd.conf hinzu und starte ihn neu.",
     "A file in this archive is no longer available. Download the selection again.": "Eine Datei in diesem Archiv ist nicht mehr verfügbar. Lade die Auswahl erneut herunter.",
     "A scan is already running. Wait for it to finish.": "Es läuft bereits ein Scan. Warte, bis er fertig ist.",
-    "Something answered at :address, but it is not a ClamAV scanner.": "Unter :address hat etwas geantwortet, aber es ist kein ClamAV-Scanner."
+    "Something answered at :address, but it is not a ClamAV scanner.": "Unter :address hat etwas geantwortet, aber es ist kein ClamAV-Scanner.",
+    "Available until :date": "Verfügbar bis :date"
 }

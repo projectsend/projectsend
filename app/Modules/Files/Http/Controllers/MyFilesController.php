@@ -16,6 +16,7 @@ use App\Modules\Files\Access\OwnFileDownloads;
 use App\Modules\Files\DownloadLimitScope;
 use App\Modules\Files\Editing\ApplyFileEdits;
 use App\Modules\Files\Editing\FileExpiry;
+use App\Modules\Files\Events\ResolvingUploadNotice;
 use App\Modules\Files\Folders\BreadcrumbBuilder;
 use App\Modules\Files\Folders\ClientHomeFolders;
 use App\Modules\Files\Models\Category;
@@ -298,6 +299,10 @@ class MyFilesController extends Controller
                 'mime_type' => $file->mime_type,
                 'size' => $file->size,
                 'created_at' => $file->created_at?->toIso8601String(),
+                // When it stops being available. Shown on the row rather
+                // than only on the editor, because a file that is about to
+                // go should say so where the client looks for it.
+                'expires_at' => $file->expires_at?->toIso8601String(),
                 'is_mine' => $file->uploaded_by === $client->id,
                 // Decided per row by FilePolicy, exactly as the folder rows
                 // above are: a client's own uploads are theirs to manage
@@ -374,7 +379,13 @@ class MyFilesController extends Controller
             abort_unless(Folder::uploadableBy($client, $folder), 403);
         }
 
+        $notice = new ResolvingUploadNotice($client);
+        event($notice);
+
         return Inertia::render('portal/upload', [
+            // Rules a package wants read before the upload — see
+            // ResolvingUploadNotice. An empty list shows nothing.
+            'notice' => $notice->lines,
             'allowed_extensions' => $this->extensionPolicy->hintFor($client),
             'max_file_size_mb' => (int) $this->settings->get(Setting::MaxFileSizeMb),
             'part_size_mb' => (int) config('projectsend.upload_part_size_mb'),

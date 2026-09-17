@@ -161,3 +161,36 @@ test('an unknown audience reaches nobody', function () {
         fn (AssertableInertia $page) => $page->where('announcement', null),
     );
 });
+
+/*
+|--------------------------------------------------------------------------
+| What a client reads before uploading
+|--------------------------------------------------------------------------
+*/
+
+test('with nothing listening the upload page carries no notice', function () {
+    $client = User::factory()->client()->create();
+
+    $this->actingAs($client)->get(route('my-files.upload.create'))->assertInertia(
+        fn (AssertableInertia $page) => $page->component('portal/upload')->where('notice', []),
+    );
+});
+
+test('a listener can tell a client something before they upload, in every theme', function () {
+    $client = User::factory()->client()->create();
+
+    Event::listen(App\Modules\Files\Events\ResolvingUploadNotice::class, function (App\Modules\Files\Events\ResolvingUploadNotice $event) use ($client): void {
+        // Handed the person uploading, so a rule can depend on who it is.
+        if ($event->uploader->is($client)) {
+            $event->add('Files are kept for 30 days.');
+        }
+    });
+
+    foreach (['default', 'compact', 'drive', 'gallery'] as $theme) {
+        app(App\Modules\Platform\Settings\Settings::class)->set(App\Modules\Platform\Settings\Setting::Theme, $theme);
+
+        $this->actingAs($client)->get(route('my-files.upload.create'))->assertInertia(
+            fn (AssertableInertia $page) => $page->where('notice', ['Files are kept for 30 days.']),
+        );
+    }
+});

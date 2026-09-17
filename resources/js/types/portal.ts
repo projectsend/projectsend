@@ -66,6 +66,8 @@ export interface FileRow {
      * a theme must never derive this from `is_mine`.
      */
     share_url: string | null;
+    /** When the file stops being available, or null for never. */
+    expires_at: string | null;
     /**
      * How often this file has been downloaded and when it last was —
      * present only on files this client uploaded. Null means "not yours

@@ -2248,5 +2248,6 @@
     ":engine detects viruses, but reports encrypted archives as clean, so a password-protected zip would get through unchecked. Add AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc and AlertExceedsMax, each set to yes, to its clamd.conf and restart it.": ":engine phát hiện được virus nhưng báo các tệp nén được mã hóa là sạch, nên một tệp zip có mật khẩu sẽ lọt qua mà không được kiểm tra. Hãy thêm AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc và AlertExceedsMax, mỗi mục đặt là yes, vào clamd.conf của nó rồi khởi động lại.",
     "A file in this archive is no longer available. Download the selection again.": "Một tệp trong gói nén này không còn khả dụng. Hãy tải lại phần đã chọn.",
     "A scan is already running. Wait for it to finish.": "Đã có một lượt quét đang chạy. Hãy đợi nó hoàn tất.",
-    "Something answered at :address, but it is not a ClamAV scanner.": "Có dịch vụ trả lời tại :address, nhưng đó không phải là trình quét ClamAV."
+    "Something answered at :address, but it is not a ClamAV scanner.": "Có dịch vụ trả lời tại :address, nhưng đó không phải là trình quét ClamAV.",
+    "Available until :date": "Có sẵn đến :date"
 }

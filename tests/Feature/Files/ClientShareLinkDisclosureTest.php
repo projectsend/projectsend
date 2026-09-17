@@ -211,3 +211,13 @@ test('the link the client is shown really works', function () {
 
     expect(ShareLink::query()->count())->toBe(1);
 });
+
+test('a client row says when the file stops being available', function () {
+    $client = User::factory()->client()->create();
+    $expiry = now()->addDays(30)->startOfSecond();
+    File::factory()->create(['uploaded_by' => $client->id, 'name' => 'Kept', 'expires_at' => null]);
+    File::factory()->create(['uploaded_by' => $client->id, 'name' => 'Going', 'expires_at' => $expiry]);
+
+    expect(rowFor($client, 'Kept')['expires_at'])->toBeNull()
+        ->and(rowFor($client, 'Going')['expires_at'])->toBe($expiry->toIso8601String());
+});

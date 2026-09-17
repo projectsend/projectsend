@@ -2248,5 +2248,6 @@
     ":engine detects viruses, but reports encrypted archives as clean, so a password-protected zip would get through unchecked. Add AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc and AlertExceedsMax, each set to yes, to its clamd.conf and restart it.": ":engine hutambua virusi, lakini huripoti kumbukumbu zilizosimbwa kuwa safi, kwa hiyo zip yenye nenosiri ingepita bila kukaguliwa. Ongeza AlertEncrypted, AlertEncryptedArchive, AlertEncryptedDoc na AlertExceedsMax, kila moja likiwa yes, kwenye clamd.conf yake kisha uiwashe upya.",
     "A file in this archive is no longer available. Download the selection again.": "Faili moja katika kumbukumbu hii halipatikani tena. Pakua uteuzi upya.",
     "A scan is already running. Wait for it to finish.": "Uchanganuzi tayari unaendelea. Subiri umalizike.",
-    "Something answered at :address, but it is not a ClamAV scanner.": "Kitu kimejibu kwenye :address, lakini si kichanganuzi cha ClamAV."
+    "Something answered at :address, but it is not a ClamAV scanner.": "Kitu kimejibu kwenye :address, lakini si kichanganuzi cha ClamAV.",
+    "Available until :date": "Inapatikana hadi :date"
 }

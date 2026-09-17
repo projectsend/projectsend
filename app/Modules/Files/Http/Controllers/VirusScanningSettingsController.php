@@ -9,6 +9,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Scanning\NotScannedReason;
+use App\Modules\Files\Scanning\ScannerAddress;
 use App\Modules\Files\Scanning\ScanningConfig;
 use App\Modules\Files\Scanning\ScanOutcome;
 use App\Modules\Files\Scanning\ScanStatus;
@@ -115,6 +116,12 @@ class VirusScanningSettingsController extends Controller
                 return back()->withErrors(['address' => __('Enter the address of your scanner first.')]);
             }
 
+            // Checked here rather than left to the socket, which accepts
+            // more than it should — see ScannerAddress.
+            if ($address !== '' && ! ScannerAddress::isValid($address)) {
+                return back()->withErrors(['address' => __(ScannerAddress::message())]);
+            }
+
             $this->settings->set(Setting::VirusScannerAddress, $address);
             $this->settings->set(Setting::VirusScanningEnabled, $request->boolean('enabled'));
         }
@@ -153,6 +160,16 @@ class VirusScanningSettingsController extends Controller
         // the field is empty, so the button still answers on a screen
         // somebody has not touched.
         if ($typed !== '') {
+            if (! ScannerAddress::isValid($typed)) {
+                // Answered as a test result rather than as a field error:
+                // the person pressed Test, and this is what the test
+                // found. Nothing is dialled.
+                return back()->with('scanner_test_result', [
+                    'ok' => false,
+                    'message' => __(ScannerAddress::message()),
+                ]);
+            }
+
             $this->config->preview($typed);
         }
 

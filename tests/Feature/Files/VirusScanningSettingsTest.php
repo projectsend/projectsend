@@ -465,3 +465,70 @@ test('somebody who cannot release is not shown the count', function () {
         fn (AssertableInertia $page) => $page->missing('pending.quarantine'),
     );
 });
+
+/*
+|--------------------------------------------------------------------------
+| An address that only looks like one
+|--------------------------------------------------------------------------
+|
+| stream_socket_client() reads a port the way atoi does — digits at the
+| front, the rest ignored — so tcp://clamav:3310djlkasjdlk connects
+| happily to 3310. An address with a typo on the end would be saved,
+| tested, and reported as working.
+|
+*/
+
+test('a malformed address is refused when saving', function () {
+    $this->actingAs($this->admin)->patch('/system/settings/virus-scanning', [
+        'enabled' => true,
+        'address' => 'tcp://clamav:3310djlkasjdlk',
+        'max_size_mb' => 512,
+        'unscannable_policy' => 'allow',
+        'scanner_down_policy' => 'allow',
+        'wait_minutes' => 10,
+        'existing_rate_per_minute' => 60,
+    ])->assertSessionHasErrors('address');
+
+    expect(app(Settings::class)->get(Setting::VirusScannerAddress))->toBe('');
+});
+
+test('a malformed address is refused when testing, without dialling anything', function () {
+    $scanner = new FakeVirusScanner(ScanVerdict::infected('Eicar-Test-Signature'));
+    app()->instance(VirusScanner::class, $scanner);
+
+    $this->actingAs($this->admin)
+        ->post('/system/settings/virus-scanning/test', ['address' => 'tcp://clamav:3310djlkasjdlk'])
+        ->assertSessionHas('scanner_test_result', fn (array $result): bool => $result['ok'] === false);
+
+    expect($scanner->scans)->toBe(0);
+});
+
+test('the real client refuses a malformed address rather than connecting anyway', function () {
+    // The socket would take this one: PHP reads 3310 and drops the rest.
+    app(Settings::class)->set(Setting::VirusScannerAddress, 'tcp://clamav:3310djlkasjdlk');
+    app(Settings::class)->set(Setting::VirusScanningEnabled, true);
+
+    $status = app(App\Modules\Files\Scanning\ClamAvScanner::class)->status();
+
+    // Says which problem it is. "No answer" would be true of any
+    // unreachable scanner and would prove nothing about this guard — and
+    // would send an operator looking at their network for a typo.
+    expect($status->reachable)->toBeFalse()
+        ->and($status->error)->toContain('tcp://host:3310');
+});
+
+test('the addresses people actually type are accepted', function () {
+    foreach (['tcp://clamav:3310', 'unix:///var/run/clamav/clamd.ctl', 'tcp://[::1]:3310', 'tcp://10.0.0.5:3310'] as $address) {
+        $this->actingAs($this->admin)->patch('/system/settings/virus-scanning', [
+            'enabled' => true,
+            'address' => $address,
+            'max_size_mb' => 512,
+            'unscannable_policy' => 'allow',
+            'scanner_down_policy' => 'allow',
+            'wait_minutes' => 10,
+            'existing_rate_per_minute' => 60,
+        ])->assertSessionHasNoErrors("{$address} was refused");
+
+        expect(app(Settings::class)->get(Setting::VirusScannerAddress))->toBe($address);
+    }
+});

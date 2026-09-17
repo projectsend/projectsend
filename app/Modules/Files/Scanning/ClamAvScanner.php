@@ -59,6 +59,10 @@ class ClamAvScanner implements VirusScanner
             return ScanVerdict::tooLarge($this->engine());
         }
 
+        if (! $this->addressIsUsable()) {
+            return ScanVerdict::unavailable(__(ScannerAddress::message()));
+        }
+
         $socket = $this->connect();
 
         if ($socket === null) {
@@ -107,6 +111,17 @@ class ClamAvScanner implements VirusScanner
 
     public function status(): ScannerStatus
     {
+        // Named rather than reported as "no answer". A managed address
+        // comes from the environment and never passed the settings
+        // screen's validation, so this is the only place it is checked —
+        // and the socket would accept a malformed one by reading the
+        // digits at the front of the port and ignoring the rest, which is
+        // how an address with a typo on the end came to look like it
+        // worked.
+        if (! $this->addressIsUsable()) {
+            return ScannerStatus::unreachable(__(ScannerAddress::message()));
+        }
+
         $socket = $this->connect();
 
         if ($socket === null) {
@@ -201,12 +216,18 @@ class ClamAvScanner implements VirusScanner
             : $status->engine.'/'.$status->definitionsVersion;
     }
 
+    /** Whether the configured address is one at all — see ScannerAddress. */
+    private function addressIsUsable(): bool
+    {
+        return ScannerAddress::isValid($this->config->address());
+    }
+
     /** @return resource|null */
     private function connect(): mixed
     {
         $address = $this->config->address();
 
-        if ($address === '') {
+        if ($address === '' || ! $this->addressIsUsable()) {
             return null;
         }
 

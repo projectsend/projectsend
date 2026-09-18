@@ -2249,5 +2249,6 @@
     "A file in this archive is no longer available. Download the selection again.": "此压缩包中的某个文件已不可用。请重新下载所选内容。",
     "A scan is already running. Wait for it to finish.": "已有扫描正在进行。请等待其完成。",
     "Something answered at :address, but it is not a ClamAV scanner.": ":address 上有程序应答，但它不是 ClamAV 扫描器。",
-    "Available until :date": "可用至 :date"
+    "Available until :date": "可用至 :date",
+    "This file was not checked for viruses.": "此文件未经过病毒检查。"
 }

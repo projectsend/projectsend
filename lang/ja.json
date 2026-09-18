@@ -2249,5 +2249,6 @@
     "A file in this archive is no longer available. Download the selection again.": "このアーカイブ内のファイルは利用できなくなりました。もう一度選択をダウンロードしてください。",
     "A scan is already running. Wait for it to finish.": "スキャンはすでに実行中です。終了するまでお待ちください。",
     "Something answered at :address, but it is not a ClamAV scanner.": ":address で応答がありましたが、ClamAV スキャナーではありません。",
-    "Available until :date": ":date まで利用可能"
+    "Available until :date": ":date まで利用可能",
+    "This file was not checked for viruses.": "このファイルはウイルス検査を受けていません。"
 }

@@ -2,6 +2,7 @@ import { Head } from '@inertiajs/react';
 import { Download } from 'lucide-react';
 
 import { CategoryBadges, type CategoryTag } from '@/components/files/category-badges';
+import { UnscannedNotice } from '@/components/files/unscanned-notice';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
 import AuthLayout from '@/layouts/auth-layout';
@@ -15,9 +16,11 @@ interface ShareShowProps {
         categories: CategoryTag[];
     };
     download_url?: string;
+    /** Whether the file went out unchecked — see UnscannedNotice. */
+    unscanned?: boolean;
 }
 
-export default function ShareShow({ status, file, download_url }: ShareShowProps) {
+export default function ShareShow({ status, file, download_url, unscanned }: ShareShowProps) {
     const { t } = useTranslation();
 
     if (status !== 'active' || !file || !download_url) {
@@ -56,6 +59,8 @@ export default function ShareShow({ status, file, download_url }: ShareShowProps
                     <Download className="size-4" /> {t('Download')}
                 </a>
             </Button>
+
+            <UnscannedNotice unscanned={unscanned} className="mt-4" />
         </AuthLayout>
     );
 }

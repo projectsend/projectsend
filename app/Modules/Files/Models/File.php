@@ -320,6 +320,21 @@ class File extends Model
     }
 
     /**
+     * Why a file went out unchecked. Deliberately not
+     * NotScannedReason::BeforeScanning: a file stored while this
+     * installation did not scan at all is not a scanner letting something
+     * past, and on an installation that has never scanned it would mean
+     * saying it about every file there is.
+     *
+     * @var list<string>
+     */
+    private const LET_THROUGH_REASONS = [
+        NotScannedReason::ScannerUnavailable->value,
+        NotScannedReason::TooLarge->value,
+        NotScannedReason::Encrypted->value,
+    ];
+
+    /**
      * Files people can download that nothing checked: let through while
      * the scanner was down, or because it could not open them.
      *
@@ -334,11 +349,17 @@ class File extends Model
     public function scopeLetThrough(Builder $query): void
     {
         $query->where('scan_status', ScanStatus::NotScanned)
-            ->whereIn('scan_note', [
-                NotScannedReason::ScannerUnavailable->value,
-                NotScannedReason::TooLarge->value,
-                NotScannedReason::Encrypted->value,
-            ]);
+            ->whereIn('scan_note', self::LET_THROUGH_REASONS);
+    }
+
+    /**
+     * Whether this particular file is one of those — the row's own answer
+     * to scopeLetThrough(), for a page that already has the file.
+     */
+    public function wasLetThrough(): bool
+    {
+        return $this->scan_status === ScanStatus::NotScanned
+            && in_array((string) $this->scan_note, self::LET_THROUGH_REASONS, true);
     }
 
     /**

@@ -2249,5 +2249,6 @@
     "A file in this archive is no longer available. Download the selection again.": "Sebuah file dalam arsip ini sudah tidak tersedia. Unduh ulang pilihan tersebut.",
     "A scan is already running. Wait for it to finish.": "Pemindaian sudah berjalan. Tunggu hingga selesai.",
     "Something answered at :address, but it is not a ClamAV scanner.": "Ada yang menjawab di :address, tetapi itu bukan pemindai ClamAV.",
-    "Available until :date": "Tersedia hingga :date"
+    "Available until :date": "Tersedia hingga :date",
+    "This file was not checked for viruses.": "Berkas ini belum dipindai dari virus."
 }

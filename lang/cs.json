@@ -2249,5 +2249,6 @@
     "A file in this archive is no longer available. Download the selection again.": "Soubor z tohoto archivu už není k dispozici. Stáhněte výběr znovu.",
     "A scan is already running. Wait for it to finish.": "Kontrola už probíhá. Počkejte, až skončí.",
     "Something answered at :address, but it is not a ClamAV scanner.": "Na adrese :address něco odpovědělo, ale není to skener ClamAV.",
-    "Available until :date": "K dispozici do :date"
+    "Available until :date": "K dispozici do :date",
+    "This file was not checked for viruses.": "Tento soubor nebyl zkontrolován na viry."
 }

@@ -3,6 +3,7 @@ import { File as FileIcon } from 'lucide-react';
 
 import { CommentsShellCompact } from '@/components/comments/shells/comments-shell-compact';
 import { DownloadAction } from '@/components/download-action';
+import { UnscannedNotice } from '@/components/files/unscanned-notice';
 import { PreviewAction } from '@/components/preview-action';
 import { CategoryBadges, type CategoryTag } from '@/components/files/category-badges';
 import { type VersionLinks } from '@/components/files/version-badge';
@@ -33,6 +34,8 @@ interface PublicFileShowProps {
     preview_url: string | null;
     download_url: string;
     download_limit: DownloadLimit;
+    /** Whether the file went out unchecked — see UnscannedNotice. */
+    unscanned?: boolean;
     comments_enabled: boolean;
     comments_endpoint: string;
 }
@@ -43,6 +46,7 @@ export default function PublicFileShowCompact({
     preview_url,
     download_url,
     download_limit,
+    unscanned,
     comments_enabled,
     comments_endpoint,
 }: PublicFileShowProps) {
@@ -86,6 +90,8 @@ export default function PublicFileShowCompact({
                         />
                         <DownloadAction href={download_url} limit={download_limit} size="sm" />
                     </div>
+
+                    <UnscannedNotice unscanned={unscanned} className="justify-start" />
                 </div>
             </div>
 

@@ -80,14 +80,24 @@ class ExternalStorageConfigApplier
             StorageProvider::Gcs => $this->applyGcs(),
         };
 
-        if ($resolved['root'] !== null) {
-            // Two names for one idea, because the two adapters disagree:
-            // Laravel's S3 driver reads 'root', Flysystem's GCS adapter is
-            // constructed with a 'prefix'. Setting both keeps the settings
-            // screen able to speak of one "folder inside the bucket".
-            Config::set('filesystems.disks.files_external.root', $resolved['root']);
-            Config::set('filesystems.disks.files_external.prefix', $resolved['root']);
-        }
+        // One "folder inside the bucket" on the screen, two names in the
+        // adapters: Laravel's own drivers read 'root', and the GCS driver
+        // in this application reads 'prefix' and builds its adapter with
+        // it. Setting both looked harmless and was not — Laravel's
+        // FilesystemManager wraps any disk carrying a non-empty 'prefix'
+        // in League\Flysystem\PathPrefixing\PathPrefixedAdapter, which
+        // lives in an optional package nobody installs, so an S3 disk with
+        // a folder set died with "class not found" the moment it was
+        // touched (#1788). Only the driver that reads it gets it.
+        //
+        // Written on every apply, not only when there is a folder, so a
+        // process that switched provider or cleared the folder cannot keep
+        // a stale one: config lives for the length of the process.
+        Config::set('filesystems.disks.files_external.root', $resolved['root']);
+        Config::set(
+            'filesystems.disks.files_external.prefix',
+            $provider === StorageProvider::Gcs ? $resolved['root'] : null,
+        );
     }
 
     /**

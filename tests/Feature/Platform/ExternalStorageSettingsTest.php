@@ -123,6 +123,36 @@ test('apply() overrides the files_external disk config once fully configured and
         ->and(config('filesystems.disks.files_external.root'))->toBe('projectsend');
 });
 
+test('a folder inside the bucket does not break the disk it belongs to', function () {
+    // The disk carried both names for the folder — `root`, which Laravel's
+    // own drivers read, and `prefix`, which this application's GCS driver
+    // reads. Laravel wraps any disk with a non-empty `prefix` in
+    // League\Flysystem\PathPrefixing\PathPrefixedAdapter, which lives in
+    // an optional package nobody installs, so resolving an S3 disk with a
+    // folder set died with "class not found" — and took every page that
+    // touches storage with it (#1788, reported by @veenone). GCS still
+    // gets it: see the folder test in GoogleCloudStorageTest.
+    ExternalStorageSettings::current()->fill([
+        'active' => true,
+        'provider' => 's3',
+        'key' => 'AKIAEXAMPLE',
+        'secret' => 'shh',
+        'bucket' => 'my-bucket',
+        'region' => 'us-east-1',
+        'root' => 'Documentation',
+    ])->save();
+
+    app(ExternalStorageConfigApplier::class)->flush();
+    app(ExternalStorageConfigApplier::class)->apply();
+
+    expect(config('filesystems.disks.files_external.root'))->toBe('Documentation')
+        ->and(config('filesystems.disks.files_external.prefix'))->toBeNull();
+
+    // Resolving the disk is where it died. No network: building an S3
+    // client talks to nobody.
+    expect(Storage::disk('files_external')->path('report.pdf'))->toBeString();
+});
+
 test('the ResolvingUploadDisk listener leaves new uploads on the local disk when not configured', function () {
     app(ExternalStorageConfigApplier::class)->flush();
 

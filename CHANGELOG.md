@@ -55,6 +55,9 @@ we did. It sits at the top of a release for that reason. Older entries call the 
 
 **Fixed**
 
+- **Setting a folder inside the bucket no longer breaks every page that touches storage.** Reported
+  by [@veenone](https://github.com/veenone) in
+  [#1788](https://github.com/projectsend/projectsend/issues/1788).
 - **The Microsoft sign-in settings now say why new accounts still wait for approval.** They wait
   until the `xms_edov` optional claim is added to the app registration, because until then Microsoft
   does not confirm that the person owns the address — which is a rule ProjectSend already had and

@@ -40,6 +40,9 @@ we did. It sits at the top of a release for that reason. Older entries call the 
 - **Files whose bytes have gone missing from storage are found daily and listed on their own
   screen.**
 - **Clients see on each file the date it stops being available.**
+- **Clients can make a public link for a file they uploaded**, where their role may publish files —
+  the switch that marks a file public now comes with the link it promises, and they can copy or
+  revoke it. Reported by Ricardo Cazati.
 - **A public page says when the file on it was never checked for viruses**, which happens where an
   installation scans and chooses to let through what the scanner could not read.
 

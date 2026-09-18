@@ -22,6 +22,7 @@ use App\Modules\Files\Folders\ClientHomeFolders;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
+use App\Modules\Files\Models\ShareLink;
 use App\Modules\Files\Sharing\ClientShareLinks;
 use App\Modules\Files\Uploads\UploadExtensionPolicy;
 use App\Modules\Files\Versions\FileVersionLinks;
@@ -446,6 +447,19 @@ class MyFilesController extends Controller
             ],
             'can_delete' => Gate::forUser($client)->allows('delete', $file),
             'can_publish' => $client->can('upload_public'),
+            // The public links on this file, and where to make and revoke
+            // one — the same shape the staff screen uses. A file marked
+            // public used to say "anyone with the link can open it" and
+            // then show no link at all.
+            'share_links' => $file->shareLinks()->orderByDesc('created_at')->get()
+                ->map(fn (ShareLink $link): array => [
+                    'id' => $link->id,
+                    'url' => route('share.show', $link->token),
+                    'expires_at' => $link->expires_at?->toIso8601String(),
+                    'downloads_count' => $link->downloads_count,
+                    'revoke_url' => route('share-links.destroy', $link, false),
+                ])->values()->all(),
+            'share_link_store_url' => route('files.share-links.store', $file, false),
             'can_set_expiration' => $client->can('set_file_expiration_date'),
             'can_set_categories' => $client->can('set_file_categories'),
             'can_limit_downloads' => $client->can('limit_downloads'),

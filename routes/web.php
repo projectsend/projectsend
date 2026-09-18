@@ -158,8 +158,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('files/{file}/version-preview', [FileVersionsController::class, 'preview'])->middleware('staff')->name('files.version.preview');
     Route::put('files/{file}/version', [FileVersionsController::class, 'store'])->middleware('staff')->name('files.version.store');
     Route::delete('files/{file}/version', [FileVersionsController::class, 'destroy'])->middleware('staff')->name('files.version.destroy');
-    Route::post('files/{file}/share-links', [ShareLinksController::class, 'store'])->middleware('staff')->name('files.share-links.store');
-    Route::delete('share-links/{shareLink}', [ShareLinksController::class, 'destroy'])->middleware('staff')->name('share-links.destroy');
+    // Not staff-only. A client may publish a file they uploaded, if this
+    // installation gave them `upload_public` — the same key that lets them
+    // mark it public in the first place. Both methods still authorize
+    // `update` on the file, which for a client means their own upload and
+    // nothing else (see FilePolicy). Reported by Ricardo Cazati: a client
+    // could switch a file to public and was then shown no link and given
+    // no way to make one, which is a switch that promises what the screen
+    // cannot deliver.
+    Route::post('files/{file}/share-links', [ShareLinksController::class, 'store'])->name('files.share-links.store');
+    Route::delete('share-links/{shareLink}', [ShareLinksController::class, 'destroy'])->name('share-links.destroy');
 
     // Folders: the shared staff library tree.
     Route::get('folders/{folder}', [FoldersController::class, 'edit'])->middleware('staff')->name('folders.share');

@@ -1,6 +1,6 @@
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import { ArrowLeft, Globe } from 'lucide-react';
-import { type FormEventHandler } from 'react';
+import { ArrowLeft, Check, Copy, Globe, Link as LinkIcon } from 'lucide-react';
+import { type FormEventHandler, useState } from 'react';
 
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import Heading from '@/components/heading';
@@ -25,6 +25,14 @@ interface FolderOption {
     public: boolean;
 }
 
+interface PortalShareLink {
+    id: number;
+    url: string;
+    expires_at: string | null;
+    downloads_count: number;
+    revoke_url: string;
+}
+
 interface PortalEditFileProps {
     theme: string;
     file: {
@@ -43,6 +51,9 @@ interface PortalEditFileProps {
     };
     can_delete: boolean;
     can_publish: boolean;
+    /** The public links on this file, newest first, and where to make or revoke one. */
+    share_links: PortalShareLink[];
+    share_link_store_url: string;
     can_set_expiration: boolean;
     can_set_categories: boolean;
     can_limit_downloads: boolean;
@@ -69,6 +80,8 @@ export default function PortalEditFile({
     file,
     can_delete,
     can_publish,
+    share_links,
+    share_link_store_url,
     can_set_expiration,
     can_set_categories,
     can_limit_downloads,
@@ -91,6 +104,17 @@ export default function PortalEditFile({
         categories: file.categories,
     });
     const { data, setData, processing, errors, recentlySuccessful } = form;
+
+    const [copiedLinkId, setCopiedLinkId] = useState<number | null>(null);
+
+    const createShareLink = () => router.post(share_link_store_url, {}, { preserveScroll: true });
+
+    const copyShareLink = (id: number, url: string) => {
+        void navigator.clipboard.writeText(url).then(() => {
+            setCopiedLinkId(id);
+            window.setTimeout(() => setCopiedLinkId(null), 2000);
+        });
+    };
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -295,6 +319,67 @@ export default function PortalEditFile({
                                         : t('This site has no public page set up yet, so nothing will be visible until an administrator sets one.')}
                                 </p>
                             </div>
+                        </div>
+                    )}
+
+                    {/* The link itself. The switch above says "anyone with
+                        the link", and until this there was no link to be
+                        had: only staff could make one. */}
+                    {can_publish && (
+                        <div className="grid gap-2">
+                            <Label className="flex items-center gap-1.5">
+                                <LinkIcon className="size-4" />
+                                {t('Public link')}
+                            </Label>
+
+                            {share_links.length === 0 ? (
+                                <div className="grid gap-1">
+                                    <p className="text-muted-foreground text-xs">
+                                        {t('A link anyone can open, without signing in. You can revoke it at any time.')}
+                                    </p>
+                                    <div>
+                                        <Button type="button" variant="outline" size="sm" onClick={createShareLink}>
+                                            {t('Create a public link')}
+                                        </Button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="rounded-lg border">
+                                    {share_links.map((link) => (
+                                        <div key={link.id} className="flex items-center justify-between gap-2 border-b px-3 py-2 last:border-0">
+                                            <div className="min-w-0">
+                                                <p className="truncate font-mono text-xs">{link.url}</p>
+                                                <p className="text-muted-foreground mt-0.5 text-xs">
+                                                    {t(':count downloads', { count: link.downloads_count })}
+                                                </p>
+                                            </div>
+                                            <div className="flex shrink-0 gap-1">
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="size-8"
+                                                    onClick={() => copyShareLink(link.id, link.url)}
+                                                >
+                                                    {copiedLinkId === link.id ? <Check className="size-4" /> : <Copy className="size-4" />}
+                                                    <span className="sr-only">{t('Copy link')}</span>
+                                                </Button>
+                                                <ConfirmDialog
+                                                    trigger={
+                                                        <Button type="button" variant="ghost" size="sm">
+                                                            {t('Revoke')}
+                                                        </Button>
+                                                    }
+                                                    title={t('Revoke this public link?')}
+                                                    description={t('Anyone using it will no longer be able to download the file.')}
+                                                    confirmLabel={t('Revoke link')}
+                                                    onConfirm={() => router.delete(link.revoke_url, { preserveScroll: true })}
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     )}
 

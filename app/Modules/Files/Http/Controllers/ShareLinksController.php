@@ -38,6 +38,15 @@ class ShareLinksController extends Controller
     {
         Gate::authorize('update', $file);
 
+        $user = $request->user();
+        assert($user !== null);
+
+        // Making a link is publishing, so it asks the publishing key. Staff
+        // are not asked for it, as they never have been: `update` on the
+        // file is their boundary and this would be a new refusal on every
+        // installation that upgraded.
+        abort_unless($user->isStaff() || $user->can('upload_public'), 403);
+
         $validated = $request->validate([
             // Deliberately not `after:now`: that rule reads the bare
             // YYYY-MM-DD the picker posts as midnight UTC, so a creator
@@ -112,6 +121,9 @@ class ShareLinksController extends Controller
         $file = $shareLink->shareable;
         abort_unless($file instanceof File, 404);
 
+        // Deliberately without the publishing key that store() asks for:
+        // revoking takes access away. Somebody whose permission to publish
+        // was withdrawn must still be able to undo what they published.
         Gate::authorize('update', $file);
 
         $shareLink->delete();

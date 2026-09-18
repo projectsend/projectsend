@@ -2254,5 +2254,6 @@
     "You sign in through a connected account, so there is no password here to confirm. Set one to continue.": "Inicies la sessió amb un compte connectat, així que aquí no hi ha cap contrasenya a confirmar. Crea'n una per continuar.",
     "Set a password": "Crear una contrasenya",
     "You sign in through a connected account. A password of your own lets you sign in without it, and is needed to turn on two-factor authentication.": "Inicies la sessió amb un compte connectat. Tenir una contrasenya pròpia et permet entrar sense ell, i cal per activar la verificació en dos passos.",
-    "Your password is managed by your organisation's directory, so it cannot be changed here.": "La teva contrasenya la gestiona el directori de la teva organització, així que no es pot canviar aquí."
+    "Your password is managed by your organisation's directory, so it cannot be changed here.": "La teva contrasenya la gestiona el directori de la teva organització, així que no es pot canviar aquí.",
+    "A link anyone can open, without signing in. You can revoke it at any time.": "Un enllaç que qualsevol pot obrir, sense iniciar sessió. El pots revocar quan vulguis."
 }

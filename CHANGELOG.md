@@ -75,8 +75,18 @@ we did. It sits at the top of a release for that reason. Older entries call the 
 ### Issues closed since 2.4.1
 
 - [#1310](https://github.com/projectsend/projectsend/issues/1310) — expire client accounts
+- [#1658](https://github.com/projectsend/projectsend/issues/1658) — Docker services have no restart
+  policy
+- [#1770](https://github.com/projectsend/projectsend/issues/1770) — Docker upgrade fails with
+  external storage configured
+- [#1776](https://github.com/projectsend/projectsend/issues/1776) — logo gives error 404
 - [#1777](https://github.com/projectsend/projectsend/issues/1777) — customization / branding
   (start pages)
+- [#1778](https://github.com/projectsend/projectsend/issues/1778) — error 500 on install
+- [#1779](https://github.com/projectsend/projectsend/issues/1779) — client invitations
+- [#1788](https://github.com/projectsend/projectsend/issues/1788) — a bucket folder makes every
+  storage page a 500
+- [#1789](https://github.com/projectsend/projectsend/issues/1789) — S3 not working after an update
 
 ## 2.4.1 — 11 September 2026
 

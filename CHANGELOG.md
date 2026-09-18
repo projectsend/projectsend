@@ -10,7 +10,7 @@ Anything under **⚠️ Important — do these yourself** is something you have 
 we did. It sits at the top of a release for that reason. Older entries call the same section
 **Upgrade notes**.
 
-## 2.5.0 — 17 September 2026
+## 2.5.0 — 18 September 2026
 
 **Added**
 
@@ -40,6 +40,8 @@ we did. It sits at the top of a release for that reason. Older entries call the 
 - **Files whose bytes have gone missing from storage are found daily and listed on their own
   screen.**
 - **Clients see on each file the date it stops being available.**
+- **A public page says when the file on it was never checked for viruses**, which happens where an
+  installation scans and chooses to let through what the scanner could not read.
 
 **Fixed**
 

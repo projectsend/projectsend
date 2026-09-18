@@ -5,15 +5,18 @@ declare(strict_types=1);
 namespace App\Modules\Clients\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientProvisioning;
 use App\Modules\Clients\Models\Invitation;
 use App\Modules\Clients\Notifications\ClientInvitationNotification;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
@@ -52,6 +55,7 @@ class InvitationRedemptionController extends Controller
         private readonly ClientProvisioning $provisioning,
         private readonly ActivityLogger $activity,
         private readonly Settings $settings,
+        private readonly StaffLibraryScope $scope,
     ) {}
 
     public function create(Request $request): Response
@@ -119,7 +123,7 @@ class InvitationRedemptionController extends Controller
             storageQuotaMb: $invitation->storage_quota_mb,
         );
 
-        if ($invitation->group !== null) {
+        if ($invitation->group !== null && $this->mayJoin($invitation, $client)) {
             $invitation->group->members()->syncWithoutDetaching([$client->id]);
         }
 
@@ -189,6 +193,45 @@ class InvitationRedemptionController extends Controller
      * accept — pending and not expired, unless $includingExpired asks for
      * the resend door's wider question instead.
      */
+    /**
+     * Whether the membership this invitation carries is one its sender may
+     * grant — the same question GroupMembersController::store() asks before
+     * adding anybody to a group.
+     *
+     * Asked here as well as when the invitation was written, and this is
+     * the half that matters: an invitation is a grant that lands days
+     * later, when the person who sent it is not present to be checked, and
+     * one written before this check existed can still be outstanding. A
+     * refused membership is dropped rather than failing the redemption —
+     * the account is what the person holding the link came for, and it is
+     * theirs either way.
+     *
+     * An invitation whose sender is gone (the account was deleted and the
+     * column nulls out) keeps its group: there is no longer a reach to
+     * exceed, and dropping it would quietly undo what an administrator
+     * arranged.
+     */
+    private function mayJoin(Invitation $invitation, User $client): bool
+    {
+        $inviter = $invitation->invitedBy;
+        $group = $invitation->group;
+
+        if ($inviter === null || $group === null) {
+            return true;
+        }
+
+        if ($this->scope->allowsGroupMembership($inviter, $group, $client)) {
+            return true;
+        }
+
+        Log::warning('An invitation named a group its sender may not add anybody to; the account was created without it.', [
+            'invitation' => $invitation->id,
+            'group' => $group->id,
+        ]);
+
+        return false;
+    }
+
     private function findUsable(string $token, bool $includingExpired = false): ?Invitation
     {
         $invitation = Invitation::query()->pending()->where('token', $token)->first();

@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Modules\Clients\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Clients\Models\Invitation;
 use App\Modules\Clients\Notifications\ClientInvitationNotification;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Identity\Erasure\AvailableEmailRule;
 use App\Modules\Platform\Seats\SeatAllowance;
@@ -33,6 +35,7 @@ class InvitationController extends Controller
 {
     public function __construct(
         private readonly ActivityLogger $activity,
+        private readonly StaffLibraryScope $scope,
         private readonly Settings $settings,
         private readonly ClientStorageUsage $storageUsage,
         private readonly SeatAllowance $seats,
@@ -111,10 +114,19 @@ class InvitationController extends Controller
         };
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
+        $viewer = $request->user();
+        assert($viewer instanceof User);
+
         return Inertia::render('clients/invite', [
-            'groups' => Group::query()->orderBy('name')->get(['id', 'name']),
+            // Scoped, exactly as GroupsController::index() is: a
+            // client-scoped staff member is told about a group because one
+            // of their clients is in it. Unscoped, this form listed every
+            // group on the installation to a viewer who can reach none of
+            // them — the hole GHSA-r3hg-3fxw-rcmr closed everywhere else,
+            // left open here because invitations were written after it.
+            'groups' => $this->scope->groups($viewer)->orderBy('name')->get(['id', 'name']),
             // Resolved, not raw — see ClientsController::create()'s note on
             // the same prop: this is what will actually happen, and the
             // form's own field mirrors this resolution to draw its hint.
@@ -124,10 +136,16 @@ class InvitationController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $viewer = $request->user();
+        assert($viewer instanceof User);
+
         $validated = $request->validate([
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', new AvailableEmailRule],
             'name' => ['nullable', 'string', 'max:255'],
-            'group_id' => ['required', 'integer', Rule::in([0, ...Group::query()->pluck('id')->all()])],
+            // Against the groups this person may actually put somebody in,
+            // not against every group there is: the list above is only what
+            // the form drew, and a request does not have to come from it.
+            'group_id' => ['required', 'integer', Rule::in([0, ...$this->scope->groups($viewer)->pluck('id')->all()])],
             'storage_quota_mb' => ['nullable', 'integer', 'min:0'],
         ]);
 

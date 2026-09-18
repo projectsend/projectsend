@@ -17,6 +17,7 @@ use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Str;
 use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
@@ -521,4 +522,105 @@ test('a client-scoped staff member is not told about an account assigned to nobo
     expect(InAppNotification::query()->where('type', 'client_registered')->pluck('user_id')->all())
         ->toBe([$this->admin->id])
         ->and(InAppNotification::query()->where('user_id', $scoped->id)->exists())->toBeFalse();
+});
+
+/*
+|--------------------------------------------------------------------------
+| The group boundary — GHSA-c6h9-hcm7-j3x9
+|--------------------------------------------------------------------------
+|
+| Reported by @hackchang. The group controllers were scoped when
+| GHSA-r3hg-3fxw-rcmr was fixed; invitations were written afterwards and
+| were not, so a client-scoped staff member could read every group's name
+| off the invitation form and seed an invited client into a group outside
+| their library — the reach StaffLibraryScope::allowsGroupMembership()
+| exists to refuse, reached by a door that never asked it.
+*/
+
+/** A client-scoped staff member who may create clients, with one client of their own. */
+function scopedInviter(): User
+{
+    $role = Role::query()->create(['name' => 'Reps '.Str::random(6), 'client_scoped' => true]);
+
+    foreach ([Permission::CreateClients, Permission::ManageGroups, Permission::EditGroups] as $permission) {
+        RolePermission::query()->create(['role_id' => $role->id, 'permission' => $permission->value]);
+    }
+
+    $staff = User::factory()->create(['role_id' => $role->id]);
+    $staff->assignedClients()->sync([User::factory()->client()->create(['name' => 'Their client'])->id]);
+
+    return $staff;
+}
+
+test('the invitation form lists only the groups this staff member may reach', function () {
+    $rep = scopedInviter();
+    $mine = Group::query()->create(['name' => 'Mine']);
+    $mine->members()->sync([$rep->assignedClients()->value('users.id')]);
+    Group::query()->create(['name' => 'Somebody else\'s']);
+
+    $this->actingAs($rep)->get('/clients/invitations/create')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->component('clients/invite')
+            ->has('groups', 1)
+            ->where('groups.0.name', 'Mine'),
+    );
+
+    // An unscoped administrator still sees both.
+    $this->actingAs($this->admin)->get('/clients/invitations/create')->assertInertia(
+        fn (AssertableInertia $page) => $page->has('groups', 2),
+    );
+});
+
+test('an invitation cannot name a group this staff member may not reach', function () {
+    $rep = scopedInviter();
+    $theirs = Group::query()->create(['name' => 'Somebody else\'s']);
+
+    $this->actingAs($rep)->post('/clients/invitations', [
+        'email' => 'invited@example.com',
+        'group_id' => $theirs->id,
+    ])->assertSessionHasErrors('group_id');
+
+    expect(Invitation::query()->count())->toBe(0);
+});
+
+test('an invitation already carrying an out-of-scope group creates the account without it', function () {
+    // The invitations written before the door was guarded: the grant lands
+    // days later, when the sender is not there to be asked.
+    $rep = scopedInviter();
+    $theirs = Group::query()->create(['name' => 'Somebody else\'s']);
+    $stranger = User::factory()->client()->create();
+    $theirs->members()->sync([$stranger->id]);
+
+    $invitation = Invitation::issue('invited@example.com', null, $theirs, $rep, now()->addDay());
+
+    $this->post("/invite/{$invitation->token}", [
+        'token' => $invitation->token,
+        'name' => 'Invited Person',
+        'password' => 'Str0ng-Password!',
+        'password_confirmation' => 'Str0ng-Password!',
+    ])->assertRedirect(route('login'));
+
+    $client = User::query()->where('email', 'invited@example.com')->sole();
+
+    expect($theirs->members()->where('users.id', $client->id)->exists())->toBeFalse()
+        // The account is what the person holding the link came for.
+        ->and($client->isClient())->toBeTrue();
+});
+
+test('an invitation from an administrator still joins the group it named', function () {
+    // The guard is about reach, not about invitations: an unscoped sender
+    // has none to exceed.
+    $group = Group::query()->create(['name' => 'Anybody']);
+    $invitation = Invitation::issue('invited@example.com', null, $group, $this->admin, now()->addDay());
+
+    $this->post("/invite/{$invitation->token}", [
+        'token' => $invitation->token,
+        'name' => 'Invited Person',
+        'password' => 'Str0ng-Password!',
+        'password_confirmation' => 'Str0ng-Password!',
+    ])->assertRedirect(route('login'));
+
+    $client = User::query()->where('email', 'invited@example.com')->sole();
+
+    expect($group->members()->where('users.id', $client->id)->exists())->toBeTrue();
 });

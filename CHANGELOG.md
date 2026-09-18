@@ -43,6 +43,13 @@ we did. It sits at the top of a release for that reason. Older entries call the 
 - **A public page says when the file on it was never checked for viruses**, which happens where an
   installation scans and chooses to let through what the scanner could not read.
 
+**Closed holes in who can see what**
+
+- **A staff member limited to certain clients can no longer reach past that limit through an
+  invitation.** The invitation form listed every group on the installation, and an invited client
+  could be pre-assigned into a group outside that staff member's own clients. Reported by
+  [@hackchang](https://github.com/hackchang).
+
 **Fixed**
 
 - **Creating a client with a storage quota typed in no longer answers with an error page.**

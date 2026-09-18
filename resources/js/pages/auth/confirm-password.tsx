@@ -10,7 +10,12 @@ import { Label } from '@/components/ui/label';
 import { useTranslation } from '@/hooks/use-translation';
 import AuthLayout from '@/layouts/auth-layout';
 
-export default function ConfirmPassword() {
+interface ConfirmPasswordProps {
+    /** False for an account that signs in through a provider and has no password to confirm with. */
+    has_local_password: boolean;
+}
+
+export default function ConfirmPassword({ has_local_password }: ConfirmPasswordProps) {
     const { t } = useTranslation();
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -32,7 +37,18 @@ export default function ConfirmPassword() {
         >
             <Head title={t('Confirm password')} />
 
-            <form onSubmit={submit}>
+            {!has_local_password && (
+                <div className="space-y-4">
+                    <p className="text-muted-foreground text-sm">
+                        {t('You sign in through a connected account, so there is no password here to confirm. Set one to continue.')}
+                    </p>
+                    <Button asChild className="w-full">
+                        <a href={route('password.edit')}>{t('Set a password')}</a>
+                    </Button>
+                </div>
+            )}
+
+            <form onSubmit={submit} hidden={!has_local_password}>
                 <div className="space-y-6">
                     <div className="grid gap-2">
                         <Label htmlFor="password">{t('Password')}</Label>

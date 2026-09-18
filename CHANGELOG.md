@@ -52,6 +52,10 @@ we did. It sits at the top of a release for that reason. Older entries call the 
 
 **Fixed**
 
+- **Someone who signs in with Microsoft, Google or another provider can now set a password.** The
+  screen asked for the current one, which such an account never had — so it could not get a
+  password, and therefore could not turn on two-factor authentication. Where two-factor is
+  compulsory, that locked those accounts out of everything. Reported by Ricardo Cazati.
 - **Creating a client with a storage quota typed in no longer answers with an error page.**
 - **A file expiry date sent to the API as a number now answers 422 instead of 500.**
 - **A quarantined file, or one missing from storage, is no longer listed in the library with a

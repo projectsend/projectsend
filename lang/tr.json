@@ -2250,5 +2250,9 @@
     "A scan is already running. Wait for it to finish.": "Zaten bir tarama çalışıyor. Bitmesini bekleyin.",
     "Something answered at :address, but it is not a ClamAV scanner.": ":address adresinde bir şey yanıt verdi, ancak bu bir ClamAV tarayıcısı değil.",
     "Available until :date": ":date tarihine kadar kullanılabilir",
-    "This file was not checked for viruses.": "Bu dosya virüslere karşı taranmadı."
+    "This file was not checked for viruses.": "Bu dosya virüslere karşı taranmadı.",
+    "You sign in through a connected account, so there is no password here to confirm. Set one to continue.": "Bağlı bir hesapla oturum açıyorsunuz, bu yüzden burada onaylanacak bir parola yok. Devam etmek için bir parola oluşturun.",
+    "Set a password": "Parola oluştur",
+    "You sign in through a connected account. A password of your own lets you sign in without it, and is needed to turn on two-factor authentication.": "Bağlı bir hesapla oturum açıyorsunuz. Kendinize ait bir parola, o hesap olmadan da giriş yapmanızı sağlar ve iki adımlı doğrulamayı açmak için gereklidir.",
+    "Your password is managed by your organisation's directory, so it cannot be changed here.": "Parolanız kuruluşunuzun dizini tarafından yönetiliyor, bu yüzden burada değiştirilemez."
 }

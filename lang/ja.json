@@ -2250,5 +2250,9 @@
     "A scan is already running. Wait for it to finish.": "スキャンはすでに実行中です。終了するまでお待ちください。",
     "Something answered at :address, but it is not a ClamAV scanner.": ":address で応答がありましたが、ClamAV スキャナーではありません。",
     "Available until :date": ":date まで利用可能",
-    "This file was not checked for viruses.": "このファイルはウイルス検査を受けていません。"
+    "This file was not checked for viruses.": "このファイルはウイルス検査を受けていません。",
+    "You sign in through a connected account, so there is no password here to confirm. Set one to continue.": "連携アカウントでサインインしているため、ここに確認するパスワードはありません。続けるにはパスワードを設定してください。",
+    "Set a password": "パスワードを設定",
+    "You sign in through a connected account. A password of your own lets you sign in without it, and is needed to turn on two-factor authentication.": "連携アカウントでサインインしています。自分のパスワードがあれば連携なしでもサインインでき、二段階認証を有効にするにも必要です。",
+    "Your password is managed by your organisation's directory, so it cannot be changed here.": "パスワードは組織のディレクトリで管理されているため、ここでは変更できません。"
 }

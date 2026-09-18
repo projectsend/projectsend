@@ -2250,5 +2250,9 @@
     "A scan is already running. Wait for it to finish.": "Skanowanie już trwa. Poczekaj, aż się zakończy.",
     "Something answered at :address, but it is not a ClamAV scanner.": "Coś odpowiedziało pod adresem :address, ale to nie jest skaner ClamAV.",
     "Available until :date": "Dostępny do :date",
-    "This file was not checked for viruses.": "Ten plik nie został sprawdzony pod kątem wirusów."
+    "This file was not checked for viruses.": "Ten plik nie został sprawdzony pod kątem wirusów.",
+    "You sign in through a connected account, so there is no password here to confirm. Set one to continue.": "Logujesz się przez połączone konto, więc nie ma tu hasła do potwierdzenia. Ustaw je, aby kontynuować.",
+    "Set a password": "Ustaw hasło",
+    "You sign in through a connected account. A password of your own lets you sign in without it, and is needed to turn on two-factor authentication.": "Logujesz się przez połączone konto. Własne hasło pozwala zalogować się bez niego i jest potrzebne do włączenia uwierzytelniania dwuskładnikowego.",
+    "Your password is managed by your organisation's directory, so it cannot be changed here.": "Twoim hasłem zarządza katalog Twojej organizacji, więc nie można go tu zmienić."
 }

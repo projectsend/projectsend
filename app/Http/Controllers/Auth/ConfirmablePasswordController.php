@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Identity\AuthSource;
 use App\Modules\Identity\PasswordVerification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,9 +16,19 @@ class ConfirmablePasswordController extends Controller
     /**
      * Show the confirm password page.
      */
-    public function show(): Response
+    public function show(Request $request): Response
     {
-        return Inertia::render('auth/confirm-password');
+        $user = $request->user();
+        assert($user !== null);
+
+        return Inertia::render('auth/confirm-password', [
+            // An account provisioned by a provider has no password to
+            // confirm with — its stored hash is a generated string nobody
+            // has seen. The screen offers to set one instead of asking for
+            // it, which is the only way past this for those accounts, and
+            // this screen stands in front of two-factor enrolment.
+            'has_local_password' => $user->auth_source === AuthSource::Local,
+        ]);
     }
 
     /**

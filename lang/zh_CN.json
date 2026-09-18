@@ -2250,5 +2250,9 @@
     "A scan is already running. Wait for it to finish.": "已有扫描正在进行。请等待其完成。",
     "Something answered at :address, but it is not a ClamAV scanner.": ":address 上有程序应答，但它不是 ClamAV 扫描器。",
     "Available until :date": "可用至 :date",
-    "This file was not checked for viruses.": "此文件未经过病毒检查。"
+    "This file was not checked for viruses.": "此文件未经过病毒检查。",
+    "You sign in through a connected account, so there is no password here to confirm. Set one to continue.": "你通过关联账户登录，因此这里没有可确认的密码。请设置一个以继续。",
+    "Set a password": "设置密码",
+    "You sign in through a connected account. A password of your own lets you sign in without it, and is needed to turn on two-factor authentication.": "你通过关联账户登录。拥有自己的密码可以不依赖该账户登录，并且开启两步验证时需要它。",
+    "Your password is managed by your organisation's directory, so it cannot be changed here.": "你的密码由所在组织的目录管理，因此无法在此更改。"
 }

@@ -2250,5 +2250,9 @@
     "A scan is already running. Wait for it to finish.": "Er loopt al een scan. Wacht tot die klaar is.",
     "Something answered at :address, but it is not a ClamAV scanner.": "Er antwoordde iets op :address, maar het is geen ClamAV-scanner.",
     "Available until :date": "Beschikbaar tot :date",
-    "This file was not checked for viruses.": "Dit bestand is niet op virussen gecontroleerd."
+    "This file was not checked for viruses.": "Dit bestand is niet op virussen gecontroleerd.",
+    "You sign in through a connected account, so there is no password here to confirm. Set one to continue.": "Je logt in met een gekoppeld account, dus er is hier geen wachtwoord om te bevestigen. Stel er een in om verder te gaan.",
+    "Set a password": "Wachtwoord instellen",
+    "You sign in through a connected account. A password of your own lets you sign in without it, and is needed to turn on two-factor authentication.": "Je logt in met een gekoppeld account. Een eigen wachtwoord laat je inloggen zonder dat account en is nodig om tweestapsverificatie aan te zetten.",
+    "Your password is managed by your organisation's directory, so it cannot be changed here.": "Je wachtwoord wordt beheerd door de directory van je organisatie en kan hier niet worden gewijzigd."
 }

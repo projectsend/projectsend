@@ -2250,5 +2250,9 @@
     "A scan is already running. Wait for it to finish.": "Uchanganuzi tayari unaendelea. Subiri umalizike.",
     "Something answered at :address, but it is not a ClamAV scanner.": "Kitu kimejibu kwenye :address, lakini si kichanganuzi cha ClamAV.",
     "Available until :date": "Inapatikana hadi :date",
-    "This file was not checked for viruses.": "Faili hii haijakaguliwa dhidi ya virusi."
+    "This file was not checked for viruses.": "Faili hii haijakaguliwa dhidi ya virusi.",
+    "You sign in through a connected account, so there is no password here to confirm. Set one to continue.": "Unaingia kwa akaunti iliyounganishwa, kwa hiyo hakuna nenosiri la kuthibitisha hapa. Weka moja ili kuendelea.",
+    "Set a password": "Weka nenosiri",
+    "You sign in through a connected account. A password of your own lets you sign in without it, and is needed to turn on two-factor authentication.": "Unaingia kwa akaunti iliyounganishwa. Nenosiri lako mwenyewe hukuruhusu kuingia bila akaunti hiyo, na linahitajika ili kuwasha uthibitishaji wa hatua mbili.",
+    "Your password is managed by your organisation's directory, so it cannot be changed here.": "Nenosiri lako linasimamiwa na orodha ya shirika lako, kwa hiyo haliwezi kubadilishwa hapa."
 }

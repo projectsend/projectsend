@@ -2250,5 +2250,9 @@
     "A scan is already running. Wait for it to finish.": "Pemindaian sudah berjalan. Tunggu hingga selesai.",
     "Something answered at :address, but it is not a ClamAV scanner.": "Ada yang menjawab di :address, tetapi itu bukan pemindai ClamAV.",
     "Available until :date": "Tersedia hingga :date",
-    "This file was not checked for viruses.": "Berkas ini belum dipindai dari virus."
+    "This file was not checked for viruses.": "Berkas ini belum dipindai dari virus.",
+    "You sign in through a connected account, so there is no password here to confirm. Set one to continue.": "Anda masuk melalui akun yang terhubung, jadi tidak ada kata sandi untuk dikonfirmasi di sini. Buat satu untuk melanjutkan.",
+    "Set a password": "Buat kata sandi",
+    "You sign in through a connected account. A password of your own lets you sign in without it, and is needed to turn on two-factor authentication.": "Anda masuk melalui akun yang terhubung. Kata sandi sendiri memungkinkan Anda masuk tanpa akun itu, dan diperlukan untuk mengaktifkan autentikasi dua faktor.",
+    "Your password is managed by your organisation's directory, so it cannot be changed here.": "Kata sandi Anda dikelola oleh direktori organisasi Anda, jadi tidak bisa diubah di sini."
 }

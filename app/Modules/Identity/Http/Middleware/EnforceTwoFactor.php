@@ -50,7 +50,14 @@ class EnforceTwoFactor
         // GET left the form rendering and its submission redirected away,
         // so the password was never confirmed and the loop stayed shut
         // one step further along than before.
-        if ($request->routeIs('two-factor.*', 'password.confirm*', 'logout', 'locale.update')) {
+        // password.edit/update is on it for the same shape of reason, one
+        // step further out: an account provisioned by a provider has no
+        // password to confirm with, so the confirm screen sends it to set
+        // one — and without this, that screen was redirected back here
+        // too. The loop then had no exit at all, which is how an
+        // installation that made two-factor compulsory locked out
+        // everybody who signs in with Microsoft.
+        if ($request->routeIs('two-factor.*', 'password.confirm*', 'password.edit', 'password.update', 'logout', 'locale.update')) {
             return $next($request);
         }
 

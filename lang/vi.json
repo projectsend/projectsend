@@ -2250,5 +2250,9 @@
     "A scan is already running. Wait for it to finish.": "Đã có một lượt quét đang chạy. Hãy đợi nó hoàn tất.",
     "Something answered at :address, but it is not a ClamAV scanner.": "Có dịch vụ trả lời tại :address, nhưng đó không phải là trình quét ClamAV.",
     "Available until :date": "Có sẵn đến :date",
-    "This file was not checked for viruses.": "Tệp này chưa được quét virus."
+    "This file was not checked for viruses.": "Tệp này chưa được quét virus.",
+    "You sign in through a connected account, so there is no password here to confirm. Set one to continue.": "Bạn đăng nhập bằng tài khoản đã liên kết, nên ở đây không có mật khẩu nào để xác nhận. Hãy đặt một mật khẩu để tiếp tục.",
+    "Set a password": "Đặt mật khẩu",
+    "You sign in through a connected account. A password of your own lets you sign in without it, and is needed to turn on two-factor authentication.": "Bạn đăng nhập bằng tài khoản đã liên kết. Có mật khẩu riêng giúp bạn đăng nhập mà không cần tài khoản đó, và cần thiết để bật xác thực hai bước.",
+    "Your password is managed by your organisation's directory, so it cannot be changed here.": "Mật khẩu của bạn do thư mục của tổ chức quản lý, nên không thể đổi tại đây."
 }

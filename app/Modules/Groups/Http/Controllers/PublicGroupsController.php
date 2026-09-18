@@ -14,6 +14,7 @@ use App\Modules\Files\Delivery\StoredFileResponse;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Scanning\FileAvailability;
+use App\Modules\Files\Scanning\ScanningConfig;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Preview\PreviewKind;
 use App\Modules\Files\Preview\PreviewLog;
@@ -228,6 +229,9 @@ class PublicGroupsController extends Controller
             // is allowed.
             'preview_url' => $this->previewUrlFor($file, $publicSlug),
             'download_url' => route('public.download', [$publicSlug, $file->slug]),
+            // See PublicShareController::show — the same sentence, to the
+            // same person, on the other public surface.
+            'unscanned' => app(ScanningConfig::class)->enabled() && $file->wasLetThrough(),
             // Same decided shape the listings send, so a theme's single
             // file page disables its button for the same reason a row
             // does — see DownloadAllowance::summaryFor.

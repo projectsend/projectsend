@@ -2249,5 +2249,6 @@
     "A file in this archive is no longer available. Download the selection again.": "Plik z tego archiwum nie jest już dostępny. Pobierz zaznaczenie ponownie.",
     "A scan is already running. Wait for it to finish.": "Skanowanie już trwa. Poczekaj, aż się zakończy.",
     "Something answered at :address, but it is not a ClamAV scanner.": "Coś odpowiedziało pod adresem :address, ale to nie jest skaner ClamAV.",
-    "Available until :date": "Dostępny do :date"
+    "Available until :date": "Dostępny do :date",
+    "This file was not checked for viruses.": "Ten plik nie został sprawdzony pod kątem wirusów."
 }

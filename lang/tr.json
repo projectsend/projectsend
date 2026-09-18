@@ -2249,5 +2249,6 @@
     "A file in this archive is no longer available. Download the selection again.": "Bu arşivdeki bir dosya artık kullanılamıyor. Seçimi yeniden indirin.",
     "A scan is already running. Wait for it to finish.": "Zaten bir tarama çalışıyor. Bitmesini bekleyin.",
     "Something answered at :address, but it is not a ClamAV scanner.": ":address adresinde bir şey yanıt verdi, ancak bu bir ClamAV tarayıcısı değil.",
-    "Available until :date": ":date tarihine kadar kullanılabilir"
+    "Available until :date": ":date tarihine kadar kullanılabilir",
+    "This file was not checked for viruses.": "Bu dosya virüslere karşı taranmadı."
 }

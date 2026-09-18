@@ -2249,5 +2249,6 @@
     "A file in this archive is no longer available. Download the selection again.": "Faili moja katika kumbukumbu hii halipatikani tena. Pakua uteuzi upya.",
     "A scan is already running. Wait for it to finish.": "Uchanganuzi tayari unaendelea. Subiri umalizike.",
     "Something answered at :address, but it is not a ClamAV scanner.": "Kitu kimejibu kwenye :address, lakini si kichanganuzi cha ClamAV.",
-    "Available until :date": "Inapatikana hadi :date"
+    "Available until :date": "Inapatikana hadi :date",
+    "This file was not checked for viruses.": "Faili hii haijakaguliwa dhidi ya virusi."
 }

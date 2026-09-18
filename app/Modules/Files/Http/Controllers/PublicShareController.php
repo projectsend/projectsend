@@ -12,6 +12,7 @@ use App\Modules\Files\Delivery\StoredFileResponse;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Scanning\FileAvailability;
+use App\Modules\Files\Scanning\ScanningConfig;
 use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Files\Models\ShareLink;
 use Illuminate\Http\RedirectResponse;
@@ -32,6 +33,7 @@ class PublicShareController extends Controller
         private readonly DownloadAllowance $allowance,
         private readonly StoredFileResponse $bytes,
         private readonly FileAvailability $availability,
+        private readonly ScanningConfig $scanning,
     ) {}
 
     public function show(string $token): InertiaResponse
@@ -84,6 +86,11 @@ class PublicShareController extends Controller
                     ])->values()->all(),
             ],
             'download_url' => route('share.download', $token),
+            // Said to the one person who can neither see the setting nor
+            // chose it. The uploader and the staff library both show this
+            // file as "not scanned"; whoever follows the link had no way
+            // of knowing.
+            'unscanned' => $this->scanning->enabled() && $file->wasLetThrough(),
         ]);
     }
 

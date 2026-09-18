@@ -2249,5 +2249,6 @@
     "A file in this archive is no longer available. Download the selection again.": "Một tệp trong gói nén này không còn khả dụng. Hãy tải lại phần đã chọn.",
     "A scan is already running. Wait for it to finish.": "Đã có một lượt quét đang chạy. Hãy đợi nó hoàn tất.",
     "Something answered at :address, but it is not a ClamAV scanner.": "Có dịch vụ trả lời tại :address, nhưng đó không phải là trình quét ClamAV.",
-    "Available until :date": "Có sẵn đến :date"
+    "Available until :date": "Có sẵn đến :date",
+    "This file was not checked for viruses.": "Tệp này chưa được quét virus."
 }

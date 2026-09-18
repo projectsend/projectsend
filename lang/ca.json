@@ -2249,5 +2249,6 @@
     "A file in this archive is no longer available. Download the selection again.": "Un fitxer d'aquest arxiu ja no està disponible. Torna a descarregar la selecció.",
     "A scan is already running. Wait for it to finish.": "Ja hi ha una anàlisi en curs. Espera que acabi.",
     "Something answered at :address, but it is not a ClamAV scanner.": "Alguna cosa ha respost a :address, però no és un escàner ClamAV.",
-    "Available until :date": "Disponible fins al :date"
+    "Available until :date": "Disponible fins al :date",
+    "This file was not checked for viruses.": "Aquest fitxer no s'ha analitzat a la recerca de virus."
 }

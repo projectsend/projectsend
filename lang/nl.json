@@ -2255,5 +2255,6 @@
     "Set a password": "Wachtwoord instellen",
     "You sign in through a connected account. A password of your own lets you sign in without it, and is needed to turn on two-factor authentication.": "Je logt in met een gekoppeld account. Een eigen wachtwoord laat je inloggen zonder dat account en is nodig om tweestapsverificatie aan te zetten.",
     "Your password is managed by your organisation's directory, so it cannot be changed here.": "Je wachtwoord wordt beheerd door de directory van je organisatie en kan hier niet worden gewijzigd.",
-    "A link anyone can open, without signing in. You can revoke it at any time.": "Een link die iedereen kan openen, zonder in te loggen. Je kunt hem altijd intrekken."
+    "A link anyone can open, without signing in. You can revoke it at any time.": "Een link die iedereen kan openen, zonder in te loggen. Je kunt hem altijd intrekken.",
+    ":provider only confirms an address when the \"xms_edov\" optional claim is on your app registration (Token configuration → optional claims → ID token). Until it is there, accounts are still created, but every one of them waits in Account requests however this box is set.": ":provider bevestigt een adres alleen als de optionele claim \"xms_edov\" in je app-registratie staat (Token configuration → optional claims → ID token). Zolang die ontbreekt, worden accounts wel aangemaakt, maar wachten ze allemaal bij Accountaanvragen, wat hier ook is aangevinkt."
 }

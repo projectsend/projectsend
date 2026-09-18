@@ -2255,5 +2255,6 @@
     "Set a password": "Đặt mật khẩu",
     "You sign in through a connected account. A password of your own lets you sign in without it, and is needed to turn on two-factor authentication.": "Bạn đăng nhập bằng tài khoản đã liên kết. Có mật khẩu riêng giúp bạn đăng nhập mà không cần tài khoản đó, và cần thiết để bật xác thực hai bước.",
     "Your password is managed by your organisation's directory, so it cannot be changed here.": "Mật khẩu của bạn do thư mục của tổ chức quản lý, nên không thể đổi tại đây.",
-    "A link anyone can open, without signing in. You can revoke it at any time.": "Một liên kết ai cũng mở được mà không cần đăng nhập. Bạn có thể thu hồi bất cứ lúc nào."
+    "A link anyone can open, without signing in. You can revoke it at any time.": "Một liên kết ai cũng mở được mà không cần đăng nhập. Bạn có thể thu hồi bất cứ lúc nào.",
+    ":provider only confirms an address when the \"xms_edov\" optional claim is on your app registration (Token configuration → optional claims → ID token). Until it is there, accounts are still created, but every one of them waits in Account requests however this box is set.": ":provider chỉ xác nhận một địa chỉ khi khai báo tùy chọn \"xms_edov\" có trong đăng ký ứng dụng của bạn (Token configuration → optional claims → ID token). Cho đến khi có, tài khoản vẫn được tạo, nhưng tất cả đều chờ trong Yêu cầu tài khoản, dù ô này được đặt thế nào."
 }

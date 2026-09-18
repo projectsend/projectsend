@@ -281,6 +281,23 @@ function ProviderCard({ provider, open, onToggle }: { provider: ProviderSettings
                                 </div>
                             </div>
                         )}
+
+                        {/* The sentence above is the rule; this is what it
+                            means here. An administrator configuring a
+                            company directory reasonably reads "verified" as
+                            already true of it, ticks this, and then finds
+                            every account waiting in the queue with nothing
+                            on screen saying why. */}
+                        {provider.needs_tenant_id && form.data.auto_provision && form.data.auto_approve && form.data.require_verified_email && (
+                            <Alert className="ml-7">
+                                <AlertDescription>
+                                    {t(
+                                        ':provider only confirms an address when the "xms_edov" optional claim is on your app registration (Token configuration → optional claims → ID token). Until it is there, accounts are still created, but every one of them waits in Account requests however this box is set.',
+                                        { provider: provider.label },
+                                    )}
+                                </AlertDescription>
+                            </Alert>
+                        )}
                     </div>
 
                     <SaveButton processing={form.processing} recentlySuccessful={form.recentlySuccessful} />

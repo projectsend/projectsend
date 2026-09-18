@@ -55,6 +55,10 @@ we did. It sits at the top of a release for that reason. Older entries call the 
 
 **Fixed**
 
+- **The Microsoft sign-in settings now say why new accounts still wait for approval.** They wait
+  until the `xms_edov` optional claim is added to the app registration, because until then Microsoft
+  does not confirm that the person owns the address — which is a rule ProjectSend already had and
+  nothing on screen said. Reported by Ricardo Cazati.
 - **Someone who signs in with Microsoft, Google or another provider can now set a password.** The
   screen asked for the current one, which such an account never had — so it could not get a
   password, and therefore could not turn on two-factor authentication. Where two-factor is

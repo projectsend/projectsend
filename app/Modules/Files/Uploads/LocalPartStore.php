@@ -353,6 +353,11 @@ class LocalPartStore
      * deletes the whole tree, for everybody. Unset, which is every
      * installation, the path is what it has always been.
      */
+    public function temporaryDirectory(): string
+    {
+        return $this->root();
+    }
+
     private function root(): string
     {
         $configured = config('projectsend.uploads.parts_path');

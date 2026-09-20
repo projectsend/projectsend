@@ -30,6 +30,7 @@ use App\Modules\Platform\News\NewsItems;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use App\Modules\Platform\Storage\StorageDurability;
+use App\Modules\Platform\Storage\StorageCapacity;
 use App\Modules\Platform\System\SystemEnvironment;
 use App\Modules\Platform\Updates\LatestReleaseInfo;
 use Illuminate\Database\Eloquent\Builder;
@@ -56,6 +57,7 @@ class DashboardController extends Controller
         private readonly Settings $settings,
         private readonly ApiUsage $apiUsage,
         private readonly StorageDurability $storageDurability,
+        private readonly StorageCapacity $storageCapacity,
         private readonly FileDelivery $fileDelivery,
         private readonly Installation $installation,
         private readonly TimezoneRegistry $timezones,
@@ -98,7 +100,7 @@ class DashboardController extends Controller
                 : null,
             'largest_files' => $canStatistics && $prefs->isEnabled($user, 'largest_files') ? $this->largestFiles($user) : null,
             'recent' => $canActionsLog && $prefs->isEnabled($user, 'recent') ? $this->recentActivity($user) : null,
-            'system' => $canSystem && $prefs->isEnabled($user, 'system') ? $this->systemInfo() : null,
+            'system' => $canSystem && $prefs->isEnabled($user, 'system') ? $this->systemInfo($user) : null,
             // Both editions — informational content, not an update action,
             // so no Capability check alongside the permission (unlike
             // 'system' above).
@@ -485,10 +487,8 @@ class DashboardController extends Controller
     /**
      * @return array<string, array<string, bool|int|string|null>|bool|int|string|null>
      */
-    private function systemInfo(): array
+    private function systemInfo(User $viewer): array
     {
-        $freeBytes = @disk_free_space(storage_path('app/files'));
-
         // Cached by CheckForUpdatesCommand (daily) — never a live HTTP
         // call from the request path. null means either no successful
         // check yet, or the current version is already the latest.
@@ -497,7 +497,7 @@ class DashboardController extends Controller
         return [
             ...$this->environment->toArray(),
             'storage_used_bytes' => (int) File::query()->sum('size'),
-            'storage_free_bytes' => $freeBytes === false ? -1 : (int) $freeBytes,
+            ...$this->storageCapacity->inspect($viewer),
             'update_available' => $release !== null,
             'latest_version' => $release['version'] ?? null,
             'release_url' => $release['url'] ?? null,

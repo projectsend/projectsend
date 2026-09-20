@@ -3,8 +3,8 @@ import { Link, usePage } from '@inertiajs/react';
 import { AlertTriangle, ArrowUpCircle, HardDrive, ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { FileDeliveryDialog, type FileDelivery } from '@/components/file-delivery-dialog';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { UpdateInstructions, type InstallKind } from '@/components/update-instructions';
 import { useTranslation } from '@/hooks/use-translation';
 import { formatBytes } from '@/lib/format-bytes';
@@ -23,6 +23,8 @@ export interface SystemInfo {
     database: string;
     storage_used_bytes: number;
     storage_free_bytes: number;
+    storage_driver: string;
+    upload_temp_free_bytes: number;
     update_available: boolean;
     latest_version: string | null;
     release_url: string | null;
@@ -109,7 +111,9 @@ function StorageDurabilityNotice({ durability }: { durability: StorageDurability
                                   volume: durability.volume,
                               })
                             : t('They survive upgrades, but they live in a Docker-managed volume rather than a directory you chose.')}{' '}
-                        {t('That means docker compose down -v and docker volume prune both delete them, and a backup of your server can miss them entirely.')}
+                        {t(
+                            'That means docker compose down -v and docker volume prune both delete them, and a backup of your server can miss them entirely.',
+                        )}
                     </p>
                 </AlertDescription>
             </Alert>
@@ -207,9 +211,7 @@ export function SystemWidget({ system, onViewReleaseNotes }: { system: SystemInf
                                 <li>{t(':count files have been waiting to be checked for over an hour.', { count: system.scanning.pending })}</li>
                             )}
                             {system.scanning.definitions_age_hours !== null && system.scanning.definitions_age_hours >= 72 && (
-                                <li>
-                                    {t('The virus definitions are :hours hours old.', { hours: system.scanning.definitions_age_hours })}
-                                </li>
+                                <li>{t('The virus definitions are :hours hours old.', { hours: system.scanning.definitions_age_hours })}</li>
                             )}
                         </ul>
                         <Link href="/system/settings/virus-scanning" className="mt-1 inline-block underline hover:no-underline">
@@ -268,12 +270,30 @@ export function SystemWidget({ system, onViewReleaseNotes }: { system: SystemInf
                     <dt className="text-muted-foreground">{t('Storage used')}</dt>
                     <dd>{formatBytes(system.storage_used_bytes)}</dd>
                 </div>
-                {system.storage_free_bytes >= 0 && (
-                    <div className="flex justify-between gap-2">
-                        <dt className="text-muted-foreground">{t('Storage free')}</dt>
-                        <dd>{formatBytes(system.storage_free_bytes)}</dd>
-                    </div>
-                )}
+                <div className="flex justify-between gap-2">
+                    <dt className="text-muted-foreground">{t('File storage')}</dt>
+                    <dd>
+                        {system.storage_driver === 'local'
+                            ? t('Local disk')
+                            : system.storage_driver === 's3'
+                              ? t('S3-compatible storage')
+                              : t('External storage')}
+                    </dd>
+                </div>
+                <div className="flex justify-between gap-2">
+                    <dt className="text-muted-foreground">{t('Storage available')}</dt>
+                    <dd>
+                        {system.storage_driver !== 'local'
+                            ? t('Managed by provider')
+                            : system.storage_free_bytes >= 0
+                              ? formatBytes(system.storage_free_bytes)
+                              : t('Unknown')}
+                    </dd>
+                </div>
+                <div className="flex justify-between gap-2">
+                    <dt className="text-muted-foreground">{t('Temporary upload space')}</dt>
+                    <dd>{system.upload_temp_free_bytes >= 0 ? formatBytes(system.upload_temp_free_bytes) : t('Unknown')}</dd>
+                </div>
                 {/* Stated always, flagged only when it is the slow one.
                     Both halves of the row open the explanation, and the
                     label is underlined, because the icon alone did not read
@@ -367,6 +387,10 @@ export function SystemWidget({ system, onViewReleaseNotes }: { system: SystemInf
                     </div>
                 )}
             </dl>
+            <p className="text-muted-foreground text-xs">
+                {t('Uploads use temporary space while being assembled, including when files are stored externally.')}
+            </p>
+
             <FileDeliveryDialog delivery={system.file_delivery} open={deliveryOpen} onOpenChange={setDeliveryOpen} />
         </div>
     );

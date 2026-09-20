@@ -446,6 +446,10 @@ class MyFilesController extends Controller
                 'categories' => $file->categories->pluck('id')->all(),
             ],
             'can_delete' => Gate::forUser($client)->allows('delete', $file),
+            // Their own root, where the installation gives them one. The
+            // form offers no "No folder" beside it: there is no such place
+            // for this client, and update() resolves it here anyway.
+            'home_folder_id' => $this->homeFolders->for($client)?->id,
             'can_publish' => $client->can('upload_public'),
             // The public links on this file, and where to make and revoke
             // one — the same shape the staff screen uses. A file marked
@@ -543,6 +547,15 @@ class MyFilesController extends Controller
         // them.
 
         $folderId = isset($validated['folder_id']) ? (int) $validated['folder_id'] : null;
+
+        // "No folder" means the top of what this client sees, which on an
+        // installation that gives them a home folder is inside it — not the
+        // root of the library, beside the staff folders. Uploading and
+        // creating a folder already resolve it this way; the editor did
+        // not, so a client could move their own file out of their home and
+        // into the administrator's root by choosing "No folder" (reported
+        // by binghuo).
+        $folderId ??= $this->homeFolders->for($client)?->id;
 
         // The client rule, not the staff one: somewhere they could have
         // uploaded it in the first place. Same check the upload path makes,

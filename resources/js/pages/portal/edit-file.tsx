@@ -51,6 +51,8 @@ interface PortalEditFileProps {
     };
     can_delete: boolean;
     can_publish: boolean;
+    /** This client's own root, where the installation gives them one. Null otherwise. */
+    home_folder_id: number | null;
     /** The public links on this file, newest first, and where to make or revoke one. */
     share_links: PortalShareLink[];
     share_link_store_url: string;
@@ -80,6 +82,7 @@ export default function PortalEditFile({
     file,
     can_delete,
     can_publish,
+    home_folder_id,
     share_links,
     share_link_store_url,
     can_set_expiration,
@@ -95,7 +98,9 @@ export default function PortalEditFile({
     const form = useForm({
         name: file.name,
         description: file.description ?? '',
-        folder_id: file.folder_id === null ? 'root' : String(file.folder_id),
+        // A file with no folder belongs in this client's own root where
+        // there is one — which is also what the server does with it.
+        folder_id: file.folder_id === null ? (home_folder_id === null ? 'root' : String(home_folder_id)) : String(file.folder_id),
         public: file.public,
         commentable: file.commentable,
         expires_at: file.expires_at ?? '',
@@ -170,7 +175,10 @@ export default function PortalEditFile({
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="root">{t('No folder')}</SelectItem>
+                                    {/* Not offered where this client has a home
+                                        folder: "no folder" would mean the root
+                                        of the library, which is not theirs. */}
+                                    {home_folder_id === null && <SelectItem value="root">{t('No folder')}</SelectItem>}
                                     {folders.map((folder) => (
                                         <SelectItem key={folder.id} value={String(folder.id)}>
                                             <span className="flex items-center gap-1.5">

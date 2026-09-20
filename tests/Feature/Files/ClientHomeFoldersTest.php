@@ -247,3 +247,61 @@ test('turning the setting off leaves an existing home working', function () {
     // strand them somewhere no listing looks.
     expect(app(ClientHomeFolders::class)->for($client->refresh())->id)->toBe($home->id);
 });
+
+test('a client editing their own file cannot send it to the library root', function () {
+    // Reported by binghuo: choosing "No folder" in the portal's file editor
+    // moved the file out of the client's home and into the administrator's
+    // root, beside the staff folders — the exact mess the home folder
+    // exists to end. Uploading and creating a folder already resolved an
+    // absent folder to the home; the editor did not.
+    enableHomeFolders();
+    $client = clientWhoCanUpload();
+    RolePermission::query()->create(['role_id' => $client->role_id, 'permission' => Permission::EditFiles->value]);
+    $home = app(ClientHomeFolders::class)->for($client);
+
+    $file = File::factory()->create(['uploaded_by' => $client->id, 'folder_id' => $home->id, 'name' => 'Theirs']);
+
+    $this->actingAs($client)->patch("/my-files/{$file->id}", [
+        'name' => 'Theirs',
+        'folder_id' => null,
+    ])->assertSessionHasNoErrors();
+
+    expect($file->refresh()->folder_id)->toBe($home->id);
+});
+
+test('with no home folder, no folder still means no folder', function () {
+    // The installation that never turned this on keeps what it had: a
+    // client's file sits at the root of the library because that is where
+    // every client's file sits there.
+    app(Settings::class)->set(Setting::ClientsHomeFolders, false);
+    $client = clientWhoCanUpload();
+    RolePermission::query()->create(['role_id' => $client->role_id, 'permission' => Permission::EditFiles->value]);
+    $folder = app(FolderService::class)->create('Somewhere', null);
+    shareFolderWithClient($folder, $client);
+
+    $file = File::factory()->create(['uploaded_by' => $client->id, 'folder_id' => $folder->id]);
+
+    $this->actingAs($client)->patch("/my-files/{$file->id}", [
+        'name' => 'Theirs',
+        'folder_id' => null,
+    ])->assertSessionHasNoErrors();
+
+    expect($file->refresh()->folder_id)->toBeNull();
+});
+
+test('the editor offers no "no folder" where the client has a home', function () {
+    enableHomeFolders();
+    $client = clientWhoCanUpload();
+    RolePermission::query()->create(['role_id' => $client->role_id, 'permission' => Permission::EditFiles->value]);
+    $home = app(ClientHomeFolders::class)->for($client);
+
+    $file = File::factory()->create(['uploaded_by' => $client->id, 'folder_id' => null]);
+
+    $this->actingAs($client)->get("/my-files/{$file->id}/edit")->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->component('portal/edit-file')
+            // The page hides the option and preselects this, so the form
+            // cannot post the root even by accident.
+            ->where('home_folder_id', $home->id),
+    );
+});

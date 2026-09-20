@@ -104,3 +104,17 @@ test('a refund of exactly what is held empties the session', function () {
     expect($this->session->reserveStaged(100))->toBeTrue()
         ->and(stagedBytes())->toBe(100);
 });
+
+
+test('equal-size retries succeed even when no column value changes', function () {
+    $this->freezeTime();
+    expect($this->session->reserveStaged(100))->toBeTrue();
+
+    for ($attempt = 0; $attempt < 3; $attempt++) {
+        expect($this->session->reserveStaged(100, 100))->toBeTrue()
+            ->and(stagedBytes())->toBe(100);
+    }
+
+    $this->session->delete();
+    expect($this->session->reserveStaged(100, 100))->toBeFalse();
+});

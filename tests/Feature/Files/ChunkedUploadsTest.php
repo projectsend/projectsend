@@ -585,3 +585,42 @@ test('one account cannot hold unlimited sessions open', function () {
         'type' => 'application/octet-stream',
     ])->assertStatus(422)->assertJsonValidationErrors('filename');
 });
+
+test('a truncated request is not advertised as a resumable part and can be retried', function () {
+    $this->actingAs($this->admin);
+    $sessionId = createSession(11, 'interrupted.txt');
+    $url = $this->getJson("/uploads/{$sessionId}/parts/1/sign")->assertOk()->json('url');
+
+    $this->call('PUT', $url, [], [], [], ['CONTENT_LENGTH' => '11'], 'hello')->assertStatus(400);
+    $this->getJson("/uploads/{$sessionId}/parts")->assertOk()->assertExactJson([]);
+    expect((int) UploadSession::findOrFail($sessionId)->staged_bytes)->toBe(0);
+    expect(glob(partsRoot().'/'.$sessionId.'/.upload-*'))->toBe([]);
+
+    $this->call('PUT', $url, [], [], [], ['CONTENT_LENGTH' => '11'], 'hello-world')->assertOk();
+    $fileId = $this->postJson("/uploads/{$sessionId}/complete")->assertOk()->json('file_id');
+    expect(Storage::disk('files')->get(File::findOrFail($fileId)->path))->toBe('hello-world');
+});
+
+test('an interrupted replacement preserves the previously completed part', function () {
+    $this->actingAs($this->admin);
+    $sessionId = createSession(11, 'replacement.txt');
+    putPart($sessionId, 1, 'hello-world')->assertOk();
+    $url = $this->getJson("/uploads/{$sessionId}/parts/1/sign")->assertOk()->json('url');
+    $this->call('PUT', $url, [], [], [], ['CONTENT_LENGTH' => '11'], 'hello')->assertStatus(400);
+    expect((int) UploadSession::findOrFail($sessionId)->staged_bytes)->toBe(11);
+    $this->getJson("/uploads/{$sessionId}/parts")->assertOk()->assertJson([
+        ['PartNumber' => 1, 'Size' => 11, 'ETag' => md5('hello-world')],
+    ]);
+});
+
+test('finalization refuses contiguous but truncated legacy parts without deleting them', function () {
+    $this->actingAs($this->admin);
+    $sessionId = createSession(11, 'legacy.txt');
+    putPart($sessionId, 1, 'hello')->assertOk();
+    $this->postJson("/uploads/{$sessionId}/complete")->assertStatus(422)->assertJsonValidationErrors('parts');
+    expect(File::count())->toBe(0);
+    expect(UploadSession::find($sessionId))->not->toBeNull();
+    expect(file_get_contents(partsRoot().'/'.$sessionId.'/1.part'))->toBe('hello');
+    putPart($sessionId, 1, 'hello-world')->assertOk();
+    $this->postJson("/uploads/{$sessionId}/complete")->assertOk();
+});

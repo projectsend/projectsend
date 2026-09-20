@@ -102,6 +102,12 @@ class UploadSession extends Model
             $query->where('staged_bytes', '>=', -$delta);
         }
 
+        // MySQL can report zero changed rows for an equal-size retry made
+        // within the same timestamp second. No counter change is needed.
+        if ($delta === 0) {
+            return $query->exists();
+        }
+
         return $query->update(['staged_bytes' => DB::raw(sprintf('staged_bytes + (%d)', $delta))]) === 1;
     }
 

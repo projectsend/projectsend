@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Files\Http\Controllers\ChunkedUploadsController;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Uploads\UploadSession;
 use App\Modules\Identity\Models\RolePermission;
@@ -12,6 +13,7 @@ use App\Modules\Identity\Permissions\Permission;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
@@ -532,6 +534,92 @@ test('staged bytes are released when a part is replaced, refused or falls short'
 
     putPart($sessionId, 2, str_repeat('c', 8))->assertOk();
     expect($session()->staged_bytes)->toBe(10);
+});
+
+test('concurrent final parts reserve their declared lengths without exhausting the session', function () {
+    $this->actingAs($this->admin);
+    config(['projectsend.upload_part_size_mb' => 1]);
+
+    $contents = [
+        str_repeat('a', 1024 * 1024),
+        str_repeat('b', 1024 * 1024),
+        str_repeat('c', 1024 * 1024),
+        str_repeat('d', 1024 * 1024),
+        'last-part',
+    ];
+    $size = array_sum(array_map(strlen(...), $contents));
+    $sessionId = createSession($size, 'concurrent.txt');
+    $fibers = [];
+
+    foreach ($contents as $index => $content) {
+        $request = new class extends Request
+        {
+            public function getContent($asResource = false)
+            {
+                // All requests reserve room before any request finishes
+                // reading. Fibers make this interleaving deterministic
+                // without separate processes or a shared test database.
+                Fiber::suspend();
+
+                return parent::getContent($asResource);
+            }
+        };
+        $request->initialize([], [], [], [], [], ['CONTENT_LENGTH' => (string) strlen($content)], $content);
+        $request->setUserResolver(fn () => $this->admin);
+        $session = UploadSession::query()->findOrFail($sessionId);
+        $fiber = new Fiber(fn () => app(ChunkedUploadsController::class)->putPart($request, $session, $index + 1));
+        $fiber->start();
+        expect($fiber->isSuspended())->toBeTrue();
+        $fibers[] = $fiber;
+    }
+
+    expect(UploadSession::query()->findOrFail($sessionId)->staged_bytes)->toBe($size);
+
+    foreach ($fibers as $fiber) {
+        $fiber->resume();
+        expect($fiber->getReturn()->getStatusCode())->toBe(200);
+    }
+
+    expect(UploadSession::query()->findOrFail($sessionId)->staged_bytes)->toBe($size);
+
+    $response = $this->postJson("/uploads/{$sessionId}/complete")->assertOk();
+    $file = File::query()->findOrFail($response->json('file_id'));
+    expect($file->size)->toBe($size)
+        ->and($file->checksum)->toBe(hash('sha256', implode('', $contents)))
+        ->and(Storage::disk('files')->get($file->path))->toBe(implode('', $contents));
+});
+
+test('a declared part length is enforced while streaming and refunded after rejection', function () {
+    $this->actingAs($this->admin);
+    $sessionId = createSession(10);
+    $url = $this->getJson("/uploads/{$sessionId}/parts/1/sign")->assertOk()->json('url');
+
+    $this->call('PUT', $url, [], [], [], ['CONTENT_LENGTH' => '2'], 'four')->assertStatus(413);
+
+    expect(UploadSession::query()->findOrFail($sessionId)->staged_bytes)->toBe(0)
+        ->and(is_file(partsRoot().'/'.$sessionId.'/1.part'))->toBeFalse();
+
+    $this->call('PUT', $url, [], [], [], ['CONTENT_LENGTH' => '4'], 'four')->assertOk();
+    expect(UploadSession::query()->findOrFail($sessionId)->staged_bytes)->toBe(4);
+});
+
+test('a failure opening the request stream releases its reservation', function () {
+    $this->actingAs($this->admin);
+    $sessionId = createSession(10);
+    $session = UploadSession::query()->findOrFail($sessionId);
+    $request = new class extends Request
+    {
+        public function getContent($asResource = false)
+        {
+            throw new RuntimeException('Could not open request stream.');
+        }
+    };
+    $request->headers->set('Content-Length', '4');
+    $request->setUserResolver(fn () => $this->admin);
+
+    expect(fn () => app(ChunkedUploadsController::class)->putPart($request, $session, 1))
+        ->toThrow(RuntimeException::class, 'Could not open request stream.');
+    expect($session->fresh()->staged_bytes)->toBe(0);
 });
 
 test('open sessions count against a client quota, so it cannot be spent twice', function () {

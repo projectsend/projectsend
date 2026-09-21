@@ -235,7 +235,10 @@ class ChunkedUploadsController extends Controller
         // chooses its own chunking and only the last part is short.
         $limit = $maxPartBytes * 2;
 
-        if ($request->header('Content-Length') !== null && (int) $request->header('Content-Length') > $limit) {
+        $contentLength = $request->header('Content-Length');
+        $reservationLimit = $contentLength !== null ? (int) $contentLength : $limit;
+
+        if ($reservationLimit < 1 || $reservationLimit > $limit) {
             abort(413);
         }
 
@@ -254,7 +257,12 @@ class ChunkedUploadsController extends Controller
         // what a part gets is whatever the session has left, and the write
         // is then capped at exactly that — an over-long body is cut off
         // mid-stream as it always was, just against a smaller number.
-        $reserve = $this->reservePartRoom($session, $part, $limit);
+        // Reserve the declared request length when available. Reserving the
+        // full per-part ceiling (40 MiB for a normal 20 MiB chunk) makes
+        // concurrent final parts exhaust the session allowance prematurely.
+        // Unknown-length requests retain the conservative ceiling, and the
+        // streamed byte count is still enforced against the reservation.
+        $reserve = $this->reservePartRoom($session, $part, $reservationLimit);
 
         if ($reserve < 1) {
             // 413 rather than 422: this is about the size of what is being
@@ -264,9 +272,10 @@ class ChunkedUploadsController extends Controller
             abort(413);
         }
 
-        $stream = $request->getContent(true);
+        $stream = null;
 
         try {
+            $stream = $request->getContent(true);
             $etag = $this->parts->storePart($session, $part, $stream, $reserve);
         } catch (PartTooLargeException) {
             abort(413);

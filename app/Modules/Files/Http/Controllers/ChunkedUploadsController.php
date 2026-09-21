@@ -267,18 +267,23 @@ class ChunkedUploadsController extends Controller
         $stream = $request->getContent(true);
 
         try {
-            $etag = $this->parts->storePart($session, $part, $stream, $reserve);
+            $etag = $this->parts->storePart(
+                $session, $part, $stream, $reserve,
+                $request->header('Content-Length') !== null ? (int) $request->header('Content-Length') : null,
+            );
         } catch (PartTooLargeException) {
             abort(413);
+        } catch (\UnexpectedValueException $exception) {
+            abort(400, $exception->getMessage());
         } finally {
             if (is_resource($stream)) {
                 fclose($stream);
             }
 
-            // In the finally, because every way out of here needs it: the
-            // refused part was deleted and weighs nothing, a client that
-            // hung up left a short one, and a clean write leaves exactly
-            // what it reserved. Without this a client's own retries would
+            // In the finally, because every way out of here needs it: an
+            // interrupted replacement preserves the previous complete part,
+            // a failed first attempt weighs nothing, and a clean write
+            // leaves exactly what arrived. Without this a client's own retries would
             // slowly exhaust a session that has plenty of room.
             $session->settleStaged($reserve, $this->parts->partSize($session, $part));
         }
@@ -366,7 +371,13 @@ class ChunkedUploadsController extends Controller
         // both assemble into the one target file and create two File rows.
         // The lock's TTL releases the claim if a completion dies mid-flight,
         // so a later retry still works.
-        $lock = Cache::lock('upload-complete:'.$session->id, 120);
+        // Hashing and assembling multi-gigabyte uploads can exceed PHP's default
+        // 30 CPU seconds. Keep the completion lock longer than this budget.
+        if (function_exists('set_time_limit')) {
+            set_time_limit(600);
+        }
+
+        $lock = Cache::lock('upload-complete:'.$session->id, 900);
 
         if (! $lock->get()) {
             throw ValidationException::withMessages([

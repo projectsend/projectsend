@@ -57,7 +57,7 @@ class LocalPartStore
      *
      * @param  resource  $stream
      */
-    public function storePart(UploadSession $session, int $partNumber, $stream, ?int $maxBytes = null): string
+    public function storePart(UploadSession $session, int $partNumber, $stream, ?int $maxBytes = null, ?int $expectedBytes = null): string
     {
         $directory = $this->directory($session);
 
@@ -79,43 +79,74 @@ class LocalPartStore
 
         $path = $this->partPath($session, $partNumber);
 
-        $out = fopen($path, 'wb');
+        // Only complete parts are visible to the resume endpoint. A dropped
+        // connection or failed retry must not publish a truncated part.
+        $temporaryPath = tempnam($directory, '.upload-');
 
-        if ($out === false) {
-            throw new RuntimeException(sprintf('Could not open part file %s for writing.', $path));
+        if ($temporaryPath === false) {
+            throw new RuntimeException('Could not create a temporary part file.');
         }
 
-        if ($maxBytes === null) {
-            stream_copy_to_stream($stream, $out);
-            fclose($out);
+        $out = null;
 
-            return md5_file($path) ?: '';
-        }
+        try {
+            $out = fopen($temporaryPath, 'wb');
 
-        $written = 0;
-
-        while (! feof($stream)) {
-            $buffer = fread($stream, 1024 * 1024);
-
-            if ($buffer === false || $buffer === '') {
-                break;
+            if ($out === false) {
+                throw new RuntimeException('Could not open the temporary part file.');
             }
 
-            $written += strlen($buffer);
+            $written = 0;
+            $hash = hash_init('md5');
 
-            if ($written > $maxBytes) {
+            while (! feof($stream)) {
+                $buffer = fread($stream, 1024 * 1024);
+
+                if ($buffer === false) {
+                    throw new RuntimeException('Could not read upload part.');
+                }
+
+                if ($buffer === '') {
+                    break;
+                }
+
+                $written += strlen($buffer);
+
+                if ($maxBytes !== null && $written > $maxBytes) {
+                    throw new PartTooLargeException('Upload part exceeds the maximum part size.');
+                }
+
+                if (fwrite($out, $buffer) !== strlen($buffer)) {
+                    throw new RuntimeException('Could not write upload part.');
+                }
+
+                hash_update($hash, $buffer);
+            }
+
+            if (! fclose($out)) {
+                throw new RuntimeException('Could not flush upload part.');
+            }
+
+            $out = null;
+
+            if ($expectedBytes !== null && $written !== $expectedBytes) {
+                throw new \UnexpectedValueException('Upload part was interrupted. Please retry the upload.');
+            }
+
+            if (! rename($temporaryPath, $path)) {
+                throw new RuntimeException('Could not publish upload part.');
+            }
+
+            return hash_final($hash);
+        } finally {
+            if (is_resource($out)) {
                 fclose($out);
-                @unlink($path);
-
-                throw new PartTooLargeException('Upload part exceeds the maximum part size.');
             }
 
-            fwrite($out, $buffer);
+            if (is_file($temporaryPath)) {
+                unlink($temporaryPath);
+            }
         }
-
-        fclose($out);
-
-        return md5_file($path) ?: '';
     }
 
     /**
@@ -192,6 +223,10 @@ class LocalPartStore
 
         if ($parts === [] || $actual !== $expected) {
             throw new RuntimeException('Upload is incomplete: missing parts.');
+        }
+
+        if (array_sum(array_column($parts, 'Size')) !== (int) $session->size) {
+            throw new RuntimeException('Upload is incomplete: received size does not match the file size. Please retry the upload.');
         }
 
         $assembledPath = $this->directory($session).'/assembled';

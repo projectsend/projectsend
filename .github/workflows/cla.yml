@@ -41,11 +41,19 @@ jobs:
     # `issue.pull_request` is present only when the comment is on a pull
     # request; comments on ordinary issues have nothing for this action to
     # check.
+    #
+    # Loose on purpose, never `==`. The action matches the signing phrase
+    # loosely itself -- any case, anything around it -- and this filter has
+    # to be at least as forgiving, or it throws away signatures the action
+    # would have accepted. It did: a contributor's signature arrived with
+    # trailing line breaks ("...sign the CLA\r\n\r\n"), the exact match
+    # skipped the job, and nothing was recorded. `contains` and
+    # `startsWith` ignore case here as well.
     if: >-
       github.event_name == 'pull_request_target'
       || (github.event.issue.pull_request
-          && (github.event.comment.body == 'recheck'
-              || github.event.comment.body == 'I have read the CLA Document and I hereby sign the CLA'))
+          && (startsWith(github.event.comment.body, 'recheck')
+              || contains(github.event.comment.body, 'I have read the CLA Document and I hereby sign the CLA')))
     runs-on: ubuntu-latest
     steps:
       - name: CLA check

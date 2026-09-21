@@ -3,8 +3,10 @@ import '../css/app.css';
 import { createInertiaApp, router } from '@inertiajs/react';
 import axios from 'axios';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { route as routeFn } from 'ziggy-js';
+import { PasswordConfirmationDialog } from './components/password-confirmation-dialog';
 import { initializeTheme } from './hooks/use-appearance';
 import { xsrfCookieName } from './lib/xsrf';
 
@@ -75,7 +77,21 @@ createInertiaApp({
 
         const root = createRoot(el);
 
-        root.render(<App {...props} />);
+        // The password dialog sits beside every page rather than in any
+        // one layout: the writes it answers for are spread across the
+        // staff shell, the settings screens and every portal theme, and
+        // it needs the page context (translations) the children of <App>
+        // are given. The page itself renders as Inertia would on its own.
+        root.render(
+            <App {...props}>
+                {({ Component, props: pageProps, key }) => (
+                    <>
+                        {createElement(Component, { key, ...pageProps })}
+                        <PasswordConfirmationDialog />
+                    </>
+                )}
+            </App>,
+        );
     },
     progress: {
         color: '#4B5563',

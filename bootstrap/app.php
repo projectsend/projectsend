@@ -12,6 +12,7 @@ use App\Modules\Identity\Http\Middleware\EnforceTwoFactor;
 use App\Modules\Identity\Http\Middleware\EnsureAccountIsActive;
 use App\Modules\Identity\Http\Middleware\EnsureSetupIsComplete;
 use App\Modules\Identity\Http\Middleware\EnsureStaff;
+use App\Modules\Identity\Http\Middleware\RequirePasswordConfirmation;
 use App\Modules\Platform\Http\Middleware\EnsureCapability;
 use App\Modules\Platform\Http\Middleware\SetLocale;
 use App\Support\WriteSafeRedirect;
@@ -101,6 +102,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'staff-token' => EnsureStaffToken::class,
             'token-can' => EnsureTokenCan::class,
             'api-active' => EnsureApiAccountIsActive::class,
+            // Replaces the framework's own: a write that needs the password
+            // re-proved gets a dialog over the page instead of a redirect
+            // that throws the submitted form away. See the class.
+            'password.confirm' => RequirePasswordConfirmation::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

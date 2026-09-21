@@ -7,6 +7,7 @@ use App\Modules\Identity\AuthSource;
 use App\Modules\Identity\PasswordVerification;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -41,8 +42,12 @@ class ConfirmablePasswordController extends Controller
      * their local hash is a Str::password(64) nobody has ever seen -- and
      * this screen stands in front of enrolling in two-factor, so those
      * accounts could not enrol at all.
+     *
+     * Asked for JSON, it answers with a bare 204: that is the password
+     * dialog (RequirePasswordConfirmation), which stays on the page and
+     * sends the refused request again itself, so there is nowhere to go.
      */
-    public function store(Request $request, PasswordVerification $passwords): RedirectResponse
+    public function store(Request $request, PasswordVerification $passwords): RedirectResponse|HttpResponse
     {
         $user = $request->user();
         assert($user !== null);
@@ -54,6 +59,10 @@ class ConfirmablePasswordController extends Controller
         }
 
         $request->session()->put('auth.password_confirmed_at', time());
+
+        if ($request->expectsJson()) {
+            return response()->noContent();
+        }
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

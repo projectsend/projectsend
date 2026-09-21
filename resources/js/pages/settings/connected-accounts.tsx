@@ -91,7 +91,13 @@ export default function ConnectedAccounts({ providers, has_local_password }: Con
                                                 router.post(
                                                     route('connected-accounts.connect', { provider: provider.provider }),
                                                     {},
-                                                    { onStart: () => setProcessing(true) },
+                                                    // onFinish too: a password confirmation the
+                                                    // user cancels ends the request here, and
+                                                    // the button must not stay dead.
+                                                    {
+                                                        onStart: () => setProcessing(true),
+                                                        onFinish: () => setProcessing(false),
+                                                    },
                                                 )
                                             }
                                         >

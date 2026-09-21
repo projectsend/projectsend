@@ -12,10 +12,10 @@ import AuthLayout from '@/layouts/auth-layout';
 
 interface ConfirmPasswordProps {
     /** False for an account that signs in through a provider and has no password to confirm with. */
-    has_local_password: boolean;
+    has_password: boolean;
 }
 
-export default function ConfirmPassword({ has_local_password }: ConfirmPasswordProps) {
+export default function ConfirmPassword({ has_password }: ConfirmPasswordProps) {
     const { t } = useTranslation();
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -37,7 +37,7 @@ export default function ConfirmPassword({ has_local_password }: ConfirmPasswordP
         >
             <Head title={t('Confirm password')} />
 
-            {!has_local_password && (
+            {!has_password && (
                 <div className="space-y-4">
                     <p className="text-muted-foreground text-sm">
                         {t('You sign in through a connected account, so there is no password here to confirm. Set one to continue.')}
@@ -48,7 +48,7 @@ export default function ConfirmPassword({ has_local_password }: ConfirmPasswordP
                 </div>
             )}
 
-            <form onSubmit={submit} hidden={!has_local_password}>
+            <form onSubmit={submit} hidden={!has_password}>
                 <div className="space-y-6">
                     <div className="grid gap-2">
                         <Label htmlFor="password">{t('Password')}</Label>

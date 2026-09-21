@@ -39,7 +39,10 @@ class RequirePasswordConfirmation extends RequirePassword
 
     public function handle($request, Closure $next, $redirectToRoute = null, $passwordTimeoutSeconds = null)
     {
-        if ($request->header('X-Inertia') && $this->shouldConfirmPassword($request, $passwordTimeoutSeconds)) {
+        // Middleware parameters arrive as strings ("password.confirm:,300").
+        $timeout = $passwordTimeoutSeconds === null || $passwordTimeoutSeconds === '' ? null : (int) $passwordTimeoutSeconds;
+
+        if ($request->header('X-Inertia') && $this->shouldConfirmPassword($request, $timeout)) {
             return $this->inertiaRefusal($request);
         }
 
@@ -52,10 +55,11 @@ class RequirePasswordConfirmation extends RequirePassword
 
         return $this->responseFactory->json([
             'message' => 'Password confirmation required.',
-            // The same question the confirm-password screen asks: an account
-            // provisioned by a provider has no password to type, and the
-            // dialog has to offer it a way to set one instead.
-            'has_local_password' => $user?->auth_source === AuthSource::Local,
+            // The same question the confirm-password screen asks, and see
+            // there for why it is Social and not "anything but Local": an
+            // account provisioned by a provider has no password to type,
+            // and the dialog has to offer it a way to set one instead.
+            'has_password' => $user !== null && $user->auth_source !== AuthSource::Social,
         ], 423, [self::HEADER => 'required']);
     }
 }

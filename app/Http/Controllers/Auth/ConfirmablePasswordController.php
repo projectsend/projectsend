@@ -28,7 +28,13 @@ class ConfirmablePasswordController extends Controller
             // has seen. The screen offers to set one instead of asking for
             // it, which is the only way past this for those accounts, and
             // this screen stands in front of two-factor enrolment.
-            'has_local_password' => $user->auth_source === AuthSource::Local,
+            //
+            // Social, not "anything but Local": a directory account has a
+            // password -- the directory's -- and store() accepts it. Asking
+            // whether the account was Local told those accounts to set one
+            // here instead, which /settings/password refuses them, and left
+            // them no way past this screen at all.
+            'has_password' => $user->auth_source !== AuthSource::Social,
         ]);
     }
 

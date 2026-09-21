@@ -86,7 +86,7 @@ test('the screen says which of the two it is', function () {
 
 test('the confirm-password screen offers to set one instead of asking for it', function () {
     $this->actingAs(providerAccount())->get('/confirm-password')->assertInertia(
-        fn (AssertableInertia $page) => $page->component('auth/confirm-password')->where('has_local_password', false),
+        fn (AssertableInertia $page) => $page->component('auth/confirm-password')->where('has_password', false),
     );
 });
 

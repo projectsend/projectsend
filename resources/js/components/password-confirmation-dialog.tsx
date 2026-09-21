@@ -16,7 +16,7 @@ interface Refused {
     // as sent: the visit plus its callbacks (useForm's among them), which
     // is what lets a replay finish the form's own submission.
     visit: PendingVisit;
-    hasLocalPassword: boolean;
+    hasPassword: boolean;
 }
 
 const visitKey = (method: string, url: string) => `${method.toUpperCase()} ${url}`;
@@ -76,7 +76,7 @@ export function PasswordConfirmationDialog() {
 
             setPassword('');
             setError(undefined);
-            setRefused({ visit, hasLocalPassword: response.data?.has_local_password !== false });
+            setRefused({ visit, hasPassword: response.data?.has_password !== false });
         });
 
         return () => {
@@ -85,6 +85,12 @@ export function PasswordConfirmationDialog() {
             removeInvalid();
         };
     }, []);
+
+    // Cancelling drops the refused request, and the password with it.
+    const close = () => {
+        setPassword('');
+        setRefused(null);
+    };
 
     const submit: FormEventHandler = async (e) => {
         e.preventDefault();
@@ -112,6 +118,7 @@ export function PasswordConfirmationDialog() {
         }
 
         setProcessing(false);
+        setPassword('');
         setRefused(null);
 
         // Sent again as it was. The three state flags describe the first
@@ -123,7 +130,7 @@ export function PasswordConfirmationDialog() {
     };
 
     return (
-        <Dialog open={refused !== null} onOpenChange={(open) => !open && setRefused(null)}>
+        <Dialog open={refused !== null} onOpenChange={(open) => !open && close()}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{t('Confirm your password')}</DialogTitle>
@@ -132,13 +139,13 @@ export function PasswordConfirmationDialog() {
                     </DialogDescription>
                 </DialogHeader>
 
-                {refused && !refused.hasLocalPassword ? (
+                {refused && !refused.hasPassword ? (
                     <div className="space-y-4">
                         <p className="text-muted-foreground text-sm">
                             {t('You sign in through a connected account, so there is no password here to confirm. Set one to continue.')}
                         </p>
                         <DialogFooter>
-                            <Button variant="ghost" type="button" onClick={() => setRefused(null)}>
+                            <Button variant="ghost" type="button" onClick={close}>
                                 {t('Cancel')}
                             </Button>
                             <Button asChild>
@@ -164,7 +171,7 @@ export function PasswordConfirmationDialog() {
                         </div>
 
                         <DialogFooter>
-                            <Button variant="ghost" type="button" onClick={() => setRefused(null)}>
+                            <Button variant="ghost" type="button" onClick={close}>
                                 {t('Cancel')}
                             </Button>
                             <Button type="submit" disabled={processing || password === ''}>

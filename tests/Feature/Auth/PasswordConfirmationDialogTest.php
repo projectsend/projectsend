@@ -22,7 +22,7 @@ test('an inertia write without a fresh confirmation is refused in place, not red
         ->post('/settings/two-factor')
         ->assertStatus(423)
         ->assertHeader('X-Password-Confirmation', 'required')
-        ->assertJson(['has_local_password' => true]);
+        ->assertJson(['has_password' => true]);
 
     // Refused, not half-done: the action did not run.
     expect($this->user->refresh()->two_factor_secret)->toBeNull();
@@ -35,7 +35,27 @@ test('the refusal tells the dialog when there is no password to type', function 
         ->withHeaders(['X-Inertia' => 'true'])
         ->post('/settings/two-factor')
         ->assertStatus(423)
-        ->assertJson(['has_local_password' => false]);
+        ->assertJson(['has_password' => false]);
+});
+
+// A directory account's password is the directory's, and the confirmation
+// accepts it (LdapAuthenticationTest). Asking "is this account Local?"
+// told it to set a password instead, which it is not allowed to do, so it
+// could not get past the confirmation at all -- on the screen or here.
+test('a directory account is asked for its password, not told to set one', function () {
+    $user = User::factory()->create(['auth_source' => AuthSource::Ldap]);
+
+    // The screen first: withHeaders() sticks to every later request in a
+    // test, and this GET must not be sent as an Inertia visit.
+    $this->actingAs($user)
+        ->get('/confirm-password')
+        ->assertInertia(fn ($page) => $page->component('auth/confirm-password')->where('has_password', true));
+
+    $this->actingAs($user)
+        ->withHeaders(['X-Inertia' => 'true'])
+        ->post('/settings/two-factor')
+        ->assertStatus(423)
+        ->assertJson(['has_password' => true]);
 });
 
 test('a plain form post is still redirected to the confirm-password screen', function () {

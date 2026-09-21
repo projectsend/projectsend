@@ -42,13 +42,12 @@ jobs:
     # request; comments on ordinary issues have nothing for this action to
     # check.
     #
-    # Loose on purpose, never `==`. The action matches the signing phrase
-    # loosely itself -- any case, anything around it -- and this filter has
-    # to be at least as forgiving, or it throws away signatures the action
-    # would have accepted. It did: a contributor's signature arrived with
-    # trailing line breaks ("...sign the CLA\r\n\r\n"), the exact match
-    # skipped the job, and nothing was recorded. `contains` and
-    # `startsWith` ignore case here as well.
+    # Loose on purpose, never `==`. This only decides whether a runner
+    # starts; whether a comment is a signature is decided by the action,
+    # strictly, against `custom-pr-sign-comment` below. An exact match here
+    # threw away a real signature that arrived with trailing line breaks
+    # ("...sign the CLA\r\n\r\n"), which the action -- it trims first --
+    # would have accepted. `contains` and `startsWith` ignore case.
     if: >-
       github.event_name == 'pull_request_target'
       || (github.event.issue.pull_request
@@ -69,6 +68,14 @@ jobs:
           remote-repository-name: 'cla-signatures'
 
           allowlist: dependabot[bot],renovate[bot],*[bot]
+
+          # Set to the action's own default phrase, and it matters that it
+          # is set. Without it the action searches the comment for the
+          # phrase, so "I LIE, I have read the CLA Document and I hereby sign
+          # the CLA. I do not sign it" on one line was recorded as a
+          # signature. With it, the comment -- trimmed and lowercased --
+          # must be the phrase and nothing else.
+          custom-pr-sign-comment: 'I have read the CLA Document and I hereby sign the CLA'
 
           custom-notsigned-prcomment: |
             Thanks for the pull request!

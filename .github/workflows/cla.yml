@@ -69,14 +69,6 @@ jobs:
 
           allowlist: dependabot[bot],renovate[bot],*[bot]
 
-          # Set to the action's own default phrase, and it matters that it
-          # is set. Without it the action searches the comment for the
-          # phrase, so "I LIE, I have read the CLA Document and I hereby sign
-          # the CLA. I do not sign it" on one line was recorded as a
-          # signature. With it, the comment -- trimmed and lowercased --
-          # must be the phrase and nothing else.
-          custom-pr-sign-comment: 'I have read the CLA Document and I hereby sign the CLA'
-
           custom-notsigned-prcomment: |
             Thanks for the pull request!
 
@@ -89,6 +81,12 @@ jobs:
             Please read the **[CLA]($pathToCLADocument)**, then post exactly this as a comment
             on this pull request:
 
+          # Not decoration, although it repeats the action's default phrase.
+          # Set, it makes the action compare the whole comment, trimmed and
+          # lowercased, against it. Unset, the action searches the comment
+          # for the phrase instead, and "I LIE, I have read the CLA Document
+          # and I hereby sign the CLA. I do not sign it" on one line would
+          # be recorded as a signature.
           custom-pr-sign-comment: 'I have read the CLA Document and I hereby sign the CLA'
           custom-allsigned-prcomment: 'CLA signed — thanks. A maintainer will review this shortly.'
           lock-pullrequest-aftermerge: false

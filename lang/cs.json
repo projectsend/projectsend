@@ -2256,5 +2256,13 @@
     "You sign in through a connected account. A password of your own lets you sign in without it, and is needed to turn on two-factor authentication.": "Přihlašujete se přes propojený účet. Vlastní heslo vám umožní přihlásit se i bez něj a je potřeba k zapnutí dvoufázového ověření.",
     "Your password is managed by your organisation's directory, so it cannot be changed here.": "Vaše heslo spravuje adresář vaší organizace, takže ho tu nelze změnit.",
     "A link anyone can open, without signing in. You can revoke it at any time.": "Odkaz, který může kdokoli otevřít bez přihlášení. Kdykoli ho můžete zrušit.",
-    ":provider only confirms an address when the \"xms_edov\" optional claim is on your app registration (Token configuration → optional claims → ID token). Until it is there, accounts are still created, but every one of them waits in Account requests however this box is set.": ":provider potvrdí adresu jen tehdy, když je v registraci vaší aplikace volitelný nárok „xms_edov\" (Token configuration → optional claims → ID token). Dokud tam není, účty se sice vytvoří, ale všechny čekají v Žádostech o účet, ať je toto pole nastavené jakkoli."
+    ":provider only confirms an address when the \"xms_edov\" optional claim is on your app registration (Token configuration → optional claims → ID token). Until it is there, accounts are still created, but every one of them waits in Account requests however this box is set.": ":provider potvrdí adresu jen tehdy, když je v registraci vaší aplikace volitelný nárok „xms_edov\" (Token configuration → optional claims → ID token). Dokud tam není, účty se sice vytvoří, ale všechny čekají v Žádostech o účet, ať je toto pole nastavené jakkoli.",
+    "File storage": "Úložiště souborů",
+    "Local disk": "Místní disk",
+    "S3-compatible storage": "Úložiště kompatibilní s S3",
+    "Storage available": "Dostupné místo",
+    "Managed by provider": "Spravuje poskytovatel",
+    "Temporary upload space": "Dočasné místo pro nahrávání",
+    "Uploads use temporary space while being assembled, including when files are stored externally.": "Nahrávané soubory se při skládání ukládají do dočasného místa, i když se soubory ukládají externě.",
+    "Too many attempts. Wait a minute and try again.": "Příliš mnoho pokusů. Počkejte minutu a zkuste to znovu."
 }

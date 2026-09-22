@@ -2256,5 +2256,13 @@
     "You sign in through a connected account. A password of your own lets you sign in without it, and is needed to turn on two-factor authentication.": "你通过关联账户登录。拥有自己的密码可以不依赖该账户登录，并且开启两步验证时需要它。",
     "Your password is managed by your organisation's directory, so it cannot be changed here.": "你的密码由所在组织的目录管理，因此无法在此更改。",
     "A link anyone can open, without signing in. You can revoke it at any time.": "任何人无需登录即可打开的链接。你可以随时撤销它。",
-    ":provider only confirms an address when the \"xms_edov\" optional claim is on your app registration (Token configuration → optional claims → ID token). Until it is there, accounts are still created, but every one of them waits in Account requests however this box is set.": "只有当应用注册中包含可选声明“xms_edov”时，:provider 才会确认地址（Token configuration → optional claims → ID token）。在添加之前，账户仍会创建，但无论此处如何勾选，它们都会在账户申请中等待。"
+    ":provider only confirms an address when the \"xms_edov\" optional claim is on your app registration (Token configuration → optional claims → ID token). Until it is there, accounts are still created, but every one of them waits in Account requests however this box is set.": "只有当应用注册中包含可选声明“xms_edov”时，:provider 才会确认地址（Token configuration → optional claims → ID token）。在添加之前，账户仍会创建，但无论此处如何勾选，它们都会在账户申请中等待。",
+    "File storage": "文件存储",
+    "Local disk": "本地磁盘",
+    "S3-compatible storage": "S3 兼容存储",
+    "Storage available": "可用空间",
+    "Managed by provider": "由服务商管理",
+    "Temporary upload space": "上传临时空间",
+    "Uploads use temporary space while being assembled, including when files are stored externally.": "上传的文件在合并期间会占用临时空间，即使文件存储在外部存储中也是如此。",
+    "Too many attempts. Wait a minute and try again.": "尝试次数过多，请等待一分钟后重试。"
 }

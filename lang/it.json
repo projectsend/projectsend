@@ -2256,5 +2256,13 @@
     "You sign in through a connected account. A password of your own lets you sign in without it, and is needed to turn on two-factor authentication.": "Accedi con un account collegato. Una password tua ti permette di accedere senza di esso ed è necessaria per attivare l'autenticazione a due fattori.",
     "Your password is managed by your organisation's directory, so it cannot be changed here.": "La tua password è gestita dalla directory della tua organizzazione, quindi non può essere cambiata qui.",
     "A link anyone can open, without signing in. You can revoke it at any time.": "Un link che chiunque può aprire, senza accedere. Puoi revocarlo quando vuoi.",
-    ":provider only confirms an address when the \"xms_edov\" optional claim is on your app registration (Token configuration → optional claims → ID token). Until it is there, accounts are still created, but every one of them waits in Account requests however this box is set.": ":provider conferma un indirizzo solo quando il claim facoltativo \"xms_edov\" è nella registrazione della tua app (Token configuration → optional claims → ID token). Finché non c'è, gli account vengono creati lo stesso, ma restano tutti in attesa in Richieste di account, qualunque cosa dica questa casella."
+    ":provider only confirms an address when the \"xms_edov\" optional claim is on your app registration (Token configuration → optional claims → ID token). Until it is there, accounts are still created, but every one of them waits in Account requests however this box is set.": ":provider conferma un indirizzo solo quando il claim facoltativo \"xms_edov\" è nella registrazione della tua app (Token configuration → optional claims → ID token). Finché non c'è, gli account vengono creati lo stesso, ma restano tutti in attesa in Richieste di account, qualunque cosa dica questa casella.",
+    "File storage": "Archiviazione dei file",
+    "Local disk": "Disco locale",
+    "S3-compatible storage": "Archiviazione compatibile S3",
+    "Storage available": "Spazio disponibile",
+    "Managed by provider": "Gestito dal provider",
+    "Temporary upload space": "Spazio temporaneo per i caricamenti",
+    "Uploads use temporary space while being assembled, including when files are stored externally.": "I caricamenti usano spazio temporaneo mentre vengono assemblati, anche quando i file sono archiviati esternamente.",
+    "Too many attempts. Wait a minute and try again.": "Troppi tentativi. Aspetta un minuto e riprova."
 }

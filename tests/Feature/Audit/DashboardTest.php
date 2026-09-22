@@ -590,3 +590,40 @@ test('the top-clients widget names only clients on the viewer roster', function 
             ->where('top_clients_by_storage.0.name', 'My Own Client'),
     );
 });
+
+test('system capacity distinguishes local file storage from a configured temporary upload volume', function () {
+    $tempRoot = storage_path('app/separate-upload-volume');
+    config(['projectsend.uploads.parts_path' => $tempRoot]);
+    $capacity = new class(app(App\Modules\Files\Uploads\LocalPartStore::class)) extends App\Modules\Platform\Storage\StorageCapacity
+    {
+        protected function freeBytes(string $path): int
+        {
+            return $path === config('projectsend.uploads.parts_path') ? 99_000_000_000 : 39_000_000_000;
+        }
+    };
+    app()->instance(App\Modules\Platform\Storage\StorageCapacity::class, $capacity);
+
+    $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->where('system.storage_driver', 'local')
+            ->where('system.storage_free_bytes', 39_000_000_000)
+            ->where('system.upload_temp_free_bytes', 99_000_000_000),
+    );
+});
+
+test('system capacity never presents local disk space as available object storage', function () {
+    config(['filesystems.disks.remote_uploads.driver' => 's3']);
+    Illuminate\Support\Facades\Event::listen(
+        App\Modules\Files\Storage\ResolvingUploadDisk::class,
+        function (App\Modules\Files\Storage\ResolvingUploadDisk $event): void {
+            $event->disk = 'remote_uploads';
+        },
+    );
+    // No credentials or bucket: reading capacity must not contact S3.
+    $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->where('system.storage_driver', 's3')
+            ->where('system.storage_free_bytes', -1)
+            ->where('system.upload_temp_free_bytes', fn ($bytes): bool => is_int($bytes) && $bytes >= 0),
+    );
+});

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useCapability } from '@/hooks/use-capability';
 import { ALL, useListQuery } from '@/hooks/use-list-query';
 import { useZipDownload } from '@/hooks/use-zip-download';
 import { type MyFilesProps } from '@/types/portal';
@@ -14,6 +15,10 @@ import { type MyFilesProps } from '@/types/portal';
  */
 export function usePortalFiles({ folder, search, category, owner, sort, direction, pagination }: MyFilesProps) {
     const zip = useZipDownload();
+    // Withheld on some hosted plans. In the portal, selecting rows exists
+    // only to zip them, so themes hide the checkboxes and the selection
+    // bar along with the folder's zip button when this is false.
+    const canZip = useCapability('downloads.zip');
 
     const [selectedFileIds, setSelectedFileIds] = useState<Set<number>>(new Set());
     const [selectedFolderIds, setSelectedFolderIds] = useState<Set<number>>(new Set());
@@ -61,6 +66,7 @@ export function usePortalFiles({ folder, search, category, owner, sort, directio
 
     return {
         zip,
+        canZip,
         selectedFileIds,
         selectedFolderIds,
         selectionCount,

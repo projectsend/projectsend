@@ -74,6 +74,7 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
 
     const {
         zip,
+        canZip,
         selectedFileIds,
         selectedFolderIds,
         selectionCount,
@@ -124,7 +125,7 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                 </Link>
                             </Button>
                         )}
-                        {folder !== null && !searching && (
+                        {canZip && folder !== null && !searching && (
                             <Button variant="outline" onClick={() => zip.start({ folder_ids: [folder.id] })}>
                                 <Archive className="size-4" />
                                 {t('Download as zip')}
@@ -147,7 +148,9 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                     <ViewModeToggle value={viewMode} onChange={setViewMode} />
                 </div>
 
-                <SelectionBar count={selectionCount} onDownload={downloadSelectionAsZip} onClear={clearSelection} className="mb-3" />
+                {canZip && (
+                    <SelectionBar count={selectionCount} onDownload={downloadSelectionAsZip} onClear={clearSelection} className="mb-3" />
+                )}
 
                 {folders.length === 0 && files.length === 0 && (
                     <p className="text-muted-foreground rounded-lg border px-4 py-10 text-center text-sm">
@@ -159,11 +162,13 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                     <div className="space-y-2">
                         {folders.map((row) => (
                             <div key={`folder-${row.id}`} className="bg-card flex items-center gap-3 rounded-lg border px-4 py-3">
-                                <Checkbox
-                                    checked={selectedFolderIds.has(row.id)}
-                                    onCheckedChange={() => toggleFolder(row.id)}
-                                    aria-label={t('Select :name', { name: row.name })}
-                                />
+                                {canZip && (
+                                    <Checkbox
+                                        checked={selectedFolderIds.has(row.id)}
+                                        onCheckedChange={() => toggleFolder(row.id)}
+                                        aria-label={t('Select :name', { name: row.name })}
+                                    />
+                                )}
                                 <Link href={folderUrl(row.id)} className="hover:bg-accent/40 -m-3 flex flex-1 items-center gap-3 rounded-lg p-3">
                                     <FolderIcon className="text-primary size-5 shrink-0" />
                                     <p className="text-sm font-medium">{row.name}</p>
@@ -187,11 +192,13 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                     every row. The name takes the slack and
                                     the actions are one group at the end. */}
                                 <div className="flex min-w-0 flex-1 items-center gap-3">
-                                    <Checkbox
-                                        checked={selectedFileIds.has(file.id)}
-                                        onCheckedChange={() => toggleFile(file.id)}
-                                        aria-label={t('Select :name', { name: file.name })}
-                                    />
+                                    {canZip && (
+                                        <Checkbox
+                                            checked={selectedFileIds.has(file.id)}
+                                            onCheckedChange={() => toggleFile(file.id)}
+                                            aria-label={t('Select :name', { name: file.name })}
+                                        />
+                                    )}
                                     <FilePreviewDialog
                                         previewUrl={preview_enabled ? route('files.preview', file.id) : null}
                                         mimeType={file.mime_type}
@@ -268,12 +275,14 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                 key={`folder-${row.id}`}
                                 className="group hover:border-primary/50 relative flex flex-col items-center justify-center gap-2 rounded-xl border p-6 text-center transition hover:shadow-md"
                             >
-                                <Checkbox
-                                    checked={selectedFolderIds.has(row.id)}
-                                    onCheckedChange={() => toggleFolder(row.id)}
-                                    aria-label={t('Select :name', { name: row.name })}
-                                    className="absolute top-3 left-3"
-                                />
+                                {canZip && (
+                                    <Checkbox
+                                        checked={selectedFolderIds.has(row.id)}
+                                        onCheckedChange={() => toggleFolder(row.id)}
+                                        aria-label={t('Select :name', { name: row.name })}
+                                        className="absolute top-3 left-3"
+                                    />
+                                )}
                                 <Link href={folderUrl(row.id)} className="flex w-full flex-col items-center gap-2">
                                     <FolderIcon className="text-primary size-10 shrink-0" strokeWidth={1.5} />
                                     <span className="flex max-w-full items-center gap-1.5">
@@ -299,12 +308,14 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                 key={`file-${file.id}`}
                                 className="group hover:border-primary/50 relative overflow-hidden rounded-xl border transition hover:shadow-lg"
                             >
-                                <Checkbox
-                                    checked={selectedFileIds.has(file.id)}
-                                    onCheckedChange={() => toggleFile(file.id)}
-                                    aria-label={t('Select :name', { name: file.name })}
-                                    className="bg-background/80 absolute top-3 left-3 z-10"
-                                />
+                                {canZip && (
+                                    <Checkbox
+                                        checked={selectedFileIds.has(file.id)}
+                                        onCheckedChange={() => toggleFile(file.id)}
+                                        aria-label={t('Select :name', { name: file.name })}
+                                        className="bg-background/80 absolute top-3 left-3 z-10"
+                                    />
+                                )}
 
                                 {preview_enabled && isPreviewable(file.mime_type) ? (
                                     <FilePreviewDialog

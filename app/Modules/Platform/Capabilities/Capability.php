@@ -169,6 +169,23 @@ enum Capability: string
 
     case AiConnector = 'ai.connector';
 
+    // Both editions, and present by default: a self-hosted installation
+    // keeps zip downloads exactly as it has them. The key exists so a
+    // hosted plan can subtract it, and the reason is cost rather than
+    // trust. Building an archive holds the `zips` worker, the disk and a
+    // CPU for as long as it takes, and on an instance shared by thousands
+    // of free accounts one person's folder is everybody's wait.
+    //
+    // Closed at the route, all three verbs, so a hand-made POST is a 404
+    // and not just a missing button. A build already queued when the key
+    // went away is refused by BuildZipDownloadJob and ends failed rather
+    // than pending. Archives already built are left alone and expire on
+    // their own schedule: taking a feature away never deletes anything.
+    //
+    // Last on purpose: keys are listed in enum order, and the control
+    // plane reads them in that order, so a new key goes at the end.
+    case ZipDownloads = 'downloads.zip';
+
     /**
      * @return list<Edition>
      */
@@ -185,7 +202,8 @@ enum Capability: string
 
             self::UsersManage,
             self::CaptchaConfigure,
-            self::Branding => [Edition::Community, Edition::Cloud],
+            self::Branding,
+            self::ZipDownloads => [Edition::Community, Edition::Cloud],
 
             self::AttributionHide,
             self::StorageManaged,

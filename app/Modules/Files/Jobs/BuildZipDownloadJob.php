@@ -11,6 +11,8 @@ use App\Modules\Files\Models\File;
 use App\Modules\Files\Scanning\FileAvailability;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Models\ZipDownload;
+use App\Modules\Platform\Capabilities\Capability;
+use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Bus\Queueable;
@@ -84,6 +86,23 @@ class BuildZipDownloadJob implements ShouldQueue
         $zipDownload = ZipDownload::query()->find($this->zipDownloadId);
 
         if ($zipDownload === null) {
+            return;
+        }
+
+        // A build queued before this installation was told to stop
+        // offering zips. The route refuses new ones; this refuses the ones
+        // already waiting, so the work the key exists to save is not done
+        // anyway. Checked before started_at is stamped, so the row goes
+        // straight from waiting to failed and never looks like a build in
+        // hand. Failed, not left pending: pending is polled by the page
+        // and counted by StalledZipBuilds, and neither should wait on a
+        // build that will never run.
+        if (! app(CapabilityRegistry::class)->has(Capability::ZipDownloads)) {
+            $zipDownload->update([
+                'status' => ZipDownload::STATUS_FAILED,
+                'error' => 'Zip downloads are not available on this site.',
+            ]);
+
             return;
         }
 

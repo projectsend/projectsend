@@ -222,11 +222,18 @@ Route::middleware(['auth'])->group(function () {
     // Named bucket, as every throttle in this app must be: a bare
     // `throttle:` keys on sha1(domain|ip) and would share one counter with
     // every other bare throttle rather than with this route.
-    Route::post('zip-downloads', [ZipDownloadsController::class, 'store'])
-        ->middleware('throttle:10,1,zip-downloads')
-        ->name('zip-downloads.store');
-    Route::get('zip-downloads/{zipDownload}', [ZipDownloadsController::class, 'show'])->name('zip-downloads.show');
-    Route::get('zip-downloads/{zipDownload}/download', [ZipDownloadsController::class, 'download'])->name('zip-downloads.download');
+    //
+    // Behind capability:downloads.zip, all three, so a plan that withholds
+    // zips answers a hand-made request with 404 rather than only hiding
+    // the button. ZipDownloadRoutesGuardTest fails on any zip route that
+    // is missing it.
+    Route::middleware('capability:downloads.zip')->group(function () {
+        Route::post('zip-downloads', [ZipDownloadsController::class, 'store'])
+            ->middleware('throttle:10,1,zip-downloads')
+            ->name('zip-downloads.store');
+        Route::get('zip-downloads/{zipDownload}', [ZipDownloadsController::class, 'show'])->name('zip-downloads.show');
+        Route::get('zip-downloads/{zipDownload}/download', [ZipDownloadsController::class, 'download'])->name('zip-downloads.download');
+    });
 
     // Resumable chunked uploads (Uppy aws-s3 multipart contract). Shared
     // by staff and clients alike — ChunkedUploadsController's only

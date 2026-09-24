@@ -57,6 +57,7 @@ export default function MyFilesGallery(props: MyFilesFolderManagementProps) {
     } = props;
     const {
         zip,
+        canZip,
         selectedFileIds,
         selectedFolderIds,
         selectionCount,
@@ -125,7 +126,7 @@ export default function MyFilesGallery(props: MyFilesFolderManagementProps) {
                                 </Link>
                             </Button>
                         )}
-                        {folder !== null && !searching && (
+                        {canZip && folder !== null && !searching && (
                             <Button variant="outline" onClick={() => zip.start({ folder_ids: [folder.id] })}>
                                 <Archive className="size-4" />
                                 {t('Download as zip')}
@@ -140,7 +141,9 @@ export default function MyFilesGallery(props: MyFilesFolderManagementProps) {
                     <PortalBreadcrumb breadcrumb={breadcrumb} folderUrl={folderUrl} className="mb-4" />
                 )}
 
-                <SelectionBar count={selectionCount} onDownload={downloadSelectionAsZip} onClear={clearSelection} className="mb-4" />
+                {canZip && (
+                    <SelectionBar count={selectionCount} onDownload={downloadSelectionAsZip} onClear={clearSelection} className="mb-4" />
+                )}
 
                 {folders.length === 0 && files.length === 0 && (
                     <p className="text-muted-foreground rounded-lg border px-4 py-10 text-center text-sm">
@@ -154,12 +157,14 @@ export default function MyFilesGallery(props: MyFilesFolderManagementProps) {
                             key={`folder-${row.id}`}
                             className="relative flex flex-col items-center justify-center gap-2 rounded-xl border p-6 text-center transition hover:border-violet-400 hover:shadow-md"
                         >
-                            <Checkbox
-                                checked={selectedFolderIds.has(row.id)}
-                                onCheckedChange={() => toggleFolder(row.id)}
-                                aria-label={t('Select :name', { name: row.name })}
-                                className="absolute top-3 left-3"
-                            />
+                            {canZip && (
+                                <Checkbox
+                                    checked={selectedFolderIds.has(row.id)}
+                                    onCheckedChange={() => toggleFolder(row.id)}
+                                    aria-label={t('Select :name', { name: row.name })}
+                                    className="absolute top-3 left-3"
+                                />
+                            )}
                             <Link href={folderUrl(row.id)} className="flex w-full flex-col items-center gap-2">
                                 <FolderIcon className="size-10 shrink-0 text-violet-600" strokeWidth={1.5} />
                                 <p className="flex w-full items-center justify-center gap-1.5 truncate text-sm font-medium">
@@ -183,12 +188,14 @@ export default function MyFilesGallery(props: MyFilesFolderManagementProps) {
                             key={`file-${file.id}`}
                             className="group relative overflow-hidden rounded-xl border transition hover:border-violet-400 hover:shadow-lg"
                         >
-                            <Checkbox
-                                checked={selectedFileIds.has(file.id)}
-                                onCheckedChange={() => toggleFile(file.id)}
-                                aria-label={t('Select :name', { name: file.name })}
-                                className="bg-background/80 absolute top-3 left-3 z-10"
-                            />
+                            {canZip && (
+                                <Checkbox
+                                    checked={selectedFileIds.has(file.id)}
+                                    onCheckedChange={() => toggleFile(file.id)}
+                                    aria-label={t('Select :name', { name: file.name })}
+                                    className="bg-background/80 absolute top-3 left-3 z-10"
+                                />
+                            )}
 
                             {/* Over the thumbnail, not beside the name: a card's
                                 name line is a few characters wide, and an inline

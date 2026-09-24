@@ -56,6 +56,7 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
     } = props;
     const {
         zip,
+        canZip,
         selectedFileIds,
         selectedFolderIds,
         selectionCount,
@@ -124,7 +125,7 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
                                 </Link>
                             </Button>
                         )}
-                        {folder !== null && !searching && (
+                        {canZip && folder !== null && !searching && (
                             <Button variant="outline" onClick={() => zip.start({ folder_ids: [folder.id] })}>
                                 <Archive className="size-4" />
                                 {t('Download as zip')}
@@ -144,13 +145,15 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
                     />
                 )}
 
-                <SelectionBar
-                    count={selectionCount}
-                    onDownload={downloadSelectionAsZip}
-                    onClear={clearSelection}
-                    className="mb-3 max-w-3xl border-blue-200 bg-blue-50 px-4 py-2 dark:border-blue-900 dark:bg-blue-950"
-                    downloadClassName="bg-blue-600 hover:bg-blue-700"
-                />
+                {canZip && (
+                    <SelectionBar
+                        count={selectionCount}
+                        onDownload={downloadSelectionAsZip}
+                        onClear={clearSelection}
+                        className="mb-3 max-w-3xl border-blue-200 bg-blue-50 px-4 py-2 dark:border-blue-900 dark:bg-blue-950"
+                        downloadClassName="bg-blue-600 hover:bg-blue-700"
+                    />
+                )}
 
                 <div>
                     {folders.length === 0 && files.length === 0 && (
@@ -161,7 +164,7 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
 
                     {(folders.length > 0 || files.length > 0) && (
                         <div className="flex items-center gap-4 border-b border-neutral-200 px-2 pb-2 text-xs font-medium tracking-wide text-neutral-400 uppercase dark:border-neutral-800">
-                            <span className="w-5" />
+                            {canZip && <span className="w-5" />}
                             <span className="flex-1">{t('Name')}</span>
                             <span className="w-20 text-right">{t('Size')}</span>
                             <span className="w-9" />
@@ -173,11 +176,13 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
                             key={`folder-${row.id}`}
                             className="flex items-center gap-4 border-b border-neutral-100 px-2 py-4 hover:bg-blue-50/70 dark:border-neutral-900 dark:hover:bg-blue-950/30"
                         >
-                            <Checkbox
-                                checked={selectedFolderIds.has(row.id)}
-                                onCheckedChange={() => toggleFolder(row.id)}
-                                aria-label={t('Select :name', { name: row.name })}
-                            />
+                            {canZip && (
+                                <Checkbox
+                                    checked={selectedFolderIds.has(row.id)}
+                                    onCheckedChange={() => toggleFolder(row.id)}
+                                    aria-label={t('Select :name', { name: row.name })}
+                                />
+                            )}
                             <Link href={folderUrl(row.id)} className="-my-4 flex flex-1 items-center gap-4 py-4">
                                 <FolderIcon className="size-6 shrink-0 text-blue-600" />
                                 <p className="flex items-center gap-1.5 text-sm font-medium text-neutral-800 dark:text-neutral-200">
@@ -205,11 +210,13 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
                                 key={`file-${file.id}`}
                                 className="flex items-center gap-4 border-b border-neutral-100 px-2 py-4 hover:bg-blue-50/70 dark:border-neutral-900 dark:hover:bg-blue-950/30"
                             >
-                                <Checkbox
-                                    checked={selectedFileIds.has(file.id)}
-                                    onCheckedChange={() => toggleFile(file.id)}
-                                    aria-label={t('Select :name', { name: file.name })}
-                                />
+                                {canZip && (
+                                    <Checkbox
+                                        checked={selectedFileIds.has(file.id)}
+                                        onCheckedChange={() => toggleFile(file.id)}
+                                        aria-label={t('Select :name', { name: file.name })}
+                                    />
+                                )}
                                 <div className="flex min-w-0 flex-1 items-center gap-4">
                                     <FilePreviewDialog
                                         previewUrl={preview_enabled ? route('files.preview', file.id) : null}

@@ -75,6 +75,7 @@ test('enabledKeys returns the string keys of enabled capabilities', function () 
         'captcha.managed_keys',
         'platform.managed',
         'ai.connector',
+        'downloads.zip',
     ]);
 });
 

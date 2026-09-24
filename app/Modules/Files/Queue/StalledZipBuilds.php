@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\Files\Queue;
 
 use App\Modules\Files\Models\ZipDownload;
+use App\Modules\Platform\Capabilities\Capability;
+use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use Illuminate\Support\Carbon;
 
 /**
@@ -56,6 +58,15 @@ class StalledZipBuilds
      */
     public function oldestUnstarted(): ?Carbon
     {
+        // An installation that does not offer zips has no reason to be
+        // serving their queue, and one that stopped offering them may
+        // still hold rows queued before it did. BuildZipDownloadJob fails
+        // those when a worker reaches them; until one does, they are not
+        // a worker problem worth a banner.
+        if (! app(CapabilityRegistry::class)->has(Capability::ZipDownloads)) {
+            return null;
+        }
+
         if ($this->buildInHand()) {
             return null;
         }

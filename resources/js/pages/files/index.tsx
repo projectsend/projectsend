@@ -28,6 +28,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ViewModeToggle } from '@/components/view-mode-toggle';
 import { ZipDownloadDialog } from '@/components/zip-download-dialog';
+import { useCapability } from '@/hooks/use-capability';
 import { ALL, useListQuery } from '@/hooks/use-list-query';
 import { useTranslation } from '@/hooks/use-translation';
 import { useViewMode } from '@/hooks/use-view-mode';
@@ -152,6 +153,9 @@ export default function FilesIndex({
     const [panelTarget, setPanelTarget] = useState<DetailsTarget | null>(null);
 
     const zip = useZipDownload();
+    // Withheld on some hosted plans. Only the zip buttons go: selection
+    // also drives bulk edit here, so the checkboxes stay.
+    const canZip = useCapability('downloads.zip');
     const [selectedFileIds, setSelectedFileIds] = useState<Set<number>>(new Set());
     const [selectedFolderIds, setSelectedFolderIds] = useState<Set<number>>(new Set());
     const selectionCount = selectedFileIds.size + selectedFolderIds.size;
@@ -287,7 +291,7 @@ export default function FilesIndex({
                 <div className="flex items-start justify-between">
                     <Heading title={t('Files')} description={t('Your shared file library')} />
                     <div className="flex gap-2">
-                        {folder !== null && !searching && (
+                        {canZip && folder !== null && !searching && (
                             <Button variant="outline" onClick={() => zip.start({ folder_ids: [folder.id] })}>
                                 <Archive className="size-4" />
                                 {t('Download as zip')}
@@ -549,10 +553,12 @@ export default function FilesIndex({
                         <div className="bg-muted/40 mb-3 flex items-center justify-between gap-3 rounded-lg border px-4 py-2">
                             <p className="text-sm font-medium">{t(':count selected', { count: selectionCount })}</p>
                             <div className="flex items-center gap-2">
-                                <Button size="sm" onClick={downloadSelectionAsZip}>
-                                    <Archive className="size-4" />
-                                    {t('Download as zip')}
-                                </Button>
+                                {canZip && (
+                                    <Button size="sm" onClick={downloadSelectionAsZip}>
+                                        <Archive className="size-4" />
+                                        {t('Download as zip')}
+                                    </Button>
+                                )}
                                 {selectedFileIds.size === 0 ? (
                                     <TooltipProvider delayDuration={0}>
                                         <Tooltip>

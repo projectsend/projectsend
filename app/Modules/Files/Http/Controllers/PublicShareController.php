@@ -41,7 +41,12 @@ class PublicShareController extends Controller
         $shareLink = ShareLink::query()->where('token', $token)->first();
         $file = $shareLink?->shareable;
 
-        if ($shareLink === null || ! $file instanceof File) {
+        // A withdrawn file answers exactly as a link that never existed.
+        // Its uploader deleted their account, and "this was here once" is
+        // itself something they asked to stop saying. The link row stays,
+        // so an account that is restored is served again. See
+        // SelfDeletion.
+        if ($shareLink === null || ! $file instanceof File || $file->isWithdrawn()) {
             return Inertia::render('share/show', ['status' => 'not_found']);
         }
 
@@ -99,7 +104,7 @@ class PublicShareController extends Controller
         $shareLink = ShareLink::query()->where('token', $token)->first();
         $file = $shareLink?->shareable;
 
-        if ($shareLink === null || ! $file instanceof File || $shareLink->isExpired() || $file->isExpired()) {
+        if ($shareLink === null || ! $file instanceof File || $file->isWithdrawn() || $shareLink->isExpired() || $file->isExpired()) {
             return redirect()->route('share.show', $token);
         }
 

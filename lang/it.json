@@ -2264,5 +2264,16 @@
     "Managed by provider": "Gestito dal provider",
     "Temporary upload space": "Spazio temporaneo per i caricamenti",
     "Uploads use temporary space while being assembled, including when files are stored externally.": "I caricamenti usano spazio temporaneo mentre vengono assemblati, anche quando i file sono archiviati esternamente.",
-    "Too many attempts. Wait a minute and try again.": "Troppi tentativi. Aspetta un minuto e riprova."
+    "Too many attempts. Wait a minute and try again.": "Troppi tentativi. Aspetta un minuto e riprova.",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "I file che hai caricato vengono eliminati non appena confermi. Non potranno essere recuperati.",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "I file che hai caricato non sono più disponibili per le persone con cui li hai condivisi non appena confermi.",
+    "When someone deletes their own account, their files": "Quando qualcuno elimina il proprio account, i suoi file",
+    "Are deleted when the grace period ends": "Vengono eliminati al termine del periodo di tolleranza",
+    "Are deleted right away": "Vengono eliminati subito",
+    "Set by your hosting plan.": "Stabilito dal tuo piano di hosting.",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "In entrambi i casi, dal momento in cui l'account viene eliminato, nessuno tranne lo staff può vedere o scaricare quei file. Vengono eliminati solo i file caricati da quella persona, e le sue cartelle solo se al loro interno non resta nient'altro.",
+    "This applies when": "Si applica quando",
+    "Anyone deletes their own account": "Chiunque elimina il proprio account",
+    "A client deletes their own account": "Un cliente elimina il proprio account",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "I caricamenti di un membro dello staff sono spesso lavoro della tua organizzazione per i suoi clienti. Scegli solo clienti per continuare a servire quei file finché l'account non viene cancellato."
 }

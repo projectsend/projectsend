@@ -2264,5 +2264,16 @@
     "Managed by provider": "Spravuje poskytovatel",
     "Temporary upload space": "Dočasné místo pro nahrávání",
     "Uploads use temporary space while being assembled, including when files are stored externally.": "Nahrávané soubory se při skládání ukládají do dočasného místa, i když se soubory ukládají externě.",
-    "Too many attempts. Wait a minute and try again.": "Příliš mnoho pokusů. Počkejte minutu a zkuste to znovu."
+    "Too many attempts. Wait a minute and try again.": "Příliš mnoho pokusů. Počkejte minutu a zkuste to znovu.",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "Soubory, které jste nahráli, budou smazány hned po potvrzení. Nelze je obnovit.",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "Soubory, které jste nahráli, přestanou být dostupné všem, se kterými jste je sdíleli, hned po potvrzení.",
+    "When someone deletes their own account, their files": "Když někdo smaže svůj vlastní účet, jeho soubory",
+    "Are deleted when the grace period ends": "Budou smazány po skončení ochranné lhůty",
+    "Are deleted right away": "Budou smazány okamžitě",
+    "Set by your hosting plan.": "Nastaveno vaším hostingovým tarifem.",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "V obou případech od chvíle smazání účtu nikdo kromě týmu nemůže tyto soubory zobrazit ani stáhnout. Mažou se jen soubory, které daný člověk nahrál, a jeho složky jen tehdy, pokud v nich nic jiného nezůstalo.",
+    "This applies when": "Platí to, když",
+    "Anyone deletes their own account": "Kdokoli smaže svůj vlastní účet",
+    "A client deletes their own account": "Klient smaže svůj vlastní účet",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "To, co nahraje člen týmu, je často práce vaší organizace pro její klienty. Zvolte jen klienty, pokud chcete tyto soubory dál poskytovat až do trvalého vymazání účtu."
 }

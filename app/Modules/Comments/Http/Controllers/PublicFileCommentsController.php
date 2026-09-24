@@ -125,7 +125,7 @@ class PublicFileCommentsController extends Controller
     private function guard(string $publicSlug, File $file): void
     {
         abort_unless($this->settings->get(Setting::PublicListingSlug) === $publicSlug, 404);
-        abort_unless($file->isEffectivelyPublic() && ! $file->isExpired(), 404);
+        abort_unless($file->isEffectivelyPublic() && ! $file->isExpired() && ! $file->isWithdrawn(), 404);
         // Same answer as the file's own public page, which 404s a file
         // that is not available: otherwise a pending or quarantined file
         // could be discussed, and found to exist, by anybody.

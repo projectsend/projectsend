@@ -2264,5 +2264,16 @@
     "Managed by provider": "Géré par le fournisseur",
     "Temporary upload space": "Espace temporaire des envois",
     "Uploads use temporary space while being assembled, including when files are stored externally.": "Les envois utilisent un espace temporaire pendant leur assemblage, même lorsque les fichiers sont stockés en externe.",
-    "Too many attempts. Wait a minute and try again.": "Trop de tentatives. Veuillez patienter une minute et réessayer."
+    "Too many attempts. Wait a minute and try again.": "Trop de tentatives. Veuillez patienter une minute et réessayer.",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "Les fichiers que vous avez envoyés sont supprimés dès que vous confirmez. Ils ne pourront pas être récupérés.",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "Les fichiers que vous avez envoyés ne sont plus accessibles aux personnes avec qui vous les avez partagés dès que vous confirmez.",
+    "When someone deletes their own account, their files": "Quand quelqu'un supprime son propre compte, ses fichiers",
+    "Are deleted when the grace period ends": "Sont supprimés à la fin du délai de grâce",
+    "Are deleted right away": "Sont supprimés immédiatement",
+    "Set by your hosting plan.": "Défini par votre offre d'hébergement.",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "Dans les deux cas, dès la suppression du compte, personne d'autre que l'équipe ne peut voir ni télécharger ces fichiers. Seuls les fichiers envoyés par cette personne sont supprimés, et ses dossiers seulement s'il n'y reste rien d'autre.",
+    "This applies when": "Cela s'applique quand",
+    "Anyone deletes their own account": "N'importe qui supprime son propre compte",
+    "A client deletes their own account": "Un client supprime son propre compte",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Les envois d'un membre de l'équipe sont souvent le travail de votre organisation pour ses clients. Choisissez « clients uniquement » pour continuer à servir ces fichiers jusqu'à l'effacement du compte."
 }

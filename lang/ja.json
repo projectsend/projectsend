@@ -2264,5 +2264,16 @@
     "Managed by provider": "プロバイダーが管理",
     "Temporary upload space": "アップロード用の一時領域",
     "Uploads use temporary space while being assembled, including when files are stored externally.": "アップロードは組み立ての間、一時領域を使用します。ファイルを外部ストレージに保存している場合も同様です。",
-    "Too many attempts. Wait a minute and try again.": "試行回数が多すぎます。1 分待ってからもう一度お試しください。"
+    "Too many attempts. Wait a minute and try again.": "試行回数が多すぎます。1 分待ってからもう一度お試しください。",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "アップロードしたファイルは確認した時点で削除されます。元に戻すことはできません。",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "アップロードしたファイルは、確認した時点で共有相手の誰からも利用できなくなります。",
+    "When someone deletes their own account, their files": "ユーザーが自分のアカウントを削除したとき、そのファイルは",
+    "Are deleted when the grace period ends": "猶予期間の終了時に削除する",
+    "Are deleted right away": "すぐに削除する",
+    "Set by your hosting plan.": "ご利用のホスティングプランで設定されています。",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "どちらの場合も、アカウントが削除された時点から、スタッフ以外はそのファイルを表示もダウンロードもできません。削除されるのはその人がアップロードしたファイルだけで、フォルダーは中に他に何も残っていない場合にのみ削除されます。",
+    "This applies when": "適用対象",
+    "Anyone deletes their own account": "誰かが自分のアカウントを削除したとき",
+    "A client deletes their own account": "クライアントが自分のアカウントを削除したとき",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "スタッフのアップロードは、多くの場合、組織がクライアントのために作成したものです。クライアントのみを選ぶと、アカウントが消去されるまでそれらのファイルを引き続き提供します。"
 }

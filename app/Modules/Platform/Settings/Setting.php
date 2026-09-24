@@ -177,6 +177,22 @@ enum Setting: string
     // instead, so content is never left orphaned.
     case AccountErasureReassignTo = 'account_erasure_reassign_to';
 
+    // When somebody deletes their own account, whether the files they
+    // uploaded go at once ('immediately') or wait for the grace period
+    // like the account does ('after_grace_period'). Only the self-service
+    // delete asks it: an administrator deleting an account already
+    // chooses per account. Read through SelfDeletion, which a hosted
+    // platform can overrule — never read it directly.
+    case AccountSelfDeleteFiles = 'account_self_delete_files';
+
+    // Whose self-deletion the two rules apply to: 'any' account, or
+    // 'clients' only. The rules are this setting's neighbour above, and
+    // that a self-deleted account's files stop being served to anybody
+    // but staff while the grace period runs. A staff member's uploads are
+    // often the organization's work for its clients, which is the case
+    // for narrowing it. Consumed by SelfDeletion.
+    case AccountSelfDeleteScope = 'account_self_delete_scope';
+
     // Whether PurgeExpiredFilesCommand's daily run actually deletes
     // anything (off by default — deletion is destructive, so an admin
     // must opt in) and how many days after a file's own expires_at it
@@ -414,7 +430,9 @@ enum Setting: string
             self::NewsLastFetchedAt,
             self::CaptchaProvider,
             self::CaptchaKeySource,
-            self::AccountErasureContentAction => SettingType::String,
+            self::AccountErasureContentAction,
+            self::AccountSelfDeleteFiles,
+            self::AccountSelfDeleteScope => SettingType::String,
 
             self::ClientsCanRegister,
             self::ClientsAutoApprove,
@@ -563,6 +581,10 @@ enum Setting: string
             // uploaded is the sensible zero-config default; reassign is opt-in
             // and needs a fallback account chosen.
             self::AccountErasureContentAction => 'cascade_delete',
+            // What self-deletion did before the choice existed, so an
+            // upgrade changes nothing about when files are deleted.
+            self::AccountSelfDeleteFiles => 'after_grace_period',
+            self::AccountSelfDeleteScope => 'any',
             // Commenting is on for every file out of the box, but only
             // between people who are logged in: reaching the public
             // requires PublicCommentsEnabled, which is off by default.

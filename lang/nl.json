@@ -2264,5 +2264,16 @@
     "Managed by provider": "Beheerd door de provider",
     "Temporary upload space": "Tijdelijke uploadruimte",
     "Uploads use temporary space while being assembled, including when files are stored externally.": "Uploads gebruiken tijdelijke ruimte terwijl ze worden samengevoegd, ook als bestanden extern worden opgeslagen.",
-    "Too many attempts. Wait a minute and try again.": "Te veel pogingen. Wacht een minuut en probeer het opnieuw."
+    "Too many attempts. Wait a minute and try again.": "Te veel pogingen. Wacht een minuut en probeer het opnieuw.",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "De bestanden die je hebt geüpload worden verwijderd zodra je bevestigt. Ze kunnen niet worden hersteld.",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "De bestanden die je hebt geüpload zijn niet meer beschikbaar voor iedereen met wie je ze hebt gedeeld zodra je bevestigt.",
+    "When someone deletes their own account, their files": "Als iemand zijn eigen account verwijdert, worden diens bestanden",
+    "Are deleted when the grace period ends": "Verwijderd als de respijtperiode afloopt",
+    "Are deleted right away": "Direct verwijderd",
+    "Set by your hosting plan.": "Ingesteld door je hostingabonnement.",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "In beide gevallen kan vanaf het moment dat het account is verwijderd niemand behalve het team die bestanden zien of downloaden. Alleen de eigen uploads worden verwijderd, en de eigen mappen alleen als er verder niets meer in staat.",
+    "This applies when": "Dit geldt als",
+    "Anyone deletes their own account": "Iemand zijn eigen account verwijdert",
+    "A client deletes their own account": "Een klant zijn eigen account verwijdert",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Uploads van teamleden zijn vaak werk van je organisatie voor haar klanten. Kies alleen klanten om die bestanden te blijven aanbieden tot het account definitief is gewist."
 }

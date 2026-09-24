@@ -2264,5 +2264,16 @@
     "Managed by provider": "Gestionat pel proveïdor",
     "Temporary upload space": "Espai temporal per a pujades",
     "Uploads use temporary space while being assembled, including when files are stored externally.": "Les pujades fan servir espai temporal mentre es munten, també quan els fitxers es desen en un emmagatzematge extern.",
-    "Too many attempts. Wait a minute and try again.": "Massa intents. Espera un minut i torna-ho a provar."
+    "Too many attempts. Wait a minute and try again.": "Massa intents. Espera un minut i torna-ho a provar.",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "Els fitxers que has pujat s'eliminen tan bon punt confirmis. No es poden recuperar.",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "Els fitxers que has pujat deixen d'estar disponibles per a tothom amb qui els has compartit tan bon punt confirmis.",
+    "When someone deletes their own account, their files": "Quan algú elimina el seu propi compte, els seus fitxers",
+    "Are deleted when the grace period ends": "S'eliminen quan acaba el període de gràcia",
+    "Are deleted right away": "S'eliminen immediatament",
+    "Set by your hosting plan.": "Ho defineix el teu pla d'allotjament.",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "En tots dos casos, des del moment que s'elimina el compte, ningú excepte l'equip pot veure ni baixar aquests fitxers. Només s'eliminen els fitxers que va pujar aquesta persona, i les seves carpetes només si no hi queda res més a dins.",
+    "This applies when": "Això s'aplica quan",
+    "Anyone deletes their own account": "Qualsevol persona elimina el seu propi compte",
+    "A client deletes their own account": "Un client elimina el seu propi compte",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "El que puja algú de l'equip sol ser feina de la teva organització per als seus clients. Tria només clients per continuar servint aquests fitxers fins que el compte s'esborri definitivament."
 }

@@ -2264,5 +2264,16 @@
     "Managed by provider": "Gerenciado pelo provedor",
     "Temporary upload space": "Espaço temporário de envio",
     "Uploads use temporary space while being assembled, including when files are stored externally.": "Os envios usam espaço temporário enquanto são montados, inclusive quando os arquivos ficam em um armazenamento externo.",
-    "Too many attempts. Wait a minute and try again.": "Tentativas demais. Aguarde um minuto e tente novamente."
+    "Too many attempts. Wait a minute and try again.": "Tentativas demais. Aguarde um minuto e tente novamente.",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "Os arquivos que você enviou são excluídos assim que você confirmar. Não será possível recuperá-los.",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "Os arquivos que você enviou deixam de estar disponíveis para todas as pessoas com quem você os compartilhou assim que você confirmar.",
+    "When someone deletes their own account, their files": "Quando alguém exclui a própria conta, os arquivos dessa pessoa",
+    "Are deleted when the grace period ends": "São excluídos ao fim do período de carência",
+    "Are deleted right away": "São excluídos na hora",
+    "Set by your hosting plan.": "Definido pelo seu plano de hospedagem.",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "Em ambos os casos, a partir do momento em que a conta é excluída, ninguém além da equipe pode ver ou baixar esses arquivos. Só são excluídos os arquivos enviados por essa pessoa, e as pastas dela apenas se não sobrar mais nada dentro.",
+    "This applies when": "Isso vale quando",
+    "Anyone deletes their own account": "Qualquer pessoa exclui a própria conta",
+    "A client deletes their own account": "Um cliente exclui a própria conta",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "O que um membro da equipe envia costuma ser trabalho da sua organização para os clientes. Escolha apenas clientes para continuar servindo esses arquivos até a conta ser apagada."
 }

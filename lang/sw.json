@@ -2264,5 +2264,16 @@
     "Managed by provider": "Inasimamiwa na mtoa huduma",
     "Temporary upload space": "Nafasi ya muda ya kupakia",
     "Uploads use temporary space while being assembled, including when files are stored externally.": "Mafaili yanayopakiwa hutumia nafasi ya muda yanapounganishwa, hata mafaili yanapohifadhiwa nje.",
-    "Too many attempts. Wait a minute and try again.": "Majaribio mengi mno. Subiri dakika moja kisha jaribu tena."
+    "Too many attempts. Wait a minute and try again.": "Majaribio mengi mno. Subiri dakika moja kisha jaribu tena.",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "Faili ulizopakia zinafutwa mara tu unapothibitisha. Haziwezi kurejeshwa.",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "Faili ulizopakia hazipatikani tena kwa kila mtu uliyeshiriki naye mara tu unapothibitisha.",
+    "When someone deletes their own account, their files": "Mtu anapofuta akaunti yake mwenyewe, faili zake",
+    "Are deleted when the grace period ends": "Hufutwa muda wa neema unapoisha",
+    "Are deleted right away": "Hufutwa papo hapo",
+    "Set by your hosting plan.": "Imewekwa na mpango wako wa upangishaji.",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "Kwa vyovyote vile, tangu akaunti inapofutwa, hakuna mtu isipokuwa wafanyakazi anayeweza kuona au kupakua faili hizo. Hufutwa faili alizopakia mtu huyo pekee, na folda zake ikiwa tu hakuna kitu kingine kilichobaki ndani.",
+    "This applies when": "Hii inatumika wakati",
+    "Anyone deletes their own account": "Mtu yeyote anafuta akaunti yake mwenyewe",
+    "A client deletes their own account": "Mteja anafuta akaunti yake mwenyewe",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Faili zinazopakiwa na wafanyakazi mara nyingi ni kazi ya shirika lako kwa wateja wake. Chagua wateja pekee ili faili hizo ziendelee kupatikana hadi akaunti ifutwe kabisa."
 }

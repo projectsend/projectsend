@@ -2264,5 +2264,16 @@
     "Managed by provider": "Управляется провайдером",
     "Temporary upload space": "Временное место для загрузок",
     "Uploads use temporary space while being assembled, including when files are stored externally.": "Во время сборки загрузки занимают временное место, даже если файлы хранятся во внешнем хранилище.",
-    "Too many attempts. Wait a minute and try again.": "Слишком много попыток. Подождите минуту и попробуйте ещё раз."
+    "Too many attempts. Wait a minute and try again.": "Слишком много попыток. Подождите минуту и попробуйте ещё раз.",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "Загруженные вами файлы будут удалены сразу после подтверждения. Восстановить их будет невозможно.",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "Загруженные вами файлы перестанут быть доступны всем, с кем вы ими поделились, сразу после подтверждения.",
+    "When someone deletes their own account, their files": "Когда кто-то удаляет свою учётную запись, его файлы",
+    "Are deleted when the grace period ends": "Удаляются по окончании отсрочки",
+    "Are deleted right away": "Удаляются сразу",
+    "Set by your hosting plan.": "Задаётся вашим тарифом хостинга.",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "В обоих случаях с момента удаления учётной записи никто, кроме команды, не может просматривать или скачивать эти файлы. Удаляются только файлы, загруженные этим человеком, а его папки — только если в них больше ничего не осталось.",
+    "This applies when": "Это применяется, когда",
+    "Anyone deletes their own account": "Кто угодно удаляет свою учётную запись",
+    "A client deletes their own account": "Клиент удаляет свою учётную запись",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Загрузки участников команды — часто работа вашей организации для её клиентов. Выберите «только клиенты», чтобы эти файлы оставались доступны до окончательного удаления учётной записи."
 }

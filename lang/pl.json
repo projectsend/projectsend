@@ -2264,5 +2264,16 @@
     "Managed by provider": "Zarządzane przez dostawcę",
     "Temporary upload space": "Tymczasowe miejsce na przesyłanie",
     "Uploads use temporary space while being assembled, including when files are stored externally.": "Przesyłane pliki zajmują tymczasowe miejsce podczas składania, także gdy pliki są przechowywane w magazynie zewnętrznym.",
-    "Too many attempts. Wait a minute and try again.": "Zbyt wiele prób. Odczekaj minutę i spróbuj ponownie."
+    "Too many attempts. Wait a minute and try again.": "Zbyt wiele prób. Odczekaj minutę i spróbuj ponownie.",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "Przesłane przez ciebie pliki zostaną usunięte, gdy tylko potwierdzisz. Nie da się ich odzyskać.",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "Przesłane przez ciebie pliki przestaną być dostępne dla wszystkich, którym je udostępniono, gdy tylko potwierdzisz.",
+    "When someone deletes their own account, their files": "Gdy ktoś usuwa własne konto, jego pliki",
+    "Are deleted when the grace period ends": "Zostają usunięte po upływie okresu karencji",
+    "Are deleted right away": "Zostają usunięte od razu",
+    "Set by your hosting plan.": "Ustalone przez twój plan hostingowy.",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "W obu przypadkach od chwili usunięcia konta nikt poza zespołem nie może zobaczyć ani pobrać tych plików. Usuwane są tylko pliki przesłane przez tę osobę, a jej foldery tylko wtedy, gdy nic innego w nich nie zostało.",
+    "This applies when": "Dotyczy to sytuacji, gdy",
+    "Anyone deletes their own account": "Ktokolwiek usuwa własne konto",
+    "A client deletes their own account": "Klient usuwa własne konto",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "To, co przesyłają członkowie zespołu, to często praca twojej organizacji dla jej klientów. Wybierz tylko klientów, aby nadal udostępniać te pliki aż do trwałego wymazania konta."
 }

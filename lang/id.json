@@ -2264,5 +2264,16 @@
     "Managed by provider": "Dikelola oleh penyedia",
     "Temporary upload space": "Ruang unggahan sementara",
     "Uploads use temporary space while being assembled, including when files are stored externally.": "Unggahan memakai ruang sementara selama dirakit, termasuk saat berkas disimpan di penyimpanan eksternal.",
-    "Too many attempts. Wait a minute and try again.": "Terlalu banyak percobaan. Tunggu satu menit lalu coba lagi."
+    "Too many attempts. Wait a minute and try again.": "Terlalu banyak percobaan. Tunggu satu menit lalu coba lagi.",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "File yang Anda unggah dihapus begitu Anda mengonfirmasi. File tersebut tidak dapat dipulihkan.",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "File yang Anda unggah tidak lagi tersedia bagi semua orang yang Anda bagikan begitu Anda mengonfirmasi.",
+    "When someone deletes their own account, their files": "Saat seseorang menghapus akunnya sendiri, file miliknya",
+    "Are deleted when the grace period ends": "Dihapus saat masa tenggang berakhir",
+    "Are deleted right away": "Langsung dihapus",
+    "Set by your hosting plan.": "Diatur oleh paket hosting Anda.",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "Dalam kedua kasus, sejak akun dihapus, tidak ada yang selain staf dapat melihat atau mengunduh file tersebut. Hanya file unggahan orang itu sendiri yang dihapus, dan foldernya hanya jika tidak ada isi lain yang tersisa.",
+    "This applies when": "Ini berlaku saat",
+    "Anyone deletes their own account": "Siapa pun menghapus akunnya sendiri",
+    "A client deletes their own account": "Klien menghapus akunnya sendiri",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Unggahan staf sering kali merupakan pekerjaan organisasi Anda untuk kliennya. Pilih hanya klien agar file tersebut tetap tersedia hingga akun dihapus permanen."
 }

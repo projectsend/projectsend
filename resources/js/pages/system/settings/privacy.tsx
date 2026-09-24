@@ -24,6 +24,10 @@ interface PrivacySettingsProps {
     account_erasure_content_action: string;
     account_erasure_reassign_to: number;
     reassign_candidates: ReassignCandidate[];
+    account_self_delete_files: string;
+    /** A hosting platform made this choice; shown, not offered. */
+    account_self_delete_files_managed: boolean;
+    account_self_delete_scope: string;
     api_request_log_retention_days: number;
     discourage_search_indexing: boolean;
 }
@@ -34,6 +38,9 @@ export default function PrivacySettings({
     account_erasure_content_action,
     account_erasure_reassign_to,
     reassign_candidates,
+    account_self_delete_files,
+    account_self_delete_files_managed,
+    account_self_delete_scope,
     api_request_log_retention_days,
     discourage_search_indexing,
 }: PrivacySettingsProps) {
@@ -59,6 +66,8 @@ export default function PrivacySettings({
         account_erasure_grace_days: account_erasure_grace_days,
         account_erasure_content_action: account_erasure_content_action,
         account_erasure_reassign_to: account_erasure_reassign_to ? String(account_erasure_reassign_to) : '',
+        account_self_delete_files: account_self_delete_files,
+        account_self_delete_scope: account_self_delete_scope,
         api_request_log_retention_days: api_request_log_retention_days,
         discourage_search_indexing: discourage_search_indexing,
     });
@@ -170,6 +179,56 @@ export default function PrivacySettings({
                             <InputError className="mt-2" message={errors.account_erasure_reassign_to} />
                         </div>
                     )}
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="account_self_delete_files">{t('When someone deletes their own account, their files')}</Label>
+
+                        <Select
+                            value={data.account_self_delete_files}
+                            onValueChange={(value) => setData('account_self_delete_files', value)}
+                            disabled={account_self_delete_files_managed}
+                        >
+                            <SelectTrigger id="account_self_delete_files" className="w-full">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="after_grace_period">{t('Are deleted when the grace period ends')}</SelectItem>
+                                <SelectItem value="immediately">{t('Are deleted right away')}</SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        <p className="text-muted-foreground text-sm">
+                            {account_self_delete_files_managed
+                                ? t('Set by your hosting plan.')
+                                : t(
+                                      'Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.',
+                                  )}
+                        </p>
+
+                        <InputError className="mt-2" message={errors.account_self_delete_files} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="account_self_delete_scope">{t('This applies when')}</Label>
+
+                        <Select value={data.account_self_delete_scope} onValueChange={(value) => setData('account_self_delete_scope', value)}>
+                            <SelectTrigger id="account_self_delete_scope" className="w-full">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="any">{t('Anyone deletes their own account')}</SelectItem>
+                                <SelectItem value="clients">{t('A client deletes their own account')}</SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        <p className="text-muted-foreground text-sm">
+                            {t(
+                                "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.",
+                            )}
+                        </p>
+
+                        <InputError className="mt-2" message={errors.account_self_delete_scope} />
+                    </div>
 
                     <div className="grid gap-2">
                         <Label htmlFor="api_request_log_retention_days">{t('API request history (days)')}</Label>

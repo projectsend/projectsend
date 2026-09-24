@@ -35,6 +35,8 @@ test('staff can view and update privacy settings', function () {
         'download_ip_logging' => 'anonymous_only',
         'account_erasure_grace_days' => 14,
         'account_erasure_content_action' => 'cascade_delete',
+        'account_self_delete_files' => 'immediately',
+        'account_self_delete_scope' => 'clients',
         'api_request_log_retention_days' => 7,
         'discourage_search_indexing' => true,
     ])->assertRedirect();
@@ -42,6 +44,8 @@ test('staff can view and update privacy settings', function () {
     $settings = app(Settings::class);
     expect($settings->get(Setting::DownloadIpLogging))->toBe('anonymous_only')
         ->and($settings->get(Setting::AccountErasureGraceDays))->toBe(14)
+        ->and($settings->get(Setting::AccountSelfDeleteFiles))->toBe('immediately')
+        ->and($settings->get(Setting::AccountSelfDeleteScope))->toBe('clients')
         ->and($settings->get(Setting::ApiRequestLogRetentionDays))->toBe(7)
         ->and($settings->get(Setting::DiscourageSearchIndexing))->toBeTrue();
 

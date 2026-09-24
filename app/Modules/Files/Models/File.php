@@ -14,6 +14,7 @@ use App\Modules\Files\Scanning\NotScannedReason;
 use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Files\Versions\FileVersions;
 use App\Modules\Groups\Models\Group;
+use App\Modules\Identity\Erasure\SelfDeletion;
 use App\Support\Concerns\HasUniqueSlug;
 use Database\Factories\FileFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -392,6 +393,36 @@ class File extends Model
     }
 
     /**
+     * Files whose uploader has not deleted their own account — the first
+     * rule in SelfDeletion. Every surface that serves somebody other than
+     * staff narrows by this: the client scope, and the three public
+     * listing scopes. Single files ask isWithdrawn().
+     *
+     * The null branch is not tidiness. `uploaded_by NOT IN (...)` is never
+     * true for a NULL uploader, so a file whose uploader was erased long
+     * ago would vanish from every client along with the withdrawn ones.
+     *
+     * @param  Builder<File>  $query
+     */
+    public function scopeNotWithdrawn(Builder $query): void
+    {
+        $query->where(fn (Builder $q) => $q
+            ->whereNull('uploaded_by')
+            ->orWhereNotIn('uploaded_by', app(SelfDeletion::class)->withdrawnAccounts()));
+    }
+
+    /**
+     * The single-file twin of scopeNotWithdrawn(). Asked by the routes
+     * that reach one file without an account behind them — share links
+     * and the public listing — which have no client scope to lean on.
+     */
+    public function isWithdrawn(): bool
+    {
+        return $this->uploaded_by !== null
+            && app(SelfDeletion::class)->withdrawnAccounts()->whereKey($this->uploaded_by)->exists();
+    }
+
+    /**
      * Whether a cap has been set on how many times this may be
      * downloaded. Unlike expiry, reaching it does not hide the file:
      * it stays listed and stops being downloadable, so the recipient can
@@ -499,7 +530,9 @@ class File extends Model
             $outer->orWhere('uploaded_by', $client->id);
         });
 
-        $query->notExpired()->available($client);
+        // Withdrawn last, beside expiry, because it is the same kind of
+        // rule: not "who may see this" but "may anybody besides staff".
+        $query->notExpired()->notWithdrawn()->available($client);
     }
 
     /**
@@ -540,7 +573,7 @@ class File extends Model
             $outer->orWhereIn('folder_id', $subtreeFolderIds);
         });
 
-        $query->notExpired()->available();
+        $query->notExpired()->notWithdrawn()->available();
     }
 
     /**
@@ -554,7 +587,7 @@ class File extends Model
      */
     public function scopePubliclyVisibleForFolder(Builder $query, Folder $folder): void
     {
-        $query->whereIn('folder_id', $folder->subtreeFolderIds())->notExpired()->available();
+        $query->whereIn('folder_id', $folder->subtreeFolderIds())->notExpired()->notWithdrawn()->available();
     }
 
     /**
@@ -606,6 +639,7 @@ class File extends Model
                 $folder->whereNull('folder_id')->orWhereNotIn('folder_id', $publicFolderSubtreeIds);
             })
             ->notExpired()
+            ->notWithdrawn()
             ->available();
     }
 }

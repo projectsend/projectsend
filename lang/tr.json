@@ -2264,5 +2264,16 @@
     "Managed by provider": "Sağlayıcı tarafından yönetilir",
     "Temporary upload space": "Geçici yükleme alanı",
     "Uploads use temporary space while being assembled, including when files are stored externally.": "Yüklemeler birleştirilirken geçici alan kullanır; dosyalar harici depolamada tutulduğunda da.",
-    "Too many attempts. Wait a minute and try again.": "Çok fazla deneme. Lütfen bir dakika bekleyip yeniden deneyin."
+    "Too many attempts. Wait a minute and try again.": "Çok fazla deneme. Lütfen bir dakika bekleyip yeniden deneyin.",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "Yüklediğiniz dosyalar onayladığınız anda silinir. Geri getirilemez.",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "Yüklediğiniz dosyalar, onayladığınız anda paylaştığınız herkes için kullanılamaz hale gelir.",
+    "When someone deletes their own account, their files": "Biri kendi hesabını sildiğinde, dosyaları",
+    "Are deleted when the grace period ends": "Bekleme süresi bitince silinir",
+    "Are deleted right away": "Hemen silinir",
+    "Set by your hosting plan.": "Barındırma planınız tarafından belirlenir.",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "Her iki durumda da hesap silindiği andan itibaren ekip dışında kimse bu dosyaları göremez veya indiremez. Yalnızca o kişinin yüklediği dosyalar silinir; klasörleri ise yalnızca içinde başka bir şey kalmadıysa silinir.",
+    "This applies when": "Şu durumda geçerlidir",
+    "Anyone deletes their own account": "Herhangi biri kendi hesabını sildiğinde",
+    "A client deletes their own account": "Bir müşteri kendi hesabını sildiğinde",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Ekip üyelerinin yüklediği dosyalar çoğu zaman kuruluşunuzun müşterileri için yaptığı iştir. Hesap tamamen silinene kadar bu dosyaları sunmaya devam etmek için yalnızca müşterileri seçin."
 }

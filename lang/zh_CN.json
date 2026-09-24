@@ -2264,5 +2264,16 @@
     "Managed by provider": "由服务商管理",
     "Temporary upload space": "上传临时空间",
     "Uploads use temporary space while being assembled, including when files are stored externally.": "上传的文件在合并期间会占用临时空间，即使文件存储在外部存储中也是如此。",
-    "Too many attempts. Wait a minute and try again.": "尝试次数过多，请等待一分钟后重试。"
+    "Too many attempts. Wait a minute and try again.": "尝试次数过多，请等待一分钟后重试。",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "你上传的文件会在你确认后立即删除，且无法恢复。",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "你确认后，你上传的文件将立即对所有与你共享的人不可用。",
+    "When someone deletes their own account, their files": "当有人删除自己的账户时，其文件",
+    "Are deleted when the grace period ends": "在宽限期结束时删除",
+    "Are deleted right away": "立即删除",
+    "Set by your hosting plan.": "由你的托管方案设定。",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "无论选择哪种，从账户被删除的那一刻起，除团队成员外，任何人都无法查看或下载这些文件。只会删除此人自己上传的文件，其文件夹仅在里面不再有其他内容时才会删除。",
+    "This applies when": "适用情形",
+    "Anyone deletes their own account": "任何人删除自己的账户",
+    "A client deletes their own account": "客户删除自己的账户",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "团队成员上传的文件通常是你的组织为客户完成的工作。选择仅限客户，可在账户被彻底抹除前继续提供这些文件。"
 }

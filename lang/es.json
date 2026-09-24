@@ -2264,5 +2264,16 @@
     "Storage available": "Espacio disponible",
     "Managed by provider": "Gestionado por el proveedor",
     "Temporary upload space": "Espacio temporal para subidas",
-    "Uploads use temporary space while being assembled, including when files are stored externally.": "Las subidas usan espacio temporal mientras se ensamblan, también cuando los archivos se guardan en un almacenamiento externo."
+    "Uploads use temporary space while being assembled, including when files are stored externally.": "Las subidas usan espacio temporal mientras se ensamblan, también cuando los archivos se guardan en un almacenamiento externo.",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "Los archivos que subiste se eliminan en cuanto confirmes. No se pueden recuperar.",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "Los archivos que subiste dejan de estar disponibles para todas las personas con quienes los compartiste en cuanto confirmes.",
+    "When someone deletes their own account, their files": "Cuando alguien elimina su propia cuenta, sus archivos",
+    "Are deleted when the grace period ends": "Se eliminan al terminar el período de gracia",
+    "Are deleted right away": "Se eliminan en el momento",
+    "Set by your hosting plan.": "Lo define tu plan de alojamiento.",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "En ambos casos, desde que se elimina la cuenta, nadie salvo el personal puede ver ni descargar esos archivos. Solo se eliminan los archivos que subió esa persona, y sus carpetas solo si no queda nada más dentro.",
+    "This applies when": "Esto se aplica cuando",
+    "Anyone deletes their own account": "Cualquier persona elimina su propia cuenta",
+    "A client deletes their own account": "Un cliente elimina su propia cuenta",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Lo que sube alguien del personal suele ser trabajo de tu organización para sus clientes. Elige solo clientes para seguir sirviendo esos archivos hasta que la cuenta se borre definitivamente."
 }

@@ -2264,5 +2264,16 @@
     "Managed by provider": "Vom Anbieter verwaltet",
     "Temporary upload space": "Temporärer Upload-Speicher",
     "Uploads use temporary space while being assembled, including when files are stored externally.": "Uploads belegen temporären Speicher, während sie zusammengesetzt werden – auch wenn Dateien extern gespeichert werden.",
-    "Too many attempts. Wait a minute and try again.": "Zu viele Versuche. Bitte warten Sie eine Minute und versuchen Sie es erneut."
+    "Too many attempts. Wait a minute and try again.": "Zu viele Versuche. Bitte warten Sie eine Minute und versuchen Sie es erneut.",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "Die von Ihnen hochgeladenen Dateien werden gelöscht, sobald Sie bestätigen. Sie können nicht wiederhergestellt werden.",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "Die von Ihnen hochgeladenen Dateien sind für alle, mit denen Sie sie geteilt haben, nicht mehr verfügbar, sobald Sie bestätigen.",
+    "When someone deletes their own account, their files": "Wenn jemand das eigene Konto löscht, werden die Dateien dieser Person",
+    "Are deleted when the grace period ends": "Nach Ablauf der Karenzzeit gelöscht",
+    "Are deleted right away": "Sofort gelöscht",
+    "Set by your hosting plan.": "Durch Ihren Hosting-Tarif festgelegt.",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "In beiden Fällen kann ab dem Löschen des Kontos niemand außer dem Team diese Dateien sehen oder herunterladen. Gelöscht werden nur die eigenen Uploads der Person und ihre Ordner nur dann, wenn nichts anderes mehr darin liegt.",
+    "This applies when": "Dies gilt, wenn",
+    "Anyone deletes their own account": "Jemand das eigene Konto löscht",
+    "A client deletes their own account": "Ein Kunde das eigene Konto löscht",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Uploads von Teammitgliedern sind oft Arbeit Ihrer Organisation für ihre Kunden. Wählen Sie „nur Kunden“, damit diese Dateien bis zur endgültigen Löschung des Kontos weiter bereitgestellt werden."
 }

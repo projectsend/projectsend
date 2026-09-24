@@ -8,7 +8,9 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientFieldContext;
 use App\Modules\Clients\ClientPortalCustomFields;
+use App\Modules\Files\DeletedAccountContent;
 use App\Modules\Identity\Erasure\ErasureSchedule;
+use App\Modules\Identity\Erasure\SelfDeletion;
 use App\Modules\Identity\StaffAccounts;
 use App\Modules\Identity\StartPage;
 use App\Modules\Identity\StartPages;
@@ -19,6 +21,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -67,10 +70,20 @@ class ProfileController extends Controller
      * you scroll past on the way to saving your email address. The delete
      * itself still goes to destroy() below.
      */
-    public function deleteAccount(): Response
+    public function deleteAccount(Request $request): Response
     {
+        $user = $request->user();
+        $selfDeletion = app(SelfDeletion::class);
+        $applies = $user !== null && $selfDeletion->appliesTo($user);
+
         return Inertia::render('settings/delete-account', [
             'erasureGraceDays' => (int) app(Settings::class)->get(Setting::AccountErasureGraceDays),
+            // What happens to their files, said before they confirm. Both
+            // follow the account's own type (SelfDeletion::appliesTo), so a
+            // staff member on a "clients only" installation is told
+            // neither, because neither happens to them.
+            'filesWithdrawn' => $applies,
+            'filesDeletedImmediately' => $applies && $selfDeletion->deletesFilesImmediately(),
         ]);
     }
 
@@ -132,10 +145,27 @@ class ProfileController extends Controller
 
         // Self-deletion: soft delete now, permanent GDPR erasure after
         // the disclosed grace period (Setting::AccountErasureGraceDays).
-        app(ErasureSchedule::class)->apply($user);
-        $user->delete();
+        //
+        // One transaction with the files, for the reason
+        // ClientsController::destroy gives: a deletion whose second half
+        // failed must not leave the account gone and the files it
+        // promised to delete still there.
+        DB::transaction(function () use ($user): void {
+            app(ErasureSchedule::class)->apply($user);
+            $user->delete();
 
-        app(ActivityLogger::class)->log(Action::UserDeleted, $user, context: ['name' => $user->name]);
+            app(ActivityLogger::class)->log(Action::UserDeleted, $user, context: ['name' => $user->name]);
+
+            // Only what they own, by the rule an administrator's delete
+            // uses: their uploads, and their folders only if nothing else
+            // is left inside them. See SelfDeletion.
+            $selfDeletion = app(SelfDeletion::class);
+
+            if ($selfDeletion->appliesTo($user) && $selfDeletion->deletesFilesImmediately()) {
+                $result = app(DeletedAccountContent::class)->cascadeDelete($user);
+                app(ActivityLogger::class)->log(Action::AccountContentCascadeDeleted, context: ['name' => $user->name, ...$result]);
+            }
+        });
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

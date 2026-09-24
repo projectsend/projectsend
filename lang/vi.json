@@ -2264,5 +2264,16 @@
     "Managed by provider": "Do nhà cung cấp quản lý",
     "Temporary upload space": "Dung lượng tải lên tạm thời",
     "Uploads use temporary space while being assembled, including when files are stored externally.": "Khi tải lên, tệp dùng dung lượng tạm thời trong lúc được ghép lại, kể cả khi tệp được lưu ở bộ lưu trữ bên ngoài.",
-    "Too many attempts. Wait a minute and try again.": "Bạn đã thử quá nhiều lần. Hãy đợi một phút rồi thử lại."
+    "Too many attempts. Wait a minute and try again.": "Bạn đã thử quá nhiều lần. Hãy đợi một phút rồi thử lại.",
+    "The files you uploaded are deleted as soon as you confirm. They cannot be recovered.": "Các tệp bạn đã tải lên sẽ bị xóa ngay khi bạn xác nhận. Không thể khôi phục lại.",
+    "The files you uploaded stop being available to everyone you shared them with as soon as you confirm.": "Các tệp bạn đã tải lên sẽ không còn khả dụng với bất kỳ ai bạn đã chia sẻ ngay khi bạn xác nhận.",
+    "When someone deletes their own account, their files": "Khi ai đó tự xóa tài khoản của mình, các tệp của họ",
+    "Are deleted when the grace period ends": "Bị xóa khi hết thời gian chờ",
+    "Are deleted right away": "Bị xóa ngay lập tức",
+    "Set by your hosting plan.": "Do gói lưu trữ của bạn quy định.",
+    "Either way, from the moment the account is deleted, nobody but staff can see or download those files. Only their own uploads are deleted, and their folders only if nothing else is left inside.": "Dù chọn cách nào, kể từ lúc tài khoản bị xóa, không ai ngoài nhân sự có thể xem hay tải xuống các tệp đó. Chỉ những tệp do chính người đó tải lên bị xóa, và thư mục của họ chỉ bị xóa nếu bên trong không còn gì khác.",
+    "This applies when": "Áp dụng khi",
+    "Anyone deletes their own account": "Bất kỳ ai tự xóa tài khoản của mình",
+    "A client deletes their own account": "Một khách hàng tự xóa tài khoản của mình",
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Tệp do nhân sự tải lên thường là công việc của tổ chức bạn dành cho khách hàng. Chọn chỉ khách hàng để tiếp tục cung cấp các tệp đó cho đến khi tài khoản bị xóa vĩnh viễn."
 }

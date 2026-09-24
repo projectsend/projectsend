@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Identity\AccountContentDeletion;
+use App\Modules\Identity\Erasure\SelfDeletion;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\RedirectResponse;
@@ -18,7 +19,8 @@ use Inertia\Response;
 
 /**
  * System-wide privacy settings (staff-only): download IP logging
- * granularity, the account-erasure retention window, how long API request
+ * granularity, the account-erasure retention window, what deleting your
+ * own account does to your files (see SelfDeletion), how long API request
  * telemetry is kept, and whether to discourage search engines from
  * indexing this installation.
  */
@@ -28,6 +30,7 @@ class PrivacySettingsController extends Controller
         private readonly Settings $settings,
         private readonly ActivityLogger $activity,
         private readonly AccountContentDeletion $accountDeletion,
+        private readonly SelfDeletion $selfDeletion,
     ) {}
 
     public function edit(Request $request): Response
@@ -41,6 +44,12 @@ class PrivacySettingsController extends Controller
             // erasure will use, stored once for everybody, and the page is
             // already behind edit_settings.
             'reassign_candidates' => $this->accountDeletion->candidates(null),
+            // The effective answer, not the stored one: where a platform
+            // has made the choice, the screen shows what will happen and
+            // says who decided, instead of a switch that does nothing.
+            'account_self_delete_files' => $this->selfDeletion->deletesFilesImmediately() ? 'immediately' : 'after_grace_period',
+            'account_self_delete_files_managed' => $this->selfDeletion->isManaged(),
+            'account_self_delete_scope' => $this->settings->get(Setting::AccountSelfDeleteScope),
             'api_request_log_retention_days' => $this->settings->get(Setting::ApiRequestLogRetentionDays),
             'discourage_search_indexing' => $this->settings->get(Setting::DiscourageSearchIndexing),
         ]);
@@ -58,6 +67,8 @@ class PrivacySettingsController extends Controller
                 'required_if:account_erasure_content_action,reassign',
                 Rule::exists('users', 'id')->where('active', true),
             ],
+            'account_self_delete_files' => ['required', Rule::in(['after_grace_period', 'immediately'])],
+            'account_self_delete_scope' => ['required', Rule::in(['any', 'clients'])],
             'api_request_log_retention_days' => ['required', 'integer', 'min:0', 'max:3650'],
             'discourage_search_indexing' => ['required', 'boolean'],
         ]);
@@ -71,6 +82,14 @@ class PrivacySettingsController extends Controller
             Setting::AccountErasureReassignTo,
             $validated['account_erasure_content_action'] === 'reassign' ? (int) $validated['account_erasure_reassign_to'] : 0,
         );
+        // Not written while a platform decides it. The screen shows that
+        // choice with the control disabled, so what comes back is only the
+        // platform's answer echoed; storing it would record a decision
+        // this installation never made.
+        if (! $this->selfDeletion->isManaged()) {
+            $this->settings->set(Setting::AccountSelfDeleteFiles, $validated['account_self_delete_files']);
+        }
+        $this->settings->set(Setting::AccountSelfDeleteScope, $validated['account_self_delete_scope']);
         $this->settings->set(Setting::ApiRequestLogRetentionDays, $validated['api_request_log_retention_days']);
         $this->settings->set(Setting::DiscourageSearchIndexing, $validated['discourage_search_indexing']);
 

@@ -13,7 +13,15 @@ import { type BreadcrumbItem } from '@/types';
  * a place to land on by accident — reaching it should be a deliberate
  * navigation, not a scroll.
  */
-export default function DeleteAccount({ erasureGraceDays }: { erasureGraceDays: number }) {
+export default function DeleteAccount({
+    erasureGraceDays,
+    filesWithdrawn,
+    filesDeletedImmediately,
+}: {
+    erasureGraceDays: number;
+    filesWithdrawn: boolean;
+    filesDeletedImmediately: boolean;
+}) {
     const { t } = useTranslation();
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -26,7 +34,7 @@ export default function DeleteAccount({ erasureGraceDays }: { erasureGraceDays: 
             <Head title={t('Delete account')} />
 
             <SettingsLayout>
-                <DeleteUser graceDays={erasureGraceDays} />
+                <DeleteUser graceDays={erasureGraceDays} filesWithdrawn={filesWithdrawn} filesDeletedImmediately={filesDeletedImmediately} />
             </SettingsLayout>
         </AppLayout>
     );

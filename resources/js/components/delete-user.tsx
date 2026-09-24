@@ -12,8 +12,24 @@ import { useTranslation } from '@/hooks/use-translation';
 
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
-export default function DeleteUser({ graceDays }: { graceDays: number }) {
+interface DeleteUserProps {
+    graceDays: number;
+    /** Their files stop being served to anybody but staff at once. */
+    filesWithdrawn: boolean;
+    /** Their files are deleted at once rather than with the account. */
+    filesDeletedImmediately: boolean;
+}
+
+export default function DeleteUser({ graceDays, filesWithdrawn, filesDeletedImmediately }: DeleteUserProps) {
     const { t } = useTranslation();
+
+    // What happens to the files they uploaded, said before they confirm.
+    // Deleted outranks withdrawn: a file that is gone is also not served.
+    const filesNotice = filesDeletedImmediately
+        ? t('The files you uploaded are deleted as soon as you confirm. They cannot be recovered.')
+        : filesWithdrawn
+          ? t('The files you uploaded stop being available to everyone you shared them with as soon as you confirm.')
+          : null;
     const passwordInput = useRef<HTMLInputElement>(null);
     const { data, setData, delete: destroy, processing, reset, errors, clearErrors } = useForm({ password: '' });
 
@@ -48,6 +64,7 @@ export default function DeleteUser({ graceDays }: { graceDays: number }) {
                             { days: graceDays },
                         )}
                     </p>
+                    {filesNotice !== null && <p className="text-sm font-medium">{filesNotice}</p>}
                 </div>
 
                 <Dialog>
@@ -61,6 +78,7 @@ export default function DeleteUser({ graceDays }: { graceDays: number }) {
                                 days: graceDays,
                             })}
                         </DialogDescription>
+                        {filesDeletedImmediately && <p className="text-destructive text-sm font-medium">{filesNotice}</p>}
                         <form className="space-y-6" onSubmit={deleteUser}>
                             <div className="grid gap-2">
                                 <Label htmlFor="password" className="sr-only">

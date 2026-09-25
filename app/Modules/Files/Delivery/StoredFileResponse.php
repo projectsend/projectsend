@@ -87,7 +87,7 @@ class StoredFileResponse
     private function make(File $file, string $disposition, int $linkSeconds): Response|RedirectResponse
     {
         if ($file->disk !== 'files') {
-            $url = Storage::disk($file->disk)->temporaryUrl(
+            $url = Storage::disk($this->signingDisk($file->disk))->temporaryUrl(
                 $file->path,
                 now()->addSeconds($linkSeconds),
                 ['ResponseContentDisposition' => $disposition],
@@ -97,5 +97,31 @@ class StoredFileResponse
         }
 
         return $this->delivery->serve($file->path, $file->mime_type, $disposition, $file->size);
+    }
+
+    /**
+     * The disk whose credentials sign the link: the file's own, unless
+     * that disk names another in `signing_disk`.
+     *
+     * A signed URL carries every restriction of the key that signed it.
+     * A hosted instance's read-write key only works from our own servers,
+     * which is right for the key and wrong for a link a browser follows:
+     * every download, preview and public link got AccessDenied from the
+     * bucket. So a platform can give the disk a second, read-only key,
+     * free of that restriction and used for nothing but signing. The
+     * signing disk must point at the same bucket and prefix. The platform
+     * that configures one is also responsible for that.
+     *
+     * A name that points at no configured disk is ignored rather than
+     * obeyed. Failing every download over a typo would be worse than
+     * signing with the key the file was stored with.
+     */
+    private function signingDisk(string $disk): string
+    {
+        $signing = config("filesystems.disks.{$disk}.signing_disk");
+
+        return is_string($signing) && $signing !== '' && is_array(config("filesystems.disks.{$signing}"))
+            ? $signing
+            : $disk;
     }
 }

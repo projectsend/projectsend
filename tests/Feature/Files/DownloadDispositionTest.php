@@ -130,3 +130,54 @@ test('a preview link lasts as long as somebody might watch', function () {
     expect($seen)->toHaveCount(1)
         ->and($seen[0]->getTimestamp())->toBeGreaterThan(now()->addMinutes(50)->getTimestamp());
 });
+
+/*
+ * A signed URL carries every restriction of the key that signed it. A
+ * hosted instance's own key only works from our servers, so its links
+ * came back AccessDenied in every browser. A disk can therefore name a
+ * second disk, holding a read-only key, to sign with.
+ */
+function signingDiskFile(User $as): File
+{
+    test()->actingAs($as)->post('/files', [
+        'file' => UploadedFile::fake()->create('report.pdf', 4, 'application/pdf'),
+        'name' => '',
+        'description' => '',
+    ]);
+
+    $file = File::query()->latest('id')->firstOrFail();
+    $file->update(['disk' => 'files_external']);
+
+    return $file;
+}
+
+test('a disk that names a signing disk has its links signed there', function () {
+    // Configured as well as faked: the signing disk is recognised by its
+    // configuration, which is what the platform writes, and
+    // Storage::fake() writes none.
+    config(['filesystems.disks.files_external_signing' => ['driver' => 'local', 'root' => storage_path('framework/testing/disks/files_external_signing')]]);
+    Storage::fake('files_external');
+    Storage::fake('files_external_signing');
+    Storage::disk('files_external')->buildTemporaryUrlsUsing(fn (string $path) => 'https://restricted.example.test/'.$path);
+    Storage::disk('files_external_signing')->buildTemporaryUrlsUsing(fn (string $path) => 'https://signer.example.test/'.$path);
+    config(['filesystems.disks.files_external.signing_disk' => 'files_external_signing']);
+
+    $file = signingDiskFile($this->admin);
+
+    // Both ways out: the download and the preview.
+    $this->actingAs($this->admin)->get("/files/{$file->id}/download")
+        ->assertRedirect('https://signer.example.test/'.$file->path);
+    $this->actingAs($this->admin)->get("/files/{$file->id}/preview")
+        ->assertRedirect('https://signer.example.test/'.$file->path);
+});
+
+test('without a signing disk, or with one that does not exist, the file\'s own disk signs', function (?string $signingDisk) {
+    Storage::fake('files_external');
+    Storage::disk('files_external')->buildTemporaryUrlsUsing(fn (string $path) => 'https://own.example.test/'.$path);
+    config(['filesystems.disks.files_external.signing_disk' => $signingDisk]);
+
+    $file = signingDiskFile($this->admin);
+
+    $this->actingAs($this->admin)->get("/files/{$file->id}/download")
+        ->assertRedirect('https://own.example.test/'.$file->path);
+})->with([null, 'no_such_disk']);

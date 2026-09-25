@@ -622,7 +622,7 @@ export default function FilesIndex({
                                                       'Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.',
                                                   )
                                         }
-                                        confirmLabel={t('Delete files')}
+                                        confirmLabel={t('Delete')}
                                         onConfirm={bulkDeleteFiles}
                                     />
                                 )}

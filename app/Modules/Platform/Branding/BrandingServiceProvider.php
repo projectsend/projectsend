@@ -68,11 +68,14 @@ class BrandingServiceProvider extends ServiceProvider
         // somebody's logo on every page of an installation offering no way
         // to see it, change it or take it off. Evaluated per request, so
         // uploading a logo or changing plan takes effect on the next one.
-        Inertia::share('branding', fn (): array => [
-            'logo_url' => $this->available()
-                ? BrandingSetting::query()->first()?->logoUrl()
-                : null,
-        ]);
+        Inertia::share('branding', function (): array {
+            $setting = $this->available() ? BrandingSetting::query()->first() : null;
+
+            return [
+                'logo_url' => $setting?->logoUrl(),
+                'show_site_name' => $setting?->show_site_name ?? false,
+            ];
+        });
     }
 
     private function available(): bool

@@ -48,6 +48,7 @@ class BrandingController extends Controller
             // carries the column because it owns the table, and carries no
             // way to set it.
             'hide_attribution' => $setting->hide_attribution,
+            'show_site_name' => $setting->show_site_name,
             'watermark' => [
                 'enabled' => $setting->watermark_enabled,
                 'image_url' => $setting->watermarkUrl(),
@@ -77,6 +78,23 @@ class BrandingController extends Controller
         $setting->update(['logo_path' => $this->storeImage($upload)]);
 
         return back()->with('success', __('Logo updated.'));
+    }
+
+    /**
+     * Whether the sign-in and download pages print the site name under the
+     * logo. Its own action rather than a field on the logo upload, because
+     * it applies with or without a custom logo: an installation with a new
+     * name and ProjectSend's own logo is the case that needs it most.
+     */
+    public function updateSiteName(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'show_site_name' => ['required', 'boolean'],
+        ]);
+
+        BrandingSetting::current()->update(['show_site_name' => (bool) $validated['show_site_name']]);
+
+        return back();
     }
 
     public function destroy(): RedirectResponse

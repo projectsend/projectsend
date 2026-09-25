@@ -217,3 +217,56 @@ test('a withheld capability takes the logo off the sign-in screen too', function
         fn (AssertableInertia $page) => $page->where('branding.logo_url', null),
     );
 });
+
+// Whether the sign-in and download pages print the site name under the
+// logo (#1798). Opt-in, because many logos already say the name.
+test('the site name is off by default, and turning it on reaches the sign-in screen', function () {
+    $this->get(route('branding.edit'))->assertInertia(fn (AssertableInertia $page) => $page->where('show_site_name', false));
+
+    auth()->logout();
+    $this->get(route('login'))->assertInertia(fn (AssertableInertia $page) => $page->where('branding.show_site_name', false));
+
+    $this->actingAs(staffWithPermissions(['edit_settings']));
+    $this->patch(route('branding.site-name.update'), ['show_site_name' => true])->assertRedirect();
+
+    expect(BrandingSetting::query()->sole()->show_site_name)->toBeTrue();
+
+    auth()->logout();
+    $this->get(route('login'))->assertInertia(fn (AssertableInertia $page) => $page->where('branding.show_site_name', true));
+});
+
+test('the site-name switch needs edit_settings and the branding capability', function () {
+    $this->actingAs(staffWithPermissions([]));
+    $this->patch(route('branding.site-name.update'), ['show_site_name' => true])->assertForbidden();
+
+    $this->actingAs(staffWithPermissions(['edit_settings']));
+    config(['projectsend.capabilities_disabled' => 'branding.customize']);
+    $this->patch(route('branding.site-name.update'), ['show_site_name' => true])->assertNotFound();
+
+    expect(BrandingSetting::query()->count())->toBe(0);
+});
+
+test('a withheld capability takes the site name off the sign-in screen too', function () {
+    $this->patch(route('branding.site-name.update'), ['show_site_name' => true]);
+
+    config(['projectsend.capabilities_disabled' => 'branding.customize']);
+    forgetRequestState();
+    auth()->logout();
+
+    $this->get(route('login'))->assertInertia(fn (AssertableInertia $page) => $page->where('branding.show_site_name', false));
+});
+
+test('the API reports the site-name choice beside the logo', function () {
+    $staff = staffWithPermissions(['edit_settings']);
+    $token = $staff->createToken('Integration', ['edit_settings'])->plainTextToken;
+    auth()->logout();
+
+    $this->withToken($token)->getJson('/api/v1/modules/branding/logo')
+        ->assertOk()
+        ->assertJsonPath('data.show_site_name', false);
+
+    BrandingSetting::current()->update(['show_site_name' => true]);
+
+    $this->withToken($token)->getJson('/api/v1/modules/branding/logo')
+        ->assertJsonPath('data.show_site_name', true);
+});

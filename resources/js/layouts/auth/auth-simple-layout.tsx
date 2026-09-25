@@ -35,11 +35,19 @@ export default function AuthSimpleLayout({ children, title, description }: AuthL
                 <div className="flex flex-col gap-8">
                     <div className="flex flex-col items-center gap-4">
                         <Link href={route('home')} className="flex flex-col items-center gap-2 font-medium">
+                            {/* A box rather than a height: 80px tall and up to
+                                240px wide, so a square logo is shown at a size
+                                that reads (it was 48px) and a wide one still
+                                fits a phone. */}
                             {branding?.logo_url ? (
-                                <img src={branding.logo_url} alt={name} className="mb-1 h-12 w-auto object-contain" />
+                                <img src={branding.logo_url} alt={name} className="mb-1 h-20 w-auto max-w-60 object-contain" />
                             ) : (
                                 <ProjectSendLogo className="text-foreground mb-1 h-12 w-auto" />
                             )}
+                            {/* Opt-in on the Branding screen: many logos
+                                already say the name, and would then say it
+                                twice. */}
+                            {branding?.show_site_name && <span className="text-lg font-semibold">{name}</span>}
                             <span className="sr-only">{title}</span>
                         </Link>
 

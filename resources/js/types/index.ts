@@ -202,7 +202,7 @@ export interface SharedData {
     // Shared by the (cloud-only) projectsend/cloud-modules Branding
     // module's own ServiceProvider, not by this app's own
     // HandleInertiaRequests — absent entirely on community installs.
-    branding?: { logo_url: string | null };
+    branding?: { logo_url: string | null; show_site_name: boolean };
     [key: string]: unknown;
 }
 

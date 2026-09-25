@@ -291,6 +291,7 @@ Route::middleware('auth')->group(function () {
             Route::get('system/settings/branding', [BrandingController::class, 'edit'])->name('branding.edit');
             Route::post('system/settings/branding', [BrandingController::class, 'store'])->name('branding.store');
             Route::delete('system/settings/branding', [BrandingController::class, 'destroy'])->name('branding.destroy');
+            Route::patch('system/settings/branding/site-name', [BrandingController::class, 'updateSiteName'])->name('branding.site-name.update');
 
             // POST rather than PATCH: the form carries a file, so it is
             // multipart, and PHP only populates $_FILES for POST.

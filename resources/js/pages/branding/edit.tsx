@@ -23,13 +23,14 @@ interface Watermark {
 interface BrandingEditProps {
     logo_url: string | null;
     hide_attribution: boolean;
+    show_site_name: boolean;
     watermark: Watermark;
     watermark_positions: string[];
 }
 
 type Tab = 'logo' | 'watermark' | 'attribution';
 
-export default function BrandingEdit({ logo_url, hide_attribution, watermark, watermark_positions }: BrandingEditProps) {
+export default function BrandingEdit({ logo_url, hide_attribution, show_site_name, watermark, watermark_positions }: BrandingEditProps) {
     const { t } = useTranslation();
     const { capabilities } = usePage<SharedData>().props;
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -68,6 +69,13 @@ export default function BrandingEdit({ logo_url, hide_attribution, watermark, wa
     const removeWatermarkForm = useForm({});
 
     const attributionForm = useForm({ hide_attribution });
+
+    const siteNameForm = useForm({ show_site_name });
+
+    const submitSiteName: FormEventHandler = (e) => {
+        e.preventDefault();
+        siteNameForm.patch(route('branding.site-name.update'), { preserveScroll: true });
+    };
 
     // Debounced so dragging a number field is one request when it settles
     // rather than one per keystroke — each costs a real GD render on the
@@ -195,6 +203,9 @@ export default function BrandingEdit({ logo_url, hide_attribution, watermark, wa
                                 accept="image/*"
                                 onChange={(e) => uploadForm.setData('logo', e.target.files?.[0] ?? null)}
                             />
+                            <p className="text-muted-foreground text-sm">
+                                {t('Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.')}
+                            </p>
                             <InputError message={uploadForm.errors.logo} />
                             <Button type="submit" disabled={uploadForm.processing || uploadForm.data.logo === null}>
                                 {t('Upload logo')}
@@ -206,6 +217,31 @@ export default function BrandingEdit({ logo_url, hide_attribution, watermark, wa
                                 {t('Remove logo')}
                             </Button>
                         )}
+
+                        <form onSubmit={submitSiteName} className="space-y-4 border-t pt-6">
+                            <div className="flex items-start gap-3">
+                                <Checkbox
+                                    id="show_site_name"
+                                    checked={siteNameForm.data.show_site_name}
+                                    onCheckedChange={(checked) => siteNameForm.setData('show_site_name', checked === true)}
+                                />
+                                <div className="grid gap-1">
+                                    <Label htmlFor="show_site_name">{t('Show the site name under the logo')}</Label>
+                                    <p className="text-muted-foreground text-sm">
+                                        {t('On the sign-in and download pages. Leave it off if your logo already says the name.')}
+                                    </p>
+                                </div>
+                            </div>
+                            <InputError message={siteNameForm.errors.show_site_name} />
+
+                            <div className="flex items-center gap-3">
+                                <Button type="submit" disabled={siteNameForm.processing}>
+                                    {t('Save')}
+                                </Button>
+
+                                {siteNameForm.recentlySuccessful && <p className="text-muted-foreground text-sm">{t('Saved.')}</p>}
+                            </div>
+                        </form>
                     </section>
 
                     {/* Both panels stay mounted and the inactive one is just

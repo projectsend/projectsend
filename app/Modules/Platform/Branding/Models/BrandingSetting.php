@@ -20,6 +20,7 @@ use App\Modules\Platform\Branding\Watermark\WatermarkPosition;
  * @property int $watermark_size
  * @property int $watermark_opacity
  * @property bool $hide_attribution
+ * @property bool $show_site_name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  */
@@ -31,6 +32,7 @@ class BrandingSetting extends Model
 
     protected $casts = [
         'watermark_enabled' => 'boolean',
+        'show_site_name' => 'boolean',
         'watermark_position' => WatermarkPosition::class,
         'watermark_size' => 'integer',
         'watermark_opacity' => 'integer',
@@ -46,6 +48,7 @@ class BrandingSetting extends Model
      */
     protected $attributes = [
         'watermark_enabled' => false,
+        'show_site_name' => false,
         'watermark_position' => 'bottom-right',
         'watermark_size' => 30,
         'watermark_opacity' => 60,

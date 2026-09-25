@@ -41,7 +41,7 @@ class BrandingController extends Controller
         return response()->json([
             'data' => [
                 'logo_url' => $setting?->logoUrl(),
-                'show_site_name' => $setting?->show_site_name ?? false,
+                'show_site_name' => $setting->show_site_name ?? false,
                 'updated_at' => $setting?->updated_at?->toIso8601String(),
             ],
         ]);

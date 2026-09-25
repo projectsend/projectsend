@@ -73,7 +73,7 @@ class BrandingServiceProvider extends ServiceProvider
 
             return [
                 'logo_url' => $setting?->logoUrl(),
-                'show_site_name' => $setting?->show_site_name ?? false,
+                'show_site_name' => $setting->show_site_name ?? false,
             ];
         });
     }

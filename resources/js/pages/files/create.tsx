@@ -7,12 +7,14 @@ import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
 
 interface FilesCreateProps {
+    /** The folder the upload page was opened from, which uploads go into. */
+    folder: { id: number; name: string } | null;
     max_file_size_mb: number;
     part_size_mb: number;
     allowed_extensions: string[] | null;
 }
 
-export default function FilesCreate({ max_file_size_mb, part_size_mb, allowed_extensions }: FilesCreateProps) {
+export default function FilesCreate({ folder, max_file_size_mb, part_size_mb, allowed_extensions }: FilesCreateProps) {
     const { t } = useTranslation();
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -24,7 +26,8 @@ export default function FilesCreate({ max_file_size_mb, part_size_mb, allowed_ex
         if (fileIds.length === 1) {
             router.visit(route('files.edit', fileIds[0]));
         } else if (fileIds.length > 1) {
-            router.visit(route('files.index'));
+            // Back to where the upload started, so the new files are in view.
+            router.visit(route('files.index', folder !== null ? { folder: folder.id } : {}));
         }
     };
 
@@ -44,7 +47,12 @@ export default function FilesCreate({ max_file_size_mb, part_size_mb, allowed_ex
                     }
                 />
 
+                {folder !== null && (
+                    <p className="text-muted-foreground mb-4 text-sm">{t('Uploading into :folder', { folder: folder.name })}</p>
+                )}
+
                 <ChunkedUploadDashboard
+                    folderId={folder?.id}
                     maxFileSizeMb={max_file_size_mb}
                     partSizeMb={part_size_mb}
                     allowedExtensions={allowed_extensions}

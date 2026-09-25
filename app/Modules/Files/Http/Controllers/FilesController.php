@@ -62,7 +62,22 @@ class FilesController extends Controller
         $user = $request->user();
         assert($user !== null);
 
+        // Opened from inside a folder, the upload goes into it (#1801).
+        // The same two checks the portal's upload page makes, with the
+        // staff library in place of the client's: a folder this person
+        // cannot see is a 404, one they may not upload into is a 403.
+        // ChunkedUploadsController checks the destination again when the
+        // upload starts, so this decides what the page offers, not what
+        // is allowed.
+        $folder = null;
+        if ($request->integer('folder') > 0) {
+            $folder = Folder::query()->find($request->integer('folder'));
+            abort_if($folder === null || ! app(StaffLibraryScope::class)->allowsFolder($user, $folder), 404);
+            abort_unless(Folder::uploadableBy($user, $folder), 403);
+        }
+
         return Inertia::render('files/create', [
+            'folder' => $folder === null ? null : ['id' => $folder->id, 'name' => $folder->name],
             'max_file_size_mb' => app(Settings::class)->get(Setting::MaxFileSizeMb),
             'part_size_mb' => (int) config('projectsend.upload_part_size_mb'),
             'allowed_extensions' => app(UploadExtensionPolicy::class)->hintFor($user),

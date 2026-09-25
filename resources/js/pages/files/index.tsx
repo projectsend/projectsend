@@ -397,7 +397,10 @@ export default function FilesIndex({
                         )}
                         {can_upload && (
                             <Button asChild>
-                                <Link href={route('files.create')}>{t('Upload')}</Link>
+                                {/* Into the folder on screen, not the top of the
+                                    library (#1801). Not while searching: the
+                                    results span folders, so there is no "here". */}
+                                <Link href={route('files.create', folder !== null && !searching ? { folder: folder.id } : {})}>{t('Upload')}</Link>
                             </Button>
                         )}
                     </div>

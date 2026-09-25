@@ -10,6 +10,59 @@ Anything under **⚠️ Important — do these yourself** is something you have 
 we did. It sits at the top of a release for that reason. Older entries call the same section
 **Upgrade notes**.
 
+## 2.6.0 — 25 September 2026
+
+Mostly fixes: files and folders are easier to tidy, the sign-in pages carry your brand better, and
+someone who deletes their own account stops being published straight away.
+
+**Added**
+
+- **Delete several files at once** from the selection bar on the Files page, with one confirmation.
+- **Upload inside a folder puts the files in that folder**, and brings you back to it afterwards.
+- **Show your site name under the logo** on the sign-in and download pages, from Branding → Logo.
+- **Choose what happens to someone's files when they delete their own account**: removed right away,
+  or at the end of the grace period — and whether that applies to everyone or only to clients.
+  Found under Settings → Privacy.
+
+**Changed**
+
+- **A deleted account's files stop being shared at once.** From the moment someone deletes their own
+  account, their files are visible only to staff — not to the clients and groups they were shared
+  with, not through share links, not on the public pages — until the account is erased. Restoring
+  the account brings them back.
+- **Your logo is shown larger on the sign-in and download pages**, so a square logo is clearly
+  visible. The Branding screen now says what size to use.
+
+**Fixed**
+
+- Saving a settings form could show an error dialog containing `{"count":0}` instead of saving.
+- A file upload running several parts at once could be refused near the end with "too large".
+- The System card reported the server's free disk space as file storage on installations that keep
+  files in S3; it now shows the two separately.
+- Confirming your password no longer throws away the form you were filling in.
+- LDAP accounts can now get past the password confirmation, which kept them from turning on
+  two-factor authentication.
+- With per-client folders on, a client choosing "No folder" moved the file out of their own folder.
+- PHP 8.5 no longer prints deprecation warnings from the database configuration.
+- The Docker quick start now saves `compose.yaml`, so the `docker compose` commands in the other
+  guides work as written. If you saved `compose.example.yaml`, rename it to `compose.yaml`.
+- The Docker and migration guides now cover installing Docker, and migrating from a Legacy install
+  on the same machine.
+
+Thanks to [@JensS](https://github.com/JensS), binghuo, [@lukatong](https://github.com/lukatong),
+[@jjoelc](https://github.com/jjoelc), [@jiits](https://github.com/jiits),
+[@0xVavaldi](https://github.com/0xVavaldi) and [@lolgufdHD](https://github.com/lolgufdHD) for
+reporting and fixing.
+
+### Issues closed since 2.5.0
+
+- [#1635](https://github.com/projectsend/projectsend/issues/1635) — Docs: consider moving the Docker quick start above screenshots
+- [#1795](https://github.com/projectsend/projectsend/issues/1795) — Slightly confused regarding the reviews
+- [#1796](https://github.com/projectsend/projectsend/issues/1796) — PHP 8.5.10: PDO::MYSQL_ATTR_SSL_CA Deprecated Warning
+- [#1799](https://github.com/projectsend/projectsend/issues/1799) — Inertia error from notifications/unread-count because of JSON response
+- [#1800](https://github.com/projectsend/projectsend/issues/1800) — Add Bulk-Edit for Moving and Deleting files
+- [#1801](https://github.com/projectsend/projectsend/issues/1801) — Add Upload into Folder
+
 ## 2.5.0 — 18 September 2026
 
 **Added**

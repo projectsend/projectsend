@@ -218,7 +218,7 @@ its own directory the first time it starts.
 
 ### 2. Point the compose file at them
 
-`compose.example.yaml` is yours — you downloaded and edited it — so change the volumes in place
+Your `compose.yaml` is yours — you downloaded and edited it — so change the volumes in place
 rather than layering an override on top:
 
 ```yaml

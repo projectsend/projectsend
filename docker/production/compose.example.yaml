@@ -1,7 +1,8 @@
 # A complete ProjectSend install using the official image.
 #
-#   1. Edit the passwords and APP_URL below.
-#   2. docker compose -f compose.example.yaml up -d
+#   1. Save this file as compose.yaml, in a directory of its own, and edit
+#      the passwords and APP_URL below.
+#   2. docker compose up -d
 #   3. Open APP_URL — the setup screen creates your administrator account.
 #
 # This is the file the Docker Hub description points at, so it is written

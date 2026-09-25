@@ -54,33 +54,28 @@ out in [LICENSING.md](LICENSING.md).
 - Privacy controls, including GDPR-grade account erasure with a grace period
 - Local disk, S3-compatible storage, or Google Cloud Storage
 
-## Screenshots
-
-<p align="center">
-  <img src=".github/screenshots/dashboard.png" alt="The dashboard: counters for files, clients and groups, the clients using the most storage against their quotas, a month of uploads and downloads as a line chart, and recent activity" width="900">
-</p>
-<p align="center"><em>The dashboard — what is in the installation, and what has been happening in it.</em></p>
-
-<p align="center">
-  <img src=".github/screenshots/files.png" alt="The file library, showing folders and files with thumbnails, sharing status and download counts" width="900">
-</p>
-<p align="center"><em>Your library — folders, categories, and who each file is shared with.</em></p>
-
-<p align="center">
-  <img src=".github/screenshots/portal.png" alt="A client's own page, listing the files shared with them with download buttons" width="900">
-</p>
-<p align="center"><em>What your client sees — only their files, nothing else.</em></p>
-
 ## Getting started
 
 **With Docker** — the quickest path, and the one we recommend. Nothing to build: the published
 image ships with its dependencies and its frontend already compiled.
 
+You need Docker Engine with the Compose plugin. If the machine does not have it yet,
+[install it](https://docs.docker.com/engine/install/) and then
+[let your own user run it](https://docs.docker.com/engine/install/linux-postinstall/): add yourself
+to the `docker` group, then log out and back in. Without that step every command below fails with
+"permission denied", and putting `sudo` in front of it is not the fix.
+
+Then, in an empty directory of your choosing — `/srv/projectsend` is a good one — run:
+
 ```sh
-curl -O https://raw.githubusercontent.com/projectsend/projectsend/main/docker/production/compose.example.yaml
-# edit the passwords and APP_URL in it, then:
-docker compose -f compose.example.yaml up -d
+curl -o compose.yaml https://raw.githubusercontent.com/projectsend/projectsend/main/docker/production/compose.example.yaml
+# edit the passwords and APP_URL in compose.yaml, then:
+docker compose up -d
 ```
+
+Every `docker compose` command in these guides runs from that same directory, and finds the file
+because it is called `compose.yaml`. If you saved it under its original name, `compose.example.yaml`,
+rename it: `mv compose.example.yaml compose.yaml`.
 
 Open `APP_URL` and the first thing you see is a setup screen that creates your administrator
 account — or uncomment `ADMIN_EMAIL` and `ADMIN_PASSWORD` in the file first, with a password of
@@ -102,6 +97,23 @@ on Docker, one script on your own server, and what to check afterwards either wa
 installation: the dependencies and the compiled frontend are deliberately not in git, so a clone
 needs Composer and npm before it runs. **[CONTRIBUTING.md](CONTRIBUTING.md)** has the sequence, and
 it is short.
+
+## Screenshots
+
+<p align="center">
+  <img src=".github/screenshots/dashboard.png" alt="The dashboard: counters for files, clients and groups, the clients using the most storage against their quotas, a month of uploads and downloads as a line chart, and recent activity" width="900">
+</p>
+<p align="center"><em>The dashboard — what is in the installation, and what has been happening in it.</em></p>
+
+<p align="center">
+  <img src=".github/screenshots/files.png" alt="The file library, showing folders and files with thumbnails, sharing status and download counts" width="900">
+</p>
+<p align="center"><em>Your library — folders, categories, and who each file is shared with.</em></p>
+
+<p align="center">
+  <img src=".github/screenshots/portal.png" alt="A client's own page, listing the files shared with them with download buttons" width="900">
+</p>
+<p align="center"><em>What your client sees — only their files, nothing else.</em></p>
 
 ## Coming from ProjectSend Legacy?
 

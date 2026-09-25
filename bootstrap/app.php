@@ -94,6 +94,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // silently does nothing here.
         $middleware->web(replace: [
             Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class => ValidateCsrfToken::class,
+            // So a JSON poll never becomes the page back() returns to —
+            // see that class, and #1799.
+            Illuminate\Session\Middleware\StartSession::class => App\Http\Middleware\StartSession::class,
         ]);
 
         $middleware->alias([

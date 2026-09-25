@@ -2275,5 +2275,13 @@
     "This applies when": "Cela s'applique quand",
     "Anyone deletes their own account": "N'importe qui supprime son propre compte",
     "A client deletes their own account": "Un client supprime son propre compte",
-    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Les envois d'un membre de l'équipe sont souvent le travail de votre organisation pour ses clients. Choisissez « clients uniquement » pour continuer à servir ces fichiers jusqu'à l'effacement du compte."
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Les envois d'un membre de l'équipe sont souvent le travail de votre organisation pour ses clients. Choisissez « clients uniquement » pour continuer à servir ces fichiers jusqu'à l'effacement du compte.",
+    "Delete the selected files?": "Supprimer les fichiers sélectionnés ?",
+    "None of the selected files could be deleted.": "Aucun des fichiers sélectionnés n'a pu être supprimé.",
+    "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Seuls les fichiers que vous avez le droit de supprimer sont supprimés. Ils ne seront plus accessibles aux personnes avec qui ils étaient partagés.",
+    "On the sign-in and download pages. Leave it off if your logo already says the name.": "Sur les pages de connexion et de téléchargement. Laissez désactivé si votre logo affiche déjà le nom.",
+    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Affiché jusqu'à 240 × 80 pixels : un logo large comme un logo carré y trouvent leur place. PNG, JPG, GIF ou WebP, jusqu'à 2 Mo.",
+    "Show the site name under the logo": "Afficher le nom du site sous le logo",
+    "They will no longer be available to anyone they were shared with.": "Ils ne seront plus accessibles aux personnes avec qui ils étaient partagés.",
+    "Uploading into :folder": "Envoi dans :folder"
 }

@@ -2275,5 +2275,13 @@
     "This applies when": "適用対象",
     "Anyone deletes their own account": "誰かが自分のアカウントを削除したとき",
     "A client deletes their own account": "クライアントが自分のアカウントを削除したとき",
-    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "スタッフのアップロードは、多くの場合、組織がクライアントのために作成したものです。クライアントのみを選ぶと、アカウントが消去されるまでそれらのファイルを引き続き提供します。"
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "スタッフのアップロードは、多くの場合、組織がクライアントのために作成したものです。クライアントのみを選ぶと、アカウントが消去されるまでそれらのファイルを引き続き提供します。",
+    "Delete the selected files?": "選択したファイルを削除しますか？",
+    "None of the selected files could be deleted.": "選択したファイルはどれも削除できませんでした。",
+    "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "削除する権限のあるファイルだけが削除されます。共有していた相手全員から利用できなくなります。",
+    "On the sign-in and download pages. Leave it off if your logo already says the name.": "サインインページとダウンロードページに表示されます。ロゴに名前が入っている場合はオフのままにしてください。",
+    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "最大 240 × 80 ピクセルで表示されるため、横長のロゴも正方形のロゴも収まります。PNG、JPG、GIF、WebP、2 MB まで。",
+    "Show the site name under the logo": "ロゴの下にサイト名を表示する",
+    "They will no longer be available to anyone they were shared with.": "共有していた相手全員から利用できなくなります。",
+    "Uploading into :folder": "アップロード先: :folder"
 }

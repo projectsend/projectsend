@@ -2275,5 +2275,13 @@
     "This applies when": "Dotyczy to sytuacji, gdy",
     "Anyone deletes their own account": "Ktokolwiek usuwa własne konto",
     "A client deletes their own account": "Klient usuwa własne konto",
-    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "To, co przesyłają członkowie zespołu, to często praca twojej organizacji dla jej klientów. Wybierz tylko klientów, aby nadal udostępniać te pliki aż do trwałego wymazania konta."
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "To, co przesyłają członkowie zespołu, to często praca twojej organizacji dla jej klientów. Wybierz tylko klientów, aby nadal udostępniać te pliki aż do trwałego wymazania konta.",
+    "Delete the selected files?": "Usunąć zaznaczone pliki?",
+    "None of the selected files could be deleted.": "Nie udało się usunąć żadnego z zaznaczonych plików.",
+    "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Usuwane są tylko pliki, które możesz usunąć. Przestaną być dostępne dla wszystkich, którym je udostępniono.",
+    "On the sign-in and download pages. Leave it off if your logo already says the name.": "Na stronach logowania i pobierania. Zostaw wyłączone, jeśli logo już zawiera nazwę.",
+    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Wyświetlane w rozmiarze do 240 × 80 pikseli, więc zmieści się zarówno szerokie, jak i kwadratowe logo. PNG, JPG, GIF lub WebP, do 2 MB.",
+    "Show the site name under the logo": "Pokaż nazwę witryny pod logo",
+    "They will no longer be available to anyone they were shared with.": "Przestaną być dostępne dla wszystkich, którym je udostępniono.",
+    "Uploading into :folder": "Przesyłanie do: :folder"
 }

@@ -2275,5 +2275,13 @@
     "This applies when": "Dit geldt als",
     "Anyone deletes their own account": "Iemand zijn eigen account verwijdert",
     "A client deletes their own account": "Een klant zijn eigen account verwijdert",
-    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Uploads van teamleden zijn vaak werk van je organisatie voor haar klanten. Kies alleen klanten om die bestanden te blijven aanbieden tot het account definitief is gewist."
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Uploads van teamleden zijn vaak werk van je organisatie voor haar klanten. Kies alleen klanten om die bestanden te blijven aanbieden tot het account definitief is gewist.",
+    "Delete the selected files?": "Geselecteerde bestanden verwijderen?",
+    "None of the selected files could be deleted.": "Geen van de geselecteerde bestanden kon worden verwijderd.",
+    "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Alleen de bestanden die je mag verwijderen worden verwijderd. Ze zijn niet langer beschikbaar voor iedereen met wie ze gedeeld waren.",
+    "On the sign-in and download pages. Leave it off if your logo already says the name.": "Op de inlog- en downloadpagina's. Laat het uit als je logo de naam al toont.",
+    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Getoond tot 240 × 80 pixels, dus zowel een breed als een vierkant logo past. PNG, JPG, GIF of WebP, tot 2 MB.",
+    "Show the site name under the logo": "Sitenaam onder het logo tonen",
+    "They will no longer be available to anyone they were shared with.": "Ze zijn niet langer beschikbaar voor iedereen met wie ze gedeeld waren.",
+    "Uploading into :folder": "Uploaden naar :folder"
 }

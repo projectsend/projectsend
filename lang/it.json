@@ -2275,5 +2275,13 @@
     "This applies when": "Si applica quando",
     "Anyone deletes their own account": "Chiunque elimina il proprio account",
     "A client deletes their own account": "Un cliente elimina il proprio account",
-    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "I caricamenti di un membro dello staff sono spesso lavoro della tua organizzazione per i suoi clienti. Scegli solo clienti per continuare a servire quei file finché l'account non viene cancellato."
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "I caricamenti di un membro dello staff sono spesso lavoro della tua organizzazione per i suoi clienti. Scegli solo clienti per continuare a servire quei file finché l'account non viene cancellato.",
+    "Delete the selected files?": "Eliminare i file selezionati?",
+    "None of the selected files could be deleted.": "Non è stato possibile eliminare nessuno dei file selezionati.",
+    "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Vengono eliminati solo i file che hai il permesso di eliminare. Non saranno più disponibili per le persone con cui erano condivisi.",
+    "On the sign-in and download pages. Leave it off if your logo already says the name.": "Nelle pagine di accesso e di download. Lascialo disattivato se il tuo logo mostra già il nome.",
+    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Mostrato fino a 240 × 80 pixel, così ci stanno sia un logo largo sia uno quadrato. PNG, JPG, GIF o WebP, fino a 2 MB.",
+    "Show the site name under the logo": "Mostra il nome del sito sotto il logo",
+    "They will no longer be available to anyone they were shared with.": "Non saranno più disponibili per le persone con cui erano condivisi.",
+    "Uploading into :folder": "Caricamento in :folder"
 }

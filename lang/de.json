@@ -2275,5 +2275,13 @@
     "This applies when": "Dies gilt, wenn",
     "Anyone deletes their own account": "Jemand das eigene Konto löscht",
     "A client deletes their own account": "Ein Kunde das eigene Konto löscht",
-    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Uploads von Teammitgliedern sind oft Arbeit Ihrer Organisation für ihre Kunden. Wählen Sie „nur Kunden“, damit diese Dateien bis zur endgültigen Löschung des Kontos weiter bereitgestellt werden."
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Uploads von Teammitgliedern sind oft Arbeit Ihrer Organisation für ihre Kunden. Wählen Sie „nur Kunden“, damit diese Dateien bis zur endgültigen Löschung des Kontos weiter bereitgestellt werden.",
+    "Delete the selected files?": "Ausgewählte Dateien löschen?",
+    "None of the selected files could be deleted.": "Keine der ausgewählten Dateien konnte gelöscht werden.",
+    "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Es werden nur die Dateien gelöscht, die Sie löschen dürfen. Sie stehen dann niemandem mehr zur Verfügung, mit dem sie geteilt wurden.",
+    "On the sign-in and download pages. Leave it off if your logo already says the name.": "Auf der Anmelde- und der Download-Seite. Lassen Sie es aus, wenn Ihr Logo den Namen bereits zeigt.",
+    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Wird bis zu 240 × 80 Pixel groß angezeigt, sodass breite und quadratische Logos gleichermaßen passen. PNG, JPG, GIF oder WebP, bis 2 MB.",
+    "Show the site name under the logo": "Seitennamen unter dem Logo anzeigen",
+    "They will no longer be available to anyone they were shared with.": "Sie stehen dann niemandem mehr zur Verfügung, mit dem sie geteilt wurden.",
+    "Uploading into :folder": "Hochladen in :folder"
 }

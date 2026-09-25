@@ -2275,5 +2275,13 @@
     "This applies when": "Это применяется, когда",
     "Anyone deletes their own account": "Кто угодно удаляет свою учётную запись",
     "A client deletes their own account": "Клиент удаляет свою учётную запись",
-    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Загрузки участников команды — часто работа вашей организации для её клиентов. Выберите «только клиенты», чтобы эти файлы оставались доступны до окончательного удаления учётной записи."
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Загрузки участников команды — часто работа вашей организации для её клиентов. Выберите «только клиенты», чтобы эти файлы оставались доступны до окончательного удаления учётной записи.",
+    "Delete the selected files?": "Удалить выбранные файлы?",
+    "None of the selected files could be deleted.": "Ни один из выбранных файлов не удалось удалить.",
+    "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Удаляются только файлы, которые вам разрешено удалять. Они больше не будут доступны никому, кому были открыты.",
+    "On the sign-in and download pages. Leave it off if your logo already says the name.": "На страницах входа и загрузки. Оставьте выключенным, если на логотипе уже есть название.",
+    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Показывается размером до 240 × 80 пикселей, поэтому поместится и широкий, и квадратный логотип. PNG, JPG, GIF или WebP, до 2 МБ.",
+    "Show the site name under the logo": "Показывать название сайта под логотипом",
+    "They will no longer be available to anyone they were shared with.": "Они больше не будут доступны никому, кому были открыты.",
+    "Uploading into :folder": "Загрузка в: :folder"
 }

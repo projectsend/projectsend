@@ -2275,5 +2275,13 @@
     "This applies when": "Isso vale quando",
     "Anyone deletes their own account": "Qualquer pessoa exclui a própria conta",
     "A client deletes their own account": "Um cliente exclui a própria conta",
-    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "O que um membro da equipe envia costuma ser trabalho da sua organização para os clientes. Escolha apenas clientes para continuar servindo esses arquivos até a conta ser apagada."
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "O que um membro da equipe envia costuma ser trabalho da sua organização para os clientes. Escolha apenas clientes para continuar servindo esses arquivos até a conta ser apagada.",
+    "Delete the selected files?": "Excluir os arquivos selecionados?",
+    "None of the selected files could be deleted.": "Não foi possível excluir nenhum dos arquivos selecionados.",
+    "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Só são excluídos os arquivos que você tem permissão para excluir. Eles deixarão de estar disponíveis para todos com quem foram compartilhados.",
+    "On the sign-in and download pages. Leave it off if your logo already says the name.": "Nas páginas de login e de download. Deixe desativado se o seu logo já mostra o nome.",
+    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Exibido em até 240 × 80 pixels, então cabem tanto um logo largo quanto um quadrado. PNG, JPG, GIF ou WebP, até 2 MB.",
+    "Show the site name under the logo": "Mostrar o nome do site abaixo do logo",
+    "They will no longer be available to anyone they were shared with.": "Eles deixarão de estar disponíveis para todos com quem foram compartilhados.",
+    "Uploading into :folder": "Enviando para :folder"
 }

@@ -2275,5 +2275,13 @@
     "This applies when": "Esto se aplica cuando",
     "Anyone deletes their own account": "Cualquier persona elimina su propia cuenta",
     "A client deletes their own account": "Un cliente elimina su propia cuenta",
-    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Lo que sube alguien del personal suele ser trabajo de tu organización para sus clientes. Elige solo clientes para seguir sirviendo esos archivos hasta que la cuenta se borre definitivamente."
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Lo que sube alguien del personal suele ser trabajo de tu organización para sus clientes. Elige solo clientes para seguir sirviendo esos archivos hasta que la cuenta se borre definitivamente.",
+    "Delete the selected files?": "¿Eliminar los archivos seleccionados?",
+    "None of the selected files could be deleted.": "No se pudo eliminar ninguno de los archivos seleccionados.",
+    "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Solo se eliminan los archivos que tienes permiso para eliminar. Dejarán de estar disponibles para quienes fueron compartidos.",
+    "On the sign-in and download pages. Leave it off if your logo already says the name.": "En las páginas de inicio de sesión y de descarga. Déjalo desactivado si tu logo ya muestra el nombre.",
+    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Se muestra hasta 240 × 80 píxeles, así que entran tanto un logo ancho como uno cuadrado. PNG, JPG, GIF o WebP, hasta 2 MB.",
+    "Show the site name under the logo": "Mostrar el nombre del sitio debajo del logo",
+    "They will no longer be available to anyone they were shared with.": "Dejarán de estar disponibles para quienes fueron compartidos.",
+    "Uploading into :folder": "Subiendo a :folder"
 }

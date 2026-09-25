@@ -2275,5 +2275,13 @@
     "This applies when": "Platí to, když",
     "Anyone deletes their own account": "Kdokoli smaže svůj vlastní účet",
     "A client deletes their own account": "Klient smaže svůj vlastní účet",
-    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "To, co nahraje člen týmu, je často práce vaší organizace pro její klienty. Zvolte jen klienty, pokud chcete tyto soubory dál poskytovat až do trvalého vymazání účtu."
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "To, co nahraje člen týmu, je často práce vaší organizace pro její klienty. Zvolte jen klienty, pokud chcete tyto soubory dál poskytovat až do trvalého vymazání účtu.",
+    "Delete the selected files?": "Smazat vybrané soubory?",
+    "None of the selected files could be deleted.": "Žádný z vybraných souborů nebylo možné smazat.",
+    "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Smažou se jen soubory, ke kterým máte oprávnění. Přestanou být dostupné všem, se kterými byly sdíleny.",
+    "On the sign-in and download pages. Leave it off if your logo already says the name.": "Na přihlašovací stránce a stránce stahování. Nechte vypnuté, pokud logo už název obsahuje.",
+    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Zobrazuje se až v rozměru 240 × 80 pixelů, takže se vejde široké i čtvercové logo. PNG, JPG, GIF nebo WebP, do 2 MB.",
+    "Show the site name under the logo": "Zobrazit název webu pod logem",
+    "They will no longer be available to anyone they were shared with.": "Přestanou být dostupné všem, se kterými byly sdíleny.",
+    "Uploading into :folder": "Nahrávání do: :folder"
 }

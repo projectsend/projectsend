@@ -2275,5 +2275,13 @@
     "This applies when": "Áp dụng khi",
     "Anyone deletes their own account": "Bất kỳ ai tự xóa tài khoản của mình",
     "A client deletes their own account": "Một khách hàng tự xóa tài khoản của mình",
-    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Tệp do nhân sự tải lên thường là công việc của tổ chức bạn dành cho khách hàng. Chọn chỉ khách hàng để tiếp tục cung cấp các tệp đó cho đến khi tài khoản bị xóa vĩnh viễn."
+    "A staff member's uploads are often your organization's work for its clients. Choose clients only to keep serving those until the account is erased.": "Tệp do nhân sự tải lên thường là công việc của tổ chức bạn dành cho khách hàng. Chọn chỉ khách hàng để tiếp tục cung cấp các tệp đó cho đến khi tài khoản bị xóa vĩnh viễn.",
+    "Delete the selected files?": "Xóa các tệp đã chọn?",
+    "None of the selected files could be deleted.": "Không xóa được tệp nào trong số các tệp đã chọn.",
+    "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Chỉ những tệp bạn được phép xóa mới bị xóa. Chúng sẽ không còn khả dụng với bất kỳ ai từng được chia sẻ.",
+    "On the sign-in and download pages. Leave it off if your logo already says the name.": "Trên trang đăng nhập và trang tải xuống. Hãy để tắt nếu logo của bạn đã có tên.",
+    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Hiển thị tối đa 240 × 80 pixel, nên cả logo ngang lẫn logo vuông đều vừa. PNG, JPG, GIF hoặc WebP, tối đa 2 MB.",
+    "Show the site name under the logo": "Hiển thị tên trang dưới logo",
+    "They will no longer be available to anyone they were shared with.": "Chúng sẽ không còn khả dụng với bất kỳ ai từng được chia sẻ.",
+    "Uploading into :folder": "Đang tải lên vào :folder"
 }

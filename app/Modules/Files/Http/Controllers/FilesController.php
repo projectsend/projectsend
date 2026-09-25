@@ -570,4 +570,41 @@ class FilesController extends Controller
 
         return redirect()->route('files.index')->with('success', __('File deleted.'));
     }
+
+    /**
+     * Delete several files at once, from the staff selection bar (#1800).
+     *
+     * Each file is asked exactly what destroy() asks, through the same
+     * policy, and gets the same soft delete and the same activity entry: a
+     * batch is a shorthand for single deletes, never a way around one. A
+     * file the person may not delete is dropped from the batch rather than
+     * failing it, the convention bulkUpdate() follows. Nothing left to
+     * delete is a 422, so the page does not report a success.
+     */
+    public function bulkDestroy(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+        assert($user !== null);
+
+        $validated = $request->validate([
+            'file_ids' => ['required', 'array', 'min:1'],
+            'file_ids.*' => ['integer', 'distinct'],
+        ]);
+
+        $files = File::query()->whereIn('id', $validated['file_ids'])->get()
+            ->filter(fn (File $file): bool => Gate::forUser($user)->allows('delete', $file));
+
+        abort_if($files->isEmpty(), 422, __('None of the selected files could be deleted.'));
+
+        DB::transaction(function () use ($files): void {
+            foreach ($files as $file) {
+                $name = $file->name;
+                $file->delete();
+
+                $this->activity->log(Action::FileDeleted, context: ['name' => $name]);
+            }
+        });
+
+        return back()->with('success', trans_choice(':count file deleted.|:count files deleted.', $files->count(), ['count' => $files->count()]));
+    }
 }

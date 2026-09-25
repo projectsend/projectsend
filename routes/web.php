@@ -151,6 +151,9 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('files/bulk-edit', [FilesController::class, 'bulkUpdate'])->middleware('staff')->name('files.bulk-update');
     Route::patch('files/{file}', [FilesController::class, 'update'])->middleware('staff')->name('files.update');
     Route::patch('files/{file}/move', [FilesController::class, 'move'])->middleware('staff')->name('files.move');
+    // Before files/{file}, which would otherwise read "bulk-delete" as a
+    // file id and 404.
+    Route::delete('files/bulk-delete', [FilesController::class, 'bulkDestroy'])->middleware('staff')->name('files.bulk-destroy');
     Route::delete('files/{file}', [FilesController::class, 'destroy'])->middleware('staff')->name('files.destroy');
     Route::post('files/{file}/assignments', [FileAssignmentsController::class, 'store'])->middleware('staff')->name('files.assignments.store');
     Route::delete('files/{file}/assignments', [FileAssignmentsController::class, 'destroy'])->middleware('staff')->name('files.assignments.destroy');

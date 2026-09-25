@@ -1,7 +1,7 @@
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
-import { Archive, ChevronRight, ExternalLink, File as FileIcon, Folder as FolderIcon, FolderPlus, Info, Pencil, X } from 'lucide-react';
+import { Archive, ChevronRight, ExternalLink, File as FileIcon, Folder as FolderIcon, FolderPlus, Info, Pencil, Trash2, X } from 'lucide-react';
 import { FormEventHandler, useEffect, useRef, useState } from 'react';
 
 import { BulkEditFilesDialog, type BulkEditPayload } from '@/components/bulk-edit-files-dialog';
@@ -194,6 +194,19 @@ export default function FilesIndex({
             { file_ids: [...selectedFileIds], ...payload },
             { preserveScroll: true, preserveState: false, onSuccess: () => clearSelection() },
         );
+
+    // Only the selected files this person may delete. The server asks
+    // each one again (FilesController::bulkDestroy); this decides whether
+    // the button shows and what it says.
+    const deletableFileIds = files.filter((file) => selectedFileIds.has(file.id) && file.can_delete).map((file) => file.id);
+
+    const bulkDeleteFiles = () =>
+        router.delete(route('files.bulk-destroy'), {
+            data: { file_ids: deletableFileIds },
+            preserveScroll: true,
+            preserveState: false,
+            onSuccess: () => clearSelection(),
+        });
 
     // A search term or a category filter both switch to a flat, global view,
     // dropping the current folder context.
@@ -591,6 +604,26 @@ export default function FilesIndex({
                                         canSetExpiration={canSetExpiration}
                                         canLimitDownloads={canLimitDownloads}
                                         onConfirm={bulkEditFiles}
+                                    />
+                                )}
+                                {deletableFileIds.length > 0 && (
+                                    <ConfirmDialog
+                                        trigger={
+                                            <Button size="sm" variant="outline" className="text-destructive hover:text-destructive">
+                                                <Trash2 className="size-4" />
+                                                {t('Delete')}
+                                            </Button>
+                                        }
+                                        title={t('Delete the selected files?')}
+                                        description={
+                                            deletableFileIds.length === selectedFileIds.size
+                                                ? t('They will no longer be available to anyone they were shared with.')
+                                                : t(
+                                                      'Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.',
+                                                  )
+                                        }
+                                        confirmLabel={t('Delete files')}
+                                        onConfirm={bulkDeleteFiles}
                                     />
                                 )}
                                 <Button variant="ghost" size="sm" onClick={clearSelection}>

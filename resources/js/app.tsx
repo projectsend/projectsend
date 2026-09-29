@@ -1,5 +1,10 @@
 import '../css/app.css';
 
+// Stylesheets an installed package ships under resources/css, the styling
+// counterpart of the package pages resolved below. Imported after app.css so
+// a package can restyle what core draws; core names no package and no style.
+import.meta.glob('../../vendor/*/*/resources/css/*.css', { eager: true });
+
 import { createInertiaApp, router } from '@inertiajs/react';
 import axios from 'axios';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';

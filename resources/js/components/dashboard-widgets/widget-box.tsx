@@ -23,6 +23,7 @@ export function WidgetBox({ id, title, headerExtra, children }: { id: string; ti
         <div
             ref={setNodeRef}
             style={{ transform: CSS.Transform.toString(transform), transition }}
+            data-slot="card"
             className={`bg-card rounded-lg border p-4 ${isDragging ? 'z-10 opacity-50' : ''}`}
         >
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">

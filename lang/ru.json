@@ -2280,7 +2280,7 @@
     "None of the selected files could be deleted.": "Ни один из выбранных файлов не удалось удалить.",
     "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Удаляются только файлы, которые вам разрешено удалять. Они больше не будут доступны никому, кому были открыты.",
     "On the sign-in and download pages. Leave it off if your logo already says the name.": "На страницах входа и загрузки. Оставьте выключенным, если на логотипе уже есть название.",
-    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Показывается размером до 240 × 80 пикселей, поэтому поместится и широкий, и квадратный логотип. PNG, JPG, GIF или WebP, до 2 МБ.",
+    "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Показывается размером до 320 × 128 пикселей, поэтому поместится и широкий, и квадратный логотип. PNG, JPG, GIF или WebP, до 2 МБ.",
     "Show the site name under the logo": "Показывать название сайта под логотипом",
     "They will no longer be available to anyone they were shared with.": "Они больше не будут доступны никому, кому были открыты.",
     "Uploading into :folder": "Загрузка в: :folder"

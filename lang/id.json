@@ -2280,7 +2280,7 @@
     "None of the selected files could be deleted.": "Tidak ada berkas terpilih yang dapat dihapus.",
     "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Hanya berkas yang boleh Anda hapus yang akan dihapus. Berkas tersebut tidak akan tersedia lagi bagi siapa pun yang sebelumnya menerimanya.",
     "On the sign-in and download pages. Leave it off if your logo already says the name.": "Di halaman masuk dan halaman unduhan. Biarkan nonaktif jika logo Anda sudah memuat nama.",
-    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Ditampilkan hingga 240 × 80 piksel, jadi logo lebar maupun persegi sama-sama muat. PNG, JPG, GIF, atau WebP, hingga 2 MB.",
+    "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Ditampilkan hingga 320 × 128 piksel, jadi logo lebar maupun persegi sama-sama muat. PNG, JPG, GIF, atau WebP, hingga 2 MB.",
     "Show the site name under the logo": "Tampilkan nama situs di bawah logo",
     "They will no longer be available to anyone they were shared with.": "Berkas tersebut tidak akan tersedia lagi bagi siapa pun yang sebelumnya menerimanya.",
     "Uploading into :folder": "Mengunggah ke :folder"

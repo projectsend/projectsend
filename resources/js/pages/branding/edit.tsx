@@ -204,7 +204,7 @@ export default function BrandingEdit({ logo_url, hide_attribution, show_site_nam
                                 onChange={(e) => uploadForm.setData('logo', e.target.files?.[0] ?? null)}
                             />
                             <p className="text-muted-foreground text-sm">
-                                {t('Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.')}
+                                {t('Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.')}
                             </p>
                             <InputError message={uploadForm.errors.logo} />
                             <Button type="submit" disabled={uploadForm.processing || uploadForm.data.logo === null}>

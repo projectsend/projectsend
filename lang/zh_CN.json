@@ -2280,7 +2280,7 @@
     "None of the selected files could be deleted.": "所选文件均无法删除。",
     "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "只会删除你有权删除的文件。这些文件将不再对任何已共享的人开放。",
     "On the sign-in and download pages. Leave it off if your logo already says the name.": "显示在登录页和下载页上。如果你的标志已包含名称，请保持关闭。",
-    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "最大按 240 × 80 像素显示，宽标志和方形标志都能放下。PNG、JPG、GIF 或 WebP，最大 2 MB。",
+    "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "最大按 320 × 128 像素显示，宽标志和方形标志都能放下。PNG、JPG、GIF 或 WebP，最大 2 MB。",
     "Show the site name under the logo": "在标志下方显示站点名称",
     "They will no longer be available to anyone they were shared with.": "这些文件将不再对任何已共享的人开放。",
     "Uploading into :folder": "上传到 :folder"

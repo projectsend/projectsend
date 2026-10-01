@@ -2280,7 +2280,7 @@
     "None of the selected files could be deleted.": "Hakuna faili lililochaguliwa lililoweza kufutwa.",
     "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Mafaili unayoruhusiwa kufuta pekee ndiyo yanayofutwa. Hayatapatikana tena kwa yeyote aliyeshirikishwa nayo.",
     "On the sign-in and download pages. Leave it off if your logo already says the name.": "Kwenye ukurasa wa kuingia na ukurasa wa kupakua. Iache imezimwa ikiwa nembo yako tayari ina jina.",
-    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Huonyeshwa hadi pikseli 240 × 80, kwa hivyo nembo pana na ya mraba zote zinatosha. PNG, JPG, GIF au WebP, hadi MB 2.",
+    "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Huonyeshwa hadi pikseli 320 × 128, kwa hivyo nembo pana na ya mraba zote zinatosha. PNG, JPG, GIF au WebP, hadi MB 2.",
     "Show the site name under the logo": "Onyesha jina la tovuti chini ya nembo",
     "They will no longer be available to anyone they were shared with.": "Hayatapatikana tena kwa yeyote aliyeshirikishwa nayo.",
     "Uploading into :folder": "Inapakia kwenye :folder"

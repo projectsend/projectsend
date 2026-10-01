@@ -2280,7 +2280,7 @@
     "None of the selected files could be deleted.": "Non è stato possibile eliminare nessuno dei file selezionati.",
     "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Vengono eliminati solo i file che hai il permesso di eliminare. Non saranno più disponibili per le persone con cui erano condivisi.",
     "On the sign-in and download pages. Leave it off if your logo already says the name.": "Nelle pagine di accesso e di download. Lascialo disattivato se il tuo logo mostra già il nome.",
-    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Mostrato fino a 240 × 80 pixel, così ci stanno sia un logo largo sia uno quadrato. PNG, JPG, GIF o WebP, fino a 2 MB.",
+    "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Mostrato fino a 320 × 128 pixel, così ci stanno sia un logo largo sia uno quadrato. PNG, JPG, GIF o WebP, fino a 2 MB.",
     "Show the site name under the logo": "Mostra il nome del sito sotto il logo",
     "They will no longer be available to anyone they were shared with.": "Non saranno più disponibili per le persone con cui erano condivisi.",
     "Uploading into :folder": "Caricamento in :folder"

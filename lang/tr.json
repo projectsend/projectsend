@@ -2280,7 +2280,7 @@
     "None of the selected files could be deleted.": "Seçili dosyaların hiçbiri silinemedi.",
     "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Yalnızca silme izniniz olan dosyalar silinir. Paylaşıldıkları hiç kimse için artık erişilebilir olmayacaklar.",
     "On the sign-in and download pages. Leave it off if your logo already says the name.": "Giriş ve indirme sayfalarında. Logonuz adı zaten gösteriyorsa kapalı bırakın.",
-    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "En fazla 240 × 80 piksel olarak gösterilir; böylece hem geniş hem kare logolar sığar. PNG, JPG, GIF veya WebP, en fazla 2 MB.",
+    "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "En fazla 320 × 128 piksel olarak gösterilir; böylece hem geniş hem kare logolar sığar. PNG, JPG, GIF veya WebP, en fazla 2 MB.",
     "Show the site name under the logo": "Site adını logonun altında göster",
     "They will no longer be available to anyone they were shared with.": "Paylaşıldıkları hiç kimse için artık erişilebilir olmayacaklar.",
     "Uploading into :folder": "Yükleme hedefi: :folder"

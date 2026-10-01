@@ -2280,7 +2280,7 @@
     "None of the selected files could be deleted.": "No s'ha pogut eliminar cap dels fitxers seleccionats.",
     "Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.": "Només s'eliminen els fitxers que tens permís per eliminar. Deixaran d'estar disponibles per a tothom amb qui s'havien compartit.",
     "On the sign-in and download pages. Leave it off if your logo already says the name.": "A les pàgines d'inici de sessió i de baixada. Deixa-ho desactivat si el teu logotip ja mostra el nom.",
-    "Shown up to 240 × 80 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Es mostra fins a 240 × 80 píxels, de manera que hi caben tant un logotip ample com un de quadrat. PNG, JPG, GIF o WebP, fins a 2 MB.",
+    "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Es mostra fins a 320 × 128 píxels, de manera que hi caben tant un logotip ample com un de quadrat. PNG, JPG, GIF o WebP, fins a 2 MB.",
     "Show the site name under the logo": "Mostra el nom del lloc sota el logotip",
     "They will no longer be available to anyone they were shared with.": "Deixaran d'estar disponibles per a tothom amb qui s'havien compartit.",
     "Uploading into :folder": "Pujant a :folder"

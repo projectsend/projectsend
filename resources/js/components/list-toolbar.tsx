@@ -12,7 +12,7 @@ export function ListToolbar({ children, showClear, onClear }: { children: ReactN
     const { t } = useTranslation();
 
     return (
-        <div className="mb-4 flex flex-wrap items-end gap-3 rounded-lg border p-4">
+        <div data-slot="list-toolbar" className="mb-4 flex flex-wrap items-end gap-3 rounded-lg border p-4">
             {children}
             {showClear && (
                 <Button type="button" variant="ghost" onClick={onClear}>

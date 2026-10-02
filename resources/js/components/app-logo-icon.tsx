@@ -7,7 +7,9 @@ export default function AppLogoIcon(props: SVGAttributes<SVGElement>) {
     const gradientId = useId();
 
     return (
-        <svg {...props} viewBox="0 0 234.26482 252.25172" xmlns="http://www.w3.org/2000/svg">
+        // Marked so an installed package can restyle the default mark; only
+        // drawn when no logo was uploaded in Branding, which always wins.
+        <svg data-slot="app-logo-default" {...props} viewBox="0 0 234.26482 252.25172" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id={gradientId} gradientUnits="userSpaceOnUse" x1="31.5263" y1="211.0108" x2="197.4637" y2="50.766899">
                     <stop offset="0.1675" stopColor="#5219B3" />

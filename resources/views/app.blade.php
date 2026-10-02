@@ -29,9 +29,16 @@
              there is nothing on the client that could work the name out. --}}
         <meta name="xsrf-cookie" content="{{ \App\Http\Middleware\ValidateCsrfToken::cookieName() }}">
 
-        <link rel="icon" href="/favicon.ico" sizes="48x48">
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        {{-- An installed package may name its own icons in
+             projectsend.icons; they then replace these as a set, so a
+             stray default never outranks one of them in some browser. --}}
+        @forelse (config('projectsend.icons', []) as $icon)
+            <link rel="{{ $icon['rel'] }}" href="{{ $icon['href'] }}"@isset($icon['type']) type="{{ $icon['type'] }}"@endisset @isset($icon['sizes']) sizes="{{ $icon['sizes'] }}"@endisset>
+        @empty
+            <link rel="icon" href="/favicon.ico" sizes="48x48">
+            <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+            <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        @endforelse
 
         @routes
         @viteReactRefresh

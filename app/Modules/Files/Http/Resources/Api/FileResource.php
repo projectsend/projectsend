@@ -129,9 +129,11 @@ class FileResource extends JsonResource
                 'name' => $this->nextVersion->name,
             ]),
 
+            // GET /folders/{id} has the rest, its place in the tree included.
             'folder' => $this->whenLoaded('folder', fn (): ?array => $this->folder === null ? null : [
                 'id' => $this->folder->id,
                 'name' => $this->folder->name,
+                'parent_id' => $this->folder->parent_id,
             ]),
 
             // Name only. The uploader is a user record; their email address

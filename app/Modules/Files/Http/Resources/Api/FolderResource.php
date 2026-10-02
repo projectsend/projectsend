@@ -33,8 +33,7 @@ class FolderResource extends JsonResource
         $identity = app(ClientIdentityScope::class);
         $groupMorph = (new Group)->getMorphClass();
 
-        /** @var list<array{id: int, name: string}> $ancestors */
-        $ancestors = $this->relationLoaded('trail') ? $this->getRelation('trail')->all() : [];
+        $ancestors = $this->ancestors();
 
         return [
             'id' => $this->id,
@@ -64,5 +63,20 @@ class FolderResource extends JsonResource
                 ->values()
                 ->all()),
         ];
+    }
+
+    /**
+     * @return list<array{id: int, name: string}>
+     */
+    private function ancestors(): array
+    {
+        if (! $this->resource->relationLoaded('trail')) {
+            return [];
+        }
+
+        /** @var list<array{id: int, name: string}> $trail */
+        $trail = $this->resource->getRelation('trail')->all();
+
+        return $trail;
     }
 }

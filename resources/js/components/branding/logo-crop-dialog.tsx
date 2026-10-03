@@ -108,15 +108,20 @@ export default function LogoCropDialog({ open, onOpenChange, sourceUrl, savedCro
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="bg-muted/40 flex max-h-[60vh] justify-center overflow-auto rounded border p-2">
-                    <ReactCrop crop={crop} onChange={(_, percent) => setCrop(percent)} keepSelection minWidth={8} minHeight={8}>
-                        <img
-                            src={sourceUrl}
-                            alt=""
-                            onLoad={(e) => onImageLoad(e.currentTarget)}
-                            style={{ imageOrientation: 'none' }}
-                            className="max-h-[56vh] max-w-full"
-                        />
+                <div className="bg-muted/40 flex justify-center rounded border p-2">
+                    {/* The height limit goes on the crop wrapper: the library's
+                        stylesheet gives the image `max-height: inherit`, so a
+                        limit on the image itself is overridden, and a tall logo
+                        would push the bottom handles out of reach. */}
+                    <ReactCrop
+                        crop={crop}
+                        onChange={(_, percent) => setCrop(percent)}
+                        keepSelection
+                        minWidth={8}
+                        minHeight={8}
+                        style={{ maxHeight: '56vh' }}
+                    >
+                        <img src={sourceUrl} alt="" onLoad={(e) => onImageLoad(e.currentTarget)} style={{ imageOrientation: 'none' }} />
                     </ReactCrop>
                 </div>
 

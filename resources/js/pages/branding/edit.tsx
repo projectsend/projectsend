@@ -2,6 +2,7 @@ import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useRef, useState } from 'react';
 
+import LogoCropDialog, { type LogoCropBox } from '@/components/branding/logo-crop-dialog';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -22,6 +23,9 @@ interface Watermark {
 
 interface BrandingEditProps {
     logo_url: string | null;
+    logo_source_url: string | null;
+    logo_crop: LogoCropBox | null;
+    logo_cropped: boolean;
     hide_attribution: boolean;
     show_site_name: boolean;
     watermark: Watermark;
@@ -30,7 +34,7 @@ interface BrandingEditProps {
 
 type Tab = 'logo' | 'watermark' | 'attribution';
 
-export default function BrandingEdit({ logo_url, hide_attribution, show_site_name, watermark, watermark_positions }: BrandingEditProps) {
+export default function BrandingEdit({ logo_url, logo_source_url, logo_crop, logo_cropped, hide_attribution, show_site_name, watermark, watermark_positions }: BrandingEditProps) {
     const { t } = useTranslation();
     const { capabilities } = usePage<SharedData>().props;
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -135,6 +139,14 @@ export default function BrandingEdit({ logo_url, hide_attribution, show_site_nam
         removeForm.delete(route('branding.destroy'), { preserveScroll: true, preserveState: true });
     };
 
+    // Cropping is optional: an upload is used whole until somebody crops it.
+    const [cropping, setCropping] = useState(false);
+    const restoreForm = useForm({});
+
+    const restore = () => {
+        restoreForm.delete(route('branding.logo.restore'), { preserveScroll: true, preserveState: true });
+    };
+
     const submitWatermark: FormEventHandler = (e) => {
         e.preventDefault();
         watermarkForm.post(route('branding.watermark.update'), {
@@ -212,10 +224,31 @@ export default function BrandingEdit({ logo_url, hide_attribution, show_site_nam
                             </Button>
                         </form>
 
-                        {logo_url && (
-                            <Button variant="outline" onClick={remove} disabled={removeForm.processing}>
-                                {t('Remove logo')}
-                            </Button>
+                        {logo_url && logo_source_url && (
+                            <div className="flex flex-wrap items-center gap-2">
+                                <Button variant="outline" onClick={() => setCropping(true)}>
+                                    {t('Crop')}
+                                </Button>
+                                {logo_cropped && (
+                                    <Button variant="outline" onClick={restore} disabled={restoreForm.processing}>
+                                        {t('Restore original')}
+                                    </Button>
+                                )}
+                                <Button variant="outline" onClick={remove} disabled={removeForm.processing}>
+                                    {t('Remove logo')}
+                                </Button>
+                            </div>
+                        )}
+
+                        {logo_source_url && (
+                            // Keyed by the upload so a new logo opens on a fresh box.
+                            <LogoCropDialog
+                                key={logo_source_url}
+                                open={cropping}
+                                onOpenChange={setCropping}
+                                sourceUrl={logo_source_url}
+                                savedCrop={logo_crop}
+                            />
                         )}
 
                         <form onSubmit={submitSiteName} className="space-y-4 border-t pt-6">

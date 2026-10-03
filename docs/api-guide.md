@@ -80,6 +80,10 @@ list for your account.
 | `upload` | list files, upload |
 | `edit_files` / `edit_others_files` | read and edit file metadata, share files |
 | `delete_files` / `delete_others_files` | delete files |
+| `upload` / `edit_files` / `edit_others_files` | list and read folders |
+| `create_own_folders` | create folders (with `upload`, as on the web) |
+| `edit_files` / `edit_others_files` | rename, move and share folders |
+| `delete_files` / `delete_others_files` | delete folders |
 | `set_file_expiration_date` | set `expires_at` when editing |
 | `set_file_categories` | set `categories` when editing |
 | `limit_downloads` | set `download_limit` and `download_limit_scope` when editing |
@@ -88,7 +92,7 @@ list for your account.
 | `manage_clients` | list clients |
 | `create_clients` / `edit_clients` / `delete_clients` | create, read and edit, delete clients; `edit_clients` also removes a client's two-factor authentication |
 | `manage_groups` | list groups |
-
+| `create_groups` / `edit_groups` / `delete_groups` | create, read and edit (including membership), delete groups |
 | `moderate_comments` | list what is awaiting approval, and approve it |
 | `manage_users` | list staff accounts and the roles you may assign |
 | `create_users` / `edit_users` / `delete_users` | create, read and edit, delete staff accounts; `edit_users` also removes an account's two-factor authentication |
@@ -99,10 +103,10 @@ a per-role permission, so the file abilities are the gate — the same question 
 endpoint also lets an author remove their own within the editing window and that is not moderation;
 it additionally requires the token's owner to hold `moderate_comments`, checked live against the
 account rather than carried by the token.
-| `create_groups` / `edit_groups` / `delete_groups` | create, read and edit (including membership), delete groups |
 
 Where an endpoint accepts several — `edit_files` *or* `edit_others_files` — holding either is enough,
-and which one applies to a given file depends on whether you uploaded it.
+and which one applies to a given file depends on whether you uploaded it. For a folder, it depends
+on whether you created it.
 
 Every operation in the OpenAPI document names its own requirement.
 
@@ -359,6 +363,46 @@ two are narrowed to what your token may see: a counterpart outside your reach re
 
 ---
 
+## Folders
+
+`GET /folders` lists the folders you can see in the library, and polls like every other list.
+`parent_id=12` lists the folders directly inside folder 12, and `top_level=1` the folders at the top.
+
+Each folder carries `parent_id`, and its place in the tree as `ancestors` (root first, as
+`{id, name}`) and as a display `path` such as `Clients / Acme / 2026`. Match on ids rather than on
+`path`: a folder's name may itself contain ` / `. If your token is limited to some clients, the
+trail starts at the first folder you can see.
+
+Creating a folder:
+
+```bash
+curl -X POST -H "Authorization: Bearer YOUR_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{"name":"Acme","parent_id":12}' \
+     https://your-install.example.com/api/v1/folders
+```
+
+A new folder answers `201`. If a folder with that name already exists in the same place, you get
+that folder back with a `200` instead, so a sync job can create a folder without looking first.
+
+`PATCH /folders/{id}` takes `name`, `parent_id`, or both. `parent_id: null` moves the folder to the
+top. A folder moves with everything inside it, and cannot go into itself or one of its own
+subfolders.
+
+**Deleting a folder that is not empty must be asked for.** `DELETE /folders/{id}` deletes an empty
+folder. A folder holding files or other folders answers `409` unless you send
+`content_action=cascade_delete`, which deletes it with every folder and file inside it, as the web
+screen does. There is no restore. The cascade is refused with `403` if the folder holds a file your
+token may not delete.
+
+Sharing works as it does for a file, at `/folders/{id}/assignments`. A client a folder is shared
+with sees everything inside it, including what is added later.
+
+A folder's `public` flag is reported but cannot be changed here: making a folder public publishes
+everything in it, and is done on the web.
+
+---
+
 ## Staff accounts
 
 `/users` manages the people who administer the installation, and the role assigned to each of them.
@@ -443,7 +487,8 @@ sign-in — this un-sticks an account, it does not exempt one.
 
 ## Retries and duplicate requests
 
-Assignments and group membership are idempotent. **Creating a file or a client is not** — a retried
+Assignments and group membership are idempotent, and so is creating a folder (see above).
+**Creating a file or a client is not** — a retried
 `POST` that actually succeeded the first time creates a second one. Until idempotency keys exist,
 check before retrying a create you are unsure about.
 
@@ -506,6 +551,7 @@ Recorded so they read as decisions rather than gaps:
 - **Webhooks.** Poll instead; see above.
 - **Idempotency keys.** See "Retries" above.
 - **Share links, notifications, thumbnails, settings.**
+- **Making a folder public**, or changing its public page. See "Folders" above.
 - **Creating and deleting roles.** `GET /roles` reads them and `role_id` assigns one; defining a
   role's permission set stays in the UI.
 

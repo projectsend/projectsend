@@ -13,6 +13,8 @@ use App\Modules\Comments\Http\Controllers\Api\CommentModerationController;
 use App\Modules\Comments\Http\Controllers\Api\FileCommentsController;
 use App\Modules\Files\Http\Controllers\Api\FileAssignmentsController;
 use App\Modules\Files\Http\Controllers\Api\FilesController;
+use App\Modules\Files\Http\Controllers\Api\FolderAssignmentsController as ApiFolderAssignmentsController;
+use App\Modules\Files\Http\Controllers\Api\FoldersController;
 use App\Modules\Files\Http\Controllers\Api\FileVersionsController as ApiFileVersionsController;
 use App\Modules\Files\Http\Controllers\ChunkedUploadsController;
 use App\Modules\Files\Http\Controllers\FileDownloadController;
@@ -159,6 +161,40 @@ Route::middleware(['auth:sanctum', 'api-active', 'staff-token'])->group(function
         Route::delete('files/{file}/version', [ApiFileVersionsController::class, 'destroy'])
             ->name('api.files.version.destroy');
     });
+
+    /*
+    |----------------------------------------------------------------------
+    | Folders
+    |----------------------------------------------------------------------
+    |
+    | Reading is FolderPolicy::view()'s staff branch, the same three keys
+    | as reading files. Creating is `create_own_folders`, as on the web
+    | (the controller asks for `upload` with it, as the web does). Renaming,
+    | moving and sharing are "may edit", deleting is "may delete": both
+    | keys of each pair appear, and FolderPolicy decides which one applies
+    | to a given folder.
+    |
+    */
+    Route::middleware('token-can:upload,edit_files,edit_others_files')->group(function () {
+        Route::get('folders', [FoldersController::class, 'index'])->name('api.folders.index');
+        Route::get('folders/{folder}', [FoldersController::class, 'show'])->name('api.folders.show');
+    });
+
+    Route::post('folders', [FoldersController::class, 'store'])
+        ->middleware('token-can:create_own_folders')
+        ->name('api.folders.store');
+
+    Route::middleware('token-can:edit_files,edit_others_files')->group(function () {
+        Route::patch('folders/{folder}', [FoldersController::class, 'update'])->name('api.folders.update');
+        Route::post('folders/{folder}/assignments', [ApiFolderAssignmentsController::class, 'store'])
+            ->name('api.folders.assignments.store');
+        Route::delete('folders/{folder}/assignments', [ApiFolderAssignmentsController::class, 'destroy'])
+            ->name('api.folders.assignments.destroy');
+    });
+
+    Route::delete('folders/{folder}', [FoldersController::class, 'destroy'])
+        ->middleware('token-can:delete_files,delete_others_files')
+        ->name('api.folders.destroy');
 
     /*
     |----------------------------------------------------------------------

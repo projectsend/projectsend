@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Modules\Platform\Branding\LogoCropper;
 use App\Modules\Platform\Branding\Models\BrandingSetting;
 use App\Modules\Platform\Branding\Watermark\WatermarkPosition;
 use App\Modules\Platform\Branding\Watermark\WatermarkSample;
@@ -41,6 +42,12 @@ class BrandingController extends Controller
 
         return Inertia::render('branding/edit', [
             'logo_url' => $setting->logoUrl(),
+            // The upload the logo was cut from, and the box it was cut
+            // with, so the cropper opens on the whole picture with the
+            // last crop already drawn.
+            'logo_source_url' => $setting->logoSourceUrl(),
+            'logo_crop' => $setting->logo_crop,
+            'logo_cropped' => $setting->logoIsCropped(),
             // Read, never written here. Hiding attribution is the
             // white-label half and stays a hosted feature: the switch is
             // rendered only where Capability::AttributionHide is held, and
@@ -60,7 +67,7 @@ class BrandingController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, LogoCropper $cropper): RedirectResponse
     {
         $validated = $request->validate([
             'logo' => ['required', 'image', 'max:2048'],
@@ -70,14 +77,62 @@ class BrandingController extends Controller
         $upload = $validated['logo'];
 
         $setting = BrandingSetting::current();
+        $previous = $cropper->files($setting);
 
-        if ($setting->logo_path !== null) {
-            Storage::disk('public')->delete($setting->logo_path);
-        }
+        // A new upload starts uncropped: the old crop's box describes a
+        // different picture.
+        $setting->update([
+            'logo_path' => $this->storeImage($upload),
+            'logo_original_path' => null,
+            'logo_crop' => null,
+        ]);
 
-        $setting->update(['logo_path' => $this->storeImage($upload)]);
+        Storage::disk('public')->delete($previous);
 
         return back()->with('success', __('Logo updated.'));
+    }
+
+    /**
+     * Cut the logo down to a box drawn on the uploaded image. Optional: an
+     * uploaded logo is used whole until somebody crops it.
+     */
+    public function cropLogo(Request $request, LogoCropper $cropper): RedirectResponse
+    {
+        $validated = $request->validate([
+            'x' => ['required', 'integer', 'min:0'],
+            'y' => ['required', 'integer', 'min:0'],
+            'width' => ['required', 'integer', 'min:1'],
+            'height' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $setting = BrandingSetting::query()->first();
+
+        if ($setting === null) {
+            return back()->withErrors(['logo' => __('Upload a logo before cropping it.')]);
+        }
+
+        $cropper->crop($setting, [
+            'x' => (int) $validated['x'],
+            'y' => (int) $validated['y'],
+            'width' => (int) $validated['width'],
+            'height' => (int) $validated['height'],
+        ]);
+
+        return back()->with('success', __('Logo cropped.'));
+    }
+
+    /**
+     * Go back to the logo exactly as it was uploaded.
+     */
+    public function restoreLogo(LogoCropper $cropper): RedirectResponse
+    {
+        $setting = BrandingSetting::query()->first();
+
+        if ($setting !== null) {
+            $cropper->restore($setting);
+        }
+
+        return back()->with('success', __('Original logo restored.'));
     }
 
     /**
@@ -97,13 +152,14 @@ class BrandingController extends Controller
         return back();
     }
 
-    public function destroy(): RedirectResponse
+    public function destroy(LogoCropper $cropper): RedirectResponse
     {
         $setting = BrandingSetting::query()->first();
 
-        if ($setting?->logo_path !== null) {
-            Storage::disk('public')->delete($setting->logo_path);
-            $setting->update(['logo_path' => null]);
+        if ($setting !== null && $setting->logo_path !== null) {
+            $files = $cropper->files($setting);
+            $setting->update(['logo_path' => null, 'logo_original_path' => null, 'logo_crop' => null]);
+            Storage::disk('public')->delete($files);
         }
 
         return back()->with('success', __('Logo removed.'));

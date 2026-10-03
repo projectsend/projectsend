@@ -14,6 +14,8 @@ use App\Modules\Platform\Branding\Watermark\WatermarkPosition;
  *
  * @property int $id
  * @property string|null $logo_path
+ * @property string|null $logo_original_path
+ * @property array{x: int, y: int, width: int, height: int}|null $logo_crop
  * @property bool $watermark_enabled
  * @property string|null $watermark_path
  * @property WatermarkPosition $watermark_position
@@ -33,6 +35,7 @@ class BrandingSetting extends Model
     protected $casts = [
         'watermark_enabled' => 'boolean',
         'show_site_name' => 'boolean',
+        'logo_crop' => 'array',
         'watermark_position' => WatermarkPosition::class,
         'watermark_size' => 'integer',
         'watermark_opacity' => 'integer',
@@ -63,6 +66,28 @@ class BrandingSetting extends Model
     public function logoUrl(): ?string
     {
         return $this->logo_path === null ? null : Storage::disk('public')->url($this->logo_path);
+    }
+
+    /**
+     * The file the logo was cut from: the upload itself when it was never
+     * cropped, since then `logo_path` is that upload. A crop always starts
+     * from here, never from a previous crop.
+     */
+    public function logoSourcePath(): ?string
+    {
+        return $this->logo_original_path ?? $this->logo_path;
+    }
+
+    public function logoSourceUrl(): ?string
+    {
+        $path = $this->logoSourcePath();
+
+        return $path === null ? null : Storage::disk('public')->url($path);
+    }
+
+    public function logoIsCropped(): bool
+    {
+        return $this->logo_original_path !== null;
     }
 
     public function watermarkUrl(): ?string

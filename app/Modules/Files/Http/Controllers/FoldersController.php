@@ -252,7 +252,7 @@ class FoldersController extends Controller
 
         return Inertia::render('files/index', [
             'folder' => $current === null ? null : ['id' => $current->id, 'name' => $current->name],
-            'breadcrumb' => $flat ? [] : $this->breadcrumbs->for($current),
+            'breadcrumb' => $flat ? [] : $this->breadcrumb($user, $current),
             'folders' => $folderRows->map(fn (Folder $folder): array => $this->folderRow($user, $folder))->all(),
             'files' => $fileRows->map(fn (File $file): array => $this->fileRow($user, $file, $commentCounts, $pendingCounts, $versions))->all(),
             'pagination' => Pagination::meta($sliced['paginator']),
@@ -426,7 +426,7 @@ class FoldersController extends Controller
             'public_url' => $folder->public
                 ? $this->publicUrl->for($folder)
                 : null,
-            'breadcrumb' => $this->breadcrumbs->for($folder),
+            'breadcrumb' => $this->breadcrumb($user, $folder),
             'can_update' => Gate::forUser($user)->allows('update', $folder),
             'can_manage_public' => $user->can('upload_public'),
             ...$this->shareTargets->forSubject($folder, $user),
@@ -449,6 +449,11 @@ class FoldersController extends Controller
         ]);
 
         $parent = $this->resolveParent($user, $validated['parent_id'] ?? null);
+
+        // A folder inside a public one is public, so creating it there is
+        // placing content into a public folder: the question every other
+        // write of a parent_id already asks (Folder::uploadableBy).
+        abort_unless(Folder::uploadableBy($user, $parent), 403);
 
         $folder = $this->folders->create($validated['name'], $parent);
 
@@ -629,6 +634,31 @@ class FoldersController extends Controller
                 }
             })
             ->count();
+    }
+
+    /**
+     * The trail to $folder, trimmed for a client-scoped staff member to
+     * start at the first folder their library shows them: one of their
+     * clients' folders can sit inside somebody else's tree, and the names
+     * above it are not theirs to read. The client portal trims the same way.
+     *
+     * @return list<array{id: int, name: string}>
+     */
+    private function breadcrumb(User $user, ?Folder $folder): array
+    {
+        if ($folder === null || ! $user->isClientScoped()) {
+            return $this->breadcrumbs->for($folder);
+        }
+
+        $visibleIds = array_values(array_map(
+            'intval',
+            $this->scope->folders($user)
+                ->whereIn('folders.id', [...$folder->ancestorIds(), $folder->id])
+                ->pluck('folders.id')
+                ->all(),
+        ));
+
+        return $this->breadcrumbs->visible($folder, $visibleIds);
     }
 
     private function resolveParent(?User $user, ?int $parentId): ?Folder

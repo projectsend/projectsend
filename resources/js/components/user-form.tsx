@@ -1,10 +1,11 @@
+import { Link } from '@inertiajs/react';
 import { X } from 'lucide-react';
 
 import InputError from '@/components/input-error';
+import { PasswordRequirements } from '@/components/password-requirements';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { PasswordRequirements } from '@/components/password-requirements';
 import { useTranslation } from '@/hooks/use-translation';
 
 export interface AssignableRole {
@@ -31,6 +32,12 @@ interface UserFormProps {
     assignedClients: number[];
     onAssignedClientsChange: (ids: number[]) => void;
     passwordOptional: boolean;
+    /**
+     * Editing your own account: the email address and password are changed
+     * from your profile, which asks for your current password first, so
+     * this form shows the address and leaves both alone.
+     */
+    ownAccount?: boolean;
     errors: Partial<Record<string, string>>;
 }
 
@@ -46,6 +53,7 @@ export function UserForm({
     assignedClients,
     onAssignedClientsChange,
     passwordOptional,
+    ownAccount = false,
     errors,
 }: UserFormProps) {
     const { t } = useTranslation();
@@ -62,7 +70,23 @@ export function UserForm({
 
             <div className="grid gap-2">
                 <Label htmlFor="email">{t('Email address')}</Label>
-                <Input id="email" type="email" value={email} onChange={(e) => onChange('email', e.target.value)} required autoComplete="off" />
+                <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => onChange('email', e.target.value)}
+                    required
+                    readOnly={ownAccount}
+                    autoComplete="off"
+                />
+                {ownAccount && (
+                    <p className="text-muted-foreground text-sm">
+                        {t('Change your own email address and password from your profile.')}{' '}
+                        <Link href={route('profile.edit')} className="underline underline-offset-4">
+                            {t('Go to your profile')}
+                        </Link>
+                    </p>
+                )}
                 <InputError message={errors.email} />
             </div>
 
@@ -92,32 +116,37 @@ export function UserForm({
                 />
             )}
 
-            <div className="grid gap-2">
-                <Label htmlFor="password">{passwordOptional ? t('New password (leave blank to keep current)') : t('Password')}</Label>
-                <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => onChange('password', e.target.value)}
-                    required={!passwordOptional}
-                    autoComplete="new-password"
-                />
-                <PasswordRequirements />
-                <InputError message={errors.password} />
-            </div>
+            {!ownAccount && (
+                <>
+                    <div className="grid gap-2">
+                        <Label htmlFor="password">{passwordOptional ? t('New password (leave blank to keep current)') : t('Password')}</Label>
+                        <Input
+                            id="password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => onChange('password', e.target.value)}
+                            required={!passwordOptional}
+                            autoComplete="new-password"
+                        />
+                        <PasswordRequirements />
+                        <InputError message={errors.password} />
+                    </div>
 
-            <div className="grid gap-2">
-                <Label htmlFor="password_confirmation">{t('Confirm password')}</Label>
-                <Input
-                    id="password_confirmation"
-                    type="password"
-                    value={passwordConfirmation}
-                    onChange={(e) => onChange('password_confirmation', e.target.value)}
-                    required={!passwordOptional || password !== ''}
-                    autoComplete="new-password"
-                />
-                <InputError message={errors.password_confirmation} />
-            </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="password_confirmation">{t('Confirm password')}</Label>
+                        <Input
+                            id="password_confirmation"
+                            type="password"
+                            value={passwordConfirmation}
+                            onChange={(e) => onChange('password_confirmation', e.target.value)}
+                            required={!passwordOptional || password !== ''}
+                            autoComplete="new-password"
+                        />
+                        <InputError message={errors.password_confirmation} />
+                    </div>
+                </>
+            )}
+            {ownAccount && <InputError message={errors.password} />}
         </div>
     );
 }

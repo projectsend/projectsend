@@ -128,6 +128,7 @@ export default function UsersEdit({
                         assignedClients={data.assigned_clients}
                         onAssignedClientsChange={(ids) => setData('assigned_clients', ids)}
                         passwordOptional
+                        ownAccount={is_self}
                         errors={errors}
                     />
 

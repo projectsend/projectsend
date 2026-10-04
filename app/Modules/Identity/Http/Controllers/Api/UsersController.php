@@ -182,6 +182,15 @@ class UsersController extends Controller
             'assigned_clients.*' => ['integer', Rule::in($this->accounts->assignableClientIds($actor))],
         ]);
 
+        // Your own email address and password are changed from your
+        // profile, which asks for your current password. A token cannot be
+        // asked for one, so here the answer is no.
+        abort_if(
+            $this->accounts->ownCredentialChanges($actor, $user, $validated['email'] ?? null, $validated['password'] ?? null) !== [],
+            403,
+            __('Change your own email address and password from your profile.'),
+        );
+
         // Read through Request::boolean() rather than off the validated
         // array, for the reason RolesController::guardScopeRemoval spells
         // out: the `boolean` rule accepts 0 and "0" as well as false but
@@ -274,7 +283,14 @@ class UsersController extends Controller
     {
         abort_unless($user->isStaff(), 404);
 
-        $this->accounts->guardTarget($this->actor($request), $user);
+        $actor = $this->actor($request);
+        $this->accounts->guardTarget($actor, $user);
+
+        // The web asks for your password before this (password.confirm),
+        // and a token cannot give one. On your own account it would let a
+        // token clear the second factor standing between it and a browser
+        // session as you.
+        abort_if($user->is($actor), 403, __('Remove your own two-factor authentication from your profile.'));
 
         $twoFactor->reset($user);
 

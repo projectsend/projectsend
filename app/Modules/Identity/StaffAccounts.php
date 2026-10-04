@@ -162,6 +162,42 @@ class StaffAccounts
     }
 
     /**
+     * Which of your own credentials this change would replace: a different
+     * email address, or a new password. Empty when the target is somebody
+     * else, or when nothing that signs the account in is changing.
+     *
+     * Your own are changed from your profile, which asks for your current
+     * password first (GHSA-f32x-fgmp-q353). The staff screen and the API
+     * must not be a second door to them. Over the API that door was wider
+     * still: a token limited to manage_users and edit_users could give its
+     * own owner a password it chose, and then sign in as the owner with
+     * every ability the token had been denied.
+     *
+     * The email address counts because it is how a password is recovered:
+     * an address you control is a password you can set.
+     *
+     * @return list<'email'|'password'>
+     */
+    public function ownCredentialChanges(User $actor, User $target, ?string $email, ?string $password): array
+    {
+        if (! $target->is($actor)) {
+            return [];
+        }
+
+        $fields = [];
+
+        if ($email !== null && mb_strtolower($email) !== mb_strtolower($target->email)) {
+            $fields[] = 'email';
+        }
+
+        if ($password !== null && $password !== '') {
+            $fields[] = 'password';
+        }
+
+        return $fields;
+    }
+
+    /**
      * Refuse any change that would leave the installation without an
      * active administrator.
      */
@@ -297,11 +333,23 @@ class StaffAccounts
 
         $user->fill(array_intersect_key($attributes, array_flip(['name', 'email', 'role_id', 'active'])));
 
-        if (is_string($attributes['password'] ?? null) && $attributes['password'] !== '') {
+        $passwordReplaced = is_string($attributes['password'] ?? null) && $attributes['password'] !== '';
+
+        if ($passwordReplaced) {
             $user->password = $attributes['password'];
         }
 
         $user->save();
+
+        // Somebody else gave this account a new password: whatever had been
+        // holding it, a person or a stolen credential, is ended with it.
+        // Browser sessions end on their own (AuthenticateSession reads the
+        // password hash), but API tokens do not, and a reset that left the
+        // previous holder's token working would not be a reset. Never your
+        // own password: both callers refuse that (ownCredentialChanges).
+        if ($passwordReplaced) {
+            $user->tokens()->delete();
+        }
 
         if ($assignedClients !== null) {
             $this->syncAssignedClients($user, (int) $user->role_id, $assignedClients);

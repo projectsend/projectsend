@@ -226,6 +226,23 @@ class UsersController extends Controller
             ]);
         }
 
+        // Your own email address and password are changed from your
+        // profile, which asks for your current password first; this screen
+        // does not, so it does not change them.
+        $ownCredentials = $this->accounts->ownCredentialChanges(
+            $this->actor(),
+            $user,
+            $validated['email'],
+            is_string($validated['password'] ?? null) ? $validated['password'] : null,
+        );
+
+        if ($ownCredentials !== []) {
+            throw ValidationException::withMessages(array_fill_keys(
+                $ownCredentials,
+                __('Change your own email address and password from your profile.'),
+            ));
+        }
+
         $this->accounts->update($user, [
             'name' => $validated['name'],
             'email' => $validated['email'],

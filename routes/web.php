@@ -126,6 +126,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['staff', 'can:import_orphans'])->group(function () {
         Route::get('files/orphans', [OrphanFilesController::class, 'index'])->name('orphan-files.index');
         Route::post('files/orphans/import', [OrphanFilesController::class, 'import'])->name('orphan-files.import');
+        Route::get('files/orphans/import-status', [OrphanFilesController::class, 'importStatus'])->name('orphan-files.import-status');
         Route::post('files/orphans/delete', [OrphanFilesController::class, 'destroy'])->name('orphan-files.delete');
     });
 

@@ -5,9 +5,12 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Files\Jobs\ImportOrphanFilesJob;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\OrphanImportProgress;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
 use Inertia\Testing\AssertableInertia;
@@ -29,6 +32,23 @@ function makeAdoptedFile(User $uploader, string $path, string $disk = 'files'): 
         'mime_type' => 'text/plain',
         'size' => 11,
     ]);
+}
+
+/**
+ * 30 importable .txt files under 2026/07/batch, plus one empty and one
+ * restricted file there and one importable file outside it.
+ */
+function makeBatchOrphans(): void
+{
+    app(Settings::class)->set(Setting::UploadTypeRestriction, 'all');
+    app(Settings::class)->set(Setting::AllowedUploadExtensions, ['txt']);
+
+    foreach (range(1, 30) as $i) {
+        makeOrphanFile(sprintf('2026/07/batch/%02d.txt', $i));
+    }
+    makeOrphanFile('2026/07/batch/empty.txt', '');
+    makeOrphanFile('2026/07/batch/shell.php');
+    makeOrphanFile('2026/07/elsewhere.txt');
 }
 
 function orphanImport(array $items): TestResponse
@@ -213,6 +233,86 @@ test('importing multiple orphans at once stays on the list rather than picking o
     foreach ($importedIds as $id) {
         expect($response->headers->get('Location'))->not->toBe(route('files.edit', $id));
     }
+});
+
+test('import all queues a background run for every importable match instead of importing in the request', function () {
+    Queue::fake();
+    makeBatchOrphans();
+
+    $this->actingAs($this->admin)
+        ->postJson('/files/orphans/import', ['all' => true, 'search' => 'batch'])
+        ->assertRedirect();
+
+    expect(File::query()->count())->toBe(0);
+    Queue::assertPushed(ImportOrphanFilesJob::class, 1);
+
+    $this->getJson('/files/orphans/import-status')
+        ->assertOk()
+        ->assertJson(['status' => 'running', 'total' => 30, 'imported' => 0]);
+});
+
+test('the background run imports every match across as many chunks as it takes, then reports finished', function () {
+    makeBatchOrphans();
+
+    app(OrphanImportProgress::class)->tryStart(30);
+
+    // A zero budget makes every chunk stop after one file, so the run has
+    // to hand over to the next chunk 29 times to finish.
+    ImportOrphanFilesJob::dispatch($this->admin->id, 'batch', budgetSeconds: 0);
+
+    expect(File::query()->count())->toBe(30)
+        ->and(File::query()->where('path', '2026/07/elsewhere.txt')->exists())->toBeFalse()
+        ->and(File::query()->where('uploaded_by', $this->admin->id)->count())->toBe(30);
+
+    $this->actingAs($this->admin)->getJson('/files/orphans/import-status')
+        ->assertJson(['status' => 'finished', 'total' => 30, 'imported' => 30]);
+});
+
+test('while a run is in progress no other import is accepted, so nothing is adopted twice', function () {
+    Queue::fake();
+    makeOrphanFile('2026/07/one.txt');
+
+    app(OrphanImportProgress::class)->tryStart(1);
+
+    $this->actingAs($this->admin);
+    orphanImport([['disk' => 'files', 'path' => '2026/07/one.txt']])->assertUnprocessable();
+    $this->postJson('/files/orphans/import', ['all' => true])->assertUnprocessable();
+
+    expect(File::query()->count())->toBe(0);
+    Queue::assertNothingPushed();
+});
+
+test('a run that stops making progress is reported as stalled and no longer blocks a new one', function () {
+    Queue::fake();
+    makeOrphanFile('2026/07/one.txt');
+
+    app(OrphanImportProgress::class)->tryStart(5);
+    $this->travel(6)->minutes();
+
+    $this->actingAs($this->admin)->getJson('/files/orphans/import-status')
+        ->assertJson(['status' => 'stalled', 'total' => 5, 'imported' => 0]);
+
+    $this->postJson('/files/orphans/import', ['all' => true])->assertRedirect();
+    Queue::assertPushed(ImportOrphanFilesJob::class, 1);
+});
+
+test('a run whose job fails is reported as failed with the reason', function () {
+    app(OrphanImportProgress::class)->tryStart(5);
+
+    (new ImportOrphanFilesJob($this->admin->id, null))->failed(new RuntimeException('Disk unreachable'));
+
+    $this->actingAs($this->admin)->getJson('/files/orphans/import-status')
+        ->assertJson(['status' => 'failed', 'error' => 'Disk unreachable']);
+});
+
+test('import all with nothing importable queues nothing', function () {
+    Queue::fake();
+    makeOrphanFile('2026/07/empty.txt', '');
+
+    $this->actingAs($this->admin)->postJson('/files/orphans/import', ['all' => true])->assertRedirect();
+
+    Queue::assertNothingPushed();
+    $this->getJson('/files/orphans/import-status')->assertOk()->assertExactJson([]);
 });
 
 test('a 0-byte orphan cannot be imported but can still be deleted', function () {

@@ -1,4 +1,5 @@
 import InputError from '@/components/input-error';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -128,6 +129,20 @@ export function ApiTokenForm({ values, setValue, errors, availableAbilities, max
                         );
                     })}
                 </div>
+
+                {/* Both reach other people's sign-in: setting a password and
+                    removing a second factor are how an administrator lets a
+                    locked-out person back in, so a token holding either can
+                    become the accounts it may edit. */}
+                {(values.abilities.includes('edit_clients') || values.abilities.includes('edit_users')) && (
+                    <Alert>
+                        <AlertDescription>
+                            {t(
+                                'This token can set passwords and remove two-factor authentication on the accounts it may edit, so whoever holds it can sign in as those accounts. Choose these abilities only for a holder you would trust with the accounts themselves.',
+                            )}
+                        </AlertDescription>
+                    </Alert>
+                )}
 
                 <InputError message={errors.abilities ?? errors['abilities.0']} />
             </div>

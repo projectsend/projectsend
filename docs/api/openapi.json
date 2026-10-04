@@ -4034,7 +4034,7 @@
             },
             "patch": {
                 "operationId": "users.update",
-                "description": "PATCH semantics: an absent key means \"leave alone\", not \"clear\".\nSending `assigned_clients` replaces the whole list; omitting it\nleaves it, except that moving to a role which is not client-scoped\nclears it either way.\n\nRefused with a 422 if the change would leave the installation with\nno active administrator, or if you would be deactivating yourself.\n\nRequires a token with the ability: `edit_users`.",
+                "description": "PATCH semantics: an absent key means \"leave alone\", not \"clear\".\nSending `assigned_clients` replaces the whole list; omitting it\nleaves it, except that moving to a role which is not client-scoped\nclears it either way.\n\nRefused with a 422 if the change would leave the installation with\nno active administrator, or if you would be deactivating yourself.\n\nYour own email address and password cannot be changed here: that is\na `403`. Change them from your profile in the web interface, which\nasks for your current password. Setting somebody else's password\nsigns them out of the API: every token they hold is revoked.\n\nRequires a token with the ability: `edit_users`.",
                 "summary": "Update a staff account, including the role assigned to it",
                 "tags": [
                     "Users"
@@ -4108,6 +4108,28 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "examples": [
+                                                "Change your own email address and password from your profile."
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
                     },
@@ -4161,7 +4183,7 @@
         "/users/{user}/two-factor": {
             "delete": {
                 "operationId": "users.two-factor.destroy",
-                "description": "The remedy for a locked-out account: somebody whose authenticator\napp and recovery codes are both gone cannot sign in, and nobody else\ncan open the account for them either. Afterwards the account signs\nin with its password alone, and \u2014 if this installation enforces\ntwo-factor authentication for staff \u2014 is asked to enrol again on its\nnext request.\n\nThe account holder is emailed that this happened, and the action is\nrecorded in the activity log against the caller. Answers 204 whether\nor not a second factor was actually in force.\n\nRequires a token with the ability: `edit_users`.",
+                "description": "The remedy for a locked-out account: somebody whose authenticator\napp and recovery codes are both gone cannot sign in, and nobody else\ncan open the account for them either. Afterwards the account signs\nin with its password alone, and \u2014 if this installation enforces\ntwo-factor authentication for staff \u2014 is asked to enrol again on its\nnext request.\n\nThe account holder is emailed that this happened, and the action is\nrecorded in the activity log against the caller. Answers 204 whether\nor not a second factor was actually in force.\n\nNot for your own account, which is a `403`: remove your own second\nfactor from your profile in the web interface.\n\nRequires a token with the ability: `edit_users`.",
                 "summary": "Remove a staff account's two-factor authentication",
                 "tags": [
                     "Users"
@@ -4185,6 +4207,28 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {}
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "examples": [
+                                                "Remove your own two-factor authentication from your profile."
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
                                 }
                             }
                         }

@@ -10,6 +10,22 @@ Anything under **⚠️ Important — do these yourself** is something you have 
 we did. It sits at the top of a release for that reason. Older entries call the same section
 **Upgrade notes**.
 
+## Unreleased
+
+**Fixed**
+
+- **An API token can no longer change its own owner's password, email address or second factor,
+  and neither can the staff screen without your current password.** Reported by
+  [@simjiun](https://github.com/simjiun).
+
+  *Who this affected:* installations where someone holds an API token with "Manage users" and
+  "Edit users". Such a token could give its own owner a new password, remove their second factor,
+  and then sign in as them with everything they can do, including abilities the token was never
+  given. The same staff screen also let a signed-in administrator change their own email address
+  or password without the current password the profile asks for. Your own credentials are now
+  changed only from your profile. Setting *someone else's* password now also revokes their API
+  tokens. Nothing to do on upgrade.
+
 ## 2.6.0 — 25 September 2026
 
 Mostly fixes: files and folders are easier to tidy, the sign-in pages carry your brand better, and

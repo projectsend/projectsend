@@ -90,12 +90,12 @@ list for your account.
 | `upload_public` | set `public` when editing |
 | `upload` / `edit_files` / `edit_others_files` | read and write a file's comments |
 | `manage_clients` | list clients |
-| `create_clients` / `edit_clients` / `delete_clients` | create, read and edit, delete clients; `edit_clients` also removes a client's two-factor authentication |
+| `create_clients` / `edit_clients` / `delete_clients` | create, read and edit, delete clients; `edit_clients` also sets a client's password and removes their two-factor authentication |
 | `manage_groups` | list groups |
 | `create_groups` / `edit_groups` / `delete_groups` | create, read and edit (including membership), delete groups |
 | `moderate_comments` | list what is awaiting approval, and approve it |
 | `manage_users` | list staff accounts and the roles you may assign |
-| `create_users` / `edit_users` / `delete_users` | create, read and edit, delete staff accounts; `edit_users` also removes an account's two-factor authentication |
+| `create_users` / `edit_users` / `delete_users` | create, read and edit, delete staff accounts; `edit_users` also sets an account's password and removes its two-factor authentication |
 
 There is no ability for *writing* a comment. Who may comment is an installation setting rather than
 a per-role permission, so the file abilities are the gate — the same question the web asks, which is
@@ -103,6 +103,13 @@ a per-role permission, so the file abilities are the gate — the same question 
 endpoint also lets an author remove their own within the editing window and that is not moderation;
 it additionally requires the token's owner to hold `moderate_comments`, checked live against the
 account rather than carried by the token.
+
+**`edit_clients` and `edit_users` are control of the accounts they reach.** Setting a password and
+removing a second factor are what an administrator does for somebody who is locked out, so a token
+holding either ability can sign in as any client, or any staff account below its owner, that it may
+edit, and do what that account can do. Give these abilities to a token only when you would trust its
+holder with those accounts themselves. Your *own* credentials are never reachable this way (see
+"Staff accounts").
 
 Where an endpoint accepts several — `edit_files` *or* `edit_others_files` — holding either is enough,
 and which one applies to a given file depends on whether you uploaded it. For a folder, it depends
@@ -417,7 +424,7 @@ Two abilities are needed for each call: `manage_users` to reach the area at all,
 action (`create_users`, `edit_users`, `delete_users`). That mirrors the web UI, where the whole
 section sits behind `manage_users` and each button behind its own key.
 
-### Two rules that will refuse you
+### Three rules that will refuse you
 
 **You cannot hand out authority you do not hold.** `role_id` must name a role you could grant
 yourself: a caller who is not an administrator may not create one, nor assign any role carrying a
@@ -427,6 +434,11 @@ guess an id.
 
 **The installation always keeps an active administrator.** Demoting, deactivating or deleting the
 last one is a `422`. So is deactivating or deleting yourself, from either surface.
+
+**Your own credentials stay behind your profile.** Changing your own email address or password, or
+removing your own second factor, is a `403`. Do it from your profile in the web interface, which
+asks for your current password; a token cannot be asked for one. Setting *somebody else's* password
+revokes every token they hold.
 
 ### Changing a role
 

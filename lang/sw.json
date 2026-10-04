@@ -2283,5 +2283,19 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Huonyeshwa hadi pikseli 320 × 128, kwa hivyo nembo pana na ya mraba zote zinatosha. PNG, JPG, GIF au WebP, hadi MB 2.",
     "Show the site name under the logo": "Onyesha jina la tovuti chini ya nembo",
     "They will no longer be available to anyone they were shared with.": "Hayatapatikana tena kwa yeyote aliyeshirikishwa nayo.",
-    "Uploading into :folder": "Inapakia kwenye :folder"
+    "Uploading into :folder": "Inapakia kwenye :folder",
+    "Select all :count matching files": "Chagua mafaili yote :count yanayolingana",
+    "Restricted and empty files are skipped.": "Mafaili yenye kiendelezi kilichozuiwa na mafaili matupu yanarukwa.",
+    "Import all": "Ingiza yote",
+    "Importing in the background": "Inaingiza chinichini",
+    ":imported of :total files imported. You can leave this page — the import keeps going.": "Mafaili :imported kati ya :total yameingizwa. Unaweza kuondoka kwenye ukurasa huu — uingizaji unaendelea.",
+    "Import finished": "Uingizaji umekamilika",
+    ":imported of :total files imported.": "Mafaili :imported kati ya :total yameingizwa.",
+    "The import stopped": "Uingizaji umesimama",
+    "The import stopped making progress": "Uingizaji umeacha kusonga mbele",
+    ":imported of :total files were imported before it failed: :error": "Mafaili :imported kati ya :total yaliingizwa kabla ya hitilafu: :error",
+    ":imported of :total files were imported. The queue worker may not be running.": "Mafaili :imported kati ya :total yameingizwa. Huenda mchakato wa nyuma hauendeshwi.",
+    "Choose Import all again to continue with the rest.": "Chagua “Ingiza yote” tena ili kuendelea na yaliyosalia.",
+    "An import is already running. Wait for it to finish.": "Uingizaji mwingine tayari unaendelea. Subiri umalizike.",
+    "Importing :count file in the background.|Importing :count files in the background.": "Inaingiza faili :count chinichini.|Inaingiza mafaili :count chinichini."
 }

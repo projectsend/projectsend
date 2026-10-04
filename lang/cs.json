@@ -2283,5 +2283,19 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Zobrazuje se až v rozměru 320 × 128 pixelů, takže se vejde široké i čtvercové logo. PNG, JPG, GIF nebo WebP, do 2 MB.",
     "Show the site name under the logo": "Zobrazit název webu pod logem",
     "They will no longer be available to anyone they were shared with.": "Přestanou být dostupné všem, se kterými byly sdíleny.",
-    "Uploading into :folder": "Nahrávání do: :folder"
+    "Uploading into :folder": "Nahrávání do: :folder",
+    "Select all :count matching files": "Vybrat všech :count odpovídajících souborů",
+    "Restricted and empty files are skipped.": "Soubory s omezenou příponou a prázdné soubory se přeskočí.",
+    "Import all": "Naimportovat vše",
+    "Importing in the background": "Import probíhá na pozadí",
+    ":imported of :total files imported. You can leave this page — the import keeps going.": "Naimportováno :imported z :total souborů. Tuto stránku můžete opustit — import poběží dál.",
+    "Import finished": "Import dokončen",
+    ":imported of :total files imported.": "Naimportováno :imported z :total souborů.",
+    "The import stopped": "Import se zastavil",
+    "The import stopped making progress": "Import přestal postupovat",
+    ":imported of :total files were imported before it failed: :error": "Před chybou se naimportovalo :imported z :total souborů: :error",
+    ":imported of :total files were imported. The queue worker may not be running.": "Naimportováno :imported z :total souborů. Proces na pozadí možná neběží.",
+    "Choose Import all again to continue with the rest.": "Pro pokračování se zbytkem zvolte znovu „Naimportovat vše“.",
+    "An import is already running. Wait for it to finish.": "Import už probíhá. Počkejte, až skončí.",
+    "Importing :count file in the background.|Importing :count files in the background.": "Na pozadí se importuje :count soubor.|Na pozadí se importují :count soubory.|Na pozadí se importuje :count souborů."
 }

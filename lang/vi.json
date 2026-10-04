@@ -2283,5 +2283,19 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Hiển thị tối đa 320 × 128 pixel, nên cả logo ngang lẫn logo vuông đều vừa. PNG, JPG, GIF hoặc WebP, tối đa 2 MB.",
     "Show the site name under the logo": "Hiển thị tên trang dưới logo",
     "They will no longer be available to anyone they were shared with.": "Chúng sẽ không còn khả dụng với bất kỳ ai từng được chia sẻ.",
-    "Uploading into :folder": "Đang tải lên vào :folder"
+    "Uploading into :folder": "Đang tải lên vào :folder",
+    "Select all :count matching files": "Chọn tất cả :count tệp khớp",
+    "Restricted and empty files are skipped.": "Các tệp có phần mở rộng bị hạn chế và tệp rỗng sẽ được bỏ qua.",
+    "Import all": "Nhập tất cả",
+    "Importing in the background": "Đang nhập trong nền",
+    ":imported of :total files imported. You can leave this page — the import keeps going.": "Đã nhập :imported/:total tệp. Bạn có thể rời trang này — việc nhập vẫn tiếp tục.",
+    "Import finished": "Đã nhập xong",
+    ":imported of :total files imported.": "Đã nhập :imported/:total tệp.",
+    "The import stopped": "Việc nhập đã dừng",
+    "The import stopped making progress": "Việc nhập không còn tiến triển",
+    ":imported of :total files were imported before it failed: :error": "Đã nhập :imported/:total tệp trước khi gặp lỗi: :error",
+    ":imported of :total files were imported. The queue worker may not be running.": "Đã nhập :imported/:total tệp. Có thể tiến trình nền không chạy.",
+    "Choose Import all again to continue with the rest.": "Hãy chọn lại “Nhập tất cả” để tiếp tục với phần còn lại.",
+    "An import is already running. Wait for it to finish.": "Đang có một lượt nhập chạy. Hãy đợi nó xong.",
+    "Importing :count file in the background.|Importing :count files in the background.": "Đang nhập :count tệp trong nền.|Đang nhập :count tệp trong nền."
 }

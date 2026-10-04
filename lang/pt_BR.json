@@ -2283,5 +2283,19 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Exibido em até 320 × 128 pixels, então cabem tanto um logo largo quanto um quadrado. PNG, JPG, GIF ou WebP, até 2 MB.",
     "Show the site name under the logo": "Mostrar o nome do site abaixo do logo",
     "They will no longer be available to anyone they were shared with.": "Eles deixarão de estar disponíveis para todos com quem foram compartilhados.",
-    "Uploading into :folder": "Enviando para :folder"
+    "Uploading into :folder": "Enviando para :folder",
+    "Select all :count matching files": "Selecionar todos os :count arquivos correspondentes",
+    "Restricted and empty files are skipped.": "Arquivos com extensão restrita e arquivos vazios são ignorados.",
+    "Import all": "Importar todos",
+    "Importing in the background": "Importando em segundo plano",
+    ":imported of :total files imported. You can leave this page — the import keeps going.": ":imported de :total arquivos importados. Você pode sair desta página — a importação continua.",
+    "Import finished": "Importação concluída",
+    ":imported of :total files imported.": ":imported de :total arquivos importados.",
+    "The import stopped": "A importação parou",
+    "The import stopped making progress": "A importação parou de avançar",
+    ":imported of :total files were imported before it failed: :error": ":imported de :total arquivos foram importados antes da falha: :error",
+    ":imported of :total files were imported. The queue worker may not be running.": ":imported de :total arquivos foram importados. Talvez o processo em segundo plano não esteja rodando.",
+    "Choose Import all again to continue with the rest.": "Escolha “Importar todos” de novo para continuar com o restante.",
+    "An import is already running. Wait for it to finish.": "Já existe uma importação em andamento. Espere ela terminar.",
+    "Importing :count file in the background.|Importing :count files in the background.": "Importando :count arquivo em segundo plano.|Importando :count arquivos em segundo plano."
 }

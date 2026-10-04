@@ -2283,5 +2283,19 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Показывается размером до 320 × 128 пикселей, поэтому поместится и широкий, и квадратный логотип. PNG, JPG, GIF или WebP, до 2 МБ.",
     "Show the site name under the logo": "Показывать название сайта под логотипом",
     "They will no longer be available to anyone they were shared with.": "Они больше не будут доступны никому, кому были открыты.",
-    "Uploading into :folder": "Загрузка в: :folder"
+    "Uploading into :folder": "Загрузка в: :folder",
+    "Select all :count matching files": "Выбрать все подходящие файлы (:count)",
+    "Restricted and empty files are skipped.": "Файлы с ограниченным расширением и пустые файлы пропускаются.",
+    "Import all": "Импортировать все",
+    "Importing in the background": "Импорт в фоновом режиме",
+    ":imported of :total files imported. You can leave this page — the import keeps going.": "Импортировано файлов: :imported из :total. Можно уйти с этой страницы — импорт продолжится.",
+    "Import finished": "Импорт завершён",
+    ":imported of :total files imported.": "Импортировано файлов: :imported из :total.",
+    "The import stopped": "Импорт остановлен",
+    "The import stopped making progress": "Импорт перестал продвигаться",
+    ":imported of :total files were imported before it failed: :error": "До ошибки импортировано файлов: :imported из :total. Ошибка: :error",
+    ":imported of :total files were imported. The queue worker may not be running.": "Импортировано файлов: :imported из :total. Возможно, фоновый обработчик не запущен.",
+    "Choose Import all again to continue with the rest.": "Чтобы продолжить с оставшимися, снова выберите «Импортировать все».",
+    "An import is already running. Wait for it to finish.": "Импорт уже идёт. Дождитесь его завершения.",
+    "Importing :count file in the background.|Importing :count files in the background.": "Импорт :count файла в фоновом режиме.|Импорт :count файлов в фоновом режиме.|Импорт :count файлов в фоновом режиме."
 }

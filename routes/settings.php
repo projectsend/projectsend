@@ -62,6 +62,12 @@ Route::middleware('auth')->group(function () {
     Route::put('settings/password', [PasswordController::class, 'update'])
         ->middleware('throttle:6,1,password-update')
         ->name('password.update');
+    // An account without a password asks for one by email instead: see
+    // PasswordController::sendLink. Its own bucket, and a small one, since
+    // each request sends an email.
+    Route::post('settings/password/link', [PasswordController::class, 'sendLink'])
+        ->middleware('throttle:3,1,password-link')
+        ->name('password.link');
 
     Route::get('settings/two-factor', [TwoFactorEnrollmentController::class, 'show'])->name('two-factor.show');
 

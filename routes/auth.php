@@ -73,12 +73,6 @@ Route::middleware('guest')->group(function () {
         ->middleware('throttle:6,1,password-email')
         ->name('password.email');
 
-    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-        ->name('password.reset');
-
-    Route::post('reset-password', [NewPasswordController::class, 'store'])
-        ->middleware('throttle:6,1,password-reset')
-        ->name('password.store');
 
     Route::get('two-factor-challenge', [TwoFactorChallengeController::class, 'create'])
         ->name('two-factor.challenge');
@@ -86,6 +80,19 @@ Route::middleware('guest')->group(function () {
     Route::post('two-factor-challenge', [TwoFactorChallengeController::class, 'store'])
         ->middleware('throttle:6,1,two-factor');
 });
+
+// In neither group too. A reset link is also how an account that signs in
+// through a provider sets its first password (PasswordController::sendLink),
+// and its owner opens that link in the browser they are signed in with. The
+// token is the authority here, not the session: it was emailed to the
+// account's own address, so a signed-in visitor gains nothing a stranger
+// holding the same link would not.
+Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->name('password.reset');
+
+Route::post('reset-password', [NewPasswordController::class, 'store'])
+    ->middleware('throttle:6,1,password-reset')
+    ->name('password.store');
 
 // Deliberately in neither group. Signing in through a provider must not
 // require a session, and connecting one to an existing account requires

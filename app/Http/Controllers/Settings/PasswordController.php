@@ -11,6 +11,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password as PasswordBroker;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -53,32 +55,24 @@ class PasswordController extends Controller
         // honest answer is to refuse rather than to appear to work.
         abort_if($user->auth_source === AuthSource::Ldap, 403);
 
-        $setsFirstPassword = $user->auth_source === AuthSource::Social;
+        // An account that signs in through a provider has no password to
+        // prove, so this screen cannot ask it for one, and the session
+        // alone is not enough: a stolen session that could choose the
+        // password became the account for good (GHSA-4r8h-mwfm-f5f4). Its
+        // first password comes from a link emailed to its own address,
+        // which sendLink() asks for and NewPasswordController completes.
+        if ($user->auth_source === AuthSource::Social) {
+            throw ValidationException::withMessages([
+                'password' => __('Ask for a link by email to set your first password.'),
+            ]);
+        }
 
         $validated = $request->validate([
-            // Not asked of an account that has never had one: it signs in
-            // through a provider, and its stored hash is a generated
-            // string nobody has seen. Asking anyway left those accounts
-            // with no way to set a password — and so no way to enrol in
-            // two-factor, which an installation can make compulsory.
-            'current_password' => $setsFirstPassword ? ['nullable'] : ['required', 'current_password'],
+            'current_password' => ['required', 'current_password'],
             'password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
-        $attributes = ['password' => Hash::make($validated['password'])];
-
-        // The same line NewPasswordController writes when a provider
-        // account resets its password, for the same reason: the hash is
-        // now what signs this account in, and `has_local_password` is read
-        // off this column all over the settings screens.
-        if ($setsFirstPassword) {
-            $attributes['auth_source'] = AuthSource::Local;
-        }
-
-        // forceFill, not update(): `auth_source` is guarded, so a mass
-        // assignment drops it silently — which left the account still
-        // reading as passwordless after it had a password.
-        $user->forceFill($attributes)->save();
+        $user->forceFill(['password' => Hash::make($validated['password'])])->save();
 
         // Changing a password is how someone reacts to a session they think
         // is stolen, so it has to actually end that session. AuthenticateSession
@@ -92,5 +86,36 @@ class PasswordController extends Controller
         app(ActivityLogger::class)->log(Action::PasswordUpdated, $user);
 
         return back();
+    }
+
+    /**
+     * Email an account that signs in through a provider a link to set its
+     * first password.
+     *
+     * The ordinary reset link, to the account's own address: whoever sets
+     * the password has to read that inbox, which a stolen session cannot
+     * do. Opening it completes through NewPasswordController, which turns
+     * the account local, and changing the password signs out every session
+     * holding the old one, the one that asked for the link included.
+     */
+    public function sendLink(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+        assert($user !== null);
+
+        // An account with a password uses the form above; a directory
+        // account's password is not this installation's to set.
+        abort_unless($user->auth_source === AuthSource::Social, 403);
+
+        $status = PasswordBroker::broker()->sendResetLink(['email' => $user->email]);
+
+        // Their own account, so being told to wait reveals nothing.
+        if ($status === PasswordBroker::ResetThrottled) {
+            throw ValidationException::withMessages([
+                'link' => __('A link was sent a moment ago. Check your email, or try again in a minute.'),
+            ]);
+        }
+
+        return back()->with('status', 'password-link-sent');
     }
 }

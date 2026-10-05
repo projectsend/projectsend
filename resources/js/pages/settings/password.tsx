@@ -10,6 +10,7 @@ import { SaveButton } from '@/components/save-button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PasswordRequirements } from '@/components/password-requirements';
+import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/use-translation';
 
 interface PasswordProps {
@@ -17,9 +18,11 @@ interface PasswordProps {
     has_local_password: boolean;
     /** True for an account whose password lives in a directory, which this screen cannot change. */
     managed_elsewhere: boolean;
+    /** 'password-link-sent' once the link for a first password has been emailed. */
+    status?: string;
 }
 
-export default function Password({ has_local_password, managed_elsewhere }: PasswordProps) {
+export default function Password({ has_local_password, managed_elsewhere, status }: PasswordProps) {
     const { t } = useTranslation();
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -37,6 +40,17 @@ export default function Password({ has_local_password, managed_elsewhere }: Pass
         password: '',
         password_confirmation: '',
     });
+
+    // An account that signs in through a provider gets its first password
+    // from a link emailed to its own address, not from this form: the
+    // session alone must not be able to choose it.
+    const needsLink = !has_local_password && !managed_elsewhere;
+    const linkForm = useForm({});
+
+    const sendLink: FormEventHandler = (e) => {
+        e.preventDefault();
+        linkForm.post(route('password.link'), { preserveScroll: true });
+    };
 
     const updatePassword: FormEventHandler = (e) => {
         e.preventDefault();
@@ -79,7 +93,22 @@ export default function Password({ has_local_password, managed_elsewhere }: Pass
                         </p>
                     )}
 
-                    <form onSubmit={updatePassword} className="space-y-6" hidden={managed_elsewhere}>
+                    {needsLink && (
+                        <form onSubmit={sendLink} className="space-y-4">
+                            <p className="text-muted-foreground text-sm">
+                                {t('We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.')}
+                            </p>
+                            <Button type="submit" disabled={linkForm.processing}>
+                                {t('Email me a link')}
+                            </Button>
+                            {status === 'password-link-sent' && (
+                                <p className="text-sm font-medium text-green-600">{t('We sent a link to your email address. It works for one hour.')}</p>
+                            )}
+                            <InputError message={(linkForm.errors as Partial<Record<'link', string>>).link} />
+                        </form>
+                    )}
+
+                    <form onSubmit={updatePassword} className="space-y-6" hidden={managed_elsewhere || needsLink}>
                         <div className="grid gap-2" hidden={!has_local_password}>
                             <Label htmlFor="current_password">{t('Current password')}</Label>
 

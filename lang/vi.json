@@ -2319,5 +2319,9 @@
     "This token can set passwords and remove two-factor authentication on the accounts it may edit, so whoever holds it can sign in as those accounts. Choose these abilities only for a holder you would trust with the accounts themselves.": "Token này có thể đặt mật khẩu và gỡ xác thực hai yếu tố trên các tài khoản mà nó được phép chỉnh sửa, nên bất kỳ ai giữ nó đều có thể đăng nhập bằng các tài khoản đó. Chỉ chọn các quyền này cho người mà bạn tin tưởng giao chính các tài khoản đó.",
     "Upload a logo before cropping it.": "Hãy tải logo lên trước khi cắt.",
     "We sent a link to your email address. It works for one hour.": "Chúng tôi đã gửi một liên kết đến địa chỉ email của bạn. Liên kết có hiệu lực trong một giờ.",
-    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Chúng tôi sẽ gửi email cho bạn một liên kết để đặt mật khẩu. Mở liên kết sẽ đăng xuất bạn ở mọi nơi, vì vậy sau đó hãy đăng nhập lại bằng mật khẩu mới."
+    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Chúng tôi sẽ gửi email cho bạn một liên kết để đặt mật khẩu. Mở liên kết sẽ đăng xuất bạn ở mọi nơi, vì vậy sau đó hãy đăng nhập lại bằng mật khẩu mới.",
+    "Username attribute (optional)": "Thuộc tính tên người dùng (không bắt buộc)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Cho phép đăng nhập bằng tên người dùng trong thư mục ngoài địa chỉ, ví dụ uid, cn hoặc sAMAccountName. Để trống nếu chỉ đăng nhập bằng địa chỉ.",
+    "Email or username": "Email hoặc tên người dùng",
+    "Enter your email or username and password below to log in": "Nhập email hoặc tên người dùng và mật khẩu bên dưới để đăng nhập"
 }

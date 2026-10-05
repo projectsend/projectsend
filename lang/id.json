@@ -2319,5 +2319,9 @@
     "This token can set passwords and remove two-factor authentication on the accounts it may edit, so whoever holds it can sign in as those accounts. Choose these abilities only for a holder you would trust with the accounts themselves.": "Token ini dapat menetapkan kata sandi dan menghapus autentikasi dua faktor pada akun yang boleh diubahnya, jadi siapa pun yang memegangnya dapat masuk sebagai akun-akun tersebut. Pilih izin ini hanya untuk pemegang yang Anda percayai dengan akun-akun itu sendiri.",
     "Upload a logo before cropping it.": "Unggah logo sebelum memangkasnya.",
     "We sent a link to your email address. It works for one hour.": "Kami telah mengirim tautan ke alamat email Anda. Tautan berlaku selama satu jam.",
-    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Kami akan mengirimkan tautan lewat email untuk membuatnya. Membuka tautan itu akan mengeluarkan Anda dari semua sesi, jadi masuklah lagi dengan kata sandi baru Anda setelahnya."
+    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Kami akan mengirimkan tautan lewat email untuk membuatnya. Membuka tautan itu akan mengeluarkan Anda dari semua sesi, jadi masuklah lagi dengan kata sandi baru Anda setelahnya.",
+    "Username attribute (optional)": "Atribut nama pengguna (opsional)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Memungkinkan orang masuk dengan nama pengguna direktori selain alamatnya, misalnya uid, cn, atau sAMAccountName. Biarkan kosong untuk masuk hanya dengan alamat.",
+    "Email or username": "Email atau nama pengguna",
+    "Enter your email or username and password below to log in": "Masukkan email atau nama pengguna dan kata sandi Anda di bawah ini untuk masuk"
 }

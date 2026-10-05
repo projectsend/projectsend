@@ -2319,5 +2319,9 @@
     "This token can set passwords and remove two-factor authentication on the accounts it may edit, so whoever holds it can sign in as those accounts. Choose these abilities only for a holder you would trust with the accounts themselves.": "Dieser Token kann Passwörter festlegen und die Zwei-Faktor-Authentifizierung der Konten entfernen, die er bearbeiten darf. Wer ihn besitzt, kann sich also als diese Konten anmelden. Wählen Sie diese Berechtigungen nur für jemanden, dem Sie diese Konten selbst anvertrauen würden.",
     "Upload a logo before cropping it.": "Laden Sie zuerst ein Logo hoch, bevor Sie es zuschneiden.",
     "We sent a link to your email address. It works for one hour.": "Wir haben Ihnen einen Link per E-Mail gesendet. Er ist eine Stunde lang gültig.",
-    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Wir senden Ihnen einen Link per E-Mail, um es festzulegen. Wenn Sie ihn öffnen, werden Sie überall abgemeldet. Melden Sie sich danach mit Ihrem neuen Passwort wieder an."
+    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Wir senden Ihnen einen Link per E-Mail, um es festzulegen. Wenn Sie ihn öffnen, werden Sie überall abgemeldet. Melden Sie sich danach mit Ihrem neuen Passwort wieder an.",
+    "Username attribute (optional)": "Benutzernamen-Attribut (optional)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Erlaubt die Anmeldung zusätzlich zur Adresse mit dem Benutzernamen aus dem Verzeichnis, zum Beispiel uid, cn oder sAMAccountName. Leer lassen, um nur die Anmeldung per Adresse zu erlauben.",
+    "Email or username": "E-Mail-Adresse oder Benutzername",
+    "Enter your email or username and password below to log in": "Geben Sie unten Ihre E-Mail-Adresse oder Ihren Benutzernamen und Ihr Passwort ein, um sich anzumelden"
 }

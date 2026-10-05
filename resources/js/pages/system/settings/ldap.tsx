@@ -33,6 +33,7 @@ interface LdapSettings {
     user_filter: string | null;
     email_attribute: string;
     name_attribute: string;
+    username_attribute: string | null;
     auto_provision: boolean;
     auto_approve: boolean;
 }
@@ -68,6 +69,7 @@ export default function LdapSettingsPage({ ldap, encryptions, extension_availabl
         user_filter: ldap.user_filter ?? '',
         email_attribute: ldap.email_attribute,
         name_attribute: ldap.name_attribute,
+        username_attribute: ldap.username_attribute ?? '',
         auto_provision: ldap.auto_provision,
         auto_approve: ldap.auto_approve,
     });
@@ -266,6 +268,23 @@ export default function LdapSettingsPage({ ldap, encryptions, extension_availabl
                                 onChange={(e) => form.setData('name_attribute', e.target.value)}
                             />
                             <InputError message={form.errors.name_attribute} />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="username_attribute">{t('Username attribute (optional)')}</Label>
+                            <Input
+                                id="username_attribute"
+                                className="max-w-64"
+                                value={form.data.username_attribute}
+                                placeholder="uid"
+                                onChange={(e) => form.setData('username_attribute', e.target.value)}
+                            />
+                            <p className="text-muted-foreground text-sm">
+                                {t(
+                                    'Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.',
+                                )}
+                            </p>
+                            <InputError message={form.errors.username_attribute} />
                         </div>
 
                         <div className="grid gap-2">

@@ -2319,5 +2319,9 @@
     "This token can set passwords and remove two-factor authentication on the accounts it may edit, so whoever holds it can sign in as those accounts. Choose these abilities only for a holder you would trust with the accounts themselves.": "此令牌可以为它有权编辑的账户设置密码并移除两步验证，因此持有它的任何人都能以这些账户的身份登录。只把这些权限授予你愿意把这些账户本身托付给的人。",
     "Upload a logo before cropping it.": "请先上传标志再裁剪。",
     "We sent a link to your email address. It works for one hour.": "我们已向你的邮箱发送了链接，有效期为一小时。",
-    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "我们会通过邮件给你发送设置密码的链接。打开链接后，你在所有地方都会被登出，之后请用新密码重新登录。"
+    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "我们会通过邮件给你发送设置密码的链接。打开链接后，你在所有地方都会被登出，之后请用新密码重新登录。",
+    "Username attribute (optional)": "用户名属性（可选）",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "除邮箱地址外，还允许使用目录中的用户名登录，例如 uid、cn 或 sAMAccountName。留空则只能用邮箱地址登录。",
+    "Email or username": "邮箱或用户名",
+    "Enter your email or username and password below to log in": "在下方输入邮箱或用户名和密码即可登录"
 }

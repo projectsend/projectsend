@@ -42,7 +42,7 @@ class LdapRecordDirectory implements LdapDirectory
             $connection = LdapConnectionFactory::make($settings);
             $connection->connect();
 
-            $entry = $this->findEntry($connection, $settings, $email);
+            $entry = $this->findEntry($connection, $settings, $settings->email_attribute, $email);
 
             if ($entry === null) {
                 return null;
@@ -61,6 +61,28 @@ class LdapRecordDirectory implements LdapDirectory
             );
         } catch (Throwable $e) {
             Log::warning('LDAP authentication could not be completed.', ['exception' => $e::class]);
+
+            return null;
+        }
+    }
+
+    public function emailForUsername(string $username): ?string
+    {
+        $settings = LdapSettings::current();
+
+        if (! $settings->allowsUsernameSignIn()) {
+            return null;
+        }
+
+        try {
+            $connection = LdapConnectionFactory::make($settings);
+            $connection->connect();
+
+            $entry = $this->findEntry($connection, $settings, (string) $settings->username_attribute, $username);
+
+            return $entry === null ? null : $this->attribute($entry, $settings->email_attribute);
+        } catch (Throwable $e) {
+            Log::warning('LDAP username lookup could not be completed.', ['exception' => $e::class]);
 
             return null;
         }
@@ -95,7 +117,7 @@ class LdapRecordDirectory implements LdapDirectory
         }
 
         try {
-            $entry = $this->findEntry($connection, $settings, $email);
+            $entry = $this->findEntry($connection, $settings, $settings->email_attribute, $email);
         } catch (Throwable $e) {
             return LdapProbeResult::failed(
                 LdapProbeResult::STAGE_SEARCH,
@@ -131,21 +153,22 @@ class LdapRecordDirectory implements LdapDirectory
     }
 
     /**
-     * The one entry matching this address, or null.
+     * The one entry whose attribute holds this value (an address, or a
+     * username), or null.
      *
-     * Two results is a misconfiguration — two objects sharing an address —
-     * and choosing one of them is how you sign the wrong person in, so it
-     * fails closed.
+     * Two results is a misconfiguration — two objects sharing an address or
+     * a username — and choosing one of them is how you sign the wrong person
+     * in, so it fails closed.
      *
      * @return array<string, mixed>|null
      */
-    private function findEntry(Connection $connection, LdapSettings $settings, string $email): ?array
+    private function findEntry(Connection $connection, LdapSettings $settings, string $attribute, string $value): ?array
     {
         $query = $connection->query()
             ->in($settings->base_dn)
-            // The email goes through the builder, which escapes it. It is
-            // never concatenated into a filter string.
-            ->whereEquals($settings->email_attribute, $email);
+            // What the visitor typed goes through the builder, which
+            // escapes it. It is never concatenated into a filter string.
+            ->whereEquals($attribute, $value);
 
         if (is_string($settings->user_filter) && $settings->user_filter !== '') {
             // Admin-supplied, never visitor-supplied.

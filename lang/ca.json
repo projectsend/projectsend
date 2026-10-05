@@ -2319,5 +2319,9 @@
     "This token can set passwords and remove two-factor authentication on the accounts it may edit, so whoever holds it can sign in as those accounts. Choose these abilities only for a holder you would trust with the accounts themselves.": "Aquest token pot crear contrasenyes i eliminar la verificació en dos passos dels comptes que pot editar, així que qui el tingui pot iniciar la sessió com aquests comptes. Tria aquests permisos només per a algú a qui confiaries aquests comptes.",
     "Upload a logo before cropping it.": "Puja un logo abans de retallar-lo.",
     "We sent a link to your email address. It works for one hour.": "T'hem enviat un enllaç al correu. Funciona durant una hora.",
-    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "T'enviarem un enllaç per correu per crear-la. En obrir-lo es tancaran totes les teves sessions, així que després torna a iniciar la sessió amb la nova contrasenya."
+    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "T'enviarem un enllaç per correu per crear-la. En obrir-lo es tancaran totes les teves sessions, així que després torna a iniciar la sessió amb la nova contrasenya.",
+    "Username attribute (optional)": "Atribut de nom d'usuari (opcional)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Permet que les persones iniciïn la sessió amb el seu nom d'usuari del directori a més de l'adreça: per exemple uid, cn o sAMAccountName. Deixa-ho buit per iniciar la sessió només amb l'adreça.",
+    "Email or username": "Correu o nom d'usuari",
+    "Enter your email or username and password below to log in": "Introdueix a sota el teu correu o nom d'usuari i la teva contrasenya per iniciar la sessió"
 }

@@ -2319,5 +2319,9 @@
     "This token can set passwords and remove two-factor authentication on the accounts it may edit, so whoever holds it can sign in as those accounts. Choose these abilities only for a holder you would trust with the accounts themselves.": "Этот токен может задавать пароли и удалять двухфакторную аутентификацию у учётных записей, которые ему разрешено изменять, поэтому любой его владелец может войти под этими учётными записями. Выбирайте эти права только для того, кому доверили бы сами эти учётные записи.",
     "Upload a logo before cropping it.": "Загрузите логотип, прежде чем обрезать его.",
     "We sent a link to your email address. It works for one hour.": "Мы отправили ссылку на ваш адрес электронной почты. Она действует один час.",
-    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Мы отправим вам ссылку по электронной почте, чтобы его задать. Открыв ссылку, вы выйдете из всех сеансов, поэтому затем войдите снова с новым паролем."
+    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Мы отправим вам ссылку по электронной почте, чтобы его задать. Открыв ссылку, вы выйдете из всех сеансов, поэтому затем войдите снова с новым паролем.",
+    "Username attribute (optional)": "Атрибут имени пользователя (необязательно)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Позволяет входить не только по адресу, но и по имени пользователя из каталога, например uid, cn или sAMAccountName. Оставьте пустым, чтобы входить только по адресу.",
+    "Email or username": "Адрес эл. почты или имя пользователя",
+    "Enter your email or username and password below to log in": "Введите ниже адрес эл. почты или имя пользователя и пароль, чтобы войти"
 }

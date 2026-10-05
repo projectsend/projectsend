@@ -2319,5 +2319,9 @@
     "This token can set passwords and remove two-factor authentication on the accounts it may edit, so whoever holds it can sign in as those accounts. Choose these abilities only for a holder you would trust with the accounts themselves.": "Ce jeton peut définir des mots de passe et supprimer l'authentification à deux facteurs des comptes qu'il peut modifier : quiconque le détient peut donc se connecter avec ces comptes. Ne choisissez ces autorisations que pour une personne à qui vous confieriez ces comptes eux-mêmes.",
     "Upload a logo before cropping it.": "Téléversez un logo avant de le recadrer.",
     "We sent a link to your email address. It works for one hour.": "Nous avons envoyé un lien à votre adresse e-mail. Il est valable une heure.",
-    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Nous vous enverrons un lien par e-mail pour le définir. L'ouvrir vous déconnecte partout : reconnectez-vous ensuite avec votre nouveau mot de passe."
+    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Nous vous enverrons un lien par e-mail pour le définir. L'ouvrir vous déconnecte partout : reconnectez-vous ensuite avec votre nouveau mot de passe.",
+    "Username attribute (optional)": "Attribut nom d'utilisateur (facultatif)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Permet de se connecter avec son nom d'utilisateur de l'annuaire en plus de son adresse : uid, cn ou sAMAccountName, par exemple. Laissez vide pour ne se connecter qu'avec l'adresse.",
+    "Email or username": "Adresse e-mail ou nom d'utilisateur",
+    "Enter your email or username and password below to log in": "Saisissez ci-dessous votre adresse e-mail ou votre nom d'utilisateur et votre mot de passe pour vous connecter"
 }

@@ -56,6 +56,7 @@ class LdapSettingsController extends Controller
                 'user_filter' => $ldap->user_filter,
                 'email_attribute' => $ldap->email_attribute,
                 'name_attribute' => $ldap->name_attribute,
+                'username_attribute' => $ldap->username_attribute,
                 'auto_provision' => $ldap->auto_provision,
                 'auto_approve' => $ldap->auto_approve,
             ],
@@ -93,6 +94,7 @@ class LdapSettingsController extends Controller
             'user_filter' => ['nullable', 'string', 'max:255'],
             'email_attribute' => ['required', 'string', 'max:64'],
             'name_attribute' => ['required', 'string', 'max:64'],
+            'username_attribute' => ['nullable', 'string', 'max:64'],
             'auto_provision' => ['required', 'boolean'],
             'auto_approve' => ['required', 'boolean'],
         ]);
@@ -110,6 +112,7 @@ class LdapSettingsController extends Controller
             'user_filter' => $validated['user_filter'] ?? null,
             'email_attribute' => $validated['email_attribute'],
             'name_attribute' => $validated['name_attribute'],
+            'username_attribute' => $validated['username_attribute'] ?? null,
             'auto_provision' => (bool) $validated['auto_provision'],
             'auto_approve' => (bool) $validated['auto_approve'],
         ]);

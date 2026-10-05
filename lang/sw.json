@@ -2319,5 +2319,9 @@
     "This token can set passwords and remove two-factor authentication on the accounts it may edit, so whoever holds it can sign in as those accounts. Choose these abilities only for a holder you would trust with the accounts themselves.": "Tokeni hii inaweza kuweka manenosiri na kuondoa uthibitishaji wa hatua mbili kwenye akaunti inazoruhusiwa kuhariri, kwa hivyo yeyote aliye nayo anaweza kuingia kama akaunti hizo. Chagua ruhusa hizi tu kwa mtu ambaye ungemwamini na akaunti hizo zenyewe.",
     "Upload a logo before cropping it.": "Pakia nembo kabla ya kuipunguza.",
     "We sent a link to your email address. It works for one hour.": "Tumetuma kiungo kwenye anwani yako ya barua pepe. Kinafanya kazi kwa saa moja.",
-    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Tutakutumia kiungo kwa barua pepe ili kuliweka. Kufungua kiungo kutakutoa kila mahali, kwa hivyo baadaye ingia tena kwa nenosiri lako jipya."
+    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Tutakutumia kiungo kwa barua pepe ili kuliweka. Kufungua kiungo kutakutoa kila mahali, kwa hivyo baadaye ingia tena kwa nenosiri lako jipya.",
+    "Username attribute (optional)": "Sifa ya jina la mtumiaji (si lazima)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Huwaruhusu watu kuingia kwa jina la mtumiaji la saraka pamoja na anwani yao, kwa mfano uid, cn au sAMAccountName. Acha tupu ili kuingia kwa anwani pekee.",
+    "Email or username": "Barua pepe au jina la mtumiaji",
+    "Enter your email or username and password below to log in": "Weka barua pepe au jina la mtumiaji na nenosiri lako hapa chini ili kuingia"
 }

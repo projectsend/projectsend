@@ -190,3 +190,16 @@ test('settings are only usable once they are complete', function () {
     $settings->forceFill(['active' => true, 'host' => 'h', 'base_dn' => 'b'])->save();
     expect($settings->refresh()->usable())->toBe(extension_loaded('ldap'));
 });
+
+test('the username attribute is optional, saved, and cleared when left empty', function () {
+    expect(LdapSettings::current()->username_attribute)->toBeNull();
+
+    $this->actingAs($this->admin)->patch('/system/settings/ldap', ldapPayload(['username_attribute' => 'uid']))->assertRedirect();
+    expect(LdapSettings::current()->username_attribute)->toBe('uid');
+
+    $this->actingAs($this->admin)->get('/system/settings/ldap')
+        ->assertInertia(fn (AssertableInertia $page) => $page->where('ldap.username_attribute', 'uid'));
+
+    $this->actingAs($this->admin)->patch('/system/settings/ldap', ldapPayload(['username_attribute' => '']))->assertRedirect();
+    expect(LdapSettings::current()->username_attribute)->toBeNull();
+});

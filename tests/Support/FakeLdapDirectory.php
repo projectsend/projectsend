@@ -25,8 +25,11 @@ class FakeLdapDirectory implements LdapDirectory
     /** @var list<string> */
     public array $attemptedEmails = [];
 
+    /** @var list<string> */
+    public array $lookedUpUsernames = [];
+
     /**
-     * @param  array<string, array{password: string, name?: string, dn?: string}>  $entries  keyed by email
+     * @param  array<string, array{password: string, name?: string, dn?: string, username?: string}>  $entries  keyed by email
      */
     public function __construct(private readonly array $entries = []) {}
 
@@ -46,6 +49,19 @@ class FakeLdapDirectory implements LdapDirectory
             email: $email,
             name: $entry['name'] ?? 'Directory Person',
         );
+    }
+
+    public function emailForUsername(string $username): ?string
+    {
+        $this->calls++;
+        $this->lookedUpUsernames[] = $username;
+
+        $matches = array_keys(array_filter(
+            $this->entries,
+            fn (array $entry): bool => ($entry['username'] ?? null) === $username,
+        ));
+
+        return count($matches) === 1 ? $matches[0] : null;
     }
 
     public function probe(?string $email = null, ?string $password = null): LdapProbeResult

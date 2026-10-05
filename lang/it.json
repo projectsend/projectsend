@@ -2319,5 +2319,9 @@
     "This token can set passwords and remove two-factor authentication on the accounts it may edit, so whoever holds it can sign in as those accounts. Choose these abilities only for a holder you would trust with the accounts themselves.": "Questo token può impostare password e rimuovere l'autenticazione a due fattori sugli account che può modificare, quindi chi lo possiede può accedere come quegli account. Scegli questi permessi solo per qualcuno a cui affideresti quegli account.",
     "Upload a logo before cropping it.": "Carica un logo prima di ritagliarlo.",
     "We sent a link to your email address. It works for one hour.": "Ti abbiamo inviato un link al tuo indirizzo email. Vale per un'ora.",
-    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Ti invieremo un link via email per impostarla. Aprendo il link verrai disconnesso ovunque, quindi poi accedi di nuovo con la tua nuova password."
+    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Ti invieremo un link via email per impostarla. Aprendo il link verrai disconnesso ovunque, quindi poi accedi di nuovo con la tua nuova password.",
+    "Username attribute (optional)": "Attributo nome utente (facoltativo)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Consente di accedere con il nome utente della directory oltre che con l'indirizzo: per esempio uid, cn o sAMAccountName. Lascialo vuoto per accedere solo con l'indirizzo.",
+    "Email or username": "E-mail o nome utente",
+    "Enter your email or username and password below to log in": "Inserisci qui sotto la tua e-mail o il tuo nome utente e la tua password per accedere"
 }

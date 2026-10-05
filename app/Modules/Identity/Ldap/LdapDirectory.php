@@ -26,6 +26,14 @@ interface LdapDirectory
     public function authenticate(string $email, string $password): ?LdapIdentity;
 
     /**
+     * The address of the one entry whose username attribute matches, found
+     * with the service account. No bind as the person, so nothing is
+     * verified here: the caller still signs in by that address, through
+     * authenticate(). Null for no match, more than one, or any failure.
+     */
+    public function emailForUsername(string $username): ?string;
+
+    /**
      * Exercise the configuration and report which stage failed, for the
      * settings screen's test button. This is the one place that is allowed
      * to be specific about failures: it is behind `edit_settings`, and it

@@ -2319,5 +2319,9 @@
     "This token can set passwords and remove two-factor authentication on the accounts it may edit, so whoever holds it can sign in as those accounts. Choose these abilities only for a holder you would trust with the accounts themselves.": "Bu token, düzenleyebildiği hesaplarda parola belirleyebilir ve iki adımlı doğrulamayı kaldırabilir; dolayısıyla tokene sahip olan herkes bu hesaplar olarak oturum açabilir. Bu yetkileri yalnızca bu hesapların kendisini emanet edeceğiniz biri için seçin.",
     "Upload a logo before cropping it.": "Kırpmadan önce bir logo yükleyin.",
     "We sent a link to your email address. It works for one hour.": "E-posta adresinize bir bağlantı gönderdik. Bir saat geçerlidir.",
-    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Parolayı oluşturmanız için size e-postayla bir bağlantı göndereceğiz. Bağlantıyı açtığınızda her yerden oturumunuz kapanır; ardından yeni parolanızla tekrar oturum açın."
+    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Parolayı oluşturmanız için size e-postayla bir bağlantı göndereceğiz. Bağlantıyı açtığınızda her yerden oturumunuz kapanır; ardından yeni parolanızla tekrar oturum açın.",
+    "Username attribute (optional)": "Kullanıcı adı özniteliği (isteğe bağlı)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Kişilerin adreslerinin yanı sıra dizindeki kullanıcı adlarıyla da giriş yapmasını sağlar; örneğin uid, cn veya sAMAccountName. Yalnızca adresle giriş için boş bırakın.",
+    "Email or username": "E-posta veya kullanıcı adı",
+    "Enter your email or username and password below to log in": "Giriş yapmak için e-posta adresinizi veya kullanıcı adınızı ve parolanızı aşağıya girin"
 }

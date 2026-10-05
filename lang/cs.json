@@ -2319,5 +2319,9 @@
     "This token can set passwords and remove two-factor authentication on the accounts it may edit, so whoever holds it can sign in as those accounts. Choose these abilities only for a holder you would trust with the accounts themselves.": "Tento token může nastavovat hesla a odstraňovat dvoufaktorové ověření u účtů, které smí upravovat, takže kdokoli ho má, se může přihlásit jako tyto účty. Tato oprávnění zvolte jen pro držitele, kterému byste svěřili samotné účty.",
     "Upload a logo before cropping it.": "Před oříznutím nahrajte logo.",
     "We sent a link to your email address. It works for one hour.": "Na vaši e-mailovou adresu jsme poslali odkaz. Platí jednu hodinu.",
-    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Pošleme vám e-mailem odkaz k jeho nastavení. Otevření odkazu vás všude odhlásí, takže se poté znovu přihlaste novým heslem."
+    "We will email you a link to set it. Opening the link signs you out everywhere, so sign in again with your new password afterwards.": "Pošleme vám e-mailem odkaz k jeho nastavení. Otevření odkazu vás všude odhlásí, takže se poté znovu přihlaste novým heslem.",
+    "Username attribute (optional)": "Atribut uživatelského jména (nepovinné)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Umožní lidem přihlásit se kromě adresy i uživatelským jménem z adresáře, například uid, cn nebo sAMAccountName. Ponechte prázdné, pokud se má přihlašovat jen adresou.",
+    "Email or username": "E-mail nebo uživatelské jméno",
+    "Enter your email or username and password below to log in": "Pro přihlášení zadejte níže svůj e-mail nebo uživatelské jméno a heslo"
 }

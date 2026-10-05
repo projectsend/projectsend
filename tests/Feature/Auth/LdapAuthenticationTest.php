@@ -25,7 +25,7 @@ beforeEach(function () {
 });
 
 /**
- * @param  array<string, array{password: string, name?: string, dn?: string}>  $entries
+ * @param  array<string, array{password: string, name?: string, dn?: string, username?: string}>  $entries
  */
 function fakeDirectory(array $entries = []): FakeLdapDirectory
 {
@@ -35,7 +35,7 @@ function fakeDirectory(array $entries = []): FakeLdapDirectory
     return $fake;
 }
 
-function enableLdap(bool $autoProvision = false, bool $autoApprove = false): LdapSettings
+function enableLdap(bool $autoProvision = false, bool $autoApprove = false, ?string $usernameAttribute = null): LdapSettings
 {
     $settings = LdapSettings::current();
     $settings->forceFill([
@@ -44,6 +44,7 @@ function enableLdap(bool $autoProvision = false, bool $autoApprove = false): Lda
         'base_dn' => 'dc=example,dc=test',
         'auto_provision' => $autoProvision,
         'auto_approve' => $autoApprove,
+        'username_attribute' => $usernameAttribute,
     ])->save();
 
     return $settings;
@@ -511,4 +512,114 @@ test('a local account still confirms against its own hash, with LDAP on', functi
         ->post('/confirm-password', ['password' => 'password'])
         ->assertRedirect()
         ->assertSessionHasNoErrors();
+});
+
+/*
+|--------------------------------------------------------------------------
+| Signing in with a directory username
+|--------------------------------------------------------------------------
+*/
+
+test('a client signs in with their directory username', function () {
+    enableLdap(usernameAttribute: 'uid');
+    $fake = fakeDirectory(['someone@example.test' => ['password' => 'directory-pass', 'username' => 'someone']]);
+    $client = User::factory()->client()->create(['email' => 'someone@example.test']);
+
+    $this->post('/login', ['email' => 'someone', 'password' => 'directory-pass'])->assertRedirect();
+
+    $this->assertAuthenticatedAs($client);
+    expect($fake->lookedUpUsernames)->toBe(['someone'])
+        ->and($fake->attemptedEmails)->toBe(['someone@example.test']);
+});
+
+test('a username signs in a client the directory has not met yet, when auto-provisioning is on', function () {
+    enableLdap(autoProvision: true, autoApprove: true, usernameAttribute: 'uid');
+    fakeDirectory(['newcomer@example.test' => ['password' => 'directory-pass', 'username' => 'newcomer', 'name' => 'New Comer']]);
+
+    $this->post('/login', ['email' => 'newcomer', 'password' => 'directory-pass'])->assertRedirect();
+
+    $user = User::query()->where('email', 'newcomer@example.test')->sole();
+    expect($user->isClient())->toBeTrue()
+        ->and($user->auth_source)->toBe(AuthSource::Ldap);
+    $this->assertAuthenticatedAs($user);
+});
+
+test('a username never signs in a staff account, even with its own password', function () {
+    enableLdap(usernameAttribute: 'uid');
+    fakeDirectory(['admin@example.test' => ['password' => 'directory-pass', 'username' => 'admin']]);
+    User::factory()->create(['email' => 'admin@example.test']);
+
+    $this->post('/login', ['email' => 'admin', 'password' => 'password'])->assertSessionHasErrors('email');
+    $this->post('/login', ['email' => 'admin', 'password' => 'directory-pass'])->assertSessionHasErrors('email');
+
+    $this->assertGuest();
+});
+
+test('a wrong password with a valid username is refused', function () {
+    enableLdap(usernameAttribute: 'uid');
+    fakeDirectory(['someone@example.test' => ['password' => 'directory-pass', 'username' => 'someone']]);
+    User::factory()->client()->create(['email' => 'someone@example.test']);
+
+    $this->post('/login', ['email' => 'someone', 'password' => 'wrong'])
+        ->assertSessionHasErrors(['email' => __('auth.failed')]);
+
+    $this->assertGuest();
+});
+
+test('an unknown username gets the same failure as a wrong password, and counts toward the limit', function () {
+    enableLdap(usernameAttribute: 'uid');
+    fakeDirectory();
+
+    foreach (range(1, 5) as $_) {
+        $this->post('/login', ['email' => 'nobody', 'password' => 'whatever'])
+            ->assertSessionHasErrors(['email' => __('auth.failed')]);
+    }
+
+    $this->post('/login', ['email' => 'nobody', 'password' => 'whatever'])
+        ->assertSessionHasErrors('email');
+    expect(session('errors')->first('email'))->not->toBe(__('auth.failed'));
+});
+
+test('a username is only accepted once a username attribute is set', function () {
+    enableLdap();
+    $fake = fakeDirectory(['someone@example.test' => ['password' => 'directory-pass', 'username' => 'someone']]);
+    User::factory()->client()->create(['email' => 'someone@example.test']);
+
+    $this->post('/login', ['email' => 'someone', 'password' => 'directory-pass'])->assertSessionHasErrors('email');
+
+    expect($fake->calls)->toBe(0);
+    $this->assertGuest();
+});
+
+test('an email address still signs in by email with username sign-in on', function () {
+    enableLdap(usernameAttribute: 'uid');
+    $fake = fakeDirectory(['someone@example.test' => ['password' => 'directory-pass', 'username' => 'someone']]);
+    $client = User::factory()->client()->create(['email' => 'someone@example.test']);
+
+    $this->post('/login', ['email' => 'someone@example.test', 'password' => 'directory-pass'])->assertRedirect();
+
+    $this->assertAuthenticatedAs($client);
+    expect($fake->lookedUpUsernames)->toBe([]);
+});
+
+test('the login page offers username sign-in only when it is configured', function () {
+    $this->get('/login')->assertInertia(fn ($page) => $page->where('usernameSignIn', false));
+
+    enableLdap(usernameAttribute: 'uid');
+
+    $this->get('/login')->assertInertia(fn ($page) => $page->where('usernameSignIn', true));
+});
+
+// Decided by the same rule that admitted the address, or an account whose
+// address the `email` rule accepts and filter_var does not (a dotless
+// domain, say) would be taken for a username and locked out.
+test('an address the email rule accepts is still an address with username sign-in on', function () {
+    enableLdap(usernameAttribute: 'uid');
+    $fake = fakeDirectory();
+    $client = User::factory()->client()->create(['email' => 'someone@localhost']);
+
+    $this->post('/login', ['email' => 'someone@localhost', 'password' => 'password'])->assertRedirect();
+
+    $this->assertAuthenticatedAs($client);
+    expect($fake->lookedUpUsernames)->toBe([]);
 });

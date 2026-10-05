@@ -42,6 +42,14 @@ we did. It sits at the top of a release for that reason. Older entries call the 
   since 2.5.0. The invitations screen listed every invitation, with names and email addresses,
   and let such a staff member revoke any of them. Nothing to do on upgrade.
 
+- **The orphan file tool can no longer be pointed at a file somebody owns.** Reported by
+  [@simjiun](https://github.com/simjiun).
+
+  *Who this affected:* every 2.x installation where a staff role can import orphan files but not
+  delete other people's files. Writing a file's path a little differently, for example
+  `./folder/file.txt`, made the tool treat a file that belongs to someone as an orphan, so it
+  could delete it or claim it. Nothing to do on upgrade.
+
 ## 2.6.0 — 25 September 2026
 
 Mostly fixes: files and folders are easier to tidy, the sign-in pages carry your brand better, and

@@ -35,6 +35,13 @@ we did. It sits at the top of a release for that reason. Older entries call the 
   the account's own address, and using it signs out every other session. Your users need working
   email for this; if yours cannot send any, an administrator can still set the password for them.
 
+- **A staff member limited to some clients now sees and revokes only their own invitations, and
+  those into their clients' groups.** Reported by [@sbouabid-sec](https://github.com/sbouabid-sec).
+
+  *Who this affected:* installations using client-scoped staff roles that can create clients,
+  since 2.5.0. The invitations screen listed every invitation, with names and email addresses,
+  and let such a staff member revoke any of them. Nothing to do on upgrade.
+
 ## 2.6.0 — 25 September 2026
 
 Mostly fixes: files and folders are easier to tidy, the sign-in pages carry your brand better, and

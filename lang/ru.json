@@ -2283,5 +2283,9 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Показывается размером до 320 × 128 пикселей, поэтому поместится и широкий, и квадратный логотип. PNG, JPG, GIF или WebP, до 2 МБ.",
     "Show the site name under the logo": "Показывать название сайта под логотипом",
     "They will no longer be available to anyone they were shared with.": "Они больше не будут доступны никому, кому были открыты.",
-    "Uploading into :folder": "Загрузка в: :folder"
+    "Uploading into :folder": "Загрузка в: :folder",
+    "Username attribute (optional)": "Атрибут имени пользователя (необязательно)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Позволяет входить не только по адресу, но и по имени пользователя из каталога, например uid, cn или sAMAccountName. Оставьте пустым, чтобы входить только по адресу.",
+    "Email or username": "Адрес эл. почты или имя пользователя",
+    "Enter your email or username and password below to log in": "Введите ниже адрес эл. почты или имя пользователя и пароль, чтобы войти"
 }

@@ -2283,5 +2283,9 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Es mostra fins a 320 × 128 píxels, de manera que hi caben tant un logotip ample com un de quadrat. PNG, JPG, GIF o WebP, fins a 2 MB.",
     "Show the site name under the logo": "Mostra el nom del lloc sota el logotip",
     "They will no longer be available to anyone they were shared with.": "Deixaran d'estar disponibles per a tothom amb qui s'havien compartit.",
-    "Uploading into :folder": "Pujant a :folder"
+    "Uploading into :folder": "Pujant a :folder",
+    "Username attribute (optional)": "Atribut de nom d'usuari (opcional)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Permet que les persones iniciïn la sessió amb el seu nom d'usuari del directori a més de l'adreça: per exemple uid, cn o sAMAccountName. Deixa-ho buit per iniciar la sessió només amb l'adreça.",
+    "Email or username": "Correu o nom d'usuari",
+    "Enter your email or username and password below to log in": "Introdueix a sota el teu correu o nom d'usuari i la teva contrasenya per iniciar la sessió"
 }

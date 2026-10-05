@@ -2283,5 +2283,9 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Getoond tot 320 × 128 pixels, dus zowel een breed als een vierkant logo past. PNG, JPG, GIF of WebP, tot 2 MB.",
     "Show the site name under the logo": "Sitenaam onder het logo tonen",
     "They will no longer be available to anyone they were shared with.": "Ze zijn niet langer beschikbaar voor iedereen met wie ze gedeeld waren.",
-    "Uploading into :folder": "Uploaden naar :folder"
+    "Uploading into :folder": "Uploaden naar :folder",
+    "Username attribute (optional)": "Gebruikersnaamattribuut (optioneel)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Laat mensen naast hun adres ook inloggen met hun gebruikersnaam uit de directory, bijvoorbeeld uid, cn of sAMAccountName. Laat leeg om alleen met het adres in te loggen.",
+    "Email or username": "E-mailadres of gebruikersnaam",
+    "Enter your email or username and password below to log in": "Voer hieronder je e-mailadres of gebruikersnaam en wachtwoord in om in te loggen"
 }

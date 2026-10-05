@@ -2283,5 +2283,9 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Wyświetlane w rozmiarze do 320 × 128 pikseli, więc zmieści się zarówno szerokie, jak i kwadratowe logo. PNG, JPG, GIF lub WebP, do 2 MB.",
     "Show the site name under the logo": "Pokaż nazwę witryny pod logo",
     "They will no longer be available to anyone they were shared with.": "Przestaną być dostępne dla wszystkich, którym je udostępniono.",
-    "Uploading into :folder": "Przesyłanie do: :folder"
+    "Uploading into :folder": "Przesyłanie do: :folder",
+    "Username attribute (optional)": "Atrybut nazwy użytkownika (opcjonalnie)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Pozwala logować się oprócz adresu także nazwą użytkownika z katalogu, na przykład uid, cn lub sAMAccountName. Zostaw puste, aby logować się tylko adresem.",
+    "Email or username": "Adres e-mail lub nazwa użytkownika",
+    "Enter your email or username and password below to log in": "Wpisz poniżej swój adres e-mail lub nazwę użytkownika i hasło, aby się zalogować"
 }

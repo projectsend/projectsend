@@ -2283,5 +2283,9 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "最大按 320 × 128 像素显示，宽标志和方形标志都能放下。PNG、JPG、GIF 或 WebP，最大 2 MB。",
     "Show the site name under the logo": "在标志下方显示站点名称",
     "They will no longer be available to anyone they were shared with.": "这些文件将不再对任何已共享的人开放。",
-    "Uploading into :folder": "上传到 :folder"
+    "Uploading into :folder": "上传到 :folder",
+    "Username attribute (optional)": "用户名属性（可选）",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "除邮箱地址外，还允许使用目录中的用户名登录，例如 uid、cn 或 sAMAccountName。留空则只能用邮箱地址登录。",
+    "Email or username": "邮箱或用户名",
+    "Enter your email or username and password below to log in": "在下方输入邮箱或用户名和密码即可登录"
 }

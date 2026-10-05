@@ -2283,5 +2283,9 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "En fazla 320 × 128 piksel olarak gösterilir; böylece hem geniş hem kare logolar sığar. PNG, JPG, GIF veya WebP, en fazla 2 MB.",
     "Show the site name under the logo": "Site adını logonun altında göster",
     "They will no longer be available to anyone they were shared with.": "Paylaşıldıkları hiç kimse için artık erişilebilir olmayacaklar.",
-    "Uploading into :folder": "Yükleme hedefi: :folder"
+    "Uploading into :folder": "Yükleme hedefi: :folder",
+    "Username attribute (optional)": "Kullanıcı adı özniteliği (isteğe bağlı)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Kişilerin adreslerinin yanı sıra dizindeki kullanıcı adlarıyla da giriş yapmasını sağlar; örneğin uid, cn veya sAMAccountName. Yalnızca adresle giriş için boş bırakın.",
+    "Email or username": "E-posta veya kullanıcı adı",
+    "Enter your email or username and password below to log in": "Giriş yapmak için e-posta adresinizi veya kullanıcı adınızı ve parolanızı aşağıya girin"
 }

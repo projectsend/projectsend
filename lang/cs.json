@@ -2283,5 +2283,9 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Zobrazuje se až v rozměru 320 × 128 pixelů, takže se vejde široké i čtvercové logo. PNG, JPG, GIF nebo WebP, do 2 MB.",
     "Show the site name under the logo": "Zobrazit název webu pod logem",
     "They will no longer be available to anyone they were shared with.": "Přestanou být dostupné všem, se kterými byly sdíleny.",
-    "Uploading into :folder": "Nahrávání do: :folder"
+    "Uploading into :folder": "Nahrávání do: :folder",
+    "Username attribute (optional)": "Atribut uživatelského jména (nepovinné)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Umožní lidem přihlásit se kromě adresy i uživatelským jménem z adresáře, například uid, cn nebo sAMAccountName. Ponechte prázdné, pokud se má přihlašovat jen adresou.",
+    "Email or username": "E-mail nebo uživatelské jméno",
+    "Enter your email or username and password below to log in": "Pro přihlášení zadejte níže svůj e-mail nebo uživatelské jméno a heslo"
 }

@@ -2283,5 +2283,9 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Huonyeshwa hadi pikseli 320 × 128, kwa hivyo nembo pana na ya mraba zote zinatosha. PNG, JPG, GIF au WebP, hadi MB 2.",
     "Show the site name under the logo": "Onyesha jina la tovuti chini ya nembo",
     "They will no longer be available to anyone they were shared with.": "Hayatapatikana tena kwa yeyote aliyeshirikishwa nayo.",
-    "Uploading into :folder": "Inapakia kwenye :folder"
+    "Uploading into :folder": "Inapakia kwenye :folder",
+    "Username attribute (optional)": "Sifa ya jina la mtumiaji (si lazima)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Huwaruhusu watu kuingia kwa jina la mtumiaji la saraka pamoja na anwani yao, kwa mfano uid, cn au sAMAccountName. Acha tupu ili kuingia kwa anwani pekee.",
+    "Email or username": "Barua pepe au jina la mtumiaji",
+    "Enter your email or username and password below to log in": "Weka barua pepe au jina la mtumiaji na nenosiri lako hapa chini ili kuingia"
 }

@@ -2283,5 +2283,9 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "最大 320 × 128 ピクセルで表示されるため、横長のロゴも正方形のロゴも収まります。PNG、JPG、GIF、WebP、2 MB まで。",
     "Show the site name under the logo": "ロゴの下にサイト名を表示する",
     "They will no longer be available to anyone they were shared with.": "共有していた相手全員から利用できなくなります。",
-    "Uploading into :folder": "アップロード先: :folder"
+    "Uploading into :folder": "アップロード先: :folder",
+    "Username attribute (optional)": "ユーザー名属性 (任意)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "アドレスに加えて、ディレクトリのユーザー名でもログインできるようにします。例: uid、cn、sAMAccountName。空のままにすると、アドレスでのみログインできます。",
+    "Email or username": "メールアドレスまたはユーザー名",
+    "Enter your email or username and password below to log in": "ログインするには、以下にメールアドレスまたはユーザー名とパスワードを入力してください"
 }

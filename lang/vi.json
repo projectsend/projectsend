@@ -2283,5 +2283,9 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Hiển thị tối đa 320 × 128 pixel, nên cả logo ngang lẫn logo vuông đều vừa. PNG, JPG, GIF hoặc WebP, tối đa 2 MB.",
     "Show the site name under the logo": "Hiển thị tên trang dưới logo",
     "They will no longer be available to anyone they were shared with.": "Chúng sẽ không còn khả dụng với bất kỳ ai từng được chia sẻ.",
-    "Uploading into :folder": "Đang tải lên vào :folder"
+    "Uploading into :folder": "Đang tải lên vào :folder",
+    "Username attribute (optional)": "Thuộc tính tên người dùng (không bắt buộc)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Cho phép đăng nhập bằng tên người dùng trong thư mục ngoài địa chỉ, ví dụ uid, cn hoặc sAMAccountName. Để trống nếu chỉ đăng nhập bằng địa chỉ.",
+    "Email or username": "Email hoặc tên người dùng",
+    "Enter your email or username and password below to log in": "Nhập email hoặc tên người dùng và mật khẩu bên dưới để đăng nhập"
 }

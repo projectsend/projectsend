@@ -2283,5 +2283,9 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Ditampilkan hingga 320 × 128 piksel, jadi logo lebar maupun persegi sama-sama muat. PNG, JPG, GIF, atau WebP, hingga 2 MB.",
     "Show the site name under the logo": "Tampilkan nama situs di bawah logo",
     "They will no longer be available to anyone they were shared with.": "Berkas tersebut tidak akan tersedia lagi bagi siapa pun yang sebelumnya menerimanya.",
-    "Uploading into :folder": "Mengunggah ke :folder"
+    "Uploading into :folder": "Mengunggah ke :folder",
+    "Username attribute (optional)": "Atribut nama pengguna (opsional)",
+    "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Memungkinkan orang masuk dengan nama pengguna direktori selain alamatnya, misalnya uid, cn, atau sAMAccountName. Biarkan kosong untuk masuk hanya dengan alamat.",
+    "Email or username": "Email atau nama pengguna",
+    "Enter your email or username and password below to log in": "Masukkan email atau nama pengguna dan kata sandi Anda di bawah ini untuk masuk"
 }

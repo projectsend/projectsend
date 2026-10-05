@@ -70,7 +70,10 @@ class InvitationController extends Controller
         // waiting. A screen that showed only what is outstanding cannot
         // answer "did we ever invite this person", which is the question
         // somebody actually arrives with.
-        $invitations = Invitation::query()
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        $invitations = $this->visibleTo($viewer)
             ->when($status !== null, fn (Builder $query) => $this->applyStateFilter($query, (string) $status))
             ->with(['group:id,name', 'invitedBy:id,name'])
             // Newest first, the order a history is read in. What is urgent
@@ -99,6 +102,31 @@ class InvitationController extends Controller
             'pagination' => Pagination::meta($invitations),
             'filters' => ['status' => $status],
         ]);
+    }
+
+    /**
+     * The invitations this staff member may see and revoke.
+     *
+     * Everyone's, for most staff. For one limited to some clients, the same
+     * line create() and store() draw when they send one: the invitations
+     * they sent themselves, and those into a group one of their clients is
+     * in. Anything else would hand them other invitees' names and addresses
+     * and let them revoke invitations other people sent
+     * (GHSA-phv7-54fm-qh4r).
+     *
+     * @return Builder<Invitation>
+     */
+    private function visibleTo(User $viewer): Builder
+    {
+        $query = Invitation::query();
+
+        if (! $viewer->isClientScoped()) {
+            return $query;
+        }
+
+        return $query->where(fn (Builder $mine) => $mine
+            ->where('invited_by_id', $viewer->id)
+            ->orWhereIn('group_id', $this->scope->groups($viewer)->select('groups.id')));
     }
 
     /**
@@ -197,8 +225,15 @@ class InvitationController extends Controller
      * invited this address and when, and that trail should still lead
      * somewhere.
      */
-    public function destroy(Invitation $invitation): RedirectResponse
+    public function destroy(Request $request, Invitation $invitation): RedirectResponse
     {
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        // Out of reach reads as not there, like the rest of a scoped
+        // staff member's surfaces.
+        abort_unless($this->visibleTo($viewer)->whereKey($invitation->id)->exists(), 404);
+
         // Already spent, already superseded, already revoked: there is
         // nothing left to cancel, and saying so is better than reporting a
         // success that changed nothing.

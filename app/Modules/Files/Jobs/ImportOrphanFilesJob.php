@@ -12,6 +12,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Modules\Files\Models\File;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 /**
@@ -55,6 +58,15 @@ class ImportOrphanFilesJob implements ShouldQueue
             return;
         }
 
+        // Asked at every chunk, not only when the run was started: a run
+        // can outlast the access of the person who began it, and each
+        // chunk adopts files in their name.
+        if (! $user->active || ! $user->isStaff() || ! $user->can('import_orphans')) {
+            $progress->fail('The account that started the import can no longer import files.');
+
+            return;
+        }
+
         $deadline = microtime(true) + $this->budgetSeconds;
 
         foreach ($scanner->importable($user, $this->search) as $i => $item) {
@@ -65,15 +77,48 @@ class ImportOrphanFilesJob implements ShouldQueue
                 return;
             }
 
-            $importer->import($user, $item['disk'], $item['path']);
-            $progress->advance();
+            if ($this->claimAndImport($importer, $user, $item['disk'], $item['path'])) {
+                $progress->advance();
+            }
         }
 
         $progress->finish();
     }
 
+    /**
+     * Adopt one path, unless another chunk has it or already did.
+     *
+     * Chunks normally run one after another, but a run that stalled and a
+     * new one started after it can both have chunks queued, and with more
+     * than one worker two chunks scanning at once would both adopt the
+     * same path: two rows on one set of bytes, where deleting either
+     * deletes the other's file. The scan alone cannot prevent that, since
+     * hashing a large file leaves seconds between seeing a path and
+     * writing its row. So each path is claimed first, and checked for a
+     * row inside the claim. A path somebody else holds is left to them.
+     */
+    private function claimAndImport(OrphanFileImporter $importer, User $user, string $disk, string $path): bool
+    {
+        return (bool) Cache::lock('orphan-files-import:'.sha1($disk.'|'.$path), 600)->get(function () use ($importer, $user, $disk, $path): bool {
+            if (File::withTrashed()->where('disk', $disk)->where('path', $path)->exists()) {
+                return false;
+            }
+
+            $importer->import($user, $disk, $path);
+
+            return true;
+        });
+    }
+
+    /**
+     * The page shows a plain sentence; the exception goes to the log. A
+     * storage error can name a bucket, an endpoint or a path, which is
+     * for whoever reads the log rather than for the screen.
+     */
     public function failed(Throwable $exception): void
     {
-        app(OrphanImportProgress::class)->fail($exception->getMessage());
+        Log::error('The background orphan import failed.', ['exception' => $exception]);
+
+        app(OrphanImportProgress::class)->fail('An error stopped the import. The details are in the application log.');
     }
 }

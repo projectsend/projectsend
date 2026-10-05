@@ -296,13 +296,15 @@ test('a run that stops making progress is reported as stalled and no longer bloc
     Queue::assertPushed(ImportOrphanFilesJob::class, 1);
 });
 
-test('a run whose job fails is reported as failed with the reason', function () {
+test('a run whose job fails is reported as failed', function () {
     app(OrphanImportProgress::class)->tryStart(5);
 
     (new ImportOrphanFilesJob($this->admin->id, null))->failed(new RuntimeException('Disk unreachable'));
 
+    // The reason itself goes to the log, not the screen: see
+    // OrphanImportJobHardeningTest.
     $this->actingAs($this->admin)->getJson('/files/orphans/import-status')
-        ->assertJson(['status' => 'failed', 'error' => 'Disk unreachable']);
+        ->assertJson(['status' => 'failed']);
 });
 
 test('import all with nothing importable queues nothing', function () {

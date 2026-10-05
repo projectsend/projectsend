@@ -26,6 +26,15 @@ we did. It sits at the top of a release for that reason. Older entries call the 
   changed only from your profile. Setting *someone else's* password now also revokes their API
   tokens. Nothing to do on upgrade.
 
+- **An account that signs in through Google, Microsoft or another provider now sets its first
+  password from a link sent to its email.** Reported by [@simjiun](https://github.com/simjiun).
+
+  *Who this affected:* installations with sign-in through a provider, since 2.5.0. Whoever held
+  such an account's browser session, for example a stolen one, could give the account a password
+  of their choosing and keep it after the session ended. Now "Set a password" emails a link to
+  the account's own address, and using it signs out every other session. Your users need working
+  email for this; if yours cannot send any, an administrator can still set the password for them.
+
 ## 2.6.0 — 25 September 2026
 
 Mostly fixes: files and folders are easier to tidy, the sign-in pages carry your brand better, and

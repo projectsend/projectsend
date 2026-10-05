@@ -2283,5 +2283,19 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Es mostra fins a 320 × 128 píxels, de manera que hi caben tant un logotip ample com un de quadrat. PNG, JPG, GIF o WebP, fins a 2 MB.",
     "Show the site name under the logo": "Mostra el nom del lloc sota el logotip",
     "They will no longer be available to anyone they were shared with.": "Deixaran d'estar disponibles per a tothom amb qui s'havien compartit.",
-    "Uploading into :folder": "Pujant a :folder"
+    "Uploading into :folder": "Pujant a :folder",
+    "Select all :count matching files": "Selecciona els :count fitxers coincidents",
+    "Restricted and empty files are skipped.": "Els fitxers restringits i els buits s’ometen.",
+    "Import all": "Importa-ho tot",
+    "Importing in the background": "S’està important en segon pla",
+    ":imported of :total files imported. You can leave this page — the import keeps going.": ":imported de :total fitxers importats. Pots sortir d’aquesta pàgina: la importació continua.",
+    "Import finished": "Importació acabada",
+    ":imported of :total files imported.": ":imported de :total fitxers importats.",
+    "The import stopped": "La importació s’ha aturat",
+    "The import stopped making progress": "La importació ha deixat d’avançar",
+    ":imported of :total files were imported before it failed: :error": "S’han importat :imported de :total fitxers abans de l’error: :error",
+    ":imported of :total files were imported. The queue worker may not be running.": "S’han importat :imported de :total fitxers. Potser el procés en segon pla no s’està executant.",
+    "Choose Import all again to continue with the rest.": "Torna a triar «Importa-ho tot» per continuar amb la resta.",
+    "An import is already running. Wait for it to finish.": "Ja hi ha una importació en curs. Espera que acabi.",
+    "Importing :count file in the background.|Importing :count files in the background.": "S’està important :count fitxer en segon pla.|S’estan important :count fitxers en segon pla."
 }

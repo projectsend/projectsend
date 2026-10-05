@@ -103,6 +103,26 @@ class OrphanFileScanner
     }
 
     /**
+     * Every orphan the search matches that $viewer may import: the same
+     * rule as isImportable(), applied to a whole scan. Taken from a fresh
+     * scan, so unlike a client-supplied list it needs no per-path re-check.
+     *
+     * @return list<array{disk: string, path: string}>
+     */
+    public function importable(User $viewer, ?string $search = null): array
+    {
+        $importable = [];
+
+        foreach ($this->scan($viewer, $search) as $orphan) {
+            if ($orphan['allowed'] && $orphan['size'] > 0) {
+                $importable[] = ['disk' => $orphan['disk'], 'path' => $orphan['path']];
+            }
+        }
+
+        return $importable;
+    }
+
+    /**
      * Re-validated at import/delete time — never trust a client-supplied
      * disk/path just because it was in an earlier scan response. $disk
      * must be one of scannedDisks()'s current keys — a client could

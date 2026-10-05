@@ -2283,5 +2283,19 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Mostrato fino a 320 × 128 pixel, così ci stanno sia un logo largo sia uno quadrato. PNG, JPG, GIF o WebP, fino a 2 MB.",
     "Show the site name under the logo": "Mostra il nome del sito sotto il logo",
     "They will no longer be available to anyone they were shared with.": "Non saranno più disponibili per le persone con cui erano condivisi.",
-    "Uploading into :folder": "Caricamento in :folder"
+    "Uploading into :folder": "Caricamento in :folder",
+    "Select all :count matching files": "Seleziona tutti i :count file corrispondenti",
+    "Restricted and empty files are skipped.": "I file con estensione limitata e quelli vuoti vengono saltati.",
+    "Import all": "Importa tutto",
+    "Importing in the background": "Importazione in background",
+    ":imported of :total files imported. You can leave this page — the import keeps going.": ":imported di :total file importati. Puoi lasciare questa pagina: l’importazione continua.",
+    "Import finished": "Importazione completata",
+    ":imported of :total files imported.": ":imported di :total file importati.",
+    "The import stopped": "L’importazione si è interrotta",
+    "The import stopped making progress": "L’importazione non avanza più",
+    ":imported of :total files were imported before it failed: :error": "Sono stati importati :imported di :total file prima dell’errore: :error",
+    ":imported of :total files were imported. The queue worker may not be running.": "Sono stati importati :imported di :total file. Forse il processo in background non è in esecuzione.",
+    "Choose Import all again to continue with the rest.": "Scegli di nuovo «Importa tutto» per continuare con il resto.",
+    "An import is already running. Wait for it to finish.": "C’è già un’importazione in corso. Aspetta che finisca.",
+    "Importing :count file in the background.|Importing :count files in the background.": "Importazione di :count file in background.|Importazione di :count file in background."
 }

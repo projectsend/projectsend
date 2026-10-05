@@ -2283,5 +2283,19 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Wyświetlane w rozmiarze do 320 × 128 pikseli, więc zmieści się zarówno szerokie, jak i kwadratowe logo. PNG, JPG, GIF lub WebP, do 2 MB.",
     "Show the site name under the logo": "Pokaż nazwę witryny pod logo",
     "They will no longer be available to anyone they were shared with.": "Przestaną być dostępne dla wszystkich, którym je udostępniono.",
-    "Uploading into :folder": "Przesyłanie do: :folder"
+    "Uploading into :folder": "Przesyłanie do: :folder",
+    "Select all :count matching files": "Zaznacz wszystkie pasujące pliki (:count)",
+    "Restricted and empty files are skipped.": "Pliki z ograniczonym rozszerzeniem i puste pliki są pomijane.",
+    "Import all": "Importuj wszystko",
+    "Importing in the background": "Importowanie w tle",
+    ":imported of :total files imported. You can leave this page — the import keeps going.": "Zaimportowano :imported z :total plików. Możesz opuścić tę stronę — import będzie trwał dalej.",
+    "Import finished": "Import zakończony",
+    ":imported of :total files imported.": "Zaimportowano :imported z :total plików.",
+    "The import stopped": "Import został przerwany",
+    "The import stopped making progress": "Import przestał postępować",
+    ":imported of :total files were imported before it failed: :error": "Przed błędem zaimportowano :imported z :total plików: :error",
+    ":imported of :total files were imported. The queue worker may not be running.": "Zaimportowano :imported z :total plików. Być może proces w tle nie działa.",
+    "Choose Import all again to continue with the rest.": "Wybierz ponownie „Importuj wszystko”, aby kontynuować z resztą.",
+    "An import is already running. Wait for it to finish.": "Import już trwa. Poczekaj, aż się zakończy.",
+    "Importing :count file in the background.|Importing :count files in the background.": "Importowanie :count pliku w tle.|Importowanie :count plików w tle.|Importowanie :count plików w tle."
 }

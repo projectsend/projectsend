@@ -2283,5 +2283,19 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "最大 320 × 128 ピクセルで表示されるため、横長のロゴも正方形のロゴも収まります。PNG、JPG、GIF、WebP、2 MB まで。",
     "Show the site name under the logo": "ロゴの下にサイト名を表示する",
     "They will no longer be available to anyone they were shared with.": "共有していた相手全員から利用できなくなります。",
-    "Uploading into :folder": "アップロード先: :folder"
+    "Uploading into :folder": "アップロード先: :folder",
+    "Select all :count matching files": "該当する :count 件のファイルをすべて選択",
+    "Restricted and empty files are skipped.": "制限された拡張子のファイルと空のファイルはスキップされます。",
+    "Import all": "すべてインポート",
+    "Importing in the background": "バックグラウンドでインポート中",
+    ":imported of :total files imported. You can leave this page — the import keeps going.": ":total 件中 :imported 件をインポートしました。このページを離れても、インポートは続行されます。",
+    "Import finished": "インポートが完了しました",
+    ":imported of :total files imported.": ":total 件中 :imported 件をインポートしました。",
+    "The import stopped": "インポートが停止しました",
+    "The import stopped making progress": "インポートが進まなくなりました",
+    ":imported of :total files were imported before it failed: :error": "エラーで停止するまでに :total 件中 :imported 件をインポートしました: :error",
+    ":imported of :total files were imported. The queue worker may not be running.": ":total 件中 :imported 件をインポートしました。バックグラウンド処理が動いていない可能性があります。",
+    "Choose Import all again to continue with the rest.": "残りを続けるには、もう一度「すべてインポート」を選んでください。",
+    "An import is already running. Wait for it to finish.": "すでにインポートを実行中です。終わるまでお待ちください。",
+    "Importing :count file in the background.|Importing :count files in the background.": ":count 件のファイルをバックグラウンドでインポートしています。|:count 件のファイルをバックグラウンドでインポートしています。"
 }

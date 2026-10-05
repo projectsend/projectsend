@@ -2283,5 +2283,19 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "最大按 320 × 128 像素显示，宽标志和方形标志都能放下。PNG、JPG、GIF 或 WebP，最大 2 MB。",
     "Show the site name under the logo": "在标志下方显示站点名称",
     "They will no longer be available to anyone they were shared with.": "这些文件将不再对任何已共享的人开放。",
-    "Uploading into :folder": "上传到 :folder"
+    "Uploading into :folder": "上传到 :folder",
+    "Select all :count matching files": "选择全部 :count 个匹配的文件",
+    "Restricted and empty files are skipped.": "受限扩展名的文件和空文件会被跳过。",
+    "Import all": "全部导入",
+    "Importing in the background": "正在后台导入",
+    ":imported of :total files imported. You can leave this page — the import keeps going.": "已导入 :imported / :total 个文件。你可以离开此页面——导入会继续进行。",
+    "Import finished": "导入完成",
+    ":imported of :total files imported.": "已导入 :imported / :total 个文件。",
+    "The import stopped": "导入已停止",
+    "The import stopped making progress": "导入不再有进展",
+    ":imported of :total files were imported before it failed: :error": "失败前已导入 :imported / :total 个文件：:error",
+    ":imported of :total files were imported. The queue worker may not be running.": "已导入 :imported / :total 个文件。后台进程可能没有在运行。",
+    "Choose Import all again to continue with the rest.": "再次选择“全部导入”即可继续导入剩余文件。",
+    "An import is already running. Wait for it to finish.": "已有一个导入正在进行。请等它完成。",
+    "Importing :count file in the background.|Importing :count files in the background.": "正在后台导入 :count 个文件。|正在后台导入 :count 个文件。"
 }

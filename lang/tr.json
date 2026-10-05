@@ -2283,5 +2283,19 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "En fazla 320 × 128 piksel olarak gösterilir; böylece hem geniş hem kare logolar sığar. PNG, JPG, GIF veya WebP, en fazla 2 MB.",
     "Show the site name under the logo": "Site adını logonun altında göster",
     "They will no longer be available to anyone they were shared with.": "Paylaşıldıkları hiç kimse için artık erişilebilir olmayacaklar.",
-    "Uploading into :folder": "Yükleme hedefi: :folder"
+    "Uploading into :folder": "Yükleme hedefi: :folder",
+    "Select all :count matching files": "Eşleşen :count dosyanın tümünü seç",
+    "Restricted and empty files are skipped.": "Kısıtlı uzantılı ve boş dosyalar atlanır.",
+    "Import all": "Tümünü içe aktar",
+    "Importing in the background": "Arka planda içe aktarılıyor",
+    ":imported of :total files imported. You can leave this page — the import keeps going.": ":total dosyadan :imported tanesi içe aktarıldı. Bu sayfadan ayrılabilirsiniz — içe aktarma devam eder.",
+    "Import finished": "İçe aktarma tamamlandı",
+    ":imported of :total files imported.": ":total dosyadan :imported tanesi içe aktarıldı.",
+    "The import stopped": "İçe aktarma durdu",
+    "The import stopped making progress": "İçe aktarma ilerlemiyor",
+    ":imported of :total files were imported before it failed: :error": "Hata oluşmadan önce :total dosyadan :imported tanesi içe aktarıldı: :error",
+    ":imported of :total files were imported. The queue worker may not be running.": ":total dosyadan :imported tanesi içe aktarıldı. Arka plan işleyicisi çalışmıyor olabilir.",
+    "Choose Import all again to continue with the rest.": "Kalanlarla devam etmek için yeniden “Tümünü içe aktar”ı seçin.",
+    "An import is already running. Wait for it to finish.": "Zaten bir içe aktarma sürüyor. Bitmesini bekleyin.",
+    "Importing :count file in the background.|Importing :count files in the background.": ":count dosya arka planda içe aktarılıyor.|:count dosya arka planda içe aktarılıyor."
 }

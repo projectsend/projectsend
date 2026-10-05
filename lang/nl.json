@@ -2283,5 +2283,19 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Getoond tot 320 × 128 pixels, dus zowel een breed als een vierkant logo past. PNG, JPG, GIF of WebP, tot 2 MB.",
     "Show the site name under the logo": "Sitenaam onder het logo tonen",
     "They will no longer be available to anyone they were shared with.": "Ze zijn niet langer beschikbaar voor iedereen met wie ze gedeeld waren.",
-    "Uploading into :folder": "Uploaden naar :folder"
+    "Uploading into :folder": "Uploaden naar :folder",
+    "Select all :count matching files": "Alle :count overeenkomende bestanden selecteren",
+    "Restricted and empty files are skipped.": "Bestanden met een beperkte extensie en lege bestanden worden overgeslagen.",
+    "Import all": "Alles importeren",
+    "Importing in the background": "Importeren op de achtergrond",
+    ":imported of :total files imported. You can leave this page — the import keeps going.": ":imported van :total bestanden geïmporteerd. Je kunt deze pagina verlaten — het importeren gaat door.",
+    "Import finished": "Importeren voltooid",
+    ":imported of :total files imported.": ":imported van :total bestanden geïmporteerd.",
+    "The import stopped": "Het importeren is gestopt",
+    "The import stopped making progress": "Het importeren schiet niet meer op",
+    ":imported of :total files were imported before it failed: :error": ":imported van :total bestanden zijn geïmporteerd voordat het misging: :error",
+    ":imported of :total files were imported. The queue worker may not be running.": ":imported van :total bestanden zijn geïmporteerd. Mogelijk draait het achtergrondproces niet.",
+    "Choose Import all again to continue with the rest.": "Kies opnieuw ‘Alles importeren’ om met de rest verder te gaan.",
+    "An import is already running. Wait for it to finish.": "Er loopt al een import. Wacht tot die klaar is.",
+    "Importing :count file in the background.|Importing :count files in the background.": ":count bestand wordt op de achtergrond geïmporteerd.|:count bestanden worden op de achtergrond geïmporteerd."
 }

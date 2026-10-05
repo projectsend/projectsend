@@ -5,20 +5,24 @@ declare(strict_types=1);
 namespace App\Modules\Files\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Files\Jobs\ImportOrphanFilesJob;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\OrphanFileImporter;
 use App\Modules\Files\OrphanFileScanner;
+use App\Modules\Files\OrphanImportProgress;
 use App\Modules\Files\Scanning\ScanStatus;
-use App\Modules\Files\Uploads\StoreUploadedFile;
 use App\Support\Pagination;
-use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -33,7 +37,8 @@ class OrphanFilesController extends Controller
 {
     public function __construct(
         private readonly OrphanFileScanner $scanner,
-        private readonly StoreUploadedFile $storeFile,
+        private readonly OrphanFileImporter $importer,
+        private readonly OrphanImportProgress $progress,
         private readonly ActivityLogger $activity,
     ) {}
 
@@ -91,6 +96,7 @@ class OrphanFilesController extends Controller
             'search' => $search,
             'scanned_disks' => $this->scanner->scannedDisks(),
             'missing_count' => File::query()->where('scan_status', ScanStatus::Missing)->count(),
+            'import_run' => $this->progress->current(),
         ]);
     }
 
@@ -138,14 +144,20 @@ class OrphanFilesController extends Controller
         $user = $request->user();
         assert($user !== null);
 
-        $validated = $this->validateItems($request);
+        if ($request->boolean('all')) {
+            return $this->importAll($request, $user);
+        }
+
+        // While a background run is adopting files, a second importer
+        // could adopt the same path twice.
+        if ($this->progress->isActive()) {
+            $this->alreadyRunning();
+        }
 
         $imported = 0;
         $importedFile = null;
 
-        foreach ($validated['items'] as $item) {
-            $disk = Storage::disk($item['disk']);
-
+        foreach ($this->validateItems($request)['items'] as $item) {
             // Re-validate against a fresh scan — never trust a
             // client-supplied disk/path just because an earlier scan
             // listed it.
@@ -153,18 +165,7 @@ class OrphanFilesController extends Controller
                 continue;
             }
 
-            $importedFile = $this->storeFile->create(
-                uploader: $user,
-                originalName: basename($item['path']),
-                path: $item['path'],
-                mimeType: $disk->mimeType($item['path']) ?: 'application/octet-stream',
-                size: $disk->size($item['path']),
-                checksum: $this->checksumOf($disk, $item['path']),
-                folderId: null,
-                disk: $item['disk'],
-                action: Action::FileImported,
-            );
-
+            $importedFile = $this->importer->import($user, $item['disk'], $item['path']);
             $imported++;
         }
 
@@ -180,6 +181,49 @@ class OrphanFilesController extends Controller
             $imported,
             ['count' => (string) $imported],
         ));
+    }
+
+    /**
+     * Every orphan the search matches, on every page. Handed to a queued
+     * job: thousands of files hashed in full take minutes, and a request
+     * is cut off after 30s of CPU — part-way through, with an error page
+     * for an import that was in fact half done. See ImportOrphanFilesJob.
+     */
+    private function importAll(Request $request, User $user): RedirectResponse
+    {
+        $search = trim($request->validate(['search' => ['nullable', 'string', 'max:255']])['search'] ?? '');
+        $search = $search !== '' ? $search : null;
+
+        $total = count($this->scanner->importable($user, $search));
+
+        if ($total === 0) {
+            return back()->with('success', trans_choice(':count file imported.|:count files imported.', 0, ['count' => '0']));
+        }
+
+        if (! $this->progress->tryStart($total)) {
+            $this->alreadyRunning();
+        }
+
+        ImportOrphanFilesJob::dispatch($user->id, $search);
+
+        return back()->with('success', trans_choice(
+            'Importing :count file in the background.|Importing :count files in the background.',
+            $total,
+            ['count' => (string) $total],
+        ));
+    }
+
+    private function alreadyRunning(): never
+    {
+        throw ValidationException::withMessages(['items' => __('An import is already running. Wait for it to finish.')]);
+    }
+
+    /**
+     * Polled by the orphans screen while a background run is going.
+     */
+    public function importStatus(): JsonResponse
+    {
+        return response()->json($this->progress->current());
     }
 
     public function destroy(Request $request): RedirectResponse
@@ -217,25 +261,5 @@ class OrphanFilesController extends Controller
             'items.*.disk' => ['required', 'string', Rule::in(array_keys($this->scanner->scannedDisks()))],
             'items.*.path' => ['required', 'string'],
         ]);
-    }
-
-    /**
-     * Streamed rather than hash_file() on a local path — the only way to
-     * checksum a file that might live on a non-local disk (S3 has no
-     * local filesystem path to hand hash_file()).
-     */
-    private function checksumOf(Filesystem $disk, string $path): string
-    {
-        $stream = $disk->readStream($path);
-
-        if ($stream === null) {
-            return '';
-        }
-
-        $context = hash_init('sha256');
-        hash_update_stream($context, $stream);
-        fclose($stream);
-
-        return hash_final($context);
     }
 }

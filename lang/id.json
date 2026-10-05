@@ -2283,5 +2283,19 @@
     "Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.": "Ditampilkan hingga 320 × 128 piksel, jadi logo lebar maupun persegi sama-sama muat. PNG, JPG, GIF, atau WebP, hingga 2 MB.",
     "Show the site name under the logo": "Tampilkan nama situs di bawah logo",
     "They will no longer be available to anyone they were shared with.": "Berkas tersebut tidak akan tersedia lagi bagi siapa pun yang sebelumnya menerimanya.",
-    "Uploading into :folder": "Mengunggah ke :folder"
+    "Uploading into :folder": "Mengunggah ke :folder",
+    "Select all :count matching files": "Pilih semua :count berkas yang cocok",
+    "Restricted and empty files are skipped.": "Berkas dengan ekstensi yang dibatasi dan berkas kosong dilewati.",
+    "Import all": "Impor semua",
+    "Importing in the background": "Mengimpor di latar belakang",
+    ":imported of :total files imported. You can leave this page — the import keeps going.": ":imported dari :total berkas diimpor. Anda bisa meninggalkan halaman ini — impor tetap berjalan.",
+    "Import finished": "Impor selesai",
+    ":imported of :total files imported.": ":imported dari :total berkas diimpor.",
+    "The import stopped": "Impor berhenti",
+    "The import stopped making progress": "Impor tidak lagi berjalan maju",
+    ":imported of :total files were imported before it failed: :error": ":imported dari :total berkas diimpor sebelum gagal: :error",
+    ":imported of :total files were imported. The queue worker may not be running.": ":imported dari :total berkas diimpor. Proses latar mungkin tidak berjalan.",
+    "Choose Import all again to continue with the rest.": "Pilih “Impor semua” lagi untuk melanjutkan sisanya.",
+    "An import is already running. Wait for it to finish.": "Impor lain sedang berjalan. Tunggu sampai selesai.",
+    "Importing :count file in the background.|Importing :count files in the background.": "Mengimpor :count berkas di latar belakang.|Mengimpor :count berkas di latar belakang."
 }

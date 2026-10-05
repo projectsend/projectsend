@@ -73,6 +73,20 @@ class LdapAuthenticator
     }
 
     /**
+     * The address a directory username belongs to, so a login typed as a
+     * username can carry on exactly as if the address had been typed.
+     * Null whenever username sign-in is off or the breaker is open.
+     */
+    public function emailForUsername(string $username): ?string
+    {
+        if (! LdapSettings::current()->allowsUsernameSignIn() || $this->breakerOpen()) {
+            return null;
+        }
+
+        return $this->directory->emailForUsername($username);
+    }
+
+    /**
      * Record what the directory told us about an account that already
      * exists, so an administrator can see which entry it corresponds to.
      *
@@ -104,11 +118,16 @@ class LdapAuthenticator
             return false;
         }
 
-        if (Cache::get(self::BREAKER_KEY) === true) {
+        if ($this->breakerOpen()) {
             return false;
         }
 
         return $this->enabled();
+    }
+
+    private function breakerOpen(): bool
+    {
+        return Cache::get(self::BREAKER_KEY) === true;
     }
 
     /**

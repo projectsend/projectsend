@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $user_filter
  * @property string $email_attribute
  * @property string $name_attribute
+ * @property string|null $username_attribute
  * @property bool $auto_provision
  * @property bool $auto_approve
  */
@@ -79,5 +80,16 @@ class LdapSettings extends Model
             && extension_loaded('ldap')
             && is_string($this->host) && $this->host !== ''
             && is_string($this->base_dn) && $this->base_dn !== '';
+    }
+
+    /**
+     * Whether people may sign in with a directory username as well as an
+     * address: only once an administrator has named the attribute that
+     * holds it.
+     */
+    public function allowsUsernameSignIn(): bool
+    {
+        return $this->usable()
+            && is_string($this->username_attribute) && $this->username_attribute !== '';
     }
 }

@@ -26,9 +26,11 @@ interface LoginProps {
     status?: string;
     canResetPassword: boolean;
     canRegister: boolean;
+    /** A directory username attribute is configured, so the field also takes a username. */
+    usernameSignIn: boolean;
 }
 
-export default function Login({ status, canResetPassword, canRegister }: LoginProps) {
+export default function Login({ status, canResetPassword, canRegister, usernameSignIn }: LoginProps) {
     const { t } = useTranslation();
     const { flash } = usePage<SharedData>().props;
     const captcha = useRef<CaptchaHandle>(null);
@@ -59,7 +61,12 @@ export default function Login({ status, canResetPassword, canRegister }: LoginPr
     };
 
     return (
-        <AuthLayout title={t('Log in to your account')} description={t('Enter your email and password below to log in')}>
+        <AuthLayout
+            title={t('Log in to your account')}
+            description={
+                usernameSignIn ? t('Enter your email or username and password below to log in') : t('Enter your email and password below to log in')
+            }
+        >
             <Head title={t('Log in')} />
 
             {/* The app-wide Toaster lives in the authenticated layout, so a
@@ -75,14 +82,14 @@ export default function Login({ status, canResetPassword, canRegister }: LoginPr
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label htmlFor="email">{t('Email address')}</Label>
+                        <Label htmlFor="email">{usernameSignIn ? t('Email or username') : t('Email address')}</Label>
                         <Input
                             id="email"
-                            type="email"
+                            type={usernameSignIn ? 'text' : 'email'}
                             required
                             autoFocus
                             tabIndex={1}
-                            autoComplete="email"
+                            autoComplete={usernameSignIn ? 'username' : 'email'}
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
                             placeholder="email@example.com"

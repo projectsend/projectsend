@@ -4,7 +4,9 @@ namespace App\Http\Requests\Auth;
 
 use App\Models\User;
 use App\Modules\Identity\AccountLookup;
+use App\Modules\Identity\Ldap\LdapAuthenticator;
 use App\Modules\Identity\Ldap\LdapProvisioner;
+use App\Modules\Identity\Ldap\LdapSettings;
 use App\Modules\Identity\PasswordVerification;
 use App\Modules\Identity\SignIn;
 use App\Modules\Platform\Captcha\CaptchaForm;
@@ -14,6 +16,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -35,7 +38,12 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            // The field keeps its name either way: with a directory username
+            // attribute configured it also takes a username. See
+            // loginEmail().
+            'email' => LdapSettings::current()->allowsUsernameSignIn()
+                ? ['required', 'string', 'max:255']
+                : ['required', 'string', 'email'],
             'password' => ['required', 'string'],
             // Deliberately here rather than inside authenticate(): rules
             // run first, so a bot never reaches the credential check, and
@@ -72,23 +80,32 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        // Anything that is not an address is a directory username, and from
+        // here on the login is for the address the directory holds for it.
+        $login = (string) $this->string('email');
+        $byUsername = ! $this->isEmail($login);
+        $email = $byUsername ? app(LdapAuthenticator::class)->emailForUsername($login) : $login;
+
         // Exact, for the reason SocialAuthenticator is: a collation that
         // folds accents would otherwise let somebody typing
         // admin@éxample.com be *identified* as admin@example.com. A
         // password still gates this one, so it was never the takeover the
         // social path was — but identifying the wrong account is the bug,
         // and the credential check is a second line rather than the rule.
-        $user = app(AccountLookup::class)->byEmail((string) $this->string('email'));
+        $user = $email !== null ? app(AccountLookup::class)->byEmail($email) : null;
 
         // A directory identity with no local account yet. Returns null
         // unless LDAP is on, auto-provisioning is on, and the bind
         // succeeds — so an unknown email costs nothing on an installation
         // that does not use a directory.
-        if ($user === null) {
-            $user = app(LdapProvisioner::class)->provision(
-                (string) $this->string('email'),
-                (string) $this->string('password'),
-            );
+        if ($user === null && $email !== null) {
+            $user = app(LdapProvisioner::class)->provision($email, (string) $this->string('password'));
+        }
+
+        // The directory is client-only. A username is a directory name, so
+        // it never leads to a staff account, whichever password is typed.
+        if ($byUsername && $user !== null && ! $user->isClient()) {
+            $user = null;
         }
 
         $verified = $this->verifyCredentials($user);
@@ -116,6 +133,16 @@ class LoginRequest extends FormRequest
         RateLimiter::clear($this->throttleKey());
 
         return $pendingTwoFactor;
+    }
+
+    /**
+     * By the same `email` rule that admitted every stored address, so an
+     * address it accepts and filter_var() does not (a dotless domain, a
+     * non-ASCII local part) is never mistaken for a username.
+     */
+    private function isEmail(string $login): bool
+    {
+        return Validator::make(['email' => $login], ['email' => 'email'])->passes();
     }
 
     /**

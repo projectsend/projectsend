@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Modules\Identity\Ldap\LdapSettings;
 use App\Modules\Identity\StartPages;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -25,6 +26,7 @@ class AuthenticatedSessionController extends Controller
             'canResetPassword' => Route::has('password.request'),
             'canRegister' => app(Settings::class)->get(Setting::ClientsCanRegister) === true,
             'status' => $request->session()->get('status'),
+            'usernameSignIn' => LdapSettings::current()->allowsUsernameSignIn(),
         ]);
     }
 

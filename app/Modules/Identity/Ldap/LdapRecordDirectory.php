@@ -6,6 +6,7 @@ namespace App\Modules\Identity\Ldap;
 
 use Illuminate\Support\Facades\Log;
 use LdapRecord\Connection;
+use RuntimeException;
 use Throwable;
 
 /**
@@ -86,6 +87,48 @@ class LdapRecordDirectory implements LdapDirectory
 
             return null;
         }
+    }
+
+    public function entries(): array
+    {
+        $settings = LdapSettings::current();
+
+        if (! $settings->usable()) {
+            throw new RuntimeException('LDAP is not configured.');
+        }
+
+        $connection = LdapConnectionFactory::make($settings);
+        $connection->connect();
+
+        $query = $connection->query()
+            ->in($settings->base_dn)
+            ->select(['dn', $settings->email_attribute, $settings->name_attribute])
+            ->whereHas($settings->email_attribute);
+
+        if (is_string($settings->user_filter) && $settings->user_filter !== '') {
+            $query->rawFilter($settings->user_filter);
+        }
+
+        $identities = [];
+
+        // Paged, so a directory larger than the server's size limit is
+        // still read in full rather than cut off at the limit.
+        foreach ($query->paginate(500) as $entry) {
+            $email = $this->attribute($entry, $settings->email_attribute);
+            $dn = (string) ($entry['dn'] ?? '');
+
+            if ($email === null || $dn === '') {
+                continue;
+            }
+
+            $identities[] = new LdapIdentity(
+                dn: $dn,
+                email: $email,
+                name: $this->attribute($entry, $settings->name_attribute) ?? $email,
+            );
+        }
+
+        return $identities;
     }
 
     public function probe(?string $email = null, ?string $password = null): LdapProbeResult

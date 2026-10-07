@@ -7,9 +7,11 @@ namespace App\Modules\Identity\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Identity\Jobs\SyncLdapUsersJob;
 use App\Modules\Identity\Ldap\LdapDirectory;
 use App\Modules\Identity\Ldap\LdapEncryption;
 use App\Modules\Identity\Ldap\LdapSettings;
+use App\Modules\Identity\Ldap\LdapSync;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\RedirectResponse;
@@ -36,6 +38,7 @@ class LdapSettingsController extends Controller
     public function __construct(
         private readonly ActivityLogger $activity,
         private readonly Settings $settings,
+        private readonly LdapSync $sync,
     ) {}
 
     public function edit(Request $request): Response
@@ -59,6 +62,8 @@ class LdapSettingsController extends Controller
                 'username_attribute' => $ldap->username_attribute,
                 'auto_provision' => $ldap->auto_provision,
                 'auto_approve' => $ldap->auto_approve,
+                'sync_daily' => $ldap->sync_daily,
+                'sync_deactivates_missing' => $ldap->sync_deactivates_missing,
             ],
             'encryptions' => array_map(
                 fn (LdapEncryption $e): array => [
@@ -77,6 +82,8 @@ class LdapSettingsController extends Controller
             // directory accounts behave unlike registrations.
             'clients_auto_approve' => $this->settings->get(Setting::ClientsAutoApprove) === true,
             'test_result' => $request->session()->get('ldap_test_result'),
+            'sync' => $this->sync->last(),
+            'sync_preview' => $request->session()->get('ldap_sync_preview'),
         ]);
     }
 
@@ -97,6 +104,8 @@ class LdapSettingsController extends Controller
             'username_attribute' => ['nullable', 'string', 'max:64'],
             'auto_provision' => ['required', 'boolean'],
             'auto_approve' => ['required', 'boolean'],
+            'sync_daily' => ['sometimes', 'boolean'],
+            'sync_deactivates_missing' => ['sometimes', 'boolean'],
         ]);
 
         $ldap = LdapSettings::current();
@@ -115,6 +124,8 @@ class LdapSettingsController extends Controller
             'username_attribute' => $validated['username_attribute'] ?? null,
             'auto_provision' => (bool) $validated['auto_provision'],
             'auto_approve' => (bool) $validated['auto_approve'],
+            'sync_daily' => (bool) ($validated['sync_daily'] ?? $ldap->sync_daily),
+            'sync_deactivates_missing' => (bool) ($validated['sync_deactivates_missing'] ?? $ldap->sync_deactivates_missing),
         ]);
 
         // Blank means "leave it alone", so editing the host does not wipe
@@ -153,5 +164,24 @@ class LdapSettingsController extends Controller
             'message' => $result->message,
             'dn' => $result->dn,
         ]);
+    }
+
+    /**
+     * Preview a sync in the request, or start a real one in the background.
+     *
+     * A preview only reads, so it is quick enough to answer here. A real
+     * sync may create an account per person, which is SyncLdapUsersJob's to
+     * work through; the screen shows its progress from LdapSync::last().
+     */
+    public function sync(Request $request): RedirectResponse
+    {
+        if ($request->boolean('dry_run')) {
+            return back()->with('ldap_sync_preview', $this->sync->run(dryRun: true));
+        }
+
+        $this->sync->markQueued();
+        SyncLdapUsersJob::dispatch();
+
+        return back()->with('success', __('Directory sync started.'));
     }
 }

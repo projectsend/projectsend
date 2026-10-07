@@ -88,6 +88,9 @@ class ClientProvisioning
      *                               parameter of the same name; a caller
      *                               with no quota to offer (the public
      *                               registration form, LDAP) leaves it at 0.
+     * @param  bool  $notify  False for a bulk import (the directory sync),
+     *                        which reports once for the whole run rather
+     *                        than emailing and ringing staff per account.
      */
     public function provision(
         string $name,
@@ -100,6 +103,7 @@ class ClientProvisioning
         array $context = [],
         int $storageQuotaMb = 0,
         bool $emailProven = false,
+        bool $notify = true,
     ): User {
         $autoApprove ??= $this->autoApproves();
 
@@ -146,8 +150,11 @@ class ClientProvisioning
         $this->activity->log($action, $client, $client, $context);
 
         $this->joinAutoGroup($client);
-        $this->notifyAdministrators($client, pending: ! $autoApprove);
-        $this->notifyStaffInApp($client);
+
+        if ($notify) {
+            $this->notifyAdministrators($client, pending: ! $autoApprove);
+            $this->notifyStaffInApp($client);
+        }
 
         return $client;
     }

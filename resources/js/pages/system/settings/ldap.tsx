@@ -1,6 +1,7 @@
 import { type BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
-import { FormEventHandler, useState } from 'react';
+import { Head, router, useForm } from '@inertiajs/react';
+import { Loader2 } from 'lucide-react';
+import { FormEventHandler, useEffect, useState } from 'react';
 
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
@@ -12,6 +13,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useFormatDate } from '@/hooks/use-format-date';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
 
@@ -36,7 +38,28 @@ interface LdapSettings {
     username_attribute: string | null;
     auto_provision: boolean;
     auto_approve: boolean;
+    sync_daily: boolean;
+    sync_deactivates_missing: boolean;
 }
+
+/** One directory sync, or a preview of one — see LdapSync. */
+interface SyncReport {
+    status: 'running' | 'finished' | 'failed';
+    dry_run: boolean;
+    finished_at: number | null;
+    found: number;
+    created: number;
+    updated: number;
+    unchanged: number;
+    skipped: Record<string, number>;
+    missing: number;
+    deactivated: number;
+    errors: number;
+    error: string | null;
+}
+
+/** Often enough to follow a running sync, rarely enough not to matter. */
+const SYNC_POLL_MS = 3000;
 
 interface LdapPageProps {
     ldap: LdapSettings;
@@ -44,13 +67,36 @@ interface LdapPageProps {
     extension_available: boolean;
     clients_auto_approve: boolean;
     test_result: { ok: boolean; stage: string; message: string; dn: string | null } | null;
+    sync: SyncReport | null;
+    sync_preview: SyncReport | null;
 }
 
-type Tab = 'connection' | 'directory' | 'test';
+type Tab = 'connection' | 'directory' | 'sync' | 'test';
 
-export default function LdapSettingsPage({ ldap, encryptions, extension_available, clients_auto_approve, test_result }: LdapPageProps) {
+export default function LdapSettingsPage({
+    ldap,
+    encryptions,
+    extension_available,
+    clients_auto_approve,
+    test_result,
+    sync,
+    sync_preview,
+}: LdapPageProps) {
     const { t } = useTranslation();
-    const [tab, setTab] = useState<Tab>('connection');
+    const [tab, setTab] = useState<Tab>(sync_preview || sync?.status === 'running' ? 'sync' : 'connection');
+    const syncRunning = sync?.status === 'running';
+
+    // Follow a background sync until it ends.
+    useEffect(() => {
+        if (!syncRunning) return;
+
+        const id = window.setInterval(() => router.reload({ only: ['sync'] }), SYNC_POLL_MS);
+
+        return () => window.clearInterval(id);
+    }, [syncRunning]);
+
+    const runSync = (dryRun: boolean) =>
+        router.post(route('system-settings.ldap.sync'), { dry_run: dryRun }, { preserveScroll: true, preserveState: true });
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: t('Settings'), href: '/system/settings' },
@@ -72,6 +118,8 @@ export default function LdapSettingsPage({ ldap, encryptions, extension_availabl
         username_attribute: ldap.username_attribute ?? '',
         auto_provision: ldap.auto_provision,
         auto_approve: ldap.auto_approve,
+        sync_daily: ldap.sync_daily,
+        sync_deactivates_missing: ldap.sync_deactivates_missing,
     });
 
     const testForm = useForm({ email: '', password: '' });
@@ -116,14 +164,14 @@ export default function LdapSettingsPage({ ldap, encryptions, extension_availabl
                 )}
 
                 <nav className="mb-6 flex gap-1 border-b">
-                    {(['connection', 'directory', 'test'] as Tab[]).map((key) => (
+                    {(['connection', 'directory', 'sync', 'test'] as Tab[]).map((key) => (
                         <button
                             type="button"
                             key={key}
                             onClick={() => setTab(key)}
                             className={`border-b-2 px-3 py-2 text-sm ${tab === key ? 'border-primary text-foreground font-medium' : 'text-muted-foreground border-transparent'}`}
                         >
-                            {key === 'connection' ? t('Connection') : key === 'directory' ? t('Directory') : t('Test')}
+                            {{ connection: t('Connection'), directory: t('Directory'), sync: t('Sync'), test: t('Test') }[key]}
                         </button>
                     ))}
                 </nav>
@@ -362,6 +410,60 @@ export default function LdapSettingsPage({ ldap, encryptions, extension_availabl
                         )}
                     </section>
 
+                    <section className={`space-y-6 ${tab === 'sync' ? '' : 'hidden'}`}>
+                        <p className="text-muted-foreground text-sm">
+                            {t(
+                                'Brings client accounts in line with the directory: creates accounts for people who have none (when accounts are created on first sign-in), and updates the names of directory accounts. Staff and local accounts are never changed.',
+                            )}
+                        </p>
+
+                        <div className="flex items-start gap-3">
+                            <Checkbox
+                                id="sync_daily"
+                                checked={form.data.sync_daily}
+                                onCheckedChange={(checked) => form.setData('sync_daily', checked === true)}
+                            />
+                            <div className="grid gap-1">
+                                <Label htmlFor="sync_daily">{t('Sync every day')}</Label>
+                                <p className="text-muted-foreground text-sm">
+                                    {t('Runs once a day in the background, as well as whenever you choose Sync now.')}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start gap-3">
+                            <Checkbox
+                                id="sync_deactivates_missing"
+                                checked={form.data.sync_deactivates_missing}
+                                onCheckedChange={(checked) => form.setData('sync_deactivates_missing', checked === true)}
+                            />
+                            <div className="grid gap-1">
+                                <Label htmlFor="sync_deactivates_missing">{t('Deactivate client accounts that leave the directory')}</Label>
+                                <p className="text-muted-foreground text-sm">
+                                    {t(
+                                        'Only accounts that came from the directory. Left off, they are kept and counted. A sync that finds nobody in the directory never deactivates anyone.',
+                                    )}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-3 rounded-lg border p-4">
+                            <p className="text-muted-foreground text-sm">{t('Uses the settings as last saved.')}</p>
+                            <div className="flex gap-3">
+                                <Button type="button" variant="outline" onClick={() => runSync(true)} disabled={syncRunning}>
+                                    {t('Preview')}
+                                </Button>
+                                <Button type="button" onClick={() => runSync(false)} disabled={syncRunning}>
+                                    {syncRunning && <Loader2 className="size-4 animate-spin" />}
+                                    {t('Sync now')}
+                                </Button>
+                            </div>
+                        </div>
+
+                        {sync_preview && <SyncReportPanel report={sync_preview} />}
+                        {sync && <SyncReportPanel report={sync} />}
+                    </section>
+
                     <div className={tab === 'test' ? '' : 'hidden'}>
                         <div className="space-y-4">
                             <p className="text-muted-foreground text-sm">
@@ -413,5 +515,71 @@ export default function LdapSettingsPage({ ldap, encryptions, extension_availabl
                 </form>
             </div>
         </AppLayout>
+    );
+}
+
+/** What a sync did, or a preview of what it would do. */
+function SyncReportPanel({ report }: { report: SyncReport }) {
+    const { t } = useTranslation();
+    const { dateTime } = useFormatDate();
+    const preview = report.dry_run;
+
+    const skippedReasons: Record<string, string> = {
+        provisioning_off: t('no account, and accounts are not created on first sign-in'),
+        staff: t('staff account'),
+        local: t('local account'),
+        deleted: t('deleted account'),
+    };
+
+    const rows: [string, number][] = [
+        [t('In the directory'), report.found],
+        [preview ? t('To create') : t('Created'), report.created],
+        [preview ? t('To update') : t('Updated'), report.updated],
+        [t('Unchanged'), report.unchanged],
+        [t('No longer in the directory'), report.missing],
+        [preview ? t('To deactivate') : t('Deactivated'), report.deactivated],
+        [t('Errors'), report.errors],
+    ];
+
+    return (
+        <div className="space-y-3 rounded-lg border p-4">
+            <h3 className="flex items-center gap-2 text-sm font-medium">
+                {report.status === 'running' && <Loader2 className="size-4 animate-spin" />}
+                {preview
+                    ? t('Preview')
+                    : report.status === 'running'
+                      ? t('Syncing with the directory')
+                      : report.status === 'failed'
+                        ? t('The last sync failed')
+                        : t('Last sync')}
+                {report.finished_at !== null && (
+                    <span className="text-muted-foreground font-normal">{dateTime(new Date(report.finished_at * 1000).toISOString())}</span>
+                )}
+            </h3>
+
+            {report.error && <p className="text-destructive text-sm">{report.error}</p>}
+
+            <dl className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm sm:grid-cols-4">
+                {rows.map(([label, value]) => (
+                    <div key={label}>
+                        <dt className="text-muted-foreground">{label}</dt>
+                        <dd className="font-medium tabular-nums">{value}</dd>
+                    </div>
+                ))}
+            </dl>
+
+            {Object.keys(report.skipped).length > 0 && (
+                <div className="text-sm">
+                    <p className="text-muted-foreground">{t('Skipped')}</p>
+                    <ul className="list-inside list-disc">
+                        {Object.entries(report.skipped).map(([reason, count]) => (
+                            <li key={reason}>
+                                {count} — {skippedReasons[reason] ?? reason}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </div>
     );
 }

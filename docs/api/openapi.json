@@ -4274,6 +4274,7 @@
                     "ldap.client_provisioned",
                     "ldap.client_imported",
                     "ldap.client_deactivated",
+                    "ldap.client_restored",
                     "ldap.sync_run",
                     "social.client_provisioned",
                     "social.account_linked",

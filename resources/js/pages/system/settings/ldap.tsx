@@ -1,13 +1,16 @@
 import { type BreadcrumbItem } from '@/types';
-import { Head, router, useForm } from '@inertiajs/react';
-import { Loader2 } from 'lucide-react';
-import { FormEventHandler, useEffect, useState } from 'react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { Download, Loader2, Search } from 'lucide-react';
+import { FormEventHandler, KeyboardEvent, useEffect, useMemo, useRef, useState } from 'react';
 
+import { ConfirmDialog } from '@/components/confirm-dialog';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { SaveButton } from '@/components/save-button';
+import { TableShell } from '@/components/table-shell';
 import { TestResultAlert } from '@/components/test-result-alert';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -40,6 +43,7 @@ interface LdapSettings {
     auto_approve: boolean;
     sync_daily: boolean;
     sync_deactivates_missing: boolean;
+    sync_restores_deleted: boolean;
 }
 
 /** One directory sync, or a preview of one — see LdapSync. */
@@ -51,15 +55,65 @@ interface SyncReport {
     created: number;
     updated: number;
     unchanged: number;
+    restored: number;
     skipped: Record<string, number>;
     missing: number;
     deactivated: number;
     errors: number;
     error: string | null;
+    /** Only filled for a preview: everybody behind the counts. */
+    people: SyncPerson[];
+    /** Only filled for a real run: who it could not handle (at most 20). */
+    failures: { email: string; error: string }[];
+}
+
+type SyncAction = 'create' | 'update' | 'restore' | 'deactivate' | 'keep' | 'skip' | 'error' | 'unchanged';
+
+interface SyncPerson {
+    name: string;
+    email: string;
+    action: SyncAction;
+    reason?: string;
+    previous_name?: string;
+    moved?: boolean;
+    error?: string;
 }
 
 /** Often enough to follow a running sync, rarely enough not to matter. */
 const SYNC_POLL_MS = 3000;
+
+/** Matches LdapSettingsController::PREVIEW_VALID_SECONDS. */
+const PREVIEW_VALID_MS = 10 * 60 * 1000;
+
+/** Rows shown before "Show all". */
+const PREVIEW_PAGE = 25;
+
+/** Above this many people, a search box joins the filters. */
+const SEARCH_FROM = 10;
+
+/** A preview that would deactivate more than this share of directory clients warns first. */
+const DEACTIVATE_WARN_SHARE = 0.2;
+
+/** Move focus once the page has re-rendered, so a replaced control does not drop it on the body. */
+const focusLater = (id: string) => window.requestAnimationFrame(() => document.getElementById(id)?.focus());
+
+const TABS = ['connection', 'directory', 'sync', 'test'] as const;
+
+/**
+ * Arrow-key movement for a row of role="tab" buttons, as the WAI-ARIA tabs
+ * pattern expects: Left/Right step, Home/End jump.
+ */
+function moveBetweenTabs<T extends string>(event: KeyboardEvent, keys: readonly T[], current: T, select: (key: T) => void) {
+    const index = keys.indexOf(current);
+    const next = { ArrowRight: index + 1, ArrowLeft: index - 1, Home: 0, End: keys.length - 1 }[event.key];
+
+    if (next === undefined) return;
+
+    event.preventDefault();
+    const key = keys[(next + keys.length) % keys.length];
+    select(key);
+    document.getElementById(`${event.currentTarget.id.replace(/-[^-]+$/, '')}-${key}`)?.focus();
+}
 
 interface LdapPageProps {
     ldap: LdapSettings;
@@ -85,6 +139,9 @@ export default function LdapSettingsPage({
     const { t } = useTranslation();
     const [tab, setTab] = useState<Tab>(sync_preview || sync?.status === 'running' ? 'sync' : 'connection');
     const syncRunning = sync?.status === 'running';
+    // Sync posts through the router rather than the settings form, so its
+    // refusal arrives with the page's shared errors.
+    const syncError = (usePage().props.errors as Record<string, string | undefined>).sync;
 
     // Follow a background sync until it ends.
     useEffect(() => {
@@ -95,8 +152,22 @@ export default function LdapSettingsPage({
         return () => window.clearInterval(id);
     }, [syncRunning]);
 
+    // A preview reads the whole directory in the request, which can take a
+    // moment; the button says so rather than inviting a second click.
+    const [previewing, setPreviewing] = useState(false);
+
     const runSync = (dryRun: boolean) =>
-        router.post(route('system-settings.ldap.sync'), { dry_run: dryRun }, { preserveScroll: true, preserveState: true });
+        router.post(
+            route('system-settings.ldap.sync'),
+            { dry_run: dryRun },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onStart: () => dryRun && setPreviewing(true),
+                onFinish: () => setPreviewing(false),
+                onSuccess: () => focusLater(dryRun ? 'sync-preview-heading' : 'sync-status'),
+            },
+        );
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: t('Settings'), href: '/system/settings' },
@@ -120,9 +191,18 @@ export default function LdapSettingsPage({
         auto_approve: ldap.auto_approve,
         sync_daily: ldap.sync_daily,
         sync_deactivates_missing: ldap.sync_deactivates_missing,
+        sync_restores_deleted: ldap.sync_restores_deleted,
     });
 
     const testForm = useForm({ email: '', password: '' });
+
+    // Why Preview and Sync now are unavailable, said next to them and read
+    // out with them; the buttons stay focusable so the reason can be found.
+    const syncBlockedReason = form.isDirty
+        ? t('Save your changes first. Preview and sync use the saved settings.')
+        : syncRunning
+          ? t('A sync is running. Preview again once it has finished.')
+          : null;
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -163,21 +243,32 @@ export default function LdapSettingsPage({
                     </Alert>
                 )}
 
-                <nav className="mb-6 flex gap-1 border-b">
-                    {(['connection', 'directory', 'sync', 'test'] as Tab[]).map((key) => (
+                <div role="tablist" aria-label={t('LDAP settings')} className="mb-6 flex gap-1 border-b">
+                    {TABS.map((key) => (
                         <button
                             type="button"
+                            role="tab"
                             key={key}
+                            id={`ldap-tab-${key}`}
+                            aria-selected={tab === key}
+                            aria-controls={`ldap-panel-${key}`}
+                            tabIndex={tab === key ? 0 : -1}
                             onClick={() => setTab(key)}
-                            className={`border-b-2 px-3 py-2 text-sm ${tab === key ? 'border-primary text-foreground font-medium' : 'text-muted-foreground border-transparent'}`}
+                            onKeyDown={(event) => moveBetweenTabs(event, TABS, tab, setTab)}
+                            className={`focus-visible:ring-ring -mb-px border-b-2 px-3 py-2 text-sm outline-none focus-visible:ring-2 ${tab === key ? 'border-primary text-foreground font-medium' : 'text-muted-foreground hover:text-foreground border-transparent'}`}
                         >
                             {{ connection: t('Connection'), directory: t('Directory'), sync: t('Sync'), test: t('Test') }[key]}
                         </button>
                     ))}
-                </nav>
+                </div>
 
-                <form onSubmit={submit} className="max-w-2xl space-y-6">
-                    <section className={`space-y-6 ${tab === 'connection' ? '' : 'hidden'}`}>
+                <form onSubmit={submit} className={`${tab === 'sync' ? 'max-w-4xl' : 'max-w-2xl'} space-y-6`}>
+                    <section
+                        role="tabpanel"
+                        id="ldap-panel-connection"
+                        aria-labelledby="ldap-tab-connection"
+                        className={`space-y-6 ${tab === 'connection' ? '' : 'hidden'}`}
+                    >
                         <div className="flex items-start gap-3">
                             <Checkbox
                                 id="active"
@@ -280,7 +371,12 @@ export default function LdapSettingsPage({
                         </div>
                     </section>
 
-                    <section className={`space-y-6 ${tab === 'directory' ? '' : 'hidden'}`}>
+                    <section
+                        role="tabpanel"
+                        id="ldap-panel-directory"
+                        aria-labelledby="ldap-tab-directory"
+                        className={`space-y-6 ${tab === 'directory' ? '' : 'hidden'}`}
+                    >
                         <div className="grid gap-2">
                             <Label htmlFor="base_dn">{t('Base DN')}</Label>
                             <Input
@@ -410,61 +506,113 @@ export default function LdapSettingsPage({
                         )}
                     </section>
 
-                    <section className={`space-y-6 ${tab === 'sync' ? '' : 'hidden'}`}>
-                        <p className="text-muted-foreground text-sm">
-                            {t(
-                                'Brings client accounts in line with the directory: creates accounts for people who have none (when accounts are created on first sign-in), and updates the names of directory accounts. Staff and local accounts are never changed.',
+                    <section
+                        role="tabpanel"
+                        id="ldap-panel-sync"
+                        aria-labelledby="ldap-tab-sync"
+                        className={`space-y-8 ${tab === 'sync' ? '' : 'hidden'}`}
+                    >
+                        <div className="space-y-5">
+                            <p className="text-muted-foreground max-w-2xl text-sm">
+                                {t(
+                                    'Brings client accounts in line with the directory: creates accounts for people who have none (when accounts are created on first sign-in), and updates the names of directory accounts. Staff and local accounts are never changed.',
+                                )}
+                            </p>
+
+                            {(
+                                [
+                                    [
+                                        'sync_daily',
+                                        t('Sync every day'),
+                                        t('Runs every day at midnight, server time. You can also preview and sync below at any time.'),
+                                    ],
+                                    [
+                                        'sync_deactivates_missing',
+                                        t('Deactivate client accounts that leave the directory'),
+                                        t(
+                                            'Only accounts that came from the directory. Left off, they are kept and counted. A sync that finds nobody in the directory never deactivates anyone.',
+                                        ),
+                                    ],
+                                    [
+                                        'sync_restores_deleted',
+                                        t('Restore deleted client accounts that are in the directory'),
+                                        t(
+                                            'Undoes an administrator’s deletion while the account is still waiting to be erased, and brings it back as it was. Accounts people deleted themselves are never restored.',
+                                        ),
+                                    ],
+                                ] as const
+                            ).map(([field, label, hint]) => (
+                                <div key={field} className="flex items-start gap-3">
+                                    <Checkbox
+                                        id={field}
+                                        aria-describedby={`${field}-hint`}
+                                        checked={form.data[field]}
+                                        onCheckedChange={(checked) => form.setData(field, checked === true)}
+                                    />
+                                    <div className="grid gap-1">
+                                        <Label htmlFor={field}>{label}</Label>
+                                        <p id={`${field}-hint`} className="text-muted-foreground text-sm">
+                                            {hint}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+
+                            <SaveButton processing={form.processing} recentlySuccessful={form.recentlySuccessful} />
+                        </div>
+
+                        <div className="space-y-4 border-t pt-6">
+                            <SyncStatus sync={sync} />
+
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                                {/* aria-disabled rather than disabled: a disabled button
+                                    drops focus mid-click and is skipped by Tab, taking
+                                    the reason with it. A fixed width keeps the hint
+                                    beside it from sliding as the label changes. */}
+                                <Button
+                                    type="button"
+                                    variant={sync_preview ? 'outline' : 'default'}
+                                    className="min-w-36 aria-disabled:pointer-events-none aria-disabled:opacity-50"
+                                    aria-disabled={syncBlockedReason !== null || previewing}
+                                    aria-describedby="sync-preview-hint"
+                                    aria-busy={previewing}
+                                    onClick={() => syncBlockedReason === null && !previewing && runSync(true)}
+                                >
+                                    {previewing && <Loader2 className="size-4 animate-spin motion-reduce:animate-none" aria-hidden />}
+                                    {previewing ? t('Previewing…') : sync_preview ? t('Preview again') : t('Preview sync')}
+                                </Button>
+                                <p
+                                    id="sync-preview-hint"
+                                    className={`text-sm ${syncBlockedReason !== null ? 'text-amber-800 dark:text-amber-300' : 'text-muted-foreground'}`}
+                                >
+                                    {syncBlockedReason ??
+                                        (previewing
+                                            ? t('Reading the directory…')
+                                            : t('Shows who a sync would create, update, restore or deactivate. Changes nothing.'))}
+                                </p>
+                            </div>
+
+                            {/* Outside the preview: a refused sync comes back without
+                                one, and the reason must still be seen and heard. */}
+                            <p role="alert" className={`text-sm empty:hidden ${DANGER_TEXT}`}>
+                                {syncError}
+                            </p>
+
+                            {sync_preview && (
+                                <SyncPreview
+                                    key={sync_preview.finished_at ?? 0}
+                                    report={sync_preview}
+                                    autoApprove={ldap.auto_approve}
+                                    blockedReason={syncBlockedReason ?? (previewing ? t('Previewing…') : null)}
+                                    onPreview={() => runSync(true)}
+                                    onSync={() => runSync(false)}
+                                    onOpenTab={setTab}
+                                />
                             )}
-                        </p>
-
-                        <div className="flex items-start gap-3">
-                            <Checkbox
-                                id="sync_daily"
-                                checked={form.data.sync_daily}
-                                onCheckedChange={(checked) => form.setData('sync_daily', checked === true)}
-                            />
-                            <div className="grid gap-1">
-                                <Label htmlFor="sync_daily">{t('Sync every day')}</Label>
-                                <p className="text-muted-foreground text-sm">
-                                    {t('Runs once a day in the background, as well as whenever you choose Sync now.')}
-                                </p>
-                            </div>
                         </div>
-
-                        <div className="flex items-start gap-3">
-                            <Checkbox
-                                id="sync_deactivates_missing"
-                                checked={form.data.sync_deactivates_missing}
-                                onCheckedChange={(checked) => form.setData('sync_deactivates_missing', checked === true)}
-                            />
-                            <div className="grid gap-1">
-                                <Label htmlFor="sync_deactivates_missing">{t('Deactivate client accounts that leave the directory')}</Label>
-                                <p className="text-muted-foreground text-sm">
-                                    {t(
-                                        'Only accounts that came from the directory. Left off, they are kept and counted. A sync that finds nobody in the directory never deactivates anyone.',
-                                    )}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="space-y-3 rounded-lg border p-4">
-                            <p className="text-muted-foreground text-sm">{t('Uses the settings as last saved.')}</p>
-                            <div className="flex gap-3">
-                                <Button type="button" variant="outline" onClick={() => runSync(true)} disabled={syncRunning}>
-                                    {t('Preview')}
-                                </Button>
-                                <Button type="button" onClick={() => runSync(false)} disabled={syncRunning}>
-                                    {syncRunning && <Loader2 className="size-4 animate-spin" />}
-                                    {t('Sync now')}
-                                </Button>
-                            </div>
-                        </div>
-
-                        {sync_preview && <SyncReportPanel report={sync_preview} />}
-                        {sync && <SyncReportPanel report={sync} />}
                     </section>
 
-                    <div className={tab === 'test' ? '' : 'hidden'}>
+                    <div role="tabpanel" id="ldap-panel-test" aria-labelledby="ldap-tab-test" className={tab === 'test' ? '' : 'hidden'}>
                         <div className="space-y-4">
                             <p className="text-muted-foreground text-sm">
                                 {t('Saves are not required to test — but the test uses the settings as last saved.')}
@@ -509,7 +657,7 @@ export default function LdapSettingsPage({
                         </div>
                     </div>
 
-                    <div className={`flex items-center gap-4 ${tab === 'test' ? 'hidden' : ''}`}>
+                    <div className={`flex items-center gap-4 ${tab === 'test' || tab === 'sync' ? 'hidden' : ''}`}>
                         <SaveButton processing={form.processing} recentlySuccessful={form.recentlySuccessful} />
                     </div>
                 </form>
@@ -518,68 +666,531 @@ export default function LdapSettingsPage({
     );
 }
 
-/** What a sync did, or a preview of what it would do. */
-function SyncReportPanel({ report }: { report: SyncReport }) {
+/** Red text that keeps 4.5:1 on the page in both themes (text-destructive does not in light). */
+const DANGER_TEXT = 'text-red-700 dark:text-red-400';
+
+const FOCUS_RING = 'focus-visible:ring-ring rounded-sm outline-none focus-visible:ring-2';
+
+/** The theme's destructive red is under 4.5:1 behind white text; this one is not. */
+const DANGER_FILL = 'bg-red-700 text-white hover:bg-red-800 dark:bg-red-700 dark:hover:bg-red-800';
+
+/** Entries skipped for any reason, so progress can reach the total. */
+const skippedOf = (report: SyncReport) => Object.values(report.skipped).reduce((sum, count) => sum + count, 0);
+
+/**
+ * The last real sync, or the one running now. The live region is always
+ * in the page, so a change of state is announced; it carries only the
+ * state, not the counts that tick every few seconds.
+ */
+function SyncStatus({ sync }: { sync: SyncReport | null }) {
     const { t } = useTranslation();
     const { dateTime } = useFormatDate();
-    const preview = report.dry_run;
 
-    const skippedReasons: Record<string, string> = {
-        provisioning_off: t('no account, and accounts are not created on first sign-in'),
-        staff: t('staff account'),
-        local: t('local account'),
-        deleted: t('deleted account'),
-    };
+    const summary =
+        sync?.status === 'finished'
+            ? t('Last sync :date: :created created, :updated updated, :restored restored, :deactivated deactivated.', {
+                  date: sync.finished_at ? dateTime(new Date(sync.finished_at * 1000).toISOString()) : '',
+                  created: sync.created,
+                  updated: sync.updated,
+                  restored: sync.restored,
+                  deactivated: sync.deactivated,
+              })
+            : '';
+    // Directory clients no longer listed and left alone, which the
+    // deactivation option promises to count.
+    const kept = sync ? sync.missing - sync.deactivated : 0;
 
-    const rows: [string, number][] = [
-        [t('In the directory'), report.found],
-        [preview ? t('To create') : t('Created'), report.created],
-        [preview ? t('To update') : t('Updated'), report.updated],
-        [t('Unchanged'), report.unchanged],
-        [t('No longer in the directory'), report.missing],
-        [preview ? t('To deactivate') : t('Deactivated'), report.deactivated],
-        [t('Errors'), report.errors],
-    ];
+    // The live region announces each state once. A finished run says what it
+    // did; a running one does not tick, or it would talk every few seconds.
+    const state = !sync
+        ? ''
+        : sync.status === 'running'
+          ? t('Syncing with the directory')
+          : sync.status === 'failed'
+            ? `${t('The last sync failed')}: ${sync.error ?? ''}`
+            : summary;
 
     return (
-        <div className="space-y-3 rounded-lg border p-4">
-            <h3 className="flex items-center gap-2 text-sm font-medium">
-                {report.status === 'running' && <Loader2 className="size-4 animate-spin" />}
-                {preview
-                    ? t('Preview')
-                    : report.status === 'running'
-                      ? t('Syncing with the directory')
-                      : report.status === 'failed'
-                        ? t('The last sync failed')
-                        : t('Last sync')}
-                {report.finished_at !== null && (
-                    <span className="text-muted-foreground font-normal">{dateTime(new Date(report.finished_at * 1000).toISOString())}</span>
-                )}
-            </h3>
+        <div id="sync-status" tabIndex={-1} className="space-y-2 outline-none">
+            <p role="status" aria-live="polite" className="sr-only">
+                {state}
+            </p>
 
-            {report.error && <p className="text-destructive text-sm">{report.error}</p>}
+            {sync?.status === 'running' && (
+                <div className="bg-muted/40 flex items-center gap-3 rounded-lg border px-4 py-3 text-sm">
+                    <Loader2 className="size-4 shrink-0 animate-spin motion-reduce:animate-none" aria-hidden />
+                    <span>
+                        {sync.found === 0
+                            ? t('Starting the sync…')
+                            : t('Syncing with the directory: :done of :found handled so far.', {
+                                  done: sync.created + sync.updated + sync.restored + sync.unchanged + sync.errors + skippedOf(sync),
+                                  found: sync.found,
+                              })}
+                    </span>
+                </div>
+            )}
 
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm sm:grid-cols-4">
-                {rows.map(([label, value]) => (
-                    <div key={label}>
-                        <dt className="text-muted-foreground">{label}</dt>
-                        <dd className="font-medium tabular-nums">{value}</dd>
-                    </div>
-                ))}
-            </dl>
+            {sync?.status === 'failed' && (
+                <div className="border-destructive/50 rounded-lg border px-4 py-3 text-sm">
+                    <p className={`font-medium ${DANGER_TEXT}`}>{t('The last sync failed')}</p>
+                    <p className="text-muted-foreground mt-1">{sync.error}</p>
+                    <p className="text-muted-foreground mt-1">{t('Check the connection settings, then test them.')}</p>
+                </div>
+            )}
 
-            {Object.keys(report.skipped).length > 0 && (
-                <div className="text-sm">
-                    <p className="text-muted-foreground">{t('Skipped')}</p>
-                    <ul className="list-inside list-disc">
-                        {Object.entries(report.skipped).map(([reason, count]) => (
-                            <li key={reason}>
-                                {count} — {skippedReasons[reason] ?? reason}
-                            </li>
-                        ))}
-                    </ul>
+            {sync?.status === 'finished' && (
+                <div className="space-y-1 text-sm">
+                    <p className="text-muted-foreground">
+                        {summary} {kept > 0 && t('No longer in the directory and kept: :count.', { count: kept })}{' '}
+                        {sync.deactivated > 0 && (
+                            <Link
+                                href={route('clients.index', { status: 'inactive' })}
+                                className={`text-foreground underline underline-offset-4 ${FOCUS_RING}`}
+                            >
+                                {t('Review deactivated clients')}
+                            </Link>
+                        )}
+                    </p>
+                    {sync.errors > 0 && (
+                        <details className="text-sm">
+                            <summary className={`cursor-pointer ${DANGER_TEXT} ${FOCUS_RING}`}>
+                                {t(':count could not be synced.', { count: sync.errors })}
+                            </summary>
+                            <ul className="text-muted-foreground mt-1 list-inside list-disc">
+                                {sync.failures.map((failure) => (
+                                    <li key={failure.email}>
+                                        {failure.email}: {failure.error}
+                                    </li>
+                                ))}
+                            </ul>
+                            {sync.errors > sync.failures.length && (
+                                <p className="text-muted-foreground mt-1">
+                                    {t('Only the first :shown are listed.', { shown: sync.failures.length })}
+                                </p>
+                            )}
+                        </details>
+                    )}
                 </div>
             )}
         </div>
     );
+}
+
+/**
+ * The filter tabs. Every action that changes something gets its own; the
+ * rows nothing happens to share one, so the row stays short.
+ */
+type Filter = 'create' | 'update' | 'restore' | 'deactivate' | 'keep' | 'error' | 'other' | 'all';
+const FILTERS: readonly Filter[] = ['create', 'update', 'restore', 'deactivate', 'keep', 'error', 'other', 'all'];
+const filterOf = (action: SyncAction): Filter => (action === 'skip' || action === 'unchanged' ? 'other' : action);
+
+/** One label per action, shared by the filter tabs and the row badges. */
+function useActionLabels() {
+    const { t } = useTranslation();
+
+    return {
+        create: t('Create'),
+        update: t('Update'),
+        restore: t('Restore'),
+        deactivate: t('Deactivate'),
+        keep: t('Keep'),
+        error: t('Error'),
+        skip: t('Skipped'),
+        unchanged: t('Unchanged'),
+        other: t('Skipped or unchanged'),
+        all: t('Everyone'),
+    } satisfies Record<SyncAction | Filter, string>;
+}
+
+/**
+ * Who a sync would touch, before it touches them: filter tabs carrying the
+ * counts, the people behind them, and the only way to start a real sync —
+ * a confirmation that quotes what this preview found.
+ */
+function SyncPreview({
+    report,
+    autoApprove,
+    blockedReason,
+    onPreview,
+    onSync,
+    onOpenTab,
+}: {
+    report: SyncReport;
+    autoApprove: boolean;
+    /** Why a sync cannot start right now, or null when it can. */
+    blockedReason: string | null;
+    onPreview: () => void;
+    onSync: () => void;
+    onOpenTab: (tab: Tab) => void;
+}) {
+    const { t } = useTranslation();
+    const { dateTime } = useFormatDate();
+    const labels = useActionLabels();
+
+    const counts = useMemo(() => {
+        const tally: Partial<Record<Filter, number>> = { all: report.people.length };
+        report.people.forEach((person) => {
+            const key = filterOf(person.action);
+            tally[key] = (tally[key] ?? 0) + 1;
+        });
+        return tally;
+    }, [report.people]);
+
+    const visibleFilters = FILTERS.filter((key) => key === 'all' || (counts[key] ?? 0) > 0);
+    const firstChange = (['create', 'update', 'restore', 'deactivate'] as const).find((key) => (counts[key] ?? 0) > 0);
+    // The component is keyed on the preview, so a new preview starts here
+    // again rather than keeping a filter its numbers may no longer have.
+    const [filter, setFilter] = useState<Filter>(firstChange ?? 'all');
+    const [query, setQuery] = useState('');
+    const [showAll, setShowAll] = useState(false);
+    // The first row "Show all" reveals takes focus, as the button goes away.
+    const firstRevealed = useRef<HTMLTableRowElement>(null);
+    const selectFilter = (key: Filter) => {
+        setFilter(key);
+        setShowAll(false);
+    };
+
+    // A preview vouches for a sync for ten minutes; after that, the button
+    // asks for a fresh one rather than trusting an old list.
+    const previewedAt = (report.finished_at ?? 0) * 1000;
+    const [now, setNow] = useState(() => Date.now());
+    useEffect(() => {
+        const id = window.setInterval(() => setNow(Date.now()), 15_000);
+        return () => window.clearInterval(id);
+    }, []);
+    const stale = report.finished_at === null || now - previewedAt > PREVIEW_VALID_MS;
+    const syncBlocked = stale || blockedReason !== null;
+
+    const rows = useMemo(() => {
+        const needle = query.trim().toLowerCase();
+        return report.people.filter(
+            (person) =>
+                (filter === 'all' || filterOf(person.action) === filter) &&
+                (needle === '' || person.name.toLowerCase().includes(needle) || person.email.toLowerCase().includes(needle)),
+        );
+    }, [report.people, filter, query]);
+    const shown = showAll ? rows : rows.slice(0, PREVIEW_PAGE);
+
+    const changes = report.created + report.updated + report.restored + report.deactivated;
+    const needsAttention = (counts.keep ?? 0) + (counts.error ?? 0) > 0;
+    // Every active directory client is either still listed (updated or
+    // unchanged) or about to be deactivated. A large share going at once is
+    // far more often a narrowed filter than people leaving.
+    const directoryClients = report.updated + report.unchanged + report.deactivated;
+    const massDeactivation = report.deactivated > 1 && report.deactivated > directoryClients * DEACTIVATE_WARN_SHARE;
+    const massWarning = t(
+        'This would deactivate :count of the :total client accounts that came from the directory. If that is more than you expect, check the base DN and the additional filter first.',
+        { count: report.deactivated, total: directoryClients },
+    );
+
+    // The rows on screen, filter and search applied, so one kind can be
+    // exported on its own.
+    const downloadCsv = () => {
+        // A leading =, +, -, @ or control character makes a spreadsheet run
+        // the cell as a formula; directory values are not ours to trust.
+        const cell = (value: string) => `"${(/^[=+\-@\t\r]/.test(value) ? `'${value}` : value).replace(/"/g, '""')}"`;
+        const lines = [
+            [t('Name'), t('Email address'), t('What happens'), t('Detail')].map(cell).join(','),
+            ...rows.map((person) => [person.name, person.email, labels[person.action], detailText(person, autoApprove, t)].map(cell).join(',')),
+        ];
+        // The byte order mark is what makes Excel read the file as UTF-8.
+        const url = URL.createObjectURL(new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' }));
+        const link = Object.assign(document.createElement('a'), { href: url, download: `ldap-sync-preview-${filter}.csv` });
+        document.body.append(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    };
+
+    const showAllRows = () => {
+        setShowAll(true);
+        window.requestAnimationFrame(() => firstRevealed.current?.focus());
+    };
+
+    return (
+        <section aria-labelledby="sync-preview-heading" className="space-y-4">
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                <h2
+                    id="sync-preview-heading"
+                    tabIndex={-1}
+                    aria-describedby={report.status === 'failed' ? 'sync-preview-error' : undefined}
+                    className={`text-base font-semibold ${FOCUS_RING}`}
+                >
+                    {t('Preview')}
+                </h2>
+                {report.finished_at !== null && (
+                    <p className="text-muted-foreground text-sm">{t('Previewed :date', { date: dateTime(new Date(previewedAt).toISOString()) })}</p>
+                )}
+            </div>
+
+            {report.status === 'failed' ? (
+                <div className="border-destructive/50 rounded-lg border px-4 py-3 text-sm">
+                    <p id="sync-preview-error" className={`font-medium ${DANGER_TEXT}`}>
+                        {report.error}
+                    </p>
+                    <p className="text-muted-foreground mt-1">
+                        {t('Check the connection settings, then test them.')}{' '}
+                        <button
+                            type="button"
+                            onClick={() => onOpenTab('connection')}
+                            className={`text-foreground underline underline-offset-4 ${FOCUS_RING}`}
+                        >
+                            {t('Open the Connection tab')}
+                        </button>{' '}
+                        ·{' '}
+                        <button
+                            type="button"
+                            onClick={() => onOpenTab('test')}
+                            className={`text-foreground underline underline-offset-4 ${FOCUS_RING}`}
+                        >
+                            {t('Test connection')}
+                        </button>
+                    </p>
+                </div>
+            ) : report.people.length === 0 ? (
+                <div className="rounded-lg border px-4 py-8 text-center text-sm">
+                    <p>{t('The directory returned nobody.')}</p>
+                    <p className="text-muted-foreground mt-1">
+                        {t('Check the base DN and the additional filter.')}{' '}
+                        <button
+                            type="button"
+                            onClick={() => onOpenTab('directory')}
+                            className={`text-foreground underline underline-offset-4 ${FOCUS_RING}`}
+                        >
+                            {t('Open the Directory tab')}
+                        </button>
+                    </p>
+                </div>
+            ) : (
+                <>
+                    <div className="flex flex-wrap items-end justify-between gap-3">
+                        <div role="tablist" aria-label={t('Filter by what would happen')} className="flex flex-wrap gap-1 border-b">
+                            {visibleFilters.map((key) => (
+                                <button
+                                    type="button"
+                                    role="tab"
+                                    key={key}
+                                    id={`sync-filter-${key}`}
+                                    aria-selected={filter === key}
+                                    aria-controls="sync-preview-table"
+                                    tabIndex={filter === key ? 0 : -1}
+                                    onClick={() => selectFilter(key)}
+                                    onKeyDown={(event) => moveBetweenTabs(event, visibleFilters, filter, selectFilter)}
+                                    className={`focus-visible:ring-ring -mb-px flex items-center gap-1.5 border-b-2 px-3 py-2.5 text-sm outline-none focus-visible:ring-2 ${filter === key ? 'border-primary text-foreground font-medium' : 'text-muted-foreground hover:text-foreground border-transparent'}`}
+                                >
+                                    {labels[key]}
+                                    <span
+                                        className={`tabular-nums ${key === 'deactivate' || key === 'error' ? DANGER_TEXT : 'text-muted-foreground'}`}
+                                    >
+                                        {counts[key] ?? 0}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            {report.people.length > SEARCH_FROM && (
+                                <div className="relative">
+                                    <Search
+                                        className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2"
+                                        aria-hidden
+                                    />
+                                    <Input
+                                        type="search"
+                                        aria-controls="sync-preview-table"
+                                        value={query}
+                                        onChange={(e) => setQuery(e.target.value)}
+                                        placeholder={t('Search name or address')}
+                                        aria-label={t('Search name or address')}
+                                        className="w-56 pl-8"
+                                    />
+                                </div>
+                            )}
+                            <Button type="button" variant="ghost" size="sm" onClick={downloadCsv} disabled={rows.length === 0}>
+                                <Download className="size-4" aria-hidden />
+                                {t('Download CSV')}
+                            </Button>
+                        </div>
+                    </div>
+
+                    <p role="status" className="sr-only">
+                        {t('Showing :shown of :total', { shown: shown.length, total: rows.length })}
+                    </p>
+
+                    <div id="sync-preview-table" role="tabpanel" tabIndex={0} aria-labelledby={`sync-filter-${filter}`} className={FOCUS_RING}>
+                        <TableShell
+                            columns={[t('Person'), t('What happens'), t('Detail')]}
+                            isEmpty={rows.length === 0}
+                            emptyMessage={t('Nobody matches.')}
+                        >
+                            {shown.map((person, index) => (
+                                <tr
+                                    key={`${person.action}-${person.email}`}
+                                    ref={index === PREVIEW_PAGE ? firstRevealed : undefined}
+                                    tabIndex={index === PREVIEW_PAGE ? -1 : undefined}
+                                    className="focus:outline-ring border-b outline-none last:border-0 focus:outline-2 focus:-outline-offset-2"
+                                >
+                                    <td className="px-4 py-2.5">
+                                        <div className="font-medium">{person.name}</div>
+                                        <div className="text-muted-foreground text-xs">{person.email}</div>
+                                    </td>
+                                    <td className="px-4 py-2.5 whitespace-nowrap">
+                                        <ActionBadge action={person.action} label={labels[person.action]} />
+                                    </td>
+                                    <td className={`px-4 py-2.5 ${person.action === 'error' ? DANGER_TEXT : 'text-muted-foreground'}`}>
+                                        {detailText(person, autoApprove, t)}
+                                    </td>
+                                </tr>
+                            ))}
+                        </TableShell>
+                    </div>
+
+                    {rows.length > shown.length && (
+                        <Button type="button" variant="ghost" size="sm" onClick={showAllRows}>
+                            {t('Show all :count', { count: rows.length })}
+                        </Button>
+                    )}
+
+                    <div className="space-y-3 border-t pt-4">
+                        {changes === 0 ? (
+                            <p className="text-sm">
+                                {needsAttention
+                                    ? t(
+                                          'A sync would change nothing. Check the rows marked Keep or Error: kept accounts are only deactivated with the option above on.',
+                                      )
+                                    : t('Everyone already matches the directory. A sync would change nothing.')}
+                            </p>
+                        ) : (
+                            <>
+                                {massDeactivation && !stale && (
+                                    <Alert variant="destructive" className={`border-red-300 dark:border-red-800 ${DANGER_TEXT}`}>
+                                        <AlertDescription id="sync-mass-warning" className="text-inherit">
+                                            {massWarning}
+                                        </AlertDescription>
+                                    </Alert>
+                                )}
+
+                                {/* The button stays where it was, and focusable, whatever
+                                    stops it; the line beside it says why. */}
+                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                                    <ConfirmDialog
+                                        trigger={
+                                            <Button
+                                                type="button"
+                                                className={`aria-disabled:pointer-events-none aria-disabled:opacity-50 ${report.deactivated > 0 ? DANGER_FILL : ''}`}
+                                                aria-disabled={syncBlocked}
+                                                aria-describedby={massDeactivation && !stale ? 'sync-mass-warning sync-now-note' : 'sync-now-note'}
+                                                onClick={(event) => syncBlocked && event.preventDefault()}
+                                            >
+                                                {t('Sync now…')}
+                                            </Button>
+                                        }
+                                        title={t('Sync with the directory?')}
+                                        description={`${massDeactivation ? `${massWarning} ` : ''}${t(
+                                            'This creates :created, updates :updated, restores :restored and deactivates :deactivated client accounts, as listed in this preview. It runs in the background. Staff and local accounts are not touched.',
+                                            {
+                                                created: report.created,
+                                                updated: report.updated,
+                                                restored: report.restored,
+                                                deactivated: report.deactivated,
+                                            },
+                                        )}`}
+                                        confirmLabel={t('Sync now')}
+                                        destructive={report.deactivated > 0}
+                                        onConfirm={onSync}
+                                    />
+                                    <p
+                                        id="sync-now-note"
+                                        className={`text-sm ${!stale && blockedReason === null && report.deactivated > 0 ? DANGER_TEXT : 'text-muted-foreground'}`}
+                                    >
+                                        {stale ? (
+                                            <>
+                                                {t('This preview is more than 10 minutes old.')}{' '}
+                                                <Button
+                                                    type="button"
+                                                    variant="link"
+                                                    className="h-auto p-0 aria-disabled:pointer-events-none aria-disabled:opacity-50 dark:text-violet-300"
+                                                    aria-disabled={blockedReason !== null}
+                                                    onClick={() => blockedReason === null && onPreview()}
+                                                >
+                                                    {t('Preview again')}
+                                                </Button>{' '}
+                                                {t('before syncing.')}
+                                            </>
+                                        ) : (
+                                            (blockedReason ??
+                                            (report.deactivated > 0
+                                                ? t('Accounts to deactivate: :count.', { count: report.deactivated })
+                                                : t('Nobody is deactivated by this sync.')))
+                                        )}
+                                    </p>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </>
+            )}
+        </section>
+    );
+}
+
+/**
+ * Tinted badges rather than the solid success/destructive variants: white
+ * on those fills is under 4.5:1 at this size, a tint with dark text is not.
+ */
+const BADGE_TONE: Record<SyncAction, string> = {
+    create: 'border-transparent bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200',
+    update: 'border-transparent bg-secondary text-secondary-foreground',
+    restore: 'border-transparent bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-200',
+    deactivate: 'border-transparent bg-red-100 text-red-900 dark:bg-red-950 dark:text-red-200',
+    keep: 'border-transparent bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200',
+    // Outlined, so an error does not read as a deactivation at a glance.
+    error: 'border-red-500 bg-transparent text-red-800 dark:border-red-500 dark:text-red-300',
+    skip: 'text-muted-foreground',
+    unchanged: 'text-muted-foreground',
+};
+
+function ActionBadge({ action, label }: { action: SyncAction; label: string }) {
+    return (
+        <Badge variant="outline" className={BADGE_TONE[action]}>
+            {label}
+        </Badge>
+    );
+}
+
+/** The plain-language reason behind a row, shared by the table and the CSV. */
+function detailText(person: SyncPerson, autoApprove: boolean, t: (key: string, replace?: Record<string, string | number>) => string): string {
+    switch (person.action) {
+        case 'create':
+            return autoApprove ? t('New client account') : t('New client account, waiting for approval');
+        case 'update':
+            return [
+                person.previous_name !== undefined ? t('Name: :from → :to', { from: person.previous_name, to: person.name }) : null,
+                person.moved ? t('Moved to a different place in the directory') : null,
+            ]
+                .filter(Boolean)
+                .join(' · ');
+        case 'restore':
+            return t('Deleted by an administrator; the deletion is undone');
+        case 'deactivate':
+            return t('No longer in the directory');
+        case 'keep':
+            return t('No longer in the directory; kept because deactivation is off');
+        case 'error':
+            return person.error ?? '';
+        case 'skip':
+            return (
+                {
+                    staff: t('Staff account; the directory never manages staff'),
+                    local: t('Has a local password, so it is not a directory account'),
+                    deleted: t('The address belongs to a deleted account'),
+                    deleted_by_owner: t('Deleted by its owner; never restored'),
+                    provisioning_off: t("No account, and accounts aren't created on first sign-in"),
+                }[person.reason ?? ''] ??
+                person.reason ??
+                ''
+            );
+        default:
+            return t('Already matches the directory');
+    }
 }

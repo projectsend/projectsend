@@ -17,6 +17,7 @@ use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -64,6 +65,7 @@ class LdapSettingsController extends Controller
                 'auto_approve' => $ldap->auto_approve,
                 'sync_daily' => $ldap->sync_daily,
                 'sync_deactivates_missing' => $ldap->sync_deactivates_missing,
+                'sync_restores_deleted' => $ldap->sync_restores_deleted,
             ],
             'encryptions' => array_map(
                 fn (LdapEncryption $e): array => [
@@ -106,6 +108,7 @@ class LdapSettingsController extends Controller
             'auto_approve' => ['required', 'boolean'],
             'sync_daily' => ['sometimes', 'boolean'],
             'sync_deactivates_missing' => ['sometimes', 'boolean'],
+            'sync_restores_deleted' => ['sometimes', 'boolean'],
         ]);
 
         $ldap = LdapSettings::current();
@@ -126,6 +129,7 @@ class LdapSettingsController extends Controller
             'auto_approve' => (bool) $validated['auto_approve'],
             'sync_daily' => (bool) ($validated['sync_daily'] ?? $ldap->sync_daily),
             'sync_deactivates_missing' => (bool) ($validated['sync_deactivates_missing'] ?? $ldap->sync_deactivates_missing),
+            'sync_restores_deleted' => (bool) ($validated['sync_restores_deleted'] ?? $ldap->sync_restores_deleted),
         ]);
 
         // Blank means "leave it alone", so editing the host does not wipe
@@ -167,18 +171,40 @@ class LdapSettingsController extends Controller
     }
 
     /**
+     * How long a preview vouches for a sync. Long enough to read the list,
+     * short enough that it still describes the directory being synced.
+     */
+    private const PREVIEW_VALID_SECONDS = 600;
+
+    /**
      * Preview a sync in the request, or start a real one in the background.
      *
      * A preview only reads, so it is quick enough to answer here. A real
-     * sync may create an account per person, which is SyncLdapUsersJob's to
-     * work through; the screen shows its progress from LdapSync::last().
+     * sync may create and switch off accounts, so it is only accepted on
+     * the heels of a preview of the settings as they are now saved: the
+     * administrator has seen who it touches. It is then SyncLdapUsersJob's
+     * to work through, and the screen follows it from LdapSync::last().
      */
     public function sync(Request $request): RedirectResponse
     {
         if ($request->boolean('dry_run')) {
-            return back()->with('ldap_sync_preview', $this->sync->run(dryRun: true));
+            $preview = $this->sync->run(dryRun: true);
+
+            // Stamped when the preview finished, the moment the screen
+            // counts its ten minutes from, so the two never disagree.
+            $request->session()->put('ldap_sync_previewed_at', $preview['finished_at']);
+
+            return back()->with('ldap_sync_preview', $preview);
         }
 
+        $previewedAt = $request->session()->get('ldap_sync_previewed_at');
+        $savedAt = LdapSettings::current()->updated_at?->getTimestamp() ?? 0;
+
+        if (! is_int($previewedAt) || now()->getTimestamp() - $previewedAt > self::PREVIEW_VALID_SECONDS || $savedAt > $previewedAt) {
+            throw ValidationException::withMessages(['sync' => __('Preview the sync again before running it: the last preview is missing, too old, or older than the saved settings.')]);
+        }
+
+        $request->session()->forget('ldap_sync_previewed_at');
         $this->sync->markQueued();
         SyncLdapUsersJob::dispatch();
 

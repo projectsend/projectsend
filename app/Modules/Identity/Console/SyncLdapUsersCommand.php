@@ -39,10 +39,11 @@ class SyncLdapUsersCommand extends Command
         }
 
         $this->info(sprintf(
-            '%d found, %d %s, %d %s, %d unchanged, %d skipped, %d no longer in the directory (%d %s), %d errors.',
+            '%d found, %d %s, %d %s, %d %s, %d unchanged, %d skipped, %d no longer in the directory (%d %s), %d errors.',
             $report['found'],
             $report['created'], $dryRun ? 'to create' : 'created',
             $report['updated'], $dryRun ? 'to update' : 'updated',
+            $report['restored'], $dryRun ? 'to restore' : 'restored',
             $report['unchanged'],
             array_sum($report['skipped']),
             $report['missing'],

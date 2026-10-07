@@ -37,6 +37,7 @@ enum Action: string
     case LdapClientProvisioned = 'ldap.client_provisioned';
     case LdapClientImported = 'ldap.client_imported';
     case LdapClientDeactivated = 'ldap.client_deactivated';
+    case LdapClientRestored = 'ldap.client_restored';
     case LdapSyncRun = 'ldap.sync_run';
     case SocialClientProvisioned = 'social.client_provisioned';
     case SocialAccountLinked = 'social.account_linked';
@@ -182,6 +183,7 @@ enum Action: string
             self::LdapClientProvisioned => 'Created a client account from the directory on first sign-in',
             self::LdapClientImported => 'Created a client account from the directory sync',
             self::LdapClientDeactivated => 'Deactivated the client account ":name": it is no longer in the directory',
+            self::LdapClientRestored => 'Restored the deleted client account ":name": it is in the directory',
             self::LdapSyncRun => 'Synced with the directory: :created created, :updated updated, :deactivated deactivated',
             self::SocialClientProvisioned => 'Created a client account from :provider on first sign-in',
             self::SocialAccountLinked => 'Connected the :provider account of ":subject"',
@@ -300,6 +302,7 @@ enum Action: string
             self::LdapClientProvisioned => 'A client account was created from the directory',
             self::LdapClientImported => 'A client account was created by the directory sync',
             self::LdapClientDeactivated => 'A client account was deactivated because it left the directory',
+            self::LdapClientRestored => 'A deleted client account was restored by the directory sync',
             self::LdapSyncRun => 'Accounts were synced with the directory',
             self::SocialClientProvisioned => 'A client account was created from :provider',
             self::SocialAccountLinked => 'A :provider account was connected',

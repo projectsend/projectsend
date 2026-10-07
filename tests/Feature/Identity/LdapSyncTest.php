@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Audit\ActivityLogger;
 use App\Modules\Identity\AuthSource;
 use App\Modules\Identity\Jobs\SyncLdapUsersJob;
 use App\Modules\Identity\Ldap\LdapDirectory;
@@ -31,9 +32,10 @@ function syncDirectory(array $entries = []): FakeLdapDirectory
     return $fake;
 }
 
-function enableSync(bool $autoProvision = true, bool $deactivateMissing = false): void
+function enableSync(bool $autoProvision = true, bool $deactivateMissing = false, bool $restoreDeleted = false): void
 {
     LdapSettings::current()->forceFill([
+        'sync_restores_deleted' => $restoreDeleted,
         'active' => true,
         'host' => 'ldap.example.test',
         'base_dn' => 'dc=example,dc=test',
@@ -265,7 +267,7 @@ test('the settings screen previews, starts a background sync and saves the sync 
         ->assertSessionHas('ldap_sync_preview', fn (array $report): bool => $report['created'] === 1);
     expect(User::query()->where('email', 'new@example.test')->exists())->toBeFalse();
 
-    $this->actingAs($this->admin)->post('/system/settings/ldap/sync')->assertRedirect();
+    $this->actingAs($this->admin)->post('/system/settings/ldap/sync')->assertRedirect()->assertSessionHasNoErrors();
     Queue::assertPushed(SyncLdapUsersJob::class, 1);
 
     $this->actingAs($this->admin)->get('/system/settings/ldap')
@@ -283,3 +285,143 @@ test('only staff who may edit settings can run a sync', function () {
 
     Queue::assertNothingPushed();
 });
+
+test('a preview lists every person with what would happen to them', function () {
+    enableSync(deactivateMissing: true);
+    syncDirectory([
+        'new@example.test' => ['password' => 'x', 'name' => 'New Person'],
+        'renamed@example.test' => ['password' => 'x', 'name' => 'New Name'],
+        'staff@example.test' => ['password' => 'x'],
+    ]);
+    directoryClient('renamed@example.test', 'Old Name');
+    directoryClient('gone@example.test', 'Gone Person');
+    User::factory()->create(['email' => 'staff@example.test']);
+
+    $people = collect(app(LdapSync::class)->run(dryRun: true)['people'])->keyBy('email');
+
+    expect($people['new@example.test'])->toMatchArray(['action' => 'create', 'name' => 'New Person'])
+        ->and($people['renamed@example.test'])->toMatchArray(['action' => 'update', 'previous_name' => 'Old Name'])
+        ->and($people['staff@example.test'])->toMatchArray(['action' => 'skip', 'reason' => 'staff'])
+        ->and($people['gone@example.test'])->toMatchArray(['action' => 'deactivate', 'name' => 'Gone Person']);
+});
+
+test('people the directory dropped are listed as kept while deactivation is off', function () {
+    enableSync();
+    syncDirectory(['present@example.test' => ['password' => 'x']]);
+    directoryClient('gone@example.test');
+
+    $people = collect(app(LdapSync::class)->run(dryRun: true)['people'])->keyBy('email');
+
+    expect($people['gone@example.test']['action'])->toBe('keep');
+});
+
+test('a real run keeps only the counts, not the list of people', function () {
+    enableSync();
+    syncDirectory(['new@example.test' => ['password' => 'x']]);
+
+    expect(app(LdapSync::class)->run()['people'])->toBe([]);
+});
+
+test('sync now needs a fresh preview of the saved settings', function () {
+    Queue::fake();
+    enableSync();
+    syncDirectory(['new@example.test' => ['password' => 'x']]);
+
+    // Never previewed.
+    $this->actingAs($this->admin)->post('/system/settings/ldap/sync')->assertSessionHasErrors('sync');
+
+    // Previewed, then the settings changed underneath the preview.
+    $this->actingAs($this->admin)->post('/system/settings/ldap/sync', ['dry_run' => true]);
+    $this->travel(1)->seconds();
+    LdapSettings::current()->forceFill(['sync_deactivates_missing' => true])->save();
+    $this->actingAs($this->admin)->post('/system/settings/ldap/sync')->assertSessionHasErrors('sync');
+
+    // Previewed too long ago.
+    $this->actingAs($this->admin)->post('/system/settings/ldap/sync', ['dry_run' => true]);
+    $this->travel(11)->minutes();
+    $this->actingAs($this->admin)->post('/system/settings/ldap/sync')->assertSessionHasErrors('sync');
+
+    Queue::assertNothingPushed();
+});
+
+/**
+ * A client account deleted the way an administrator deletes one: logged
+ * with the administrator as the actor, erasure scheduled.
+ */
+function adminDeletedClient(User $admin, string $email, string $name = 'Deleted Person'): User
+{
+    $client = directoryClient($email, $name);
+    $client->forceFill(['erase_after' => now()->addDays(30)])->save();
+    $client->delete();
+    app(ActivityLogger::class)->log(Action::UserDeleted, $admin, context: ['name' => $name]);
+
+    return $client;
+}
+
+test('deleted accounts are skipped while restoring is off', function () {
+    enableSync();
+    syncDirectory(['back@example.test' => ['password' => 'x']]);
+    $deleted = adminDeletedClient($this->admin, 'back@example.test');
+
+    $report = app(LdapSync::class)->run();
+
+    expect($report['skipped']['deleted'])->toBe(1)
+        ->and($report['restored'])->toBe(0)
+        ->and($deleted->fresh()->trashed())->toBeTrue();
+});
+
+test('with restoring on, a client an administrator deleted comes back as it was', function () {
+    enableSync(restoreDeleted: true);
+    syncDirectory(['back@example.test' => ['password' => 'x', 'name' => 'Back Again']]);
+    $deleted = adminDeletedClient($this->admin, 'back@example.test', 'Old Name');
+    $deleted->forceFill(['active' => false])->save();
+
+    $report = app(LdapSync::class)->run();
+
+    $restored = User::query()->findOrFail($deleted->id);
+    expect($report['restored'])->toBe(1)
+        ->and($restored->erase_after)->toBeNull()
+        ->and($restored->active)->toBeFalse()
+        ->and($restored->name)->toBe('Back Again')
+        ->and(ActivityLog::query()->where('action', Action::LdapClientRestored)->count())->toBe(1);
+});
+
+test('an account its owner deleted is never restored', function () {
+    enableSync(restoreDeleted: true);
+    syncDirectory(['left@example.test' => ['password' => 'x']]);
+    $client = directoryClient('left@example.test');
+    $client->delete();
+    app(ActivityLogger::class)->log(Action::UserDeleted, $client, context: ['name' => $client->name]);
+
+    $report = app(LdapSync::class)->run();
+
+    expect($report['skipped']['deleted_by_owner'])->toBe(1)
+        ->and($report['restored'])->toBe(0)
+        ->and($client->fresh()->trashed())->toBeTrue();
+});
+
+test('a deleted staff account is never restored', function () {
+    enableSync(restoreDeleted: true);
+    syncDirectory(['staff-gone@example.test' => ['password' => 'x']]);
+    $staff = User::factory()->create(['email' => 'staff-gone@example.test']);
+    $staff->delete();
+    app(ActivityLogger::class)->log(Action::UserDeleted, $this->admin, context: ['name' => $staff->name]);
+
+    $report = app(LdapSync::class)->run();
+
+    expect($report['restored'])->toBe(0)
+        ->and($staff->fresh()->trashed())->toBeTrue();
+});
+
+test('a preview lists who would be restored, and restores nobody', function () {
+    enableSync(restoreDeleted: true);
+    syncDirectory(['back@example.test' => ['password' => 'x']]);
+    $deleted = adminDeletedClient($this->admin, 'back@example.test');
+
+    $report = app(LdapSync::class)->run(dryRun: true);
+
+    expect(collect($report['people'])->firstWhere('email', 'back@example.test')['action'])->toBe('restore')
+        ->and($report['restored'])->toBe(1)
+        ->and($deleted->fresh()->trashed())->toBeTrue();
+});
+

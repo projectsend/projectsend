@@ -2327,5 +2327,10 @@
     "Set your password": "Weka nenosiri lako",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Tumia kitufe kilicho hapa chini kuchagua nenosiri la akaunti yako. Hadi sasa umekuwa ukiingia kupitia akaunti iliyounganishwa, kama Google au Microsoft.",
     "This link will expire in :count minutes.": "Kiungo hiki kitaisha muda baada ya dakika :count.",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Ikiwa hukuomba hili, huhitaji kufanya chochote: unaweza kuendelea kuingia kama kawaida."
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Ikiwa hukuomba hili, huhitaji kufanya chochote: unaweza kuendelea kuingia kama kawaida.",
+    "Select all on this page": "Chagua zote kwenye ukurasa huu",
+    "Select all :count items": "Chagua vipengele vyote :count",
+    "All :count items are selected.": "Vipengele vyote :count vimechaguliwa.",
+    "Selecting…": "Inachagua…",
+    "Could not select every item. Try again.": "Imeshindwa kuchagua vipengele vyote. Jaribu tena."
 }

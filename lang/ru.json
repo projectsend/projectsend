@@ -2327,5 +2327,10 @@
     "Set your password": "Задайте пароль",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Нажмите кнопку ниже, чтобы выбрать пароль для своей учётной записи. До сих пор вы входили через связанную учётную запись, например Google или Microsoft.",
     "This link will expire in :count minutes.": "Срок действия ссылки (мин.): :count",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Если вы этого не запрашивали, ничего делать не нужно: вы можете входить, как и раньше."
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Если вы этого не запрашивали, ничего делать не нужно: вы можете входить, как и раньше.",
+    "Select all on this page": "Выбрать всё на этой странице",
+    "Select all :count items": "Выбрать все элементы (:count)",
+    "All :count items are selected.": "Выбраны все элементы (:count).",
+    "Selecting…": "Выбор…",
+    "Could not select every item. Try again.": "Не удалось выбрать все элементы. Попробуйте ещё раз."
 }

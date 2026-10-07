@@ -2327,5 +2327,10 @@
     "Set your password": "パスワードを設定してください",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "下のボタンからアカウントのパスワードを設定してください。これまでは Google や Microsoft などの連携アカウントでサインインしていました。",
     "This link will expire in :count minutes.": "このリンクの有効期限は :count 分です。",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "心当たりがない場合は、何もする必要はありません。これまでどおりサインインできます。"
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "心当たりがない場合は、何もする必要はありません。これまでどおりサインインできます。",
+    "Select all on this page": "このページのすべてを選択",
+    "Select all :count items": ":count 件のアイテムをすべて選択",
+    "All :count items are selected.": ":count 件のアイテムをすべて選択しました。",
+    "Selecting…": "選択中…",
+    "Could not select every item. Try again.": "すべてのアイテムを選択できませんでした。もう一度お試しください。"
 }

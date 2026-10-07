@@ -2327,5 +2327,10 @@
     "Set your password": "Crea la teva contrasenya",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Fes servir el botó de sota per triar una contrasenya per al teu compte. Fins ara iniciaves la sessió amb un compte connectat, com Google o Microsoft.",
     "This link will expire in :count minutes.": "Aquest enllaç caduca d'aquí a :count minuts.",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Si no ho has demanat, no cal que facis res: pots continuar iniciant la sessió com fins ara."
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Si no ho has demanat, no cal que facis res: pots continuar iniciant la sessió com fins ara.",
+    "Select all on this page": "Selecciona tot el que hi ha en aquesta pàgina",
+    "Select all :count items": "Selecciona els :count elements",
+    "All :count items are selected.": "Tots els :count elements estan seleccionats.",
+    "Selecting…": "Seleccionant…",
+    "Could not select every item. Try again.": "No s'ha pogut seleccionar tot. Torna-ho a provar."
 }

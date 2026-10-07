@@ -113,6 +113,8 @@ Route::middleware(['auth'])->group(function () {
     // Files: staff management + downloads (policy-authorized for both
     // staff and assigned clients; bytes served by nginx via X-Accel).
     Route::get('files', [FoldersController::class, 'index'])->middleware(['staff', 'can:upload'])->name('files.index');
+    // Before files/{file}, which would otherwise read "selection" as a file id.
+    Route::get('files/selection', [FoldersController::class, 'selection'])->middleware(['staff', 'can:upload'])->name('files.selection');
     Route::get('files/upload', [FilesController::class, 'create'])->middleware(['staff', 'can:upload'])->name('files.create');
     // No page posts here anymore — files/create.tsx uses the chunked
     // uploads.* endpoints below. Kept as a plain synchronous

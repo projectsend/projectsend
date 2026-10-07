@@ -7,14 +7,17 @@ namespace App\Modules\Identity\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Identity\Jobs\SyncLdapUsersJob;
 use App\Modules\Identity\Ldap\LdapDirectory;
 use App\Modules\Identity\Ldap\LdapEncryption;
 use App\Modules\Identity\Ldap\LdapSettings;
+use App\Modules\Identity\Ldap\LdapSync;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -36,6 +39,7 @@ class LdapSettingsController extends Controller
     public function __construct(
         private readonly ActivityLogger $activity,
         private readonly Settings $settings,
+        private readonly LdapSync $sync,
     ) {}
 
     public function edit(Request $request): Response
@@ -59,6 +63,9 @@ class LdapSettingsController extends Controller
                 'username_attribute' => $ldap->username_attribute,
                 'auto_provision' => $ldap->auto_provision,
                 'auto_approve' => $ldap->auto_approve,
+                'sync_daily' => $ldap->sync_daily,
+                'sync_deactivates_missing' => $ldap->sync_deactivates_missing,
+                'sync_restores_deleted' => $ldap->sync_restores_deleted,
             ],
             'encryptions' => array_map(
                 fn (LdapEncryption $e): array => [
@@ -77,6 +84,8 @@ class LdapSettingsController extends Controller
             // directory accounts behave unlike registrations.
             'clients_auto_approve' => $this->settings->get(Setting::ClientsAutoApprove) === true,
             'test_result' => $request->session()->get('ldap_test_result'),
+            'sync' => $this->sync->last(),
+            'sync_preview' => $request->session()->get('ldap_sync_preview'),
         ]);
     }
 
@@ -97,6 +106,9 @@ class LdapSettingsController extends Controller
             'username_attribute' => ['nullable', 'string', 'max:64'],
             'auto_provision' => ['required', 'boolean'],
             'auto_approve' => ['required', 'boolean'],
+            'sync_daily' => ['sometimes', 'boolean'],
+            'sync_deactivates_missing' => ['sometimes', 'boolean'],
+            'sync_restores_deleted' => ['sometimes', 'boolean'],
         ]);
 
         $ldap = LdapSettings::current();
@@ -115,6 +127,9 @@ class LdapSettingsController extends Controller
             'username_attribute' => $validated['username_attribute'] ?? null,
             'auto_provision' => (bool) $validated['auto_provision'],
             'auto_approve' => (bool) $validated['auto_approve'],
+            'sync_daily' => (bool) ($validated['sync_daily'] ?? $ldap->sync_daily),
+            'sync_deactivates_missing' => (bool) ($validated['sync_deactivates_missing'] ?? $ldap->sync_deactivates_missing),
+            'sync_restores_deleted' => (bool) ($validated['sync_restores_deleted'] ?? $ldap->sync_restores_deleted),
         ]);
 
         // Blank means "leave it alone", so editing the host does not wipe
@@ -153,5 +168,79 @@ class LdapSettingsController extends Controller
             'message' => $result->message,
             'dn' => $result->dn,
         ]);
+    }
+
+    /**
+     * How long a preview vouches for a sync. Long enough to read the list,
+     * short enough that it still describes the directory being synced.
+     */
+    private const PREVIEW_VALID_SECONDS = 600;
+
+    /**
+     * Preview a sync in the request, or start a real one in the background.
+     *
+     * A preview only reads, so it is quick enough to answer here. A real
+     * sync may create and switch off accounts, so it is only accepted on
+     * the heels of a preview of the settings as they are now saved: the
+     * administrator has seen who it touches. It is then SyncLdapUsersJob's
+     * to work through, and the screen follows it from LdapSync::last().
+     */
+    public function sync(Request $request): RedirectResponse
+    {
+        if ($request->boolean('dry_run')) {
+            $preview = $this->sync->run(dryRun: true);
+
+            // Stamped when the preview finished, the moment the screen
+            // counts its ten minutes from, so the two never disagree. The
+            // plan is what Sync now will carry out.
+            $request->session()->put('ldap_sync_previewed_at', $preview['finished_at']);
+            $request->session()->put('ldap_sync_plan', $preview['plan']);
+
+            return back()->with('ldap_sync_preview', $preview);
+        }
+
+        $previewedAt = $request->session()->get('ldap_sync_previewed_at');
+        $plan = $request->session()->get('ldap_sync_plan');
+        $savedAt = LdapSettings::current()->updated_at?->getTimestamp() ?? 0;
+
+        if (! is_int($previewedAt) || ! is_string($plan) || now()->getTimestamp() - $previewedAt > self::PREVIEW_VALID_SECONDS || $savedAt > $previewedAt) {
+            throw ValidationException::withMessages(['sync' => __('Preview the sync again before running it: the last preview is missing, too old, or older than the saved settings.')]);
+        }
+
+        // The deleted clients ticked in the preview. Only addresses the plan
+        // lists as restorable can come back, so this cannot reach further.
+        $validated = $request->validate([
+            'restore' => ['sometimes', 'array'],
+            'restore.*' => ['string', 'max:255'],
+        ]);
+
+        $request->session()->forget(['ldap_sync_previewed_at', 'ldap_sync_plan']);
+        $this->sync->markQueued();
+        SyncLdapUsersJob::dispatch(plan: $plan, restore: isset($validated['restore']) ? array_values($validated['restore']) : null);
+
+        return back()->with('success', __('Directory sync started.'));
+    }
+
+    /**
+     * Stop the running sync after the entry it is on. What it already did
+     * stays done; the status says how far it got.
+     */
+    public function cancelSync(): RedirectResponse
+    {
+        if ($this->sync->cancel()) {
+            $this->activity->log(Action::LdapSyncCancelled);
+        }
+
+        return back();
+    }
+
+    /**
+     * Switch back on the clients the last sync deactivated.
+     */
+    public function reactivate(Request $request): RedirectResponse
+    {
+        $count = $this->sync->reactivateLast($request->user());
+
+        return back()->with('success', __('Reactivated client accounts: :count.', ['count' => $count]));
     }
 }

@@ -9,6 +9,7 @@ use App\Modules\Identity\Console\CreateAdminCommand;
 use App\Modules\Identity\Console\EnsureSystemRolesCommand;
 use App\Modules\Identity\Console\EraseAccountCommand;
 use App\Modules\Identity\Console\PurgeErasuresCommand;
+use App\Modules\Identity\Console\SyncLdapUsersCommand;
 use App\Modules\Identity\Ldap\LdapDirectory;
 use App\Modules\Identity\Ldap\LdapRecordDirectory;
 use App\Modules\Identity\Permissions\Permission;
@@ -53,6 +54,7 @@ class IdentityServiceProvider extends ServiceProvider
                 EnsureSystemRolesCommand::class,
                 EraseAccountCommand::class,
                 PurgeErasuresCommand::class,
+                SyncLdapUsersCommand::class,
             ]);
         }
     }

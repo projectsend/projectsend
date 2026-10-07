@@ -10,45 +10,71 @@ Anything under **⚠️ Important — do these yourself** is something you have 
 we did. It sits at the top of a release for that reason. Older entries call the same section
 **Upgrade notes**.
 
-## Unreleased
+## 2.7.0 — 6 October 2026
+
+Four security fixes, folders you can manage over the API, and logo cropping.
+
+### ⚠️ Important — do these yourself
+
+Everything else in this release happens on its own, and nothing here stops the upgrade.
+
+- **If your installation cannot send email, accounts that sign in through Google, Microsoft or
+  another provider can no longer set their own first password.** The link to set it now arrives by
+  email. Until mail works, an administrator can set the password from the person's account screen.
+- **If an integration changes its own account's email address, password or two-factor
+  authentication through the API, it now gets a 403.** Do that from the profile screen instead.
+  Changing somebody else's still works as before.
+
+**Added**
+
+- **Folders in the API**: list, create, rename, move, delete and share them, and see where each one
+  sits in the tree.
+- **Crop your logo** from Branding → Logo, and put the original back at any time.
+- **"Import all" on the orphan files screen** adopts every match in the background and shows its
+  progress.
+- **LDAP clients can sign in with their username** as well as their email address, once you name the
+  username attribute in Settings → LDAP.
+
+**Security**
+
+- An API token can no longer change its own owner's password, email address or two-factor
+  authentication, and setting somebody else's password now signs them out of the API.
+- The staff screen no longer changes your own email address or password without your current
+  password.
+- An account that signs in through a provider now gets its first password from a link sent to its
+  own email, not from whoever holds its browser session.
+- A staff member limited to some clients now sees and revokes only their own invitations and those
+  into their clients' groups.
+- A staff member limited to some clients no longer sees the names of folders above the ones they can
+  reach.
+- The orphan file tool can no longer be pointed at a file that belongs to somebody.
+- Creating a folder inside a public folder now needs permission to publish.
+
+**Changed**
+
+- **Your logo is shown larger** on the sign-in and download pages.
+- **The API token screen warns you** when "Edit clients" or "Edit users" is chosen: a token with
+  either can sign in as the accounts it may edit.
+- The Docker image no longer fills its log with passing health checks; failing ones still show.
 
 **Fixed**
 
-- **An API token can no longer change its own owner's password, email address or second factor,
-  and neither can the staff screen without your current password.** Reported by
-  [@simjiun](https://github.com/simjiun).
+- In the client portal, changing the sort inside a folder no longer jumps back to the top, and the
+  chosen sort stays when you open a folder.
+- Third-party libraries are updated, including fixes for published security advisories.
 
-  *Who this affected:* installations where someone holds an API token with "Manage users" and
-  "Edit users". Such a token could give its own owner a new password, remove their second factor,
-  and then sign in as them with everything they can do, including abilities the token was never
-  given. The same staff screen also let a signed-in administrator change their own email address
-  or password without the current password the profile asks for. Your own credentials are now
-  changed only from your profile. Setting *someone else's* password now also revokes their API
-  tokens. Nothing to do on upgrade.
+Thanks to [@simjiun](https://github.com/simjiun), [@sbouabid-sec](https://github.com/sbouabid-sec),
+[@veenone](https://github.com/veenone), [@jiits](https://github.com/jiits),
+[@cookiebaker](https://github.com/cookiebaker) and
+[@01110111000001](https://github.com/01110111000001) for reporting and fixing.
 
-- **An account that signs in through Google, Microsoft or another provider now sets its first
-  password from a link sent to its email.** Reported by [@simjiun](https://github.com/simjiun).
+### Issues closed since 2.6.0
 
-  *Who this affected:* installations with sign-in through a provider, since 2.5.0. Whoever held
-  such an account's browser session, for example a stolen one, could give the account a password
-  of their choosing and keep it after the session ended. Now "Set a password" emails a link to
-  the account's own address, and using it signs out every other session. Your users need working
-  email for this; if yours cannot send any, an administrator can still set the password for them.
+The summary above is what changed. This is the paper trail, for anyone who wants to read the
+original report.
 
-- **A staff member limited to some clients now sees and revokes only their own invitations, and
-  those into their clients' groups.** Reported by [@sbouabid-sec](https://github.com/sbouabid-sec).
-
-  *Who this affected:* installations using client-scoped staff roles that can create clients,
-  since 2.5.0. The invitations screen listed every invitation, with names and email addresses,
-  and let such a staff member revoke any of them. Nothing to do on upgrade.
-
-- **The orphan file tool can no longer be pointed at a file somebody owns.** Reported by
-  [@simjiun](https://github.com/simjiun).
-
-  *Who this affected:* every 2.x installation where a staff role can import orphan files but not
-  delete other people's files. Writing a file's path a little differently, for example
-  `./folder/file.txt`, made the tool treat a file that belongs to someone as an orphan, so it
-  could delete it or claim it. Nothing to do on upgrade.
+- [#1798](https://github.com/projectsend/projectsend/issues/1798) — [ Feature request ] Branding : Site Name, Logo Size and Image Crop
+- [#1806](https://github.com/projectsend/projectsend/issues/1806) — Sorting doesn't work with subfolders
 
 ## 2.6.0 — 25 September 2026
 

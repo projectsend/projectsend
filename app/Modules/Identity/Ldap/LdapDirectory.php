@@ -34,6 +34,18 @@ interface LdapDirectory
     public function emailForUsername(string $username): ?string;
 
     /**
+     * Everybody the directory would let sign in: every entry under the base
+     * DN with an address, narrowed by the administrator's filter. Read with
+     * the service account, page by page.
+     *
+     * Throws when the directory cannot be read, so a sync reports the
+     * failure instead of mistaking it for an empty directory.
+     *
+     * @return list<LdapIdentity>
+     */
+    public function entries(): array;
+
+    /**
      * Exercise the configuration and report which stage failed, for the
      * settings screen's test button. This is the one place that is allowed
      * to be specific about failures: it is behind `edit_settings`, and it

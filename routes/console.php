@@ -9,6 +9,8 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('projectsend:purge-erasures')->daily();
+// A no-op unless daily sync is switched on in the LDAP settings.
+Schedule::command('projectsend:ldap-sync --scheduled')->daily()->withoutOverlapping();
 // Hourly, not daily: this one frees disk that an account is holding
 // against its own upload limits, so the gap between a session going stale
 // and the sweep noticing is a gap where somebody cannot upload. Daily made

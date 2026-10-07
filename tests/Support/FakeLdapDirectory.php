@@ -7,6 +7,7 @@ namespace Tests\Support;
 use App\Modules\Identity\Ldap\LdapDirectory;
 use App\Modules\Identity\Ldap\LdapIdentity;
 use App\Modules\Identity\Ldap\LdapProbeResult;
+use RuntimeException;
 
 /**
  * A directory that lives in an array.
@@ -27,6 +28,9 @@ class FakeLdapDirectory implements LdapDirectory
 
     /** @var list<string> */
     public array $lookedUpUsernames = [];
+
+    /** Makes entries() throw, as an unreachable directory would. */
+    public bool $listingFails = false;
 
     /**
      * @param  array<string, array{password: string, name?: string, dn?: string, username?: string}>  $entries  keyed by email
@@ -62,6 +66,25 @@ class FakeLdapDirectory implements LdapDirectory
         ));
 
         return count($matches) === 1 ? $matches[0] : null;
+    }
+
+    public function entries(): array
+    {
+        if ($this->listingFails) {
+            throw new RuntimeException('Directory unreachable.');
+        }
+
+        $identities = [];
+
+        foreach ($this->entries as $email => $entry) {
+            $identities[] = new LdapIdentity(
+                dn: $entry['dn'] ?? "uid={$email},ou=people,dc=example,dc=test",
+                email: $email,
+                name: $entry['name'] ?? 'Directory Person',
+            );
+        }
+
+        return $identities;
     }
 
     public function probe(?string $email = null, ?string $password = null): LdapProbeResult

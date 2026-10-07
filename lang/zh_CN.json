@@ -2323,5 +2323,9 @@
     "Username attribute (optional)": "用户名属性（可选）",
     "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "除邮箱地址外，还允许使用目录中的用户名登录，例如 uid、cn 或 sAMAccountName。留空则只能用邮箱地址登录。",
     "Email or username": "邮箱或用户名",
-    "Enter your email or username and password below to log in": "在下方输入邮箱或用户名和密码即可登录"
+    "Enter your email or username and password below to log in": "在下方输入邮箱或用户名和密码即可登录",
+    "Set your password": "设置你的密码",
+    "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "请点击下方按钮为你的账户设置密码。此前你一直通过 Google 或 Microsoft 等关联账户登录。",
+    "This link will expire in :count minutes.": "此链接将在 :count 分钟后失效。",
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "如果这不是你本人的请求，无需任何操作：你可以继续像现在这样登录。"
 }

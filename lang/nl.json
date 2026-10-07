@@ -2323,5 +2323,9 @@
     "Username attribute (optional)": "Gebruikersnaamattribuut (optioneel)",
     "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Laat mensen naast hun adres ook inloggen met hun gebruikersnaam uit de directory, bijvoorbeeld uid, cn of sAMAccountName. Laat leeg om alleen met het adres in te loggen.",
     "Email or username": "E-mailadres of gebruikersnaam",
-    "Enter your email or username and password below to log in": "Voer hieronder je e-mailadres of gebruikersnaam en wachtwoord in om in te loggen"
+    "Enter your email or username and password below to log in": "Voer hieronder je e-mailadres of gebruikersnaam en wachtwoord in om in te loggen",
+    "Set your password": "Stel je wachtwoord in",
+    "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Gebruik de knop hieronder om een wachtwoord voor je account te kiezen. Tot nu toe meldde je je aan met een gekoppeld account, zoals Google of Microsoft.",
+    "This link will expire in :count minutes.": "Deze link verloopt over :count minuten.",
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Heb je dit niet aangevraagd, dan hoef je niets te doen: je kunt je blijven aanmelden zoals je gewend bent."
 }

@@ -2323,5 +2323,9 @@
     "Username attribute (optional)": "Atribut uživatelského jména (nepovinné)",
     "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Umožní lidem přihlásit se kromě adresy i uživatelským jménem z adresáře, například uid, cn nebo sAMAccountName. Ponechte prázdné, pokud se má přihlašovat jen adresou.",
     "Email or username": "E-mail nebo uživatelské jméno",
-    "Enter your email or username and password below to log in": "Pro přihlášení zadejte níže svůj e-mail nebo uživatelské jméno a heslo"
+    "Enter your email or username and password below to log in": "Pro přihlášení zadejte níže svůj e-mail nebo uživatelské jméno a heslo",
+    "Set your password": "Nastavte si heslo",
+    "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Tlačítkem níže si zvolte heslo ke svému účtu. Dosud jste se přihlašovali propojeným účtem, například Google nebo Microsoft.",
+    "This link will expire in :count minutes.": "Platnost odkazu (minuty): :count",
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Pokud jste o to nežádali, nemusíte nic dělat: můžete se dál přihlašovat jako dosud."
 }

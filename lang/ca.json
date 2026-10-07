@@ -2323,5 +2323,9 @@
     "Username attribute (optional)": "Atribut de nom d'usuari (opcional)",
     "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Permet que les persones iniciïn la sessió amb el seu nom d'usuari del directori a més de l'adreça: per exemple uid, cn o sAMAccountName. Deixa-ho buit per iniciar la sessió només amb l'adreça.",
     "Email or username": "Correu o nom d'usuari",
-    "Enter your email or username and password below to log in": "Introdueix a sota el teu correu o nom d'usuari i la teva contrasenya per iniciar la sessió"
+    "Enter your email or username and password below to log in": "Introdueix a sota el teu correu o nom d'usuari i la teva contrasenya per iniciar la sessió",
+    "Set your password": "Crea la teva contrasenya",
+    "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Fes servir el botó de sota per triar una contrasenya per al teu compte. Fins ara iniciaves la sessió amb un compte connectat, com Google o Microsoft.",
+    "This link will expire in :count minutes.": "Aquest enllaç caduca d'aquí a :count minuts.",
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Si no ho has demanat, no cal que facis res: pots continuar iniciant la sessió com fins ara."
 }

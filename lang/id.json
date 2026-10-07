@@ -2323,5 +2323,9 @@
     "Username attribute (optional)": "Atribut nama pengguna (opsional)",
     "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Memungkinkan orang masuk dengan nama pengguna direktori selain alamatnya, misalnya uid, cn, atau sAMAccountName. Biarkan kosong untuk masuk hanya dengan alamat.",
     "Email or username": "Email atau nama pengguna",
-    "Enter your email or username and password below to log in": "Masukkan email atau nama pengguna dan kata sandi Anda di bawah ini untuk masuk"
+    "Enter your email or username and password below to log in": "Masukkan email atau nama pengguna dan kata sandi Anda di bawah ini untuk masuk",
+    "Set your password": "Buat kata sandi Anda",
+    "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Gunakan tombol di bawah untuk memilih kata sandi akun Anda. Selama ini Anda masuk melalui akun yang terhubung, seperti Google atau Microsoft.",
+    "This link will expire in :count minutes.": "Tautan ini akan kedaluwarsa dalam :count menit.",
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Jika Anda tidak memintanya, Anda tidak perlu melakukan apa pun: Anda tetap bisa masuk seperti biasa."
 }

@@ -2323,5 +2323,9 @@
     "Username attribute (optional)": "Thuộc tính tên người dùng (không bắt buộc)",
     "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Cho phép đăng nhập bằng tên người dùng trong thư mục ngoài địa chỉ, ví dụ uid, cn hoặc sAMAccountName. Để trống nếu chỉ đăng nhập bằng địa chỉ.",
     "Email or username": "Email hoặc tên người dùng",
-    "Enter your email or username and password below to log in": "Nhập email hoặc tên người dùng và mật khẩu bên dưới để đăng nhập"
+    "Enter your email or username and password below to log in": "Nhập email hoặc tên người dùng và mật khẩu bên dưới để đăng nhập",
+    "Set your password": "Đặt mật khẩu của bạn",
+    "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Dùng nút bên dưới để chọn mật khẩu cho tài khoản của bạn. Trước giờ bạn đăng nhập bằng một tài khoản liên kết, như Google hoặc Microsoft.",
+    "This link will expire in :count minutes.": "Liên kết này sẽ hết hạn sau :count phút.",
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Nếu bạn không yêu cầu việc này, bạn không cần làm gì: bạn vẫn có thể đăng nhập như trước."
 }

@@ -2323,5 +2323,9 @@
     "Username attribute (optional)": "ユーザー名属性 (任意)",
     "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "アドレスに加えて、ディレクトリのユーザー名でもログインできるようにします。例: uid、cn、sAMAccountName。空のままにすると、アドレスでのみログインできます。",
     "Email or username": "メールアドレスまたはユーザー名",
-    "Enter your email or username and password below to log in": "ログインするには、以下にメールアドレスまたはユーザー名とパスワードを入力してください"
+    "Enter your email or username and password below to log in": "ログインするには、以下にメールアドレスまたはユーザー名とパスワードを入力してください",
+    "Set your password": "パスワードを設定してください",
+    "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "下のボタンからアカウントのパスワードを設定してください。これまでは Google や Microsoft などの連携アカウントでサインインしていました。",
+    "This link will expire in :count minutes.": "このリンクの有効期限は :count 分です。",
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "心当たりがない場合は、何もする必要はありません。これまでどおりサインインできます。"
 }

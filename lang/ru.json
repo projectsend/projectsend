@@ -2323,5 +2323,9 @@
     "Username attribute (optional)": "Атрибут имени пользователя (необязательно)",
     "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Позволяет входить не только по адресу, но и по имени пользователя из каталога, например uid, cn или sAMAccountName. Оставьте пустым, чтобы входить только по адресу.",
     "Email or username": "Адрес эл. почты или имя пользователя",
-    "Enter your email or username and password below to log in": "Введите ниже адрес эл. почты или имя пользователя и пароль, чтобы войти"
+    "Enter your email or username and password below to log in": "Введите ниже адрес эл. почты или имя пользователя и пароль, чтобы войти",
+    "Set your password": "Задайте пароль",
+    "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Нажмите кнопку ниже, чтобы выбрать пароль для своей учётной записи. До сих пор вы входили через связанную учётную запись, например Google или Microsoft.",
+    "This link will expire in :count minutes.": "Срок действия ссылки (мин.): :count",
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Если вы этого не запрашивали, ничего делать не нужно: вы можете входить, как и раньше."
 }

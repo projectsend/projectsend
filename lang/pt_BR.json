@@ -2323,5 +2323,9 @@
     "Username attribute (optional)": "Atributo de nome de usuário (opcional)",
     "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Permite entrar com o nome de usuário do diretório além do endereço: por exemplo uid, cn ou sAMAccountName. Deixe em branco para entrar só com o endereço.",
     "Email or username": "E-mail ou nome de usuário",
-    "Enter your email or username and password below to log in": "Informe abaixo seu e-mail ou nome de usuário e sua senha para entrar"
+    "Enter your email or username and password below to log in": "Informe abaixo seu e-mail ou nome de usuário e sua senha para entrar",
+    "Set your password": "Crie sua senha",
+    "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Use o botão abaixo para escolher uma senha para sua conta. Até agora você entrava com uma conta conectada, como Google ou Microsoft.",
+    "This link will expire in :count minutes.": "Este link expira em :count minutos.",
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Se você não pediu isso, não precisa fazer nada: pode continuar entrando como antes."
 }

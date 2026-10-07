@@ -2323,5 +2323,9 @@
     "Username attribute (optional)": "Sifa ya jina la mtumiaji (si lazima)",
     "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Huwaruhusu watu kuingia kwa jina la mtumiaji la saraka pamoja na anwani yao, kwa mfano uid, cn au sAMAccountName. Acha tupu ili kuingia kwa anwani pekee.",
     "Email or username": "Barua pepe au jina la mtumiaji",
-    "Enter your email or username and password below to log in": "Weka barua pepe au jina la mtumiaji na nenosiri lako hapa chini ili kuingia"
+    "Enter your email or username and password below to log in": "Weka barua pepe au jina la mtumiaji na nenosiri lako hapa chini ili kuingia",
+    "Set your password": "Weka nenosiri lako",
+    "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Tumia kitufe kilicho hapa chini kuchagua nenosiri la akaunti yako. Hadi sasa umekuwa ukiingia kupitia akaunti iliyounganishwa, kama Google au Microsoft.",
+    "This link will expire in :count minutes.": "Kiungo hiki kitaisha muda baada ya dakika :count.",
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Ikiwa hukuomba hili, huhitaji kufanya chochote: unaweza kuendelea kuingia kama kawaida."
 }

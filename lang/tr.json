@@ -2323,5 +2323,9 @@
     "Username attribute (optional)": "Kullanıcı adı özniteliği (isteğe bağlı)",
     "Lets people sign in with their directory username as well as their address: uid, cn or sAMAccountName, for example. Leave it empty to sign in by address only.": "Kişilerin adreslerinin yanı sıra dizindeki kullanıcı adlarıyla da giriş yapmasını sağlar; örneğin uid, cn veya sAMAccountName. Yalnızca adresle giriş için boş bırakın.",
     "Email or username": "E-posta veya kullanıcı adı",
-    "Enter your email or username and password below to log in": "Giriş yapmak için e-posta adresinizi veya kullanıcı adınızı ve parolanızı aşağıya girin"
+    "Enter your email or username and password below to log in": "Giriş yapmak için e-posta adresinizi veya kullanıcı adınızı ve parolanızı aşağıya girin",
+    "Set your password": "Parolanızı oluşturun",
+    "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Hesabınız için bir parola seçmek üzere aşağıdaki düğmeyi kullanın. Şimdiye kadar Google veya Microsoft gibi bağlı bir hesapla oturum açıyordunuz.",
+    "This link will expire in :count minutes.": "Bu bağlantının süresi :count dakika içinde dolacak.",
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Bunu siz istemediyseniz bir şey yapmanıza gerek yok: her zamanki gibi oturum açmaya devam edebilirsiniz."
 }

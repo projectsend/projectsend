@@ -39,6 +39,9 @@ enum Action: string
     case LdapClientDeactivated = 'ldap.client_deactivated';
     case LdapClientRestored = 'ldap.client_restored';
     case LdapSyncRun = 'ldap.sync_run';
+    case LdapSyncStopped = 'ldap.sync_stopped';
+    case LdapSyncCancelled = 'ldap.sync_cancelled';
+    case LdapClientReactivated = 'ldap.client_reactivated';
     case SocialClientProvisioned = 'social.client_provisioned';
     case SocialAccountLinked = 'social.account_linked';
     case SocialAccountUnlinked = 'social.account_unlinked';
@@ -185,6 +188,9 @@ enum Action: string
             self::LdapClientDeactivated => 'Deactivated the client account ":name": it is no longer in the directory',
             self::LdapClientRestored => 'Restored the deleted client account ":name": it is in the directory',
             self::LdapSyncRun => 'Synced with the directory: :created created, :updated updated, :deactivated deactivated',
+            self::LdapSyncStopped => 'Stopped a directory sync before it changed anything: it would have deactivated :count of :total directory clients',
+            self::LdapSyncCancelled => 'Stopped the running directory sync',
+            self::LdapClientReactivated => 'Reactivated the client account ":name" that a directory sync had deactivated',
             self::SocialClientProvisioned => 'Created a client account from :provider on first sign-in',
             self::SocialAccountLinked => 'Connected the :provider account of ":subject"',
             self::SocialAccountUnlinked => 'Disconnected the :provider account of ":subject"',
@@ -304,6 +310,9 @@ enum Action: string
             self::LdapClientDeactivated => 'A client account was deactivated because it left the directory',
             self::LdapClientRestored => 'A deleted client account was restored by the directory sync',
             self::LdapSyncRun => 'Accounts were synced with the directory',
+            self::LdapSyncStopped => 'A directory sync was stopped because it would have deactivated too many clients',
+            self::LdapSyncCancelled => 'A running directory sync was stopped by hand',
+            self::LdapClientReactivated => 'A client account deactivated by a directory sync was reactivated',
             self::SocialClientProvisioned => 'A client account was created from :provider',
             self::SocialAccountLinked => 'A :provider account was connected',
             self::SocialAccountUnlinked => 'A :provider account was disconnected',

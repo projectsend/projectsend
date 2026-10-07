@@ -106,6 +106,32 @@ test('using the link signs out the session that asked for it', function () {
     $this->assertGuest();
 });
 
+test('the email to a provider account is about setting a first password, not a reset', function () {
+    Notification::fake();
+    $user = providerAccount();
+
+    $this->actingAs($user)->post('/settings/password/link');
+
+    Notification::assertSentTo($user, ResetPasswordNotification::class, function (ResetPasswordNotification $notification) use ($user): bool {
+        $mail = $notification->toMail($user);
+
+        return $mail->subject === __('Set your password')
+            && $mail->actionText === __('Set a password')
+            && ! str_contains(implode(' ', $mail->introLines), 'reset');
+    });
+});
+
+test('an account with a password still gets the reset email', function () {
+    Notification::fake();
+    $user = User::factory()->create();
+
+    $this->post('/forgot-password', ['email' => $user->email]);
+
+    Notification::assertSentTo($user, ResetPasswordNotification::class, function (ResetPasswordNotification $notification) use ($user): bool {
+        return $notification->toMail($user)->subject === __('Reset Password Notification');
+    });
+});
+
 test('an account that already has a password uses the form, not a link', function () {
     Notification::fake();
     $user = User::factory()->create();

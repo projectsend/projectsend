@@ -27,6 +27,7 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
 
     public function __construct(
         public readonly string $token,
+        public readonly bool $firstPassword = false,
     ) {}
 
     /**
@@ -45,6 +46,20 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
         ], false));
 
         $expireMinutes = (int) config('auth.passwords.'.config('auth.defaults.passwords').'.expire');
+
+        // The same link, for an account that signs in through a provider and
+        // has never had a password: this is now the only way it gets one, so
+        // an email that speaks of a reset nobody asked for is one people
+        // ignore. Not taken from the customisable reset template for the
+        // same reason, since that text is written about resetting.
+        if ($this->firstPassword) {
+            return (new MailMessage)
+                ->subject(__('Set your password'))
+                ->line(__('Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.'))
+                ->action(__('Set a password'), $url)
+                ->line(__('This link will expire in :count minutes.', ['count' => $expireMinutes]))
+                ->line(__('If you did not ask for this, no further action is required: you can keep signing in the way you do now.'));
+        }
 
         if (($override = $this->overrideOrNull(EmailTemplateSlot::PasswordReset)) !== null) {
             return $this->mailFromOverride($override, [':count' => (string) $expireMinutes])

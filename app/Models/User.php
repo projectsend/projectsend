@@ -152,7 +152,10 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new ResetPasswordNotification($token));
+        // An account that signs in through a provider has never had a
+        // password here, so its link sets the first one rather than
+        // resetting anything (PasswordController::sendLink).
+        $this->notify(new ResetPasswordNotification($token, firstPassword: $this->auth_source === AuthSource::Social));
     }
 
     /**

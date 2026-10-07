@@ -425,3 +425,167 @@ test('a preview lists who would be restored, and restores nobody', function () {
         ->and($deleted->fresh()->trashed())->toBeTrue();
 });
 
+test('an unreviewed run that would deactivate too many clients stops before changing anything', function () {
+    enableSync(deactivateMissing: true);
+    LdapSettings::current()->forceFill(['sync_daily' => true])->save();
+    syncDirectory([
+        'present@example.test' => ['password' => 'x'],
+        'new@example.test' => ['password' => 'x'],
+    ]);
+    directoryClient('present@example.test');
+    $gone = collect(range(1, 3))->map(fn (int $i): User => directoryClient("gone{$i}@example.test"));
+
+    $this->artisan('projectsend:ldap-sync', ['--scheduled' => true])->assertFailed();
+
+    $last = app(LdapSync::class)->last();
+    expect($last['status'])->toBe('stopped')
+        ->and($last['error'])->toContain('3 of the 4')
+        ->and($gone->every(fn (User $client): bool => $client->fresh()->active))->toBeTrue()
+        ->and(User::query()->where('email', 'new@example.test')->exists())->toBeFalse()
+        ->and(ActivityLog::query()->where('action', Action::LdapSyncStopped)->count())->toBe(1);
+});
+
+test('sync now carries out what the preview showed, without reading the directory again', function () {
+    enableSync(deactivateMissing: true);
+    $fake = syncDirectory(['new@example.test' => ['password' => 'x', 'name' => 'New Person']]);
+    directoryClient('gone@example.test');
+    $preview = app(LdapSync::class)->run(dryRun: true);
+
+    // The directory changes, or breaks, after the preview: neither matters.
+    $fake->listingFails = true;
+
+    $report = app(LdapSync::class)->run(plan: $preview['plan']);
+
+    expect($report['status'])->toBe('finished')
+        ->and($report['created'])->toBe(1)
+        ->and($report['deactivated'])->toBe(1)
+        ->and(User::query()->where('email', 'new@example.test')->exists())->toBeTrue();
+});
+
+test('somebody whose account changed after the preview is skipped, not acted on', function () {
+    enableSync();
+    syncDirectory(['new@example.test' => ['password' => 'x']]);
+    $preview = app(LdapSync::class)->run(dryRun: true);
+
+    $local = User::factory()->client()->create(['email' => 'new@example.test', 'name' => 'Local Name']);
+
+    $report = app(LdapSync::class)->run(plan: $preview['plan']);
+
+    expect($report['created'])->toBe(0)
+        ->and($report['skipped'])->toBe(['local' => 1])
+        ->and($local->fresh()->name)->toBe('Local Name');
+});
+
+test('a sync whose preview has expired does nothing', function () {
+    enableSync();
+    syncDirectory(['new@example.test' => ['password' => 'x']]);
+
+    $report = app(LdapSync::class)->run(plan: 'no-such-plan');
+
+    expect($report['status'])->toBe('failed')
+        ->and(User::query()->where('email', 'new@example.test')->exists())->toBeFalse();
+});
+
+test('the clients a sync deactivated can be reactivated afterwards', function () {
+    enableSync(deactivateMissing: true);
+    syncDirectory(['present@example.test' => ['password' => 'x']]);
+    directoryClient('present@example.test');
+    $gone = directoryClient('gone@example.test');
+    $preview = app(LdapSync::class)->run(dryRun: true);
+    app(LdapSync::class)->run(plan: $preview['plan']);
+    expect($gone->fresh()->active)->toBeFalse();
+
+    $this->actingAs($this->admin)->post('/system/settings/ldap/sync/reactivate')->assertRedirect();
+
+    $last = app(LdapSync::class)->last();
+    expect($gone->fresh()->active)->toBeTrue()
+        ->and($last['reactivated'])->toBe(1)
+        ->and($last['deactivated_ids'])->toBe([])
+        ->and(ActivityLog::query()->where('action', Action::LdapClientReactivated)->where('actor_id', $this->admin->id)->count())->toBe(1);
+});
+
+test('a running sync can be stopped, and stops before its next entry', function () {
+    enableSync();
+    syncDirectory([
+        'one@example.test' => ['password' => 'x'],
+        'two@example.test' => ['password' => 'x'],
+    ]);
+    $sync = app(LdapSync::class);
+    $sync->markQueued();
+
+    $this->actingAs($this->admin)->post('/system/settings/ldap/sync/cancel')->assertRedirect();
+    expect($sync->last()['status'])->toBe('cancelled');
+
+    // The queued job starts after the stop, finds the flag, and does nothing.
+    SyncLdapUsersJob::dispatch();
+
+    expect($sync->last()['status'])->toBe('cancelled')
+        ->and(User::query()->whereIn('email', ['one@example.test', 'two@example.test'])->count())->toBe(0)
+        ->and(ActivityLog::query()->where('action', Action::LdapSyncCancelled)->count())->toBe(1);
+});
+
+test('only staff who may edit settings can stop a sync or reactivate its clients', function () {
+    $staff = staffWithPermissions(['upload']);
+
+    $this->actingAs($staff)->post('/system/settings/ldap/sync/cancel')->assertForbidden();
+    $this->actingAs($staff)->post('/system/settings/ldap/sync/reactivate')->assertForbidden();
+});
+
+test('a preview marks the deleted clients that could be restored, even with restoring off', function () {
+    enableSync();
+    syncDirectory([
+        'admin-deleted@example.test' => ['password' => 'x'],
+        'self-deleted@example.test' => ['password' => 'x'],
+    ]);
+    adminDeletedClient($this->admin, 'admin-deleted@example.test');
+    $self = directoryClient('self-deleted@example.test');
+    $self->delete();
+    app(ActivityLogger::class)->log(Action::UserDeleted, $self);
+
+    $people = collect(app(LdapSync::class)->run(dryRun: true)['people'])->keyBy('email');
+
+    expect($people['admin-deleted@example.test'])->toMatchArray(['action' => 'skip', 'reason' => 'deleted', 'restorable' => true])
+        ->and($people['self-deleted@example.test'])->toMatchArray(['action' => 'skip', 'reason' => 'deleted_by_owner'])
+        ->and($people['self-deleted@example.test'])->not->toHaveKey('restorable');
+});
+
+test('sync now restores exactly the deleted clients ticked in the preview', function () {
+    enableSync();
+    syncDirectory([
+        'ticked@example.test' => ['password' => 'x'],
+        'unticked@example.test' => ['password' => 'x'],
+    ]);
+    $ticked = adminDeletedClient($this->admin, 'ticked@example.test');
+    $unticked = adminDeletedClient($this->admin, 'unticked@example.test');
+
+    $this->actingAs($this->admin)->post('/system/settings/ldap/sync', ['dry_run' => true]);
+    $this->actingAs($this->admin)->post('/system/settings/ldap/sync', ['restore' => ['Ticked@example.test']])->assertSessionHasNoErrors();
+
+    expect($ticked->fresh()->trashed())->toBeFalse()
+        ->and($unticked->fresh()->trashed())->toBeTrue()
+        ->and(app(LdapSync::class)->last()['restored'])->toBe(1);
+});
+
+test('unticking every deleted client restores nobody, even with restoring on', function () {
+    enableSync(restoreDeleted: true);
+    syncDirectory(['deleted@example.test' => ['password' => 'x']]);
+    $deleted = adminDeletedClient($this->admin, 'deleted@example.test');
+    $preview = app(LdapSync::class)->run(dryRun: true);
+
+    app(LdapSync::class)->run(plan: $preview['plan'], restore: []);
+
+    expect($deleted->fresh()->trashed())->toBeTrue();
+});
+
+test('a ticked address the preview could not restore stays deleted', function () {
+    enableSync();
+    syncDirectory(['self-deleted@example.test' => ['password' => 'x']]);
+    $self = directoryClient('self-deleted@example.test');
+    $self->delete();
+    app(ActivityLogger::class)->log(Action::UserDeleted, $self);
+    $preview = app(LdapSync::class)->run(dryRun: true);
+
+    app(LdapSync::class)->run(plan: $preview['plan'], restore: ['self-deleted@example.test']);
+
+    expect($self->fresh()->trashed())->toBeTrue();
+});

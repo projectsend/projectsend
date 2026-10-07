@@ -32,7 +32,7 @@ class SyncLdapUsersCommand extends Command
         $dryRun = (bool) $this->option('dry-run');
         $report = $sync->run(dryRun: $dryRun);
 
-        if ($report['status'] === 'failed') {
+        if (in_array($report['status'], ['failed', 'stopped'], true)) {
             $this->error((string) $report['error']);
 
             return self::FAILURE;

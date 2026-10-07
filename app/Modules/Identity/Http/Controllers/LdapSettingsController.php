@@ -191,23 +191,56 @@ class LdapSettingsController extends Controller
             $preview = $this->sync->run(dryRun: true);
 
             // Stamped when the preview finished, the moment the screen
-            // counts its ten minutes from, so the two never disagree.
+            // counts its ten minutes from, so the two never disagree. The
+            // plan is what Sync now will carry out.
             $request->session()->put('ldap_sync_previewed_at', $preview['finished_at']);
+            $request->session()->put('ldap_sync_plan', $preview['plan']);
 
             return back()->with('ldap_sync_preview', $preview);
         }
 
         $previewedAt = $request->session()->get('ldap_sync_previewed_at');
+        $plan = $request->session()->get('ldap_sync_plan');
         $savedAt = LdapSettings::current()->updated_at?->getTimestamp() ?? 0;
 
-        if (! is_int($previewedAt) || now()->getTimestamp() - $previewedAt > self::PREVIEW_VALID_SECONDS || $savedAt > $previewedAt) {
+        if (! is_int($previewedAt) || ! is_string($plan) || now()->getTimestamp() - $previewedAt > self::PREVIEW_VALID_SECONDS || $savedAt > $previewedAt) {
             throw ValidationException::withMessages(['sync' => __('Preview the sync again before running it: the last preview is missing, too old, or older than the saved settings.')]);
         }
 
-        $request->session()->forget('ldap_sync_previewed_at');
+        // The deleted clients ticked in the preview. Only addresses the plan
+        // lists as restorable can come back, so this cannot reach further.
+        $validated = $request->validate([
+            'restore' => ['sometimes', 'array'],
+            'restore.*' => ['string', 'max:255'],
+        ]);
+
+        $request->session()->forget(['ldap_sync_previewed_at', 'ldap_sync_plan']);
         $this->sync->markQueued();
-        SyncLdapUsersJob::dispatch();
+        SyncLdapUsersJob::dispatch(plan: $plan, restore: isset($validated['restore']) ? array_values($validated['restore']) : null);
 
         return back()->with('success', __('Directory sync started.'));
+    }
+
+    /**
+     * Stop the running sync after the entry it is on. What it already did
+     * stays done; the status says how far it got.
+     */
+    public function cancelSync(): RedirectResponse
+    {
+        if ($this->sync->cancel()) {
+            $this->activity->log(Action::LdapSyncCancelled);
+        }
+
+        return back();
+    }
+
+    /**
+     * Switch back on the clients the last sync deactivated.
+     */
+    public function reactivate(Request $request): RedirectResponse
+    {
+        $count = $this->sync->reactivateLast($request->user());
+
+        return back()->with('success', __('Reactivated client accounts: :count.', ['count' => $count]));
     }
 }

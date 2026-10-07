@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $auto_approve
  * @property bool $sync_daily
  * @property bool $sync_deactivates_missing
+ * @property bool $sync_restores_deleted
  */
 class LdapSettings extends Model
 {
@@ -51,6 +52,7 @@ class LdapSettings extends Model
         'auto_approve' => false,
         'sync_daily' => false,
         'sync_deactivates_missing' => false,
+        'sync_restores_deleted' => false,
     ];
 
     protected function casts(): array
@@ -64,6 +66,7 @@ class LdapSettings extends Model
             'auto_approve' => 'boolean',
             'sync_daily' => 'boolean',
             'sync_deactivates_missing' => 'boolean',
+            'sync_restores_deleted' => 'boolean',
         ];
     }
 

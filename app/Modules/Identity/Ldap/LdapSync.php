@@ -6,6 +6,7 @@ namespace App\Modules\Identity\Ldap;
 
 use App\Models\User;
 use App\Modules\Audit\Action;
+use App\Modules\Audit\ActivityLog;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientProvisioning;
 use App\Modules\Identity\AccountLookup;
@@ -30,7 +31,10 @@ use Throwable;
  *    The directory is client-only, and an address alone does not make an
  *    account the directory's to manage;
  *  - an address held by a deleted account is left alone, as LdapProvisioner
- *    leaves it.
+ *    leaves it, unless the administrator asked for deleted clients to be
+ *    restored. Even then, only a client an administrator deleted comes
+ *    back: somebody who deleted their own account asked to leave, and
+ *    still being listed in the directory does not overrule that.
  *
  * Directory clients that no longer appear are counted, and deactivated
  * only when the administrator asked for that — and never on a listing that
@@ -39,14 +43,26 @@ use Throwable;
  *
  * @phpstan-type Report array{
  *     status: string, dry_run: bool, started_at: int, finished_at: int|null,
- *     found: int, created: int, updated: int, unchanged: int,
+ *     found: int, created: int, updated: int, unchanged: int, restored: int,
  *     skipped: array<string, int>, missing: int, deactivated: int, errors: int,
- *     error: string|null, next: int
+ *     error: string|null, next: int, people: list<Person>, failures: list<array{email: string, error: string}>
  * }
+ * @phpstan-type Person array{
+ *     name: string, email: string, action: string,
+ *     reason?: string, previous_name?: string, moved?: bool, error?: string
+ * }
+ *
+ * A preview (dry run) also lists the people behind the counts, so an
+ * administrator can see who a sync would touch before running it. A real
+ * run keeps only the counts: it is remembered for the settings screen,
+ * and a directory's worth of names has no business sitting in the cache.
  */
 class LdapSync
 {
     private const LAST_RUN_KEY = 'identity.ldap.sync';
+
+    /** Failures kept from a real run for the settings screen. */
+    private const FAILURES_KEPT = 20;
 
     public function __construct(
         private readonly LdapDirectory $directory,
@@ -94,6 +110,13 @@ class LdapSync
                 $this->syncOne($identities[$i], $settings, $dryRun, $report);
             } catch (Throwable $e) {
                 $report['errors']++;
+                $this->listPerson($report, $identities[$i], 'error', ['error' => $e->getMessage()]);
+
+                // A real run keeps no list of people, but the ones it could
+                // not handle are what an administrator needs to see next.
+                if (! $dryRun && count($report['failures']) < self::FAILURES_KEPT) {
+                    $report['failures'][] = ['email' => $identities[$i]->email, 'error' => $e->getMessage()];
+                }
             }
         }
 
@@ -142,7 +165,7 @@ class LdapSync
 
         if ($account === null) {
             if (! $settings->auto_provision) {
-                $this->skip($report, 'provisioning_off');
+                $this->skip($report, $identity, 'provisioning_off');
 
                 return;
             }
@@ -163,28 +186,47 @@ class LdapSync
             }
 
             $report['created']++;
+            $this->listPerson($report, $identity, 'create');
+
+            return;
+        }
+
+        if ($account->trashed()) {
+            $this->syncDeleted($account, $identity, $settings, $dryRun, $report);
 
             return;
         }
 
         $reason = match (true) {
-            $account->trashed() => 'deleted',
             ! $account->isClient() => 'staff',
             $account->auth_source !== AuthSource::Ldap => 'local',
             default => null,
         };
 
         if ($reason !== null) {
-            $this->skip($report, $reason);
+            $this->skip($report, $identity, $reason);
 
             return;
         }
 
         if ($account->name === $identity->name && $account->ldap_dn === $identity->dn) {
             $report['unchanged']++;
+            $this->listPerson($report, $identity, 'unchanged');
 
             return;
         }
+
+        $detail = [];
+
+        if ($account->name !== $identity->name) {
+            $detail['previous_name'] = $account->name;
+        }
+
+        if ($account->ldap_dn !== $identity->dn) {
+            $detail['moved'] = true;
+        }
+
+        $this->listPerson($report, $identity, 'update', $detail);
 
         if (! $dryRun) {
             $account->forceFill([
@@ -195,6 +237,58 @@ class LdapSync
         }
 
         $report['updated']++;
+    }
+
+    /**
+     * A directory entry whose address belongs to a deleted account.
+     *
+     * Restored only when the administrator asked for it, only for a client,
+     * and only if an administrator did the deleting. The account comes back
+     * as it was, with its pending erasure cancelled; the files an
+     * administrator deleted or reassigned at the time stay that way.
+     *
+     * @param  Report  $report
+     */
+    private function syncDeleted(User $account, LdapIdentity $identity, LdapSettings $settings, bool $dryRun, array &$report): void
+    {
+        $reason = match (true) {
+            ! $settings->sync_restores_deleted, ! $account->isClient() => 'deleted',
+            $this->deletedByOwner($account) => 'deleted_by_owner',
+            default => null,
+        };
+
+        if ($reason !== null) {
+            $this->skip($report, $identity, $reason);
+
+            return;
+        }
+
+        if (! $dryRun) {
+            $account->restore();
+            $account->forceFill(['erase_after' => null])->save();
+
+            if ($account->auth_source === AuthSource::Ldap) {
+                $account->forceFill(['name' => $identity->name, 'ldap_dn' => $identity->dn, 'ldap_synced_at' => now()])->save();
+            }
+
+            $this->activity->logSystem(Action::LdapClientRestored, ['name' => $account->name, 'id' => $account->id]);
+        }
+
+        $report['restored']++;
+        $this->listPerson($report, $identity, 'restore');
+    }
+
+    /**
+     * Self-deletion logs the person as the actor of their own deletion
+     * (ProfileController::destroy); an administrator's delete logs the
+     * administrator.
+     */
+    private function deletedByOwner(User $account): bool
+    {
+        return ActivityLog::query()
+            ->where('action', Action::UserDeleted)
+            ->where('actor_id', $account->id)
+            ->exists();
     }
 
     /**
@@ -217,12 +311,17 @@ class LdapSync
             ->reject(fn (User $client): bool => isset($listed[mb_strtolower(trim($client->email), 'UTF-8')]));
 
         $report['missing'] = $missing->count();
-
-        if (! $settings->sync_deactivates_missing || $identities === []) {
-            return;
-        }
+        $deactivates = $settings->sync_deactivates_missing && $identities !== [];
 
         foreach ($missing as $client) {
+            if ($report['dry_run']) {
+                $report['people'][] = ['name' => $client->name, 'email' => $client->email, 'action' => $deactivates ? 'deactivate' : 'keep'];
+            }
+
+            if (! $deactivates) {
+                continue;
+            }
+
             if (! $dryRun) {
                 User::query()->whereKey($client->id)->update(['active' => false]);
                 $this->activity->logSystem(Action::LdapClientDeactivated, ['name' => $client->name, 'id' => $client->id]);
@@ -235,9 +334,21 @@ class LdapSync
     /**
      * @param  Report  $report
      */
-    private function skip(array &$report, string $reason): void
+    private function skip(array &$report, LdapIdentity $identity, string $reason): void
     {
         $report['skipped'][$reason] = ($report['skipped'][$reason] ?? 0) + 1;
+        $this->listPerson($report, $identity, 'skip', ['reason' => $reason]);
+    }
+
+    /**
+     * @param  Report  $report
+     * @param  array{reason?: string, previous_name?: string, moved?: bool, error?: string}  $detail
+     */
+    private function listPerson(array &$report, LdapIdentity $identity, string $action, array $detail = []): void
+    {
+        if ($report['dry_run']) {
+            $report['people'][] = ['name' => $identity->name, 'email' => $identity->email, 'action' => $action, ...$detail];
+        }
     }
 
     /**
@@ -286,12 +397,15 @@ class LdapSync
             'created' => 0,
             'updated' => 0,
             'unchanged' => 0,
+            'restored' => 0,
             'skipped' => [],
             'missing' => 0,
             'deactivated' => 0,
             'errors' => 0,
             'error' => null,
             'next' => 0,
+            'people' => [],
+            'failures' => [],
         ];
     }
 }

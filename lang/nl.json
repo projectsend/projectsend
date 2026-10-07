@@ -2332,5 +2332,7 @@
     "Select all :count items": "Alle :count items selecteren",
     "All :count items are selected.": "Alle :count items zijn geselecteerd.",
     "Selecting…": "Bezig met selecteren…",
-    "Could not select every item. Try again.": "Niet alles kon worden geselecteerd. Probeer het opnieuw."
+    "Could not select every item. Try again.": "Niet alles kon worden geselecteerd. Probeer het opnieuw.",
+    "Go to page": "Ga naar pagina",
+    "Go": "Ga"
 }

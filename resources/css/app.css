@@ -375,3 +375,29 @@
     border-top: 1px solid var(--border);
     margin-block: 2rem;
 }
+
+/*
+ * Radix Select hides its viewport's scrollbar and scrolls only from the
+ * arrow strips at either end, which is no way to get through a long list
+ * such as the pager's page numbers. `.select-scrollbar` on a SelectContent
+ * shows a real scrollbar instead and drops the arrow strips.
+ */
+.select-scrollbar [data-radix-select-viewport] {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--muted-foreground) 45%, transparent) transparent;
+}
+
+/* Safari still reads Radix's ::-webkit-scrollbar { display: none }. */
+.select-scrollbar [data-radix-select-viewport]::-webkit-scrollbar {
+    display: block;
+    width: 8px;
+}
+
+.select-scrollbar [data-radix-select-viewport]::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: color-mix(in oklab, var(--muted-foreground) 45%, transparent);
+}
+
+.select-scrollbar > :not([data-radix-select-viewport]) {
+    display: none;
+}

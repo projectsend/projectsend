@@ -2332,5 +2332,7 @@
     "Select all :count items": "Pilih semua :count item",
     "All :count items are selected.": "Semua :count item dipilih.",
     "Selecting…": "Memilih…",
-    "Could not select every item. Try again.": "Tidak dapat memilih semua item. Silakan coba lagi."
+    "Could not select every item. Try again.": "Tidak dapat memilih semua item. Silakan coba lagi.",
+    "Go to page": "Ke halaman",
+    "Go": "Buka"
 }

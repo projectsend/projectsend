@@ -2332,5 +2332,7 @@
     "Select all :count items": "Selecionar todos os :count itens",
     "All :count items are selected.": "Todos os :count itens estão selecionados.",
     "Selecting…": "Selecionando…",
-    "Could not select every item. Try again.": "Não foi possível selecionar tudo. Tente novamente."
+    "Could not select every item. Try again.": "Não foi possível selecionar tudo. Tente novamente.",
+    "Go to page": "Ir para a página",
+    "Go": "Ir"
 }

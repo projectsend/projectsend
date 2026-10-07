@@ -2332,5 +2332,7 @@
     "Select all :count items": "Selecciona els :count elements",
     "All :count items are selected.": "Tots els :count elements estan seleccionats.",
     "Selecting…": "Seleccionant…",
-    "Could not select every item. Try again.": "No s'ha pogut seleccionar tot. Torna-ho a provar."
+    "Could not select every item. Try again.": "No s'ha pogut seleccionar tot. Torna-ho a provar.",
+    "Go to page": "Ves a la pàgina",
+    "Go": "Ves-hi"
 }

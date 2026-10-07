@@ -2332,5 +2332,7 @@
     "Select all :count items": "Zaznacz wszystkie elementy (:count)",
     "All :count items are selected.": "Zaznaczono wszystkie elementy (:count).",
     "Selecting…": "Zaznaczanie…",
-    "Could not select every item. Try again.": "Nie udało się zaznaczyć wszystkich elementów. Spróbuj ponownie."
+    "Could not select every item. Try again.": "Nie udało się zaznaczyć wszystkich elementów. Spróbuj ponownie.",
+    "Go to page": "Przejdź do strony",
+    "Go": "Przejdź"
 }

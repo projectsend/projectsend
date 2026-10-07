@@ -2332,5 +2332,7 @@
     "Select all :count items": "Vybrat všechny položky (:count)",
     "All :count items are selected.": "Vybrány všechny položky (:count).",
     "Selecting…": "Vybírání…",
-    "Could not select every item. Try again.": "Nepodařilo se vybrat všechny položky. Zkuste to znovu."
+    "Could not select every item. Try again.": "Nepodařilo se vybrat všechny položky. Zkuste to znovu.",
+    "Go to page": "Přejít na stránku",
+    "Go": "Přejít"
 }

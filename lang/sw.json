@@ -2332,5 +2332,7 @@
     "Select all :count items": "Chagua vipengele vyote :count",
     "All :count items are selected.": "Vipengele vyote :count vimechaguliwa.",
     "Selecting…": "Inachagua…",
-    "Could not select every item. Try again.": "Imeshindwa kuchagua vipengele vyote. Jaribu tena."
+    "Could not select every item. Try again.": "Imeshindwa kuchagua vipengele vyote. Jaribu tena.",
+    "Go to page": "Nenda kwenye ukurasa",
+    "Go": "Nenda"
 }

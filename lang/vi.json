@@ -2332,5 +2332,7 @@
     "Select all :count items": "Chọn tất cả :count mục",
     "All :count items are selected.": "Đã chọn tất cả :count mục.",
     "Selecting…": "Đang chọn…",
-    "Could not select every item. Try again.": "Không thể chọn tất cả các mục. Bạn hãy thử lại."
+    "Could not select every item. Try again.": "Không thể chọn tất cả các mục. Bạn hãy thử lại.",
+    "Go to page": "Đi đến trang",
+    "Go": "Đi"
 }

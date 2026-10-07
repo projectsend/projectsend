@@ -2332,5 +2332,7 @@
     "Select all :count items": ":count öğenin tümünü seçin",
     "All :count items are selected.": "Tüm :count öğe seçildi.",
     "Selecting…": "Seçiliyor…",
-    "Could not select every item. Try again.": "Öğelerin tümü seçilemedi. Lütfen tekrar deneyin."
+    "Could not select every item. Try again.": "Öğelerin tümü seçilemedi. Lütfen tekrar deneyin.",
+    "Go to page": "Sayfaya git",
+    "Go": "Git"
 }

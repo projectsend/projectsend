@@ -2332,5 +2332,7 @@
     "Select all :count items": "Выбрать все элементы (:count)",
     "All :count items are selected.": "Выбраны все элементы (:count).",
     "Selecting…": "Выбор…",
-    "Could not select every item. Try again.": "Не удалось выбрать все элементы. Попробуйте ещё раз."
+    "Could not select every item. Try again.": "Не удалось выбрать все элементы. Попробуйте ещё раз.",
+    "Go to page": "Перейти на страницу",
+    "Go": "Перейти"
 }

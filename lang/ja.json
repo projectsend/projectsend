@@ -2332,5 +2332,7 @@
     "Select all :count items": ":count 件のアイテムをすべて選択",
     "All :count items are selected.": ":count 件のアイテムをすべて選択しました。",
     "Selecting…": "選択中…",
-    "Could not select every item. Try again.": "すべてのアイテムを選択できませんでした。もう一度お試しください。"
+    "Could not select every item. Try again.": "すべてのアイテムを選択できませんでした。もう一度お試しください。",
+    "Go to page": "ページへ移動",
+    "Go": "移動"
 }

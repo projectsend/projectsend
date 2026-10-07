@@ -235,6 +235,8 @@ Route::middleware('auth')->group(function () {
         Route::patch('system/settings/ldap', [LdapSettingsController::class, 'update'])->name('system-settings.ldap.update');
         Route::post('system/settings/ldap/test', [LdapSettingsController::class, 'test'])->name('system-settings.ldap.test');
         Route::post('system/settings/ldap/sync', [LdapSettingsController::class, 'sync'])->name('system-settings.ldap.sync');
+        Route::post('system/settings/ldap/sync/cancel', [LdapSettingsController::class, 'cancelSync'])->name('system-settings.ldap.sync.cancel');
+        Route::post('system/settings/ldap/sync/reactivate', [LdapSettingsController::class, 'reactivate'])->name('system-settings.ldap.sync.reactivate');
 
         // Outside any capability: group for the same reason as LDAP above.
         Route::get('system/settings/social-login', [SocialLoginSettingsController::class, 'edit'])

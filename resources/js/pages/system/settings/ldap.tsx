@@ -1,11 +1,12 @@
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { Download, Loader2, Search } from 'lucide-react';
-import { FormEventHandler, KeyboardEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { FormEventHandler, KeyboardEvent, useEffect, useMemo, useState } from 'react';
 
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
+import { ListPager } from '@/components/pagination';
 import { SaveButton } from '@/components/save-button';
 import { TableShell } from '@/components/table-shell';
 import { TestResultAlert } from '@/components/test-result-alert';
@@ -48,7 +49,8 @@ interface LdapSettings {
 
 /** One directory sync, or a preview of one — see LdapSync. */
 interface SyncReport {
-    status: 'running' | 'finished' | 'failed';
+    /** stopped: the safety limit held an unreviewed run back; cancelled: somebody pressed Stop. */
+    status: 'running' | 'finished' | 'failed' | 'stopped' | 'cancelled';
     dry_run: boolean;
     finished_at: number | null;
     found: number;
@@ -65,6 +67,11 @@ interface SyncReport {
     people: SyncPerson[];
     /** Only filled for a real run: who it could not handle (at most 20). */
     failures: { email: string; error: string }[];
+    /** A preview's plan, which Sync now carries out. */
+    plan: string | null;
+    /** Who a real run deactivated and has not been reactivated since. */
+    deactivated_ids?: number[];
+    reactivated?: number;
 }
 
 type SyncAction = 'create' | 'update' | 'restore' | 'deactivate' | 'keep' | 'skip' | 'error' | 'unchanged';
@@ -77,6 +84,8 @@ interface SyncPerson {
     previous_name?: string;
     moved?: boolean;
     error?: string;
+    /** A deleted client an administrator deleted: it can be ticked to restore. */
+    restorable?: boolean;
 }
 
 /** Often enough to follow a running sync, rarely enough not to matter. */
@@ -85,13 +94,13 @@ const SYNC_POLL_MS = 3000;
 /** Matches LdapSettingsController::PREVIEW_VALID_SECONDS. */
 const PREVIEW_VALID_MS = 10 * 60 * 1000;
 
-/** Rows shown before "Show all". */
-const PREVIEW_PAGE = 25;
+/** Rows per page of the preview table. */
+const PREVIEW_PAGE = 10;
 
 /** Above this many people, a search box joins the filters. */
 const SEARCH_FROM = 10;
 
-/** A preview that would deactivate more than this share of directory clients warns first. */
+/** A preview that would deactivate more than this share of directory clients warns first. Matches LdapSync::DEACTIVATE_LIMIT_SHARE. */
 const DEACTIVATE_WARN_SHARE = 0.2;
 
 /** Move focus once the page has re-rendered, so a replaced control does not drop it on the body. */
@@ -156,18 +165,14 @@ export default function LdapSettingsPage({
     // moment; the button says so rather than inviting a second click.
     const [previewing, setPreviewing] = useState(false);
 
-    const runSync = (dryRun: boolean) =>
-        router.post(
-            route('system-settings.ldap.sync'),
-            { dry_run: dryRun },
-            {
-                preserveScroll: true,
-                preserveState: true,
-                onStart: () => dryRun && setPreviewing(true),
-                onFinish: () => setPreviewing(false),
-                onSuccess: () => focusLater(dryRun ? 'sync-preview-heading' : 'sync-status'),
-            },
-        );
+    const runSync = (dryRun: boolean, restore: string[] = []) =>
+        router.post(route('system-settings.ldap.sync'), dryRun ? { dry_run: true } : { dry_run: false, restore }, {
+            preserveScroll: true,
+            preserveState: true,
+            onStart: () => dryRun && setPreviewing(true),
+            onFinish: () => setPreviewing(false),
+            onSuccess: () => focusLater(dryRun ? 'sync-preview-heading' : 'sync-status'),
+        });
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: t('Settings'), href: '/system/settings' },
@@ -530,7 +535,7 @@ export default function LdapSettingsPage({
                                         'sync_deactivates_missing',
                                         t('Deactivate client accounts that leave the directory'),
                                         t(
-                                            'Only accounts that came from the directory. Left off, they are kept and counted. A sync that finds nobody in the directory never deactivates anyone.',
+                                            'Only accounts that came from the directory. Left off, they are kept and counted. A sync that finds nobody in the directory never deactivates anyone, and the daily run stops without changing anything if it would deactivate more than a fifth of them.',
                                         ),
                                     ],
                                     [
@@ -605,7 +610,7 @@ export default function LdapSettingsPage({
                                     autoApprove={ldap.auto_approve}
                                     blockedReason={syncBlockedReason ?? (previewing ? t('Previewing…') : null)}
                                     onPreview={() => runSync(true)}
-                                    onSync={() => runSync(false)}
+                                    onSync={(restore) => runSync(false, restore)}
                                     onOpenTab={setTab}
                                 />
                             )}
@@ -686,19 +691,24 @@ function SyncStatus({ sync }: { sync: SyncReport | null }) {
     const { t } = useTranslation();
     const { dateTime } = useFormatDate();
 
+    const counts = sync && {
+        date: sync.finished_at ? dateTime(new Date(sync.finished_at * 1000).toISOString()) : '',
+        created: sync.created,
+        updated: sync.updated,
+        restored: sync.restored,
+        deactivated: sync.deactivated,
+    };
     const summary =
-        sync?.status === 'finished'
-            ? t('Last sync :date: :created created, :updated updated, :restored restored, :deactivated deactivated.', {
-                  date: sync.finished_at ? dateTime(new Date(sync.finished_at * 1000).toISOString()) : '',
-                  created: sync.created,
-                  updated: sync.updated,
-                  restored: sync.restored,
-                  deactivated: sync.deactivated,
-              })
-            : '';
+        counts && sync.status === 'finished'
+            ? t('Last sync :date: :created created, :updated updated, :restored restored, :deactivated deactivated.', counts)
+            : counts && sync.status === 'cancelled'
+              ? t('The last sync was stopped :date, after :created created, :updated updated, :restored restored, :deactivated deactivated.', counts)
+              : '';
     // Directory clients no longer listed and left alone, which the
     // deactivation option promises to count.
-    const kept = sync ? sync.missing - sync.deactivated : 0;
+    const kept = sync?.status === 'finished' ? sync.missing - sync.deactivated : 0;
+    const undoable = sync?.deactivated_ids?.length ?? 0;
+    const [stopping, setStopping] = useState(false);
 
     // The live region announces each state once. A finished run says what it
     // did; a running one does not tick, or it would talk every few seconds.
@@ -708,7 +718,17 @@ function SyncStatus({ sync }: { sync: SyncReport | null }) {
           ? t('Syncing with the directory')
           : sync.status === 'failed'
             ? `${t('The last sync failed')}: ${sync.error ?? ''}`
-            : summary;
+            : sync.status === 'stopped'
+              ? (sync.error ?? '')
+              : summary;
+
+    const stop = () =>
+        router.post(
+            route('system-settings.ldap.sync.cancel'),
+            {},
+            { preserveScroll: true, onStart: () => setStopping(true), onFinish: () => setStopping(false) },
+        );
+    const reactivate = () => router.post(route('system-settings.ldap.sync.reactivate'), {}, { preserveScroll: true });
 
     return (
         <div id="sync-status" tabIndex={-1} className="space-y-2 outline-none">
@@ -717,9 +737,9 @@ function SyncStatus({ sync }: { sync: SyncReport | null }) {
             </p>
 
             {sync?.status === 'running' && (
-                <div className="bg-muted/40 flex items-center gap-3 rounded-lg border px-4 py-3 text-sm">
+                <div className="bg-muted/40 flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border px-4 py-3 text-sm">
                     <Loader2 className="size-4 shrink-0 animate-spin motion-reduce:animate-none" aria-hidden />
-                    <span>
+                    <span className="flex-1">
                         {sync.found === 0
                             ? t('Starting the sync…')
                             : t('Syncing with the directory: :done of :found handled so far.', {
@@ -727,6 +747,11 @@ function SyncStatus({ sync }: { sync: SyncReport | null }) {
                                   found: sync.found,
                               })}
                     </span>
+                    {/* Not destructive: what the run already did stays done, and
+                        it stops between two people rather than halfway through one. */}
+                    <Button type="button" variant="outline" size="sm" onClick={stop} disabled={stopping}>
+                        {t('Stop')}
+                    </Button>
                 </div>
             )}
 
@@ -738,19 +763,32 @@ function SyncStatus({ sync }: { sync: SyncReport | null }) {
                 </div>
             )}
 
-            {sync?.status === 'finished' && (
-                <div className="space-y-1 text-sm">
+            {sync?.status === 'stopped' && (
+                <div className="rounded-lg border border-amber-300 px-4 py-3 text-sm dark:border-amber-800">
+                    <p className="font-medium text-amber-800 dark:text-amber-300">{t('The last sync was held back for review')}</p>
+                    <p className="text-muted-foreground mt-1">{sync.error}</p>
+                </div>
+            )}
+
+            {(sync?.status === 'finished' || sync?.status === 'cancelled') && (
+                <div className="space-y-2 text-sm">
                     <p className="text-muted-foreground">
                         {summary} {kept > 0 && t('No longer in the directory and kept: :count.', { count: kept })}{' '}
-                        {sync.deactivated > 0 && (
+                        {(sync.reactivated ?? 0) > 0 && t('Reactivated since: :count.', { count: sync.reactivated ?? 0 })}
+                    </p>
+                    {undoable > 0 && (
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                            <Button type="button" variant="outline" size="sm" onClick={reactivate}>
+                                {t('Reactivate the :count it deactivated', { count: undoable })}
+                            </Button>
                             <Link
                                 href={route('clients.index', { status: 'inactive' })}
                                 className={`text-foreground underline underline-offset-4 ${FOCUS_RING}`}
                             >
                                 {t('Review deactivated clients')}
                             </Link>
-                        )}
-                    </p>
+                        </div>
+                    )}
                     {sync.errors > 0 && (
                         <details className="text-sm">
                             <summary className={`cursor-pointer ${DANGER_TEXT} ${FOCUS_RING}`}>
@@ -782,7 +820,10 @@ function SyncStatus({ sync }: { sync: SyncReport | null }) {
  */
 type Filter = 'create' | 'update' | 'restore' | 'deactivate' | 'keep' | 'error' | 'other' | 'all';
 const FILTERS: readonly Filter[] = ['create', 'update', 'restore', 'deactivate', 'keep', 'error', 'other', 'all'];
-const filterOf = (action: SyncAction): Filter => (action === 'skip' || action === 'unchanged' ? 'other' : action);
+/** A deleted client that could come back, whether or not it is ticked to. */
+const isRestorable = (person: SyncPerson) => person.action === 'restore' || person.restorable === true;
+const filterOf = (person: SyncPerson): Filter =>
+    isRestorable(person) ? 'restore' : person.action === 'skip' || person.action === 'unchanged' ? 'other' : person.action;
 
 /** One label per action, shared by the filter tabs and the row badges. */
 function useActionLabels() {
@@ -820,7 +861,8 @@ function SyncPreview({
     /** Why a sync cannot start right now, or null when it can. */
     blockedReason: string | null;
     onPreview: () => void;
-    onSync: () => void;
+    /** Start the sync, restoring the deleted clients at these addresses. */
+    onSync: (restore: string[]) => void;
     onOpenTab: (tab: Tab) => void;
 }) {
     const { t } = useTranslation();
@@ -830,7 +872,7 @@ function SyncPreview({
     const counts = useMemo(() => {
         const tally: Partial<Record<Filter, number>> = { all: report.people.length };
         report.people.forEach((person) => {
-            const key = filterOf(person.action);
+            const key = filterOf(person);
             tally[key] = (tally[key] ?? 0) + 1;
         });
         return tally;
@@ -842,13 +884,39 @@ function SyncPreview({
     // again rather than keeping a filter its numbers may no longer have.
     const [filter, setFilter] = useState<Filter>(firstChange ?? 'all');
     const [query, setQuery] = useState('');
-    const [showAll, setShowAll] = useState(false);
-    // The first row "Show all" reveals takes focus, as the button goes away.
-    const firstRevealed = useRef<HTMLTableRowElement>(null);
+    const [page, setPage] = useState(1);
     const selectFilter = (key: Filter) => {
         setFilter(key);
-        setShowAll(false);
+        setPage(1);
     };
+
+    // Which deleted clients come back. Ticked to begin with when the restore
+    // option is on, as the preview then lists them as restored; a deleted
+    // client can still be picked by hand with the option off.
+    const restorable = useMemo(() => report.people.filter(isRestorable), [report.people]);
+    const [restore, setRestore] = useState(() => new Set(restorable.filter((person) => person.action === 'restore').map((person) => person.email)));
+    const toggleRestore = (email: string, on: boolean) =>
+        setRestore((current) => {
+            const next = new Set(current);
+            if (on) next.add(email);
+            else next.delete(email);
+            return next;
+        });
+
+    // Each row as the sync would now treat it: a restorable client is
+    // restored when ticked and skipped when not.
+    const people = useMemo(
+        () =>
+            report.people.map(
+                (person): SyncPerson =>
+                    !isRestorable(person)
+                        ? person
+                        : restore.has(person.email)
+                          ? { ...person, action: 'restore', reason: undefined }
+                          : { ...person, action: 'skip', reason: 'not_ticked' },
+            ),
+        [report.people, restore],
+    );
 
     // A preview vouches for a sync for ten minutes; after that, the button
     // asks for a fresh one rather than trusting an old list.
@@ -863,15 +931,18 @@ function SyncPreview({
 
     const rows = useMemo(() => {
         const needle = query.trim().toLowerCase();
-        return report.people.filter(
+        return people.filter(
             (person) =>
-                (filter === 'all' || filterOf(person.action) === filter) &&
+                (filter === 'all' || filterOf(person) === filter) &&
                 (needle === '' || person.name.toLowerCase().includes(needle) || person.email.toLowerCase().includes(needle)),
         );
-    }, [report.people, filter, query]);
-    const shown = showAll ? rows : rows.slice(0, PREVIEW_PAGE);
+    }, [people, filter, query]);
+    const lastPage = Math.max(1, Math.ceil(rows.length / PREVIEW_PAGE));
+    const currentPage = Math.min(page, lastPage);
+    const shown = rows.slice((currentPage - 1) * PREVIEW_PAGE, currentPage * PREVIEW_PAGE);
 
-    const changes = report.created + report.updated + report.restored + report.deactivated;
+    const restored = restore.size;
+    const changes = report.created + report.updated + restored + report.deactivated;
     const needsAttention = (counts.keep ?? 0) + (counts.error ?? 0) > 0;
     // Every active directory client is either still listed (updated or
     // unchanged) or about to be deactivated. A large share going at once is
@@ -900,11 +971,6 @@ function SyncPreview({
         link.click();
         link.remove();
         window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-    };
-
-    const showAllRows = () => {
-        setShowAll(true);
-        window.requestAnimationFrame(() => firstRevealed.current?.focus());
     };
 
     return (
@@ -999,7 +1065,10 @@ function SyncPreview({
                                         type="search"
                                         aria-controls="sync-preview-table"
                                         value={query}
-                                        onChange={(e) => setQuery(e.target.value)}
+                                        onChange={(e) => {
+                                            setQuery(e.target.value);
+                                            setPage(1);
+                                        }}
                                         placeholder={t('Search name or address')}
                                         aria-label={t('Search name or address')}
                                         className="w-56 pl-8"
@@ -1014,22 +1083,61 @@ function SyncPreview({
                     </div>
 
                     <p role="status" className="sr-only">
-                        {t('Showing :shown of :total', { shown: shown.length, total: rows.length })}
+                        {rows.length === 0
+                            ? t('Nobody matches.')
+                            : t('Showing :from–:to of :total', {
+                                  from: (currentPage - 1) * PREVIEW_PAGE + 1,
+                                  to: (currentPage - 1) * PREVIEW_PAGE + shown.length,
+                                  total: rows.length,
+                              })}
                     </p>
+
+                    {restorable.length > 0 && (
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+                            <p className="text-muted-foreground">
+                                {t('Restoring :selected of the :total deleted clients that can come back.', {
+                                    selected: restored,
+                                    total: restorable.length,
+                                })}
+                            </p>
+                            <Button
+                                type="button"
+                                variant="link"
+                                className="h-auto p-0 dark:text-violet-300"
+                                onClick={() => setRestore(new Set(restorable.map((person) => person.email)))}
+                            >
+                                {t('Select all')}
+                            </Button>
+                            <Button type="button" variant="link" className="h-auto p-0 dark:text-violet-300" onClick={() => setRestore(new Set())}>
+                                {t('Select none')}
+                            </Button>
+                        </div>
+                    )}
 
                     <div id="sync-preview-table" role="tabpanel" tabIndex={0} aria-labelledby={`sync-filter-${filter}`} className={FOCUS_RING}>
                         <TableShell
-                            columns={[t('Person'), t('What happens'), t('Detail')]}
+                            columns={[
+                                ...(restorable.length > 0 ? [{ label: t('Restore'), srOnly: true as const }] : []),
+                                t('Person'),
+                                t('What happens'),
+                                t('Detail'),
+                            ]}
                             isEmpty={rows.length === 0}
                             emptyMessage={t('Nobody matches.')}
                         >
-                            {shown.map((person, index) => (
-                                <tr
-                                    key={`${person.action}-${person.email}`}
-                                    ref={index === PREVIEW_PAGE ? firstRevealed : undefined}
-                                    tabIndex={index === PREVIEW_PAGE ? -1 : undefined}
-                                    className="focus:outline-ring border-b outline-none last:border-0 focus:outline-2 focus:-outline-offset-2"
-                                >
+                            {shown.map((person) => (
+                                <tr key={person.email} className="border-b last:border-0">
+                                    {restorable.length > 0 && (
+                                        <td className="w-10 py-2.5 pl-4">
+                                            {filterOf(person) === 'restore' && (
+                                                <Checkbox
+                                                    checked={restore.has(person.email)}
+                                                    onCheckedChange={(checked) => toggleRestore(person.email, checked === true)}
+                                                    aria-label={t('Restore :name', { name: person.name })}
+                                                />
+                                            )}
+                                        </td>
+                                    )}
                                     <td className="px-4 py-2.5">
                                         <div className="font-medium">{person.name}</div>
                                         <div className="text-muted-foreground text-xs">{person.email}</div>
@@ -1045,11 +1153,7 @@ function SyncPreview({
                         </TableShell>
                     </div>
 
-                    {rows.length > shown.length && (
-                        <Button type="button" variant="ghost" size="sm" onClick={showAllRows}>
-                            {t('Show all :count', { count: rows.length })}
-                        </Button>
-                    )}
+                    <ListPager page={currentPage} pageSize={PREVIEW_PAGE} total={rows.length} onPage={setPage} />
 
                     <div className="space-y-3 border-t pt-4">
                         {changes === 0 ? (
@@ -1091,13 +1195,13 @@ function SyncPreview({
                                             {
                                                 created: report.created,
                                                 updated: report.updated,
-                                                restored: report.restored,
+                                                restored,
                                                 deactivated: report.deactivated,
                                             },
                                         )}`}
                                         confirmLabel={t('Sync now')}
                                         destructive={report.deactivated > 0}
-                                        onConfirm={onSync}
+                                        onConfirm={() => onSync([...restore])}
                                     />
                                     <p
                                         id="sync-now-note"
@@ -1185,6 +1289,7 @@ function detailText(person: SyncPerson, autoApprove: boolean, t: (key: string, r
                     local: t('Has a local password, so it is not a directory account'),
                     deleted: t('The address belongs to a deleted account'),
                     deleted_by_owner: t('Deleted by its owner; never restored'),
+                    not_ticked: t('Deleted by an administrator; tick it to restore it'),
                     provisioning_off: t("No account, and accounts aren't created on first sign-in"),
                 }[person.reason ?? ''] ??
                 person.reason ??

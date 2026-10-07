@@ -35,6 +35,9 @@ enum Action: string
     case AccountConvertedToStaff = 'account.converted_to_staff';
     case ClientSelfRegistered = 'client.self_registered';
     case LdapClientProvisioned = 'ldap.client_provisioned';
+    case LdapClientImported = 'ldap.client_imported';
+    case LdapClientDeactivated = 'ldap.client_deactivated';
+    case LdapSyncRun = 'ldap.sync_run';
     case SocialClientProvisioned = 'social.client_provisioned';
     case SocialAccountLinked = 'social.account_linked';
     case SocialAccountUnlinked = 'social.account_unlinked';
@@ -177,6 +180,9 @@ enum Action: string
             self::AccountConvertedToClient => 'Converted the staff account ":subject" to a client',
             self::AccountConvertedToStaff => 'Converted the client account ":subject" to staff (:role)',
             self::LdapClientProvisioned => 'Created a client account from the directory on first sign-in',
+            self::LdapClientImported => 'Created a client account from the directory sync',
+            self::LdapClientDeactivated => 'Deactivated the client account ":name": it is no longer in the directory',
+            self::LdapSyncRun => 'Synced with the directory: :created created, :updated updated, :deactivated deactivated',
             self::SocialClientProvisioned => 'Created a client account from :provider on first sign-in',
             self::SocialAccountLinked => 'Connected the :provider account of ":subject"',
             self::SocialAccountUnlinked => 'Disconnected the :provider account of ":subject"',
@@ -292,6 +298,9 @@ enum Action: string
             self::AccountConvertedToClient => 'A staff account was converted to a client',
             self::AccountConvertedToStaff => 'A client account was converted to staff',
             self::LdapClientProvisioned => 'A client account was created from the directory',
+            self::LdapClientImported => 'A client account was created by the directory sync',
+            self::LdapClientDeactivated => 'A client account was deactivated because it left the directory',
+            self::LdapSyncRun => 'Accounts were synced with the directory',
             self::SocialClientProvisioned => 'A client account was created from :provider',
             self::SocialAccountLinked => 'A :provider account was connected',
             self::SocialAccountUnlinked => 'A :provider account was disconnected',

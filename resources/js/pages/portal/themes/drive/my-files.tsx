@@ -97,9 +97,9 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
                     viewer, so a theme never decides who sees it. */}
                 <ViewerAnnouncement />
 
-                <div className="flex items-start justify-between">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 [&>:not(:first-child)]:mb-6">
                     <Heading title={folder?.name ?? t('My files')} description={t('The files shared with you')} />
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                         <PortalFilesToolbarDrive
                             categories={categories}
                             values={values}

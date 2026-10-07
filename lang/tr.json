@@ -2327,5 +2327,12 @@
     "Set your password": "Parolanızı oluşturun",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Hesabınız için bir parola seçmek üzere aşağıdaki düğmeyi kullanın. Şimdiye kadar Google veya Microsoft gibi bağlı bir hesapla oturum açıyordunuz.",
     "This link will expire in :count minutes.": "Bu bağlantının süresi :count dakika içinde dolacak.",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Bunu siz istemediyseniz bir şey yapmanıza gerek yok: her zamanki gibi oturum açmaya devam edebilirsiniz."
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Bunu siz istemediyseniz bir şey yapmanıza gerek yok: her zamanki gibi oturum açmaya devam edebilirsiniz.",
+    "Select all on this page": "Bu sayfadaki tümünü seçin",
+    "Select all :count items": ":count öğenin tümünü seçin",
+    "All :count items are selected.": "Tüm :count öğe seçildi.",
+    "Selecting…": "Seçiliyor…",
+    "Could not select every item. Try again.": "Öğelerin tümü seçilemedi. Lütfen tekrar deneyin.",
+    "Go to page": "Sayfaya git",
+    "Go": "Git"
 }

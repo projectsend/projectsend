@@ -2327,5 +2327,12 @@
     "Set your password": "设置你的密码",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "请点击下方按钮为你的账户设置密码。此前你一直通过 Google 或 Microsoft 等关联账户登录。",
     "This link will expire in :count minutes.": "此链接将在 :count 分钟后失效。",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "如果这不是你本人的请求，无需任何操作：你可以继续像现在这样登录。"
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "如果这不是你本人的请求，无需任何操作：你可以继续像现在这样登录。",
+    "Select all on this page": "选择本页全部",
+    "Select all :count items": "选择全部 :count 个项目",
+    "All :count items are selected.": "已选择全部 :count 个项目。",
+    "Selecting…": "正在选择…",
+    "Could not select every item. Try again.": "无法选择全部项目，请重试。",
+    "Go to page": "跳转到页",
+    "Go": "跳转"
 }

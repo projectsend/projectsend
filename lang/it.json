@@ -2327,5 +2327,12 @@
     "Set your password": "Imposta la tua password",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Usa il pulsante qui sotto per scegliere una password per il tuo account. Finora accedevi con un account collegato, come Google o Microsoft.",
     "This link will expire in :count minutes.": "Questo link scade tra :count minuti.",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Se non l'hai chiesto tu, non devi fare nulla: puoi continuare ad accedere come sempre."
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Se non l'hai chiesto tu, non devi fare nulla: puoi continuare ad accedere come sempre.",
+    "Select all on this page": "Seleziona tutto in questa pagina",
+    "Select all :count items": "Seleziona tutti i :count elementi",
+    "All :count items are selected.": "Tutti i :count elementi sono selezionati.",
+    "Selecting…": "Selezione in corso…",
+    "Could not select every item. Try again.": "Non è stato possibile selezionare tutto. Riprova.",
+    "Go to page": "Vai alla pagina",
+    "Go": "Vai"
 }

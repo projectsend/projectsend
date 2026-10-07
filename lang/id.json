@@ -2327,5 +2327,12 @@
     "Set your password": "Buat kata sandi Anda",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Gunakan tombol di bawah untuk memilih kata sandi akun Anda. Selama ini Anda masuk melalui akun yang terhubung, seperti Google atau Microsoft.",
     "This link will expire in :count minutes.": "Tautan ini akan kedaluwarsa dalam :count menit.",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Jika Anda tidak memintanya, Anda tidak perlu melakukan apa pun: Anda tetap bisa masuk seperti biasa."
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Jika Anda tidak memintanya, Anda tidak perlu melakukan apa pun: Anda tetap bisa masuk seperti biasa.",
+    "Select all on this page": "Pilih semua di halaman ini",
+    "Select all :count items": "Pilih semua :count item",
+    "All :count items are selected.": "Semua :count item dipilih.",
+    "Selecting…": "Memilih…",
+    "Could not select every item. Try again.": "Tidak dapat memilih semua item. Silakan coba lagi.",
+    "Go to page": "Ke halaman",
+    "Go": "Buka"
 }

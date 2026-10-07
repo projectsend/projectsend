@@ -2327,5 +2327,12 @@
     "Set your password": "Đặt mật khẩu của bạn",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Dùng nút bên dưới để chọn mật khẩu cho tài khoản của bạn. Trước giờ bạn đăng nhập bằng một tài khoản liên kết, như Google hoặc Microsoft.",
     "This link will expire in :count minutes.": "Liên kết này sẽ hết hạn sau :count phút.",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Nếu bạn không yêu cầu việc này, bạn không cần làm gì: bạn vẫn có thể đăng nhập như trước."
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Nếu bạn không yêu cầu việc này, bạn không cần làm gì: bạn vẫn có thể đăng nhập như trước.",
+    "Select all on this page": "Chọn tất cả trên trang này",
+    "Select all :count items": "Chọn tất cả :count mục",
+    "All :count items are selected.": "Đã chọn tất cả :count mục.",
+    "Selecting…": "Đang chọn…",
+    "Could not select every item. Try again.": "Không thể chọn tất cả các mục. Bạn hãy thử lại.",
+    "Go to page": "Đi đến trang",
+    "Go": "Đi"
 }

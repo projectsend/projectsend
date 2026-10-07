@@ -2327,5 +2327,12 @@
     "Set your password": "Stel je wachtwoord in",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Gebruik de knop hieronder om een wachtwoord voor je account te kiezen. Tot nu toe meldde je je aan met een gekoppeld account, zoals Google of Microsoft.",
     "This link will expire in :count minutes.": "Deze link verloopt over :count minuten.",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Heb je dit niet aangevraagd, dan hoef je niets te doen: je kunt je blijven aanmelden zoals je gewend bent."
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Heb je dit niet aangevraagd, dan hoef je niets te doen: je kunt je blijven aanmelden zoals je gewend bent.",
+    "Select all on this page": "Alles op deze pagina selecteren",
+    "Select all :count items": "Alle :count items selecteren",
+    "All :count items are selected.": "Alle :count items zijn geselecteerd.",
+    "Selecting…": "Bezig met selecteren…",
+    "Could not select every item. Try again.": "Niet alles kon worden geselecteerd. Probeer het opnieuw.",
+    "Go to page": "Ga naar pagina",
+    "Go": "Ga"
 }

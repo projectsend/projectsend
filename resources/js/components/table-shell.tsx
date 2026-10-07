@@ -24,7 +24,7 @@ interface TableShellProps {
  */
 export function TableShell({ columns, emptyMessage, isEmpty, children }: TableShellProps) {
     return (
-        <div data-slot="table-shell" className="overflow-x-auto rounded-lg border">
+        <div data-slot="table-shell" className="relative overflow-x-auto rounded-lg border">
             <table className="w-full text-sm">
                 <thead>
                     <tr className="bg-muted/50 border-b text-left">

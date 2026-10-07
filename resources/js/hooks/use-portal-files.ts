@@ -52,17 +52,26 @@ export function usePortalFiles({ folder, search, category, owner, sort, directio
     };
     const downloadSelectionAsZip = () => zip.start({ file_ids: [...selectedFileIds], folder_ids: [...selectedFolderIds] });
 
+    // The open folder goes along with every change, or re-sorting inside a
+    // folder navigated back to the top of My files. Search and the filters
+    // still show a flat list across every folder (MyFilesController), and
+    // clearing them comes back to the folder.
     const { values, set, setMany, reset } = useListQuery(
         'my-files.index',
         { search, category: category === null ? ALL : String(category), owner: owner ?? ALL, sort, direction },
         { search: '', category: ALL, owner: ALL, sort: 'date', direction: 'desc' },
+        folder !== null ? { folder: folder.id } : undefined,
     );
     // Sort/direction always have a concrete value (there's no "unset" sort),
     // so they're excluded here — only search/category/owner count as active
     // filters worth surfacing a "Clear" button for.
     const hasFilters = values.search !== '' || values.category !== ALL || values.owner !== ALL;
 
-    const folderUrl = (id: number | null) => (id === null ? route('my-files.index') : route('my-files.index', { folder: id }));
+    // Opening a folder keeps the chosen sort. Only the sort: opening a folder
+    // means leaving a search, so the filters are not carried. The default
+    // (newest first) is left out to keep the address clean.
+    const sortParams = values.sort === 'date' && values.direction === 'desc' ? {} : { sort: values.sort, direction: values.direction };
+    const folderUrl = (id: number | null) => route('my-files.index', id === null ? sortParams : { folder: id, ...sortParams });
 
     return {
         zip,

@@ -751,7 +751,9 @@ function FolderRow({
             </td>
             <td className="px-4 py-2.5">
                 <Link href={folderUrl(row.id)} draggable={false} className="inline-flex items-center gap-2 font-medium">
-                    <FolderIcon className="text-primary size-5 shrink-0" />
+                    <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded">
+                        <FolderIcon className="size-5" strokeWidth={1.75} />
+                    </span>
                     {row.name}
                     {row.public && (
                         <Badge variant="secondary" className="text-[11px] font-normal">
@@ -838,7 +840,9 @@ function FileRow({
                         {isThumbnailable(row.mime_type) ? (
                             <img src={route('files.thumbnail', row.id)} alt="" className="size-10 rounded border object-cover" draggable={false} />
                         ) : (
-                            <FileIcon className="text-muted-foreground mt-0.5 size-10 shrink-0" strokeWidth={1.25} />
+                            <span className="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded border">
+                                <FileIcon className="size-5" strokeWidth={1.75} />
+                            </span>
                         )}
                     </FilePreviewDialog>
                     <div className="min-w-0">
@@ -979,7 +983,7 @@ function FolderCard({
                 className="absolute top-3 left-3"
             />
             <Link href={folderUrl(row.id)} draggable={false} className="flex w-full flex-col items-center gap-2">
-                <FolderIcon className="text-primary size-10 shrink-0" strokeWidth={1.5} />
+                <FolderIcon className="text-primary size-10 shrink-0" strokeWidth={1.25} />
                 <span className="flex max-w-full items-center gap-1.5">
                     <p className="truncate text-sm font-medium">{row.name}</p>
                     {row.public && (

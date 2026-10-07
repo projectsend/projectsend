@@ -126,7 +126,7 @@ export default function ActivityDownloads({ entries, pagination, filters, subjec
                     </ListToolbar>
                 )}
 
-                <div className="overflow-x-auto rounded-lg border">
+                <div className="relative overflow-x-auto rounded-lg border">
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="bg-muted/50 border-b text-left">

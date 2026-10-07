@@ -94,7 +94,7 @@ export default function ClientFiles({ client, files, pagination, search, owner }
                     </FilterField>
                 </ListToolbar>
 
-                <div className="overflow-x-auto rounded-lg border">
+                <div className="relative overflow-x-auto rounded-lg border">
                     <table className="w-full text-sm">
                         <tbody>
                             {files.length === 0 && (

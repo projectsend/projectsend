@@ -150,7 +150,7 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
                     />
                 )}
 
-                <div className="overflow-x-auto rounded-none border border-neutral-300 dark:border-neutral-700">
+                <div className="relative overflow-x-auto rounded-none border border-neutral-300 dark:border-neutral-700">
                     <table className="w-full border-collapse text-xs">
                         <thead>
                             <tr className="border-b border-neutral-300 bg-neutral-100 text-neutral-500 uppercase dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400">

@@ -83,7 +83,7 @@ export default function GroupsEdit({ group, members, available_clients }: Groups
             <Head title={group.name} />
 
             <div className="px-4 py-6">
-                <div className="flex items-start justify-between">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 [&>:not(:first-child)]:mb-6">
                     <Heading title={group.name} description={t(':count members', { count: members.length })} />
                     {auth.permissions.includes('delete_groups') && (
                         <ConfirmDialog

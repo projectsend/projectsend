@@ -83,9 +83,9 @@ export default function ClientsIndex({ clients, pagination, filters, reassign_ca
             <Head title={t('Clients')} />
 
             <div className="px-4 py-6">
-                <div className="flex items-start justify-between">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 [&>:not(:first-child)]:mb-6">
                     <Heading title={t('Clients')} description={t('The people you share files with')} />
-                    <div className="flex items-start gap-2">
+                    <div className="flex flex-wrap items-start gap-2">
                         {can('manage_custom_fields') && (
                             <Button variant="outline" asChild>
                                 <Link href={route('client-custom-fields.index')}>{t('Manage custom fields')}</Link>

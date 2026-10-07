@@ -50,7 +50,7 @@ export default function RolesIndex({ roles, total_permissions, filters }: RolesI
             <Head title={t('Roles')} />
 
             <div className="px-4 py-6">
-                <div className="flex items-start justify-between">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 [&>:not(:first-child)]:mb-6">
                     <Heading title={t('Roles')} description={t('What each kind of account is allowed to do')} />
                     <Button asChild>
                         <Link href={route('roles.create')}>{t('New role')}</Link>

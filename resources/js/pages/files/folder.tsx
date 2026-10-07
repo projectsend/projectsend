@@ -100,7 +100,7 @@ export default function FolderPage({
             <Head title={folder.name} />
 
             <div className="px-4 py-6">
-                <div className="flex items-start justify-between">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 [&>:not(:first-child)]:mb-6">
                     <Heading title={folder.name} description={t('Folder')} />
                     <Button variant="outline" asChild>
                         <a href={route('files.index', { folder: folder.id })}>{t('Open folder')}</a>

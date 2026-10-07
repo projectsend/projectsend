@@ -327,7 +327,7 @@ export default function OrphanFiles({ tab, orphans, pagination, search, scanned_
                             </div>
                         )}
 
-                        <div className="overflow-x-auto rounded-lg border">
+                        <div className="relative overflow-x-auto rounded-lg border">
                             <table className="w-full text-sm">
                                 <thead className="bg-muted/40 border-b text-left">
                                     <tr>

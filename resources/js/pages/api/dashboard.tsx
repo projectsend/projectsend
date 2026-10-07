@@ -185,7 +185,7 @@ export default function ApiDashboard({ summary, daily, tokens, recent_actions, t
                         {tokens.length === 0 ? (
                             <p className="text-muted-foreground text-sm">{t('No tokens yet.')}</p>
                         ) : (
-                            <div className="overflow-x-auto rounded-lg border">
+                            <div className="relative overflow-x-auto rounded-lg border">
                                 <table className="w-full text-sm">
                                     <thead className="bg-muted/50 text-left">
                                         <tr>

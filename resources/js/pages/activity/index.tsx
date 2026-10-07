@@ -85,7 +85,7 @@ export default function ActivityIndex({ entries, pagination, filters, actions, o
             <Head title={t('Activity log')} />
 
             <div className="px-4 py-6">
-                <div className="flex items-start justify-between">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 [&>:not(:first-child)]:mb-6">
                     <Heading title={t('Activity log')} description={t('Everything that happened on this installation, newest first')} />
                     <Button variant="outline" asChild>
                         <a href={exportUrl()}>

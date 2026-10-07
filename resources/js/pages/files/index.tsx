@@ -385,7 +385,7 @@ export default function FilesIndex({
             <Head title={t('Files')} />
 
             <div className="px-4 py-6">
-                <div className="flex items-start justify-between">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 [&>:not(:first-child)]:mb-6">
                     <Heading title={t('Files')} description={t('Your shared file library')} />
                     <div className="flex gap-2">
                         {canZip && folder !== null && !searching && (
@@ -746,7 +746,7 @@ export default function FilesIndex({
 
                     {viewMode === 'list' ? (
                         (folders.length > 0 || files.length > 0) && (
-                            <div className="overflow-x-auto rounded-lg border">
+                            <div className="relative overflow-x-auto rounded-lg border">
                                 <table className="w-full text-sm">
                                     <thead className="bg-muted/40 border-b text-left">
                                         <tr>

@@ -80,16 +80,43 @@ test('staff can change the enforcement setting', function () {
     $this->get('/system/settings/security')->assertInertia(
         fn (AssertableInertia $page) => $page
             ->component('system/settings/security')
-            ->where('two_factor_enforcement', 'none'),
+            ->where('two_factor_enforcement', 'none')
+            ->where('two_factor_bypass_social_login', false),
     );
 
     $this->patch('/system/settings/security', [
         'two_factor_enforcement' => 'clients',
+        'two_factor_bypass_social_login' => false,
         'password_min_length' => 12,
         'password_reject_breached' => true,
     ])->assertRedirect();
 
     expect(app(Settings::class)->get(Setting::TwoFactorEnforcement))->toBe('clients');
+});
+
+test('staff can let provider sign-ins skip two-factor, and it is off until they do', function () {
+    $this->actingAs(User::factory()->create());
+
+    expect(app(Settings::class)->get(Setting::TwoFactorBypassSocialLogin))->toBeFalse();
+
+    $this->patch('/system/settings/security', [
+        'two_factor_enforcement' => 'none',
+        'two_factor_bypass_social_login' => true,
+        'password_min_length' => 12,
+        'password_reject_breached' => true,
+    ])->assertSessionHasNoErrors();
+
+    expect(app(Settings::class)->get(Setting::TwoFactorBypassSocialLogin))->toBeTrue();
+});
+
+test('the provider bypass setting must be sent with the rest of the form', function () {
+    $this->actingAs(User::factory()->create());
+
+    $this->patch('/system/settings/security', [
+        'two_factor_enforcement' => 'none',
+        'password_min_length' => 12,
+        'password_reject_breached' => true,
+    ])->assertSessionHasErrors('two_factor_bypass_social_login');
 });
 
 test('an invalid enforcement value is rejected', function () {

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\Identity;
 
 use App\Models\User;
+use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Settings\Settings;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
@@ -39,6 +41,18 @@ class SignIn
     public const TWO_FACTOR_ID = 'two_factor.login_id';
 
     public const TWO_FACTOR_REMEMBER = 'two_factor.remember';
+
+    /**
+     * Marks a session that began at an identity provider while the
+     * installation lets a provider stand in for the second factor.
+     * EnforceTwoFactor reads it, so that enrolment is waived for exactly
+     * the sessions whose challenge was.
+     */
+    public const PROVIDER_SESSION = 'two_factor.provider_session';
+
+    public function __construct(
+        private readonly Settings $settings,
+    ) {}
 
     /**
      * Phase 2 — the translated reason this account may not sign in, or
@@ -79,10 +93,27 @@ class SignIn
      * verified upstream, and possibly not against a password at all. It
      * still fires the Login event, which is what writes the activity-log
      * entry.
+     *
+     * `$viaProvider` is for an identity provider's callback and nothing
+     * else. When the installation has said its providers ask for a second
+     * factor of their own, such a sign-in is not challenged again — and the
+     * session is marked, so that enrolment is not demanded of it either. A
+     * password sign-in never passes it, and so is always challenged.
      */
-    public function begin(User $user, bool $remember): bool
+    public function begin(User $user, bool $remember, bool $viaProvider = false): bool
     {
-        if ($user->hasTwoFactorEnabled()) {
+        // Decided afresh for every sign-in. A session that was signed out
+        // without being invalidated must not hand its exemption to the next
+        // credential that arrives on it.
+        Session::forget(self::PROVIDER_SESSION);
+
+        $skipsTwoFactor = $viaProvider && $this->settings->get(Setting::TwoFactorBypassSocialLogin) === true;
+
+        if ($skipsTwoFactor) {
+            Session::put(self::PROVIDER_SESSION, true);
+        }
+
+        if (! $skipsTwoFactor && $user->hasTwoFactorEnabled()) {
             Session::put([
                 self::TWO_FACTOR_ID => $user->id,
                 self::TWO_FACTOR_REMEMBER => $remember,

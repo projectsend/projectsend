@@ -71,6 +71,14 @@ enum Setting: string
     // (none | staff | clients | all) — see TwoFactorEnforcement.
     case TwoFactorEnforcement = 'two_factor_enforcement';
 
+    // Whether signing in through an identity provider skips ProjectSend's own
+    // two-factor step: neither the challenge for an account that has it
+    // enabled, nor the enrolment TwoFactorEnforcement would otherwise demand.
+    // Off by default — a provider is only a second factor if it requires one
+    // itself, which is for the administrator to know. Password sign-ins are
+    // never affected.
+    case TwoFactorBypassSocialLogin = 'two_factor_bypass_social_login';
+
     // The two halves of the password policy, read by PasswordPolicy and
     // applied through Password::defaults() at every field that *sets* a
     // password. Deliberately not a composition policy: NIST SP 800-63B
@@ -453,6 +461,7 @@ enum Setting: string
             self::CaptchaOnPasswordReset,
             self::CaptchaOnPublicComments,
             self::PasswordRejectBreached,
+            self::TwoFactorBypassSocialLogin,
             self::VirusScanningEnabled,
             self::GettingStartedPending => SettingType::Boolean,
 
@@ -492,6 +501,7 @@ enum Setting: string
         return match ($this) {
             self::SiteName => 'ProjectSend',
             self::TwoFactorEnforcement => 'none',
+            self::TwoFactorBypassSocialLogin => false,
             // 12 rather than Laravel's 8: this was the value security audit
             // finding 14 settled on, and the setting exists so an
             // installation can move it, not so an upgrade can lower it.

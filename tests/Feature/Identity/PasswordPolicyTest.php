@@ -179,6 +179,7 @@ test('the security settings page saves both password settings', function () {
 
     $this->actingAs($admin)->patch('/system/settings/security', [
         'two_factor_enforcement' => 'none',
+        'two_factor_bypass_social_login' => false,
         'password_min_length' => 20,
         'password_reject_breached' => false,
     ])->assertSessionHasNoErrors();
@@ -192,6 +193,7 @@ test('the security settings form refuses a minimum below the floor', function ()
 
     $this->actingAs($admin)->patch('/system/settings/security', [
         'two_factor_enforcement' => 'none',
+        'two_factor_bypass_social_login' => false,
         'password_min_length' => PasswordPolicy::MIN_LENGTH - 1,
         'password_reject_breached' => true,
     ])->assertSessionHasErrors('password_min_length');
@@ -202,6 +204,7 @@ test('the security settings form refuses a minimum above the ceiling', function 
 
     $this->actingAs($admin)->patch('/system/settings/security', [
         'two_factor_enforcement' => 'none',
+        'two_factor_bypass_social_login' => false,
         'password_min_length' => PasswordPolicy::MAX_LENGTH + 1,
         'password_reject_breached' => true,
     ])->assertSessionHasErrors('password_min_length');

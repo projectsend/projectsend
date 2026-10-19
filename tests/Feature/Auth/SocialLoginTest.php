@@ -375,6 +375,132 @@ test('two-factor still challenges a provider sign-in', function () {
         ->and(session('two_factor.login_id'))->toBe($client->id);
 });
 
+/**
+ * An account with two-factor enabled and a linked provider account, with the
+ * provider's own second factor trusted — the setup every test below shares.
+ */
+function enrolledClientWithProvider(bool $skipsTwoFactor = true): User
+{
+    app(Settings::class)->set(Setting::TwoFactorBypassSocialLogin, $skipsTwoFactor);
+
+    socialSettings();
+    $client = User::factory()->client()->create(['email' => 'client@example.test']);
+    $client->forceFill([
+        'two_factor_secret' => app(TwoFactorService::class)->generateSecret(),
+        'two_factor_confirmed_at' => now(),
+    ])->save();
+    SocialAccount::query()->create([
+        'user_id' => $client->id,
+        'provider' => SocialProvider::Google->value,
+        'provider_user_id' => 'subject-1',
+        'email' => 'client@example.test',
+    ]);
+    fakeProvider(identity(email: 'client@example.test'));
+
+    return $client;
+}
+
+test('a provider sign-in skips two-factor when the installation trusts its providers', function () {
+    $client = enrolledClientWithProvider();
+
+    signInWith()->assertRedirect(route('dashboard'));
+
+    expect(auth()->id())->toBe($client->id)
+        ->and(session('two_factor.login_id'))->toBeNull();
+});
+
+test('a password sign-in is still challenged when provider sign-ins skip two-factor', function () {
+    $client = enrolledClientWithProvider();
+
+    $this->post('/login', ['email' => $client->email, 'password' => 'password'])
+        ->assertRedirect(route('two-factor.challenge'));
+
+    expect(auth()->check())->toBeFalse()
+        ->and(session('two_factor.login_id'))->toBe($client->id);
+});
+
+test('turning the bypass off puts the challenge back on provider sign-ins', function () {
+    enrolledClientWithProvider(skipsTwoFactor: false);
+
+    signInWith()->assertRedirect(route('two-factor.challenge'));
+
+    expect(auth()->check())->toBeFalse();
+});
+
+test('a provider session is not made to enrol, a password session still is', function () {
+    app(Settings::class)->set(Setting::TwoFactorEnforcement, 'all');
+    app(Settings::class)->set(Setting::TwoFactorBypassSocialLogin, true);
+    socialSettings();
+    $client = User::factory()->client()->create(['email' => 'client@example.test']);
+    SocialAccount::query()->create([
+        'user_id' => $client->id,
+        'provider' => SocialProvider::Google->value,
+        'provider_user_id' => 'subject-1',
+        'email' => 'client@example.test',
+    ]);
+    fakeProvider(identity(email: 'client@example.test'));
+
+    signInWith();
+    $this->get('/dashboard')->assertOk();
+
+    $this->post('/logout');
+
+    $this->post('/login', ['email' => $client->email, 'password' => 'password'])->assertRedirect();
+    $this->get('/dashboard')->assertRedirect(route('two-factor.show'));
+});
+
+test('a provider session is made to enrol when the bypass is off', function () {
+    app(Settings::class)->set(Setting::TwoFactorEnforcement, 'all');
+    socialSettings();
+    $client = User::factory()->client()->create(['email' => 'client@example.test']);
+    SocialAccount::query()->create([
+        'user_id' => $client->id,
+        'provider' => SocialProvider::Google->value,
+        'provider_user_id' => 'subject-1',
+        'email' => 'client@example.test',
+    ]);
+    fakeProvider(identity(email: 'client@example.test'));
+
+    signInWith();
+
+    $this->get('/dashboard')->assertRedirect(route('two-factor.show'));
+});
+
+test('turning the bypass off applies to a provider session that is already open', function () {
+    app(Settings::class)->set(Setting::TwoFactorEnforcement, 'all');
+    app(Settings::class)->set(Setting::TwoFactorBypassSocialLogin, true);
+    socialSettings();
+    $client = User::factory()->client()->create(['email' => 'client@example.test']);
+    SocialAccount::query()->create([
+        'user_id' => $client->id,
+        'provider' => SocialProvider::Google->value,
+        'provider_user_id' => 'subject-1',
+        'email' => 'client@example.test',
+    ]);
+    fakeProvider(identity(email: 'client@example.test'));
+
+    signInWith();
+    $this->get('/dashboard')->assertOk();
+
+    app(Settings::class)->set(Setting::TwoFactorBypassSocialLogin, false);
+
+    $this->get('/dashboard')->assertRedirect(route('two-factor.show'));
+});
+
+test('the exemption does not outlive the sign-in it was granted for', function () {
+    $client = enrolledClientWithProvider();
+
+    signInWith();
+    expect(session('two_factor.provider_session'))->toBeTrue();
+
+    // Signed out without the session being invalidated, as an expiry or a
+    // deactivation does, then back in with a password.
+    auth()->logout();
+    $this->post('/login', ['email' => $client->email, 'password' => 'password']);
+
+    expect(session('two_factor.provider_session'))->toBeNull();
+});
+
 /*
 |--------------------------------------------------------------------------
 | The callback is not an open door

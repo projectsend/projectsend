@@ -122,9 +122,11 @@ class SocialLoginController extends Controller
             return redirect()->route('login')->with('error', $refusal);
         }
 
-        // Two-factor still applies, identically: a second factor that a
-        // provider could skip is not a second factor.
-        if ($this->signIn->begin($resolution->user, remember: false)) {
+        // Two-factor applies exactly as it does to a password sign-in, unless
+        // the administrator has said the providers ask for a second factor
+        // of their own. SignIn decides, so that this is the only door that
+        // can ask.
+        if ($this->signIn->begin($resolution->user, remember: false, viaProvider: true)) {
             return redirect()->route('two-factor.challenge');
         }
 

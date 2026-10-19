@@ -14,6 +14,7 @@ import AppLayout from '@/layouts/app-layout';
 
 interface SecuritySettingsProps {
     two_factor_enforcement: string;
+    two_factor_bypass_social_login: boolean;
     password_min_length: number;
     password_reject_breached: boolean;
     password_min_length_floor: number;
@@ -22,6 +23,7 @@ interface SecuritySettingsProps {
 
 export default function SecuritySettings({
     two_factor_enforcement,
+    two_factor_bypass_social_login,
     password_min_length,
     password_reject_breached,
     password_min_length_floor,
@@ -49,6 +51,7 @@ export default function SecuritySettings({
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
         two_factor_enforcement: two_factor_enforcement,
+        two_factor_bypass_social_login: two_factor_bypass_social_login,
         password_min_length: password_min_length,
         password_reject_breached: password_reject_breached,
     });
@@ -90,6 +93,30 @@ export default function SecuritySettings({
                         </p>
 
                         <InputError className="mt-2" message={errors.two_factor_enforcement} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <div className="flex items-center gap-2">
+                            <Checkbox
+                                id="two_factor_bypass_social_login"
+                                checked={data.two_factor_bypass_social_login}
+                                onCheckedChange={(checked) => setData('two_factor_bypass_social_login', checked === true)}
+                            />
+                            <Label htmlFor="two_factor_bypass_social_login" className="font-normal">
+                                {t('Skip two-factor authentication when signing in with a social login')}
+                            </Label>
+                        </div>
+                        <p className="text-muted-foreground text-sm">
+                            {t(
+                                'Applies to every provider enabled under Social login. Signing in with a password still requires two-factor authentication.',
+                            )}
+                        </p>
+                        <p className="text-muted-foreground text-sm">
+                            {t(
+                                'Only turn this on if your sign-in providers already require two-factor or multi-factor authentication themselves. Otherwise a social login becomes a way around it.',
+                            )}
+                        </p>
+                        <InputError className="mt-2" message={errors.two_factor_bypass_social_login} />
                     </div>
 
                     <div className="space-y-6 border-t pt-6">

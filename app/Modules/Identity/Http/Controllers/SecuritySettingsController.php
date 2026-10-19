@@ -33,6 +33,7 @@ class SecuritySettingsController extends Controller
     {
         return Inertia::render('system/settings/security', [
             'two_factor_enforcement' => $this->settings->get(Setting::TwoFactorEnforcement),
+            'two_factor_bypass_social_login' => $this->settings->get(Setting::TwoFactorBypassSocialLogin),
             'password_min_length' => $this->settings->get(Setting::PasswordMinLength),
             'password_reject_breached' => $this->settings->get(Setting::PasswordRejectBreached),
             // The bounds the form offers come from the policy rather than
@@ -47,6 +48,7 @@ class SecuritySettingsController extends Controller
     {
         $validated = $request->validate([
             'two_factor_enforcement' => ['required', Rule::enum(TwoFactorEnforcement::class)],
+            'two_factor_bypass_social_login' => ['required', 'boolean'],
             // This is the authoritative floor: PasswordPolicy clamps on
             // read as a backstop, but refusing the save is what tells an
             // administrator their number was rejected instead of silently
@@ -61,12 +63,14 @@ class SecuritySettingsController extends Controller
         ]);
 
         $this->settings->set(Setting::TwoFactorEnforcement, $validated['two_factor_enforcement']);
+        $this->settings->set(Setting::TwoFactorBypassSocialLogin, $validated['two_factor_bypass_social_login']);
         $this->settings->set(Setting::PasswordMinLength, $validated['password_min_length']);
         $this->settings->set(Setting::PasswordRejectBreached, $validated['password_reject_breached']);
 
         $this->activity->log(Action::SettingsUpdated, context: [
             'section' => 'security',
             'two_factor_enforcement' => $validated['two_factor_enforcement'],
+            'two_factor_bypass_social_login' => $validated['two_factor_bypass_social_login'],
             'password_min_length' => $validated['password_min_length'],
             'password_reject_breached' => $validated['password_reject_breached'],
         ]);

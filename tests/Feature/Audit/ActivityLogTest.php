@@ -57,6 +57,7 @@ test('settings changes are recorded with their section', function () {
     // section, so all of its fields go with the request.
     $this->patch('/system/settings/security', [
         'two_factor_enforcement' => 'staff',
+        'two_factor_bypass_social_login' => false,
         'password_min_length' => 12,
         'password_reject_breached' => true,
     ]);

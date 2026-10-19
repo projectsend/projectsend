@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Identity\Http\Middleware;
 
+use App\Modules\Identity\SignIn;
 use App\Modules\Identity\TwoFactor\TwoFactorEnforcement;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -28,6 +29,15 @@ class EnforceTwoFactor
         $user = $request->user();
 
         if ($user === null || $user->hasTwoFactorEnabled()) {
+            return $next($request);
+        }
+
+        // A session that began at an identity provider, on an installation
+        // that lets the provider stand in for the second factor. Read
+        // against the setting as it is now, so turning it off applies to
+        // sessions already open.
+        if ($request->session()->get(SignIn::PROVIDER_SESSION) === true
+            && $this->settings->get(Setting::TwoFactorBypassSocialLogin) === true) {
             return $next($request);
         }
 

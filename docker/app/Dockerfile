@@ -1,5 +1,10 @@
 FROM php:8.4-fpm-alpine
 
+# Same floor as docker/production/Dockerfile, which explains it.
+ARG PHP_MIN_VERSION=8.4.27
+RUN php -r 'exit(version_compare(PHP_VERSION, getenv("PHP_MIN_VERSION"), ">=") ? 0 : 1);' \
+    || { echo "PHP $(php -r 'echo PHP_VERSION;') is below ${PHP_MIN_VERSION}: run docker pull php:8.4-fpm-alpine and build again" >&2; exit 1; }
+
 # Matches the host user's uid/gid so the bind-mounted repo (dev) needs no
 # runtime chown: www-data inside the container owns it already.
 ARG WWWUSER=1000

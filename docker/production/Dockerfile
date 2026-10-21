@@ -18,6 +18,16 @@
 
 FROM php:8.4-fpm-alpine
 
+# The tag above floats, which is how a rebuild picks up PHP's security
+# releases. It is also how a stale base image in a build host's cache gets
+# shipped without anyone noticing, because nothing here pulls. PHP below
+# 8.4.27 runs code for anyone who can send it a request (CVE-2026-109618,
+# CVE-2026-109619), so the build refuses it. Raise this when PHP ships the
+# next fix that matters.
+ARG PHP_MIN_VERSION=8.4.27
+RUN php -r 'exit(version_compare(PHP_VERSION, getenv("PHP_MIN_VERSION"), ">=") ? 0 : 1);' \
+    || { echo "PHP $(php -r 'echo PHP_VERSION;') is below ${PHP_MIN_VERSION}: run docker pull php:8.4-fpm-alpine and build again" >&2; exit 1; }
+
 LABEL org.opencontainers.image.title="ProjectSend" \
       org.opencontainers.image.description="Client file sharing, self-hosted. Community edition." \
       org.opencontainers.image.source="https://github.com/projectsend/projectsend" \

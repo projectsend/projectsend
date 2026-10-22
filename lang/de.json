@@ -2328,5 +2328,5 @@
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Wählen Sie über die Schaltfläche unten ein Passwort für Ihr Konto. Bisher haben Sie sich über ein verknüpftes Konto angemeldet, etwa Google oder Microsoft.",
     "This link will expire in :count minutes.": "Dieser Link läuft in :count Minuten ab.",
     "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Wenn Sie das nicht angefordert haben, müssen Sie nichts tun: Sie können sich weiterhin wie bisher anmelden.",
-    "Messages and the password above are sent unencrypted. Use this only for a mail server on your own network.": "Nachrichten und das Passwort oben werden unverschlüsselt gesendet. Verwende diese Option nur für einen Mailserver in deinem eigenen Netzwerk."
+    "Messages and the password above are sent unencrypted. Use this only for a mail server on your own network.": "Nachrichten und das Passwort oben werden unverschlüsselt gesendet. Verwenden Sie diese Option nur für einen Mailserver in Ihrem eigenen Netzwerk."
 }

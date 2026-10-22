@@ -46,7 +46,11 @@ return new class extends Migration
             $table->string('route');
             $table->unsignedSmallInteger('status');
             $table->unsignedInteger('duration_ms');
-            $table->timestamp('created_at')->index();
+            // useCurrent() so the column has a default of its own. Without one,
+            // a server with explicit_defaults_for_timestamp=OFF also gives the
+            // first TIMESTAMP in a table ON UPDATE CURRENT_TIMESTAMP, and every
+            // update of the row would rewrite it (#1816).
+            $table->timestamp('created_at')->useCurrent()->index();
 
             // The dashboard's two questions: "what has this token been
             // doing" and "what has the API been doing lately".

@@ -18,7 +18,11 @@ return new class extends Migration
             $table->string('status');
             $table->text('message')->nullable();
             $table->unsignedInteger('duration_ms')->nullable();
-            $table->timestamp('ran_at');
+            // useCurrent() so the column has a default of its own. Without one,
+            // a server with explicit_defaults_for_timestamp=OFF also gives the
+            // first TIMESTAMP in a table ON UPDATE CURRENT_TIMESTAMP, and every
+            // update of the row would rewrite it (#1816).
+            $table->timestamp('ran_at')->useCurrent();
         });
     }
 

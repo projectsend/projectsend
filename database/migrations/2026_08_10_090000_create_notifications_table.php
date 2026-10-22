@@ -23,7 +23,12 @@ return new class extends Migration
             $table->nullableMorphs('subject');
             $table->json('data')->nullable();
             $table->timestamp('read_at')->nullable();
-            $table->timestamp('created_at');
+            // useCurrent() for the servers that still invent a default for a
+            // TIMESTAMP (explicit_defaults_for_timestamp=OFF: MySQL 5.7,
+            // MariaDB before 10.10). There, the second one in a table gets
+            // '0000-00-00', which strict mode refuses, and the install
+            // stops here (#1816). The application always sets the value.
+            $table->timestamp('created_at')->useCurrent();
 
             $table->index(['user_id', 'read_at']);
             $table->index(['user_id', 'created_at']);

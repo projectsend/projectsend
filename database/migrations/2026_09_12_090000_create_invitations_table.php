@@ -26,7 +26,11 @@ return new class extends Migration
             $table->unsignedInteger('storage_quota_mb')->default(0);
             $table->foreignId('group_id')->nullable()->constrained('groups')->nullOnDelete();
             $table->foreignId('invited_by_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->timestamp('expires_at');
+            // useCurrent() so the column has a default of its own. Without one,
+            // a server with explicit_defaults_for_timestamp=OFF also gives the
+            // first TIMESTAMP in a table ON UPDATE CURRENT_TIMESTAMP, and every
+            // update of the row would rewrite it (#1816).
+            $table->timestamp('expires_at')->useCurrent();
             $table->timestamps();
 
             $table->index(['email', 'status']);

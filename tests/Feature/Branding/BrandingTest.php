@@ -196,6 +196,21 @@ test('a guest at the sign-in screen is given the branding logo', function () {
     );
 });
 
+// #1819. Every other link on the page is built from the request, so a site
+// whose APP_URL still says http://localhost works in full, and only an
+// address copied out of APP_URL breaks. The logo was the one that did.
+test('the logo is addressed on the host the page was asked for, not on APP_URL', function () {
+    $this->post(route('branding.store'), ['logo' => UploadedFile::fake()->image('logo.png')]);
+    $path = BrandingSetting::query()->sole()->logo_path;
+
+    config(['app.url' => 'http://localhost']);
+    auth()->logout();
+
+    $this->get('http://files.example.test:8899/login')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('branding.logo_url', 'http://files.example.test:8899/storage/'.$path),
+    );
+});
+
 test('the sign-in screen falls back to the product logo when nothing was uploaded', function () {
     auth()->logout();
 

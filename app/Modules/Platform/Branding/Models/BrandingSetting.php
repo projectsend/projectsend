@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Platform\Branding\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 use App\Modules\Platform\Branding\Watermark\WatermarkPosition;
 
 /**
@@ -65,7 +64,7 @@ class BrandingSetting extends Model
 
     public function logoUrl(): ?string
     {
-        return $this->logo_path === null ? null : Storage::disk('public')->url($this->logo_path);
+        return $this->logo_path === null ? null : self::publicUrl($this->logo_path);
     }
 
     /**
@@ -82,7 +81,7 @@ class BrandingSetting extends Model
     {
         $path = $this->logoSourcePath();
 
-        return $path === null ? null : Storage::disk('public')->url($path);
+        return $path === null ? null : self::publicUrl($path);
     }
 
     public function logoIsCropped(): bool
@@ -92,7 +91,7 @@ class BrandingSetting extends Model
 
     public function watermarkUrl(): ?string
     {
-        return $this->watermark_path === null ? null : Storage::disk('public')->url($this->watermark_path);
+        return $this->watermark_path === null ? null : self::publicUrl($this->watermark_path);
     }
 
     /**
@@ -113,5 +112,21 @@ class BrandingSetting extends Model
     public function watermarksThumbnails(): bool
     {
         return $this->activeWatermarkPath() !== null;
+    }
+
+    /**
+     * Where the browser fetches a file on the public disk.
+     *
+     * Not the disk's own url(), which glues the path onto APP_URL as it
+     * was at boot. Every other link on a page is built from the request,
+     * so an install whose APP_URL still says http://localhost works in
+     * full except for whatever reads APP_URL directly, and on a branded
+     * install that was only the logo (#1819). asset() follows the request
+     * like the rest, honours ASSET_URL, and falls back to APP_URL where
+     * there is no request.
+     */
+    private static function publicUrl(string $path): string
+    {
+        return asset('storage/'.$path);
     }
 }

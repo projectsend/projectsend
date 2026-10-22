@@ -205,7 +205,7 @@ test('the screen opens the cropper on the upload, with the last box drawn', func
     $this->get(route('branding.edit'))
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page) => $page
-            ->where('logo_source_url', Storage::disk('public')->url($upload))
+            ->where('logo_source_url', asset('storage/'.$upload))
             ->where('logo_crop', ['x' => 100, 'y' => 0, 'width' => 100, 'height' => 100])
             ->where('logo_cropped', true));
 });

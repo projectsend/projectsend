@@ -2327,5 +2327,6 @@
     "Set your password": "设置你的密码",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "请点击下方按钮为你的账户设置密码。此前你一直通过 Google 或 Microsoft 等关联账户登录。",
     "This link will expire in :count minutes.": "此链接将在 :count 分钟后失效。",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "如果这不是你本人的请求，无需任何操作：你可以继续像现在这样登录。"
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "如果这不是你本人的请求，无需任何操作：你可以继续像现在这样登录。",
+    "Messages and the password above are sent unencrypted. Use this only for a mail server on your own network.": "邮件和上方的密码将以未加密方式发送。仅在你自己网络中的邮件服务器上使用此选项。"
 }

@@ -2327,5 +2327,6 @@
     "Set your password": "Crea tu contraseña",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Usa el botón de abajo para elegir una contraseña para tu cuenta. Hasta ahora iniciabas sesión con una cuenta conectada, como Google o Microsoft.",
     "This link will expire in :count minutes.": "Este enlace caduca en :count minutos.",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Si no lo pediste, no tienes que hacer nada: puedes seguir iniciando sesión como hasta ahora."
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Si no lo pediste, no tienes que hacer nada: puedes seguir iniciando sesión como hasta ahora.",
+    "Messages and the password above are sent unencrypted. Use this only for a mail server on your own network.": "Los mensajes y la contraseña de arriba se envían sin cifrar. Usa esta opción solo con un servidor de correo de tu propia red."
 }

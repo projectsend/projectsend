@@ -2327,5 +2327,6 @@
     "Set your password": "Crea la teva contrasenya",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Fes servir el botó de sota per triar una contrasenya per al teu compte. Fins ara iniciaves la sessió amb un compte connectat, com Google o Microsoft.",
     "This link will expire in :count minutes.": "Aquest enllaç caduca d'aquí a :count minuts.",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Si no ho has demanat, no cal que facis res: pots continuar iniciant la sessió com fins ara."
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Si no ho has demanat, no cal que facis res: pots continuar iniciant la sessió com fins ara.",
+    "Messages and the password above are sent unencrypted. Use this only for a mail server on your own network.": "Els missatges i la contrasenya de dalt s'envien sense xifrar. Fes servir aquesta opció només amb un servidor de correu de la teva pròpia xarxa."
 }

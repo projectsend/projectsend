@@ -2327,5 +2327,6 @@
     "Set your password": "Buat kata sandi Anda",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Gunakan tombol di bawah untuk memilih kata sandi akun Anda. Selama ini Anda masuk melalui akun yang terhubung, seperti Google atau Microsoft.",
     "This link will expire in :count minutes.": "Tautan ini akan kedaluwarsa dalam :count menit.",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Jika Anda tidak memintanya, Anda tidak perlu melakukan apa pun: Anda tetap bisa masuk seperti biasa."
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Jika Anda tidak memintanya, Anda tidak perlu melakukan apa pun: Anda tetap bisa masuk seperti biasa.",
+    "Messages and the password above are sent unencrypted. Use this only for a mail server on your own network.": "Pesan dan kata sandi di atas dikirim tanpa enkripsi. Gunakan ini hanya untuk server email di jaringan Anda sendiri."
 }

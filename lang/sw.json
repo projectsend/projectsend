@@ -2327,5 +2327,6 @@
     "Set your password": "Weka nenosiri lako",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Tumia kitufe kilicho hapa chini kuchagua nenosiri la akaunti yako. Hadi sasa umekuwa ukiingia kupitia akaunti iliyounganishwa, kama Google au Microsoft.",
     "This link will expire in :count minutes.": "Kiungo hiki kitaisha muda baada ya dakika :count.",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Ikiwa hukuomba hili, huhitaji kufanya chochote: unaweza kuendelea kuingia kama kawaida."
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Ikiwa hukuomba hili, huhitaji kufanya chochote: unaweza kuendelea kuingia kama kawaida.",
+    "Messages and the password above are sent unencrypted. Use this only for a mail server on your own network.": "Ujumbe na nenosiri lililo hapo juu hutumwa bila usimbaji fiche. Tumia chaguo hili kwa seva ya barua pepe iliyo kwenye mtandao wako pekee."
 }

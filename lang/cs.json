@@ -2327,5 +2327,6 @@
     "Set your password": "Nastavte si heslo",
     "Use the button below to choose a password for your account. Until now you have signed in through a connected account, such as Google or Microsoft.": "Tlačítkem níže si zvolte heslo ke svému účtu. Dosud jste se přihlašovali propojeným účtem, například Google nebo Microsoft.",
     "This link will expire in :count minutes.": "Platnost odkazu (minuty): :count",
-    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Pokud jste o to nežádali, nemusíte nic dělat: můžete se dál přihlašovat jako dosud."
+    "If you did not ask for this, no further action is required: you can keep signing in the way you do now.": "Pokud jste o to nežádali, nemusíte nic dělat: můžete se dál přihlašovat jako dosud.",
+    "Messages and the password above are sent unencrypted. Use this only for a mail server on your own network.": "Zprávy i heslo výše se odesílají nešifrovaně. Tuto možnost používejte jen pro poštovní server ve vlastní síti."
 }

@@ -10,14 +10,57 @@ Anything under **⚠️ Important — do these yourself** is something you have 
 we did. It sits at the top of a release for that reason. Older entries call the same section
 **Upgrade notes**.
 
-## Unreleased
+## 2.7.1 — 22 October 2026
+
+A security update for PHP itself, and fixes for email encryption, SELinux servers, older MariaDB
+and MySQL, and the branding logo.
 
 ### ⚠️ Important — do these yourself
 
+Nothing here stops the upgrade.
+
+- **If you installed from the zip, update PHP on your server to 8.4.27 or later.** PHP fixed two
+  critical flaws (CVE-2026-109618, CVE-2026-109619) that let anyone who can reach a site run code on
+  it, with no login needed. ProjectSend cannot fix this for you, because it is in PHP itself. Restart
+  PHP-FPM or Apache afterwards. System → About shows which PHP your web server is running. The
+  Docker image already includes the fixed PHP.
 - **The Encryption choice in Settings → Email now does what it says.** Until now it was ignored:
   "SSL" only worked on port 465, and "None" still switched to TLS whenever the mail server offered
   it. If mail stops after this update, check that setting. Use "TLS" for port 587 or 25, and "SSL"
   for port 465. "TLS" behaves exactly as before.
+
+**Fixed**
+
+- **Choosing "None" for email encryption now really sends without TLS**, for a mail server on your
+  own network whose certificate doesn't match its name. The screen warns that this also sends the
+  password unencrypted.
+- **The branding logo shows up even when `APP_URL` doesn't match the address people use** to reach
+  the site. Before, it was the only thing on the page that broke.
+- **Updating with `update.sh` no longer takes the site down on servers with SELinux.** Files kept the
+  label of the temporary folder they were unpacked in, and the web server could not read them.
+- **Fresh installs work on MariaDB before 10.10 and on MySQL 5.7.** The install stopped at the
+  notifications table. On those servers, an invitation's expiry date could also reset every time the
+  invitation changed.
+
+**Security**
+
+- The Docker image now runs on PHP 8.4.27, and refuses to build on anything older.
+- Updated `follow-redirects` and `vite` for their published advisories.
+
+Thanks to [@oleasteo](https://github.com/oleasteo), [@jnewman67](https://github.com/jnewman67),
+[@Puohis](https://github.com/Puohis), [@gregkuhnert](https://github.com/gregkuhnert) and
+[@jiits](https://github.com/jiits) for reporting.
+
+### Issues closed since 2.7.0
+
+The summary above is what changed. This is the paper trail, for anyone who wants to read the
+original report.
+
+- [#1815](https://github.com/projectsend/projectsend/issues/1815) — [ Feature Request ] SMTP STARTTLS certificate verification cannot be disabled in email settings
+- [#1816](https://github.com/projectsend/projectsend/issues/1816) — bug: create_notifications_table migrate fails on MariaDB/MySQL with explicit_defaults_for_timestamp=OFF (error 1067)
+- [#1817](https://github.com/projectsend/projectsend/issues/1817) — SElinux blocks access to site after ProjectSend2 is updated with ./update.sh
+- [#1819](https://github.com/projectsend/projectsend/issues/1819) — Branding logo does not appear v2.7.0 (zip install)
+- [#1822](https://github.com/projectsend/projectsend/issues/1822) — [docker] Critical php RCE fixes available
 
 ## 2.7.0 — 6 October 2026
 

@@ -685,7 +685,16 @@ If you know what you are doing, re-run with --force."
     rm -f "$INSTALL_DIR/bootstrap/cache/config.php"
     rm -f "$INSTALL_DIR/bootstrap/cache/packages.php"
     rm -f "$INSTALL_DIR/bootstrap/cache/services.php"
-    cp -a "$TMP_DIR"/. "$INSTALL_DIR"/
+    # -Rp, not -a. -a preserves everything, and on an SELinux host that
+    # includes the context the files were unpacked with: user_tmp_t, from
+    # the temporary directory. Every file then carries a label the web
+    # server may not read, and the whole site goes dark the moment the
+    # update finishes (#1817). -p keeps the modes and times and lets each
+    # file take the context of where it lands, like any other new file.
+    # Not restorecon afterwards: that resets labels to the policy's
+    # defaults, including any an administrator set on storage/ with chcon
+    # so that PHP can write there.
+    cp -Rp "$TMP_DIR"/. "$INSTALL_DIR"/
 
     # Symlinks are skipped on purpose. A symlink's own ownership decides
     # nothing — access is governed by whatever it points at — and some

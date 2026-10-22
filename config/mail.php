@@ -42,7 +42,9 @@ return [
             'url' => env('MAIL_URL'),
             'host' => env('MAIL_HOST', '127.0.0.1'),
             'port' => env('MAIL_PORT', 2525),
-            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            // Laravel does not read an `encryption` key. This turns the
+            // value into the options it does read; see SmtpEncryption.
+            ...App\Modules\Platform\Settings\SmtpEncryption::transportOptions(env('MAIL_ENCRYPTION', 'tls')),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,

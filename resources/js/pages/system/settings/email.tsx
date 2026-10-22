@@ -457,6 +457,11 @@ export default function EmailSettings({
                                                 <SelectItem value="none">{t('None')}</SelectItem>
                                             </SelectContent>
                                         </Select>
+                                        {data.encryption === 'none' && (
+                                            <p className="text-muted-foreground text-sm">
+                                                {t('Messages and the password above are sent unencrypted. Use this only for a mail server on your own network.')}
+                                            </p>
+                                        )}
                                         <InputError message={errors.encryption} />
                                     </div>
 

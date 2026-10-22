@@ -108,18 +108,54 @@ test('apply() overrides mail config once a host is saved', function () {
         ->and(config('mail.mailers.smtp.port'))->toBe(2525)
         ->and(config('mail.mailers.smtp.username'))->toBe('mailer')
         ->and(config('mail.mailers.smtp.password'))->toBe('secret')
-        ->and(config('mail.mailers.smtp.encryption'))->toBe('tls')
         ->and(config('mail.from.address'))->toBe('noreply@example.test')
         ->and(config('mail.from.name'))->toBe('Example App');
 });
 
-test('apply() maps "none" encryption to a null Symfony-compatible value', function () {
-    MailProviderSettings::current()->fill(['host' => 'smtp.example.test', 'encryption' => 'none'])->save();
+// #1815. The Encryption field used to be written to a config key Laravel
+// stopped reading, so every choice behaved alike: the port picked implicit
+// TLS, and STARTTLS happened whenever the server offered it — "None"
+// included. These ask the transport Laravel actually builds, not the
+// config, because the config is where the old version looked right.
+function smtpTransportFor(string $encryption, int $port): Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport
+{
+    MailProviderSettings::current()->fill(['host' => 'smtp.example.test', 'port' => $port, 'encryption' => $encryption])->save();
+
+    // Start from what MAIL_ENCRYPTION's default leaves behind, not from
+    // whatever the .env of the machine running this happens to say.
+    config(['mail.mailers.smtp' => array_diff_key(config('mail.mailers.smtp'), ['scheme' => true, 'auto_tls' => true])]);
 
     app(MailConfigApplier::class)->flush();
     app(MailConfigApplier::class)->apply();
+    app('mail.manager')->forgetMailers();
 
-    expect(config('mail.mailers.smtp.encryption'))->toBeNull();
+    return app('mail.manager')->mailer('smtp')->getSymfonyTransport();
+}
+
+test('"None" does not upgrade the connection with STARTTLS', function () {
+    expect(smtpTransportFor('none', 25)->isAutoTls())->toBeFalse();
+});
+
+test('"TLS" upgrades with STARTTLS when the server offers it', function () {
+    $transport = smtpTransportFor('tls', 587);
+
+    expect($transport->isAutoTls())->toBeTrue()
+        ->and($transport->getStream()->isTLS())->toBeFalse();
+});
+
+test('"SSL" connects over TLS from the start, whatever the port', function () {
+    expect(smtpTransportFor('ssl', 2465)->getStream()->isTLS())->toBeTrue();
+});
+
+test('a MAIL_ENCRYPTION that says nothing keeps STARTTLS on', function () {
+    // .env.example ships MAIL_ENCRYPTION=null. Reading that as "None" would
+    // stop every install mailing from .env alone from upgrading to TLS.
+    expect(App\Modules\Platform\Settings\SmtpEncryption::transportOptions(null))->toBe([])
+        ->and(App\Modules\Platform\Settings\SmtpEncryption::transportOptions(''))->toBe([]);
+});
+
+test('port 465 still connects over TLS from the start under "TLS"', function () {
+    expect(smtpTransportFor('tls', 465)->getStream()->isTLS())->toBeTrue();
 });
 
 test('staff can save mail provider settings', function () {

@@ -74,7 +74,14 @@ class MailConfigApplier
             Config::set('mail.mailers.smtp.port', $resolved['port']);
             Config::set('mail.mailers.smtp.username', $resolved['username']);
             Config::set('mail.mailers.smtp.password', $this->password());
-            Config::set('mail.mailers.smtp.encryption', $resolved['encryption']);
+            Config::set('mail.mailers.smtp.scheme', null);
+            Config::set('mail.mailers.smtp.auto_tls', true);
+
+            // resolve() reports "none" as null, which SmtpEncryption reads
+            // as "not said". The screen did say it.
+            foreach (SmtpEncryption::transportOptions($resolved['encryption'] ?? 'none') as $key => $value) {
+                Config::set("mail.mailers.smtp.{$key}", $value);
+            }
         }
 
         if ($resolved['from_address'] !== null && ($resolved['oauth_mailer'] === null || ! $resolved['oauth_ready'])) {

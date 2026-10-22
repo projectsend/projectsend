@@ -10,6 +10,15 @@ Anything under **⚠️ Important — do these yourself** is something you have 
 we did. It sits at the top of a release for that reason. Older entries call the same section
 **Upgrade notes**.
 
+## Unreleased
+
+### ⚠️ Important — do these yourself
+
+- **The Encryption choice in Settings → Email now does what it says.** Until now it was ignored:
+  "SSL" only worked on port 465, and "None" still switched to TLS whenever the mail server offered
+  it. If mail stops after this update, check that setting. Use "TLS" for port 587 or 25, and "SSL"
+  for port 465. "TLS" behaves exactly as before.
+
 ## 2.7.0 — 6 October 2026
 
 Four security fixes, folders you can manage over the API, and logo cropping.

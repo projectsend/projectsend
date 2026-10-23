@@ -78,6 +78,11 @@ class CreateFolder extends ToolBase
             if ($parent === null) {
                 return Folders::notFound();
             }
+
+            // A folder inside a public one is public, so making it there
+            // is placing content in a public folder, as FoldersController
+            // asks too.
+            Folders::requirePlaceable($parent, $account);
         }
 
         $parentId = $parent === null ? null : (int) $parent->getAttribute('id');

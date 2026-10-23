@@ -193,6 +193,21 @@ it('will not publish a file by moving it into a public folder without the right 
     expect(McpWorld::call(MoveFile::class, ['file_id' => $file->getKey(), 'folder_id' => $public->getKey()], $publisher)['moved'])->toBeTrue();
 });
 
+it('will not make a folder inside a public one without the right to publish', function (): void {
+    $editor = McpWorld::staff();
+    $public = McpWorld::folder('Press kit', attributes: ['public' => true]);
+
+    $error = McpWorld::error(McpWorld::call(CreateFolder::class, ['name' => 'Drafts', 'parent_id' => $public->getKey()], $editor));
+
+    expect($error['code'])->toBe('permission_missing')
+        ->and($error['permission'])->toBe('upload_public')
+        ->and(Folder::query()->where('parent_id', $public->getKey())->count())->toBe(0);
+
+    $publisher = McpWorld::staff(permissions: ['upload', 'create_own_folders', 'upload_public']);
+
+    expect(McpWorld::call(CreateFolder::class, ['name' => 'Drafts', 'parent_id' => $public->getKey()], $publisher)['created'])->toBeTrue();
+});
+
 it('shares a folder with a client once: the assignment, the activity entry, the in-app notice and the digest', function (): void {
     $staff = McpWorld::staff();
     $acme = McpWorld::clientAccount();

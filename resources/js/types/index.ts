@@ -52,7 +52,8 @@ export type Capability =
     | 'attribution.hide'
     | 'captcha.configure'
     | 'captcha.managed_keys'
-    | 'downloads.zip';
+    | 'downloads.zip'
+    | 'ai.connector';
 
 /**
  * A sidebar entry contributed by a package — see

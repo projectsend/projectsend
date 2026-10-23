@@ -218,10 +218,22 @@ test('nobody signed in is never offered to a listener either', function () {
     expect($asked)->toBeFalse();
 });
 
-test('the AI assistant origin is not offered on an edition that cannot produce it', function () {
-    // The suite runs as the community edition. Offering a filter that
-    // could only ever return nothing would dangle a feature this edition
-    // does not have — the one thing the edition boundary exists not to do.
+test('the AI assistant origin is offered wherever the connector is', function () {
+    // Both editions have the connector, so the community edition the
+    // suite runs as offers the filter too.
+    $response = $this->actingAs($this->staff)->get('/activity')->assertOk();
+
+    $offered = collect($response->viewData('page')['props']['origins'])->pluck('key');
+
+    expect($offered)->toContain(ActivityOrigin::Mcp->value, ActivityOrigin::Ui->value, ActivityOrigin::Api->value);
+});
+
+test('the AI assistant origin is not offered where the connector was taken away', function () {
+    // A hosted plan can subtract the connector. Offering a filter that
+    // could only ever return nothing would dangle a feature this
+    // installation does not have.
+    config()->set('projectsend.capabilities_disabled', 'ai.connector');
+
     $response = $this->actingAs($this->staff)->get('/activity')->assertOk();
 
     $offered = collect($response->viewData('page')['props']['origins'])->pluck('key');

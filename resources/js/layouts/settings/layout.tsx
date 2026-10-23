@@ -1,6 +1,7 @@
 import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { useCapability } from '@/hooks/use-capability';
 import { useTranslation } from '@/hooks/use-translation';
 import { cn } from '@/lib/utils';
 import { type NavItem, type SharedData } from '@/types';
@@ -9,6 +10,7 @@ import { Link, usePage } from '@inertiajs/react';
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
     const { t } = useTranslation();
     const { auth, social_login } = usePage<SharedData>().props;
+    const aiConnector = useCapability('ai.connector');
     const currentPath = window.location.pathname;
 
     const sidebarNavItems: NavItem[] = [
@@ -50,6 +52,17 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                   {
                       title: t('API tokens'),
                       url: '/settings/api-tokens',
+                      icon: null,
+                  },
+              ]
+            : []),
+        // The assistants connected through the MCP server. Staff only here:
+        // where a client may connect, a hosted edition links to it itself.
+        ...(auth.user.type === 'staff' && aiConnector
+            ? [
+                  {
+                      title: t('AI connections'),
+                      url: '/settings/ai-connections',
                       icon: null,
                   },
               ]

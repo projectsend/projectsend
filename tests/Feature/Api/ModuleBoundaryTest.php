@@ -121,8 +121,11 @@ test('no package route escapes the modules prefix', function () {
 test('a package claims no machine surface outside the two it is given', function () {
     $packageNamespace = 'ProjectSend\\';
 
-    // Roots something other than a browser authenticates to.
-    $machineRoots = ['api/', 'platform/'];
+    // Roots something other than a browser authenticates to. The last
+    // three are core's AI connector and its authorization server: an
+    // assistant authenticates there with a bearer token, and discovers
+    // how from `.well-known/`.
+    $machineRoots = ['api/', 'platform/', 'mcp', 'oauth/', '.well-known/'];
 
     $sanctioned = [
         'api/v1/modules/',

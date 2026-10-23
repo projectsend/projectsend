@@ -119,6 +119,8 @@ export interface SharedData {
      */
     attribution: boolean;
     capabilities: Capability[];
+    /** Whether AI assistants may connect: the capability and the installation's own switch. */
+    ai_connector: boolean;
     /** Sidebar entries contributed by packages, already staff-filtered. */
     extra_nav_links: ExtraNavLink[];
     /**

@@ -4,30 +4,31 @@ namespace App\Http\Middleware;
 
 use App\Models\User;
 use App\Modules\Comments\Access\VisibleCommentScope;
+use App\Modules\Files\Models\File;
+use App\Modules\Files\Queue\StalledZipBuilds;
+use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Groups\Models\MembershipRequest;
 use App\Modules\Identity\Passwords\PasswordPolicy;
 use App\Modules\Identity\Permissions\Permission;
 use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Identity\Social\SocialSettings;
 use App\Modules\Identity\UserType;
+use App\Modules\Mcp\Http\Middleware\EnsureConnectorCapability;
 use App\Modules\Notifications\InAppNotification;
+use App\Modules\Platform\Announcements\Events\ResolvingAnnouncement;
 use App\Modules\Platform\Attribution\Attribution;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Captcha\Captcha;
 use App\Modules\Platform\Installation\Installation;
-use App\Modules\Files\Models\File;
-use App\Modules\Files\Queue\StalledZipBuilds;
-use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Platform\Localization\LocaleRegistry;
 use App\Modules\Platform\Localization\TimezoneRegistry;
+use App\Modules\Platform\Navigation\Events\ResolvingNavigationLinks;
 use App\Modules\Platform\OfficialLinks;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use App\Modules\Platform\Updates\LatestReleaseInfo;
 use App\Modules\Platform\Updates\RunningCodeState;
 use Illuminate\Foundation\Inspiring;
-use App\Modules\Platform\Announcements\Events\ResolvingAnnouncement;
-use App\Modules\Platform\Navigation\Events\ResolvingNavigationLinks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Inertia\Middleware;
@@ -89,6 +90,11 @@ class HandleInertiaRequests extends Middleware
             // ignore this and always show it.
             'attribution' => app(Attribution::class)->visible(),
             'capabilities' => $capabilities->enabledKeys(),
+            // Whether assistants may connect here: the capability and the
+            // installation's own switch together. The account settings
+            // link to AI connections follows this, not the capability
+            // alone, so it never leads to a page that answers 404.
+            'ai_connector' => EnsureConnectorCapability::granted(),
             // Sidebar entries a package asked for. Shared rather than
             // passed per page because the sidebar is on every page, and
             // dispatched unconditionally so that with nothing listening

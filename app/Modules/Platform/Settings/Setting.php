@@ -399,6 +399,14 @@ enum Setting: string
     case CaptchaOnPasswordReset = 'captcha_on_password_reset';
     case CaptchaOnPublicComments = 'captcha_on_public_comments';
 
+    // Whether AI assistants may connect at all: /mcp, its authorization
+    // server and its discovery documents. The installation's own switch,
+    // under Capability::AiConnector, which is the edition's and the
+    // platform's. On by default, because the connector only ever acts
+    // with the person's own permissions; an administrator who wants no
+    // assistants anywhere near the site turns it off here.
+    case AiConnectorEnabled = 'ai_connector_enabled';
+
     public function type(): SettingType
     {
         return match ($this) {
@@ -454,6 +462,7 @@ enum Setting: string
             self::CaptchaOnPublicComments,
             self::PasswordRejectBreached,
             self::VirusScanningEnabled,
+            self::AiConnectorEnabled,
             self::GettingStartedPending => SettingType::Boolean,
 
             self::ClientsAutoGroup,
@@ -535,7 +544,8 @@ enum Setting: string
             self::CaptchaOnLogin,
             self::CaptchaOnRegistration,
             self::CaptchaOnPasswordReset,
-            self::CaptchaOnPublicComments => true,
+            self::CaptchaOnPublicComments,
+            self::AiConnectorEnabled => true,
 
             self::ClientsAutoGroup => 0,
             self::ClientsMembershipDenyCooldownDays => 30,

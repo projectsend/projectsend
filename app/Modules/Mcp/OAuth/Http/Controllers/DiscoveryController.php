@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Mcp\OAuth\Http\Controllers;
 
+use App\Modules\Mcp\Http\Middleware\EnsureConnectorCapability;
 use App\Modules\Mcp\OAuth\Issuer;
 use Illuminate\Http\JsonResponse;
 
@@ -29,6 +30,10 @@ final class DiscoveryController
      */
     private function document(array $body): JsonResponse
     {
+        // Where the connector is off there is nothing to discover: a
+        // document that names a server would send a client to a 404.
+        abort_unless(EnsureConnectorCapability::granted(), 404);
+
         return response()->json($body)->header('Cache-Control', 'public, max-age=300');
     }
 }

@@ -15,6 +15,7 @@ use App\Modules\Identity\Http\Controllers\SecuritySettingsController;
 use App\Modules\Identity\Http\Controllers\SocialLoginController;
 use App\Modules\Identity\Http\Controllers\SocialLoginSettingsController;
 use App\Modules\Identity\Http\Controllers\TwoFactorEnrollmentController;
+use App\Modules\Mcp\Http\Controllers\AiAssistantSettingsController;
 use App\Modules\Notifications\Http\Controllers\NotificationPreferencesController;
 use App\Modules\Platform\Branding\Http\Controllers\BrandingController;
 use App\Modules\Platform\Http\Controllers\AboutController;
@@ -213,6 +214,13 @@ Route::middleware('auth')->group(function () {
             ->middleware('throttle:6,1,scanner-backfill')->name('system-settings.virus-scanning.scan-existing');
         Route::get('system/settings/comments', [CommentSettingsController::class, 'edit'])->name('system-settings.comments.edit');
         Route::patch('system/settings/comments', [CommentSettingsController::class, 'update'])->name('system-settings.comments.update');
+        // The installation's own switch for the AI connector, under the
+        // capability a hosted plan can subtract: where the plan has taken
+        // the connector away, there is nothing here to switch.
+        Route::middleware('capability:ai.connector')->group(function () {
+            Route::get('system/settings/ai-assistants', [AiAssistantSettingsController::class, 'edit'])->name('system-settings.ai-assistants.edit');
+            Route::patch('system/settings/ai-assistants', [AiAssistantSettingsController::class, 'update'])->name('system-settings.ai-assistants.update');
+        });
         Route::get('system/settings/email', [EmailSettingsController::class, 'edit'])->name('system-settings.email.edit');
         Route::patch('system/settings/email', [EmailSettingsController::class, 'update'])->name('system-settings.email.update');
         Route::post('system/settings/email/test', [EmailSettingsController::class, 'sendTest'])->name('system-settings.email.test');

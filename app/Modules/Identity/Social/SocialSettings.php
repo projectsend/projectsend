@@ -26,6 +26,7 @@ use Illuminate\Support\Str;
  * @property string|null $allowed_domains
  * @property bool $auto_provision
  * @property bool $auto_approve
+ * @property bool $skip_two_factor
  */
 class SocialSettings extends Model
 {
@@ -49,6 +50,7 @@ class SocialSettings extends Model
         'require_verified_email' => true,
         'auto_provision' => false,
         'auto_approve' => false,
+        'skip_two_factor' => false,
     ];
 
     protected function casts(): array
@@ -60,6 +62,7 @@ class SocialSettings extends Model
             'require_verified_email' => 'boolean',
             'auto_provision' => 'boolean',
             'auto_approve' => 'boolean',
+            'skip_two_factor' => 'boolean',
         ];
     }
 
@@ -151,6 +154,19 @@ class SocialSettings extends Model
         }
 
         return true;
+    }
+
+    /**
+     * Whether a sign-in through this provider stands in for ProjectSend's
+     * own second factor.
+     *
+     * Tied to usable() so that switching a provider off, or breaking its
+     * configuration, withdraws the exemption from sessions it already
+     * opened as well as from new ones.
+     */
+    public function skipsTwoFactor(): bool
+    {
+        return $this->skip_two_factor && $this->usable();
     }
 
     /**

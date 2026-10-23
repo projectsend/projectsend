@@ -34,6 +34,7 @@ function socialSettings(
     bool $autoProvision = false,
     bool $autoApprove = false,
     ?string $allowedDomains = null,
+    bool $skipTwoFactor = false,
 ): SocialSettings {
     $settings = SocialSettings::for($provider);
 
@@ -48,6 +49,7 @@ function socialSettings(
         'allowed_domains' => $allowedDomains,
         'auto_provision' => $autoProvision,
         'auto_approve' => $autoApprove,
+        'skip_two_factor' => $skipTwoFactor,
     ])->save();
 
     return $settings;
@@ -373,6 +375,134 @@ test('two-factor still challenges a provider sign-in', function () {
 
     expect(auth()->check())->toBeFalse()
         ->and(session('two_factor.login_id'))->toBe($client->id);
+});
+
+/**
+ * An account with a linked provider account, with two-factor enabled unless
+ * said otherwise. `$skipsTwoFactor` is the provider's own setting: whether
+ * it stands in for ProjectSend's second factor.
+ */
+function clientWithProvider(
+    bool $skipsTwoFactor = true,
+    SocialProvider $provider = SocialProvider::Google,
+    bool $enrolled = true,
+): User {
+    socialSettings($provider, skipTwoFactor: $skipsTwoFactor);
+
+    $client = User::factory()->client()->create(['email' => 'client@example.test']);
+
+    if ($enrolled) {
+        $client->forceFill([
+            'two_factor_secret' => app(TwoFactorService::class)->generateSecret(),
+            'two_factor_confirmed_at' => now(),
+        ])->save();
+    }
+
+    SocialAccount::query()->create([
+        'user_id' => $client->id,
+        'provider' => $provider->value,
+        'provider_user_id' => 'subject-1',
+        'email' => 'client@example.test',
+    ]);
+    fakeProvider(identity(email: 'client@example.test', provider: $provider));
+
+    return $client;
+}
+
+test('a provider sign-in skips two-factor when that provider is set to', function () {
+    $client = clientWithProvider();
+
+    signInWith()->assertRedirect(route('dashboard'));
+
+    expect(auth()->id())->toBe($client->id)
+        ->and(session('two_factor.login_id'))->toBeNull();
+});
+
+test('a provider sign-in is still challenged when that provider is not set to skip', function () {
+    clientWithProvider(skipsTwoFactor: false);
+
+    signInWith()->assertRedirect(route('two-factor.challenge'));
+
+    expect(auth()->check())->toBeFalse();
+});
+
+test('a password sign-in is still challenged when a provider skips two-factor', function () {
+    $client = clientWithProvider();
+
+    $this->post('/login', ['email' => $client->email, 'password' => 'password'])
+        ->assertRedirect(route('two-factor.challenge'));
+
+    expect(auth()->check())->toBeFalse()
+        ->and(session('two_factor.login_id'))->toBe($client->id);
+});
+
+test('skipping two-factor for one provider does not skip it for another', function () {
+    socialSettings(SocialProvider::Google, skipTwoFactor: true);
+    clientWithProvider(skipsTwoFactor: false, provider: SocialProvider::Github);
+
+    signInWith(SocialProvider::Github)->assertRedirect(route('two-factor.challenge'));
+
+    expect(auth()->check())->toBeFalse();
+});
+
+test('a provider session is not made to enrol, a password session still is', function () {
+    app(Settings::class)->set(Setting::TwoFactorEnforcement, 'all');
+    $client = clientWithProvider(enrolled: false);
+
+    signInWith();
+    $this->get('/dashboard')->assertOk();
+
+    $this->post('/logout');
+
+    $this->post('/login', ['email' => $client->email, 'password' => 'password'])->assertRedirect();
+    $this->get('/dashboard')->assertRedirect(route('two-factor.show'));
+});
+
+test('a provider session is made to enrol when its provider is not set to skip', function () {
+    app(Settings::class)->set(Setting::TwoFactorEnforcement, 'all');
+    clientWithProvider(skipsTwoFactor: false, enrolled: false);
+
+    signInWith();
+
+    $this->get('/dashboard')->assertRedirect(route('two-factor.show'));
+});
+
+test('turning the choice off applies to a provider session that is already open', function () {
+    app(Settings::class)->set(Setting::TwoFactorEnforcement, 'all');
+    clientWithProvider(enrolled: false);
+
+    signInWith();
+    $this->get('/dashboard')->assertOk();
+
+    SocialSettings::for(SocialProvider::Google)->forceFill(['skip_two_factor' => false])->save();
+
+    $this->get('/dashboard')->assertRedirect(route('two-factor.show'));
+});
+
+test('switching the provider off applies to a provider session that is already open', function () {
+    app(Settings::class)->set(Setting::TwoFactorEnforcement, 'all');
+    clientWithProvider(enrolled: false);
+
+    signInWith();
+    $this->get('/dashboard')->assertOk();
+
+    SocialSettings::for(SocialProvider::Google)->forceFill(['enabled' => false])->save();
+
+    $this->get('/dashboard')->assertRedirect(route('two-factor.show'));
+});
+
+test('the exemption does not outlive the sign-in it was granted for', function () {
+    $client = clientWithProvider();
+
+    signInWith();
+    expect(session('two_factor.provider_session'))->toBe('google');
+
+    // Signed out without the session being invalidated, as an expiry or a
+    // deactivation does, then back in with a password.
+    auth()->logout();
+    $this->post('/login', ['email' => $client->email, 'password' => 'password']);
+
+    expect(session('two_factor.provider_session'))->toBeNull();
 });
 
 /*

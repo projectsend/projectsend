@@ -27,6 +27,7 @@ interface ProviderSettings {
     allowed_domains: string | null;
     auto_provision: boolean;
     auto_approve: boolean;
+    skip_two_factor: boolean;
     needs_issuer_url: boolean;
     needs_tenant_id: boolean;
     can_report_verified_email: boolean;
@@ -81,6 +82,7 @@ function ProviderCard({ provider, open, onToggle }: { provider: ProviderSettings
         allowed_domains: provider.allowed_domains ?? '',
         auto_provision: provider.auto_provision,
         auto_approve: provider.auto_approve,
+        skip_two_factor: provider.skip_two_factor,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -298,6 +300,24 @@ function ProviderCard({ provider, open, onToggle }: { provider: ProviderSettings
                                 </AlertDescription>
                             </Alert>
                         )}
+                    </div>
+
+                    <div className="flex items-start space-x-3">
+                        <Checkbox
+                            id={`${provider.provider}-skip-two-factor`}
+                            checked={form.data.skip_two_factor}
+                            onCheckedChange={(checked) => form.setData('skip_two_factor', checked === true)}
+                        />
+                        <div className="grid gap-1">
+                            <Label htmlFor={`${provider.provider}-skip-two-factor`}>{t('Skip two-factor for sign-ins through this provider')}</Label>
+                            <p className="text-muted-foreground text-sm">
+                                {t(
+                                    'Turn this on only if :provider already asks for a second factor itself. People who sign in this way are then not asked for a ProjectSend code, and are not made to set up two-factor when it is required. Password sign-ins are always asked.',
+                                    { provider: provider.label },
+                                )}
+                            </p>
+                            <InputError message={form.errors.skip_two_factor} />
+                        </div>
                     </div>
 
                     <SaveButton processing={form.processing} recentlySuccessful={form.recentlySuccessful} />

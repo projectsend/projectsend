@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Modules\Audit\Action;
+use App\Modules\Audit\ActivityLog;
 use App\Modules\Identity\Social\SocialProvider;
 use App\Modules\Identity\Social\SocialSettings;
 use App\Modules\Platform\Capabilities\Edition;
@@ -29,6 +31,7 @@ function socialPayload(array $overrides = []): array
         'allowed_domains' => null,
         'auto_provision' => false,
         'auto_approve' => false,
+        'skip_two_factor' => false,
     ], $overrides);
 }
 
@@ -216,4 +219,67 @@ test('every provider gets a card, configured or not', function () {
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->has('providers', count(SocialProvider::cases()))
             ->where('providers.0.redirect_uri', route('social.callback', ['provider' => 'google'])));
+});
+
+/*
+|--------------------------------------------------------------------------
+| Skipping two-factor, one provider at a time
+|--------------------------------------------------------------------------
+|
+| A provider that makes its own users sign in with a second factor can say
+| so, and only that provider. Nothing here changes how a password sign-in
+| is treated.
+|
+*/
+
+test('no provider skips two-factor until an administrator says it does', function () {
+    $this->actingAs($this->admin)->get('/system/settings/social-login')
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->where('providers.0.skip_two_factor', false));
+
+    expect(SocialSettings::for(SocialProvider::Google)->skip_two_factor)->toBeFalse();
+});
+
+test('an administrator can mark one provider as asking for its own second factor', function () {
+    patchProvider(SocialProvider::Google, ['skip_two_factor' => true])->assertRedirect();
+    patchProvider(SocialProvider::Github)->assertRedirect();
+
+    expect(SocialSettings::for(SocialProvider::Google)->skip_two_factor)->toBeTrue()
+        ->and(SocialSettings::for(SocialProvider::Github)->skip_two_factor)->toBeFalse();
+
+    $this->actingAs($this->admin)->get('/system/settings/social-login')
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->where('providers.0.skip_two_factor', true));
+});
+
+test('the skip-two-factor choice must be submitted with the rest of the form', function () {
+    $payload = socialPayload();
+    unset($payload['skip_two_factor']);
+
+    $this->actingAs($this->admin)
+        ->patch(route('system-settings.social-login.update', ['provider' => 'google']), $payload)
+        ->assertSessionHasErrors('skip_two_factor');
+});
+
+test('a provider that is switched off no longer skips two-factor', function () {
+    patchProvider(SocialProvider::Google, ['skip_two_factor' => true]);
+
+    expect(SocialSettings::for(SocialProvider::Google)->skipsTwoFactor())->toBeTrue();
+
+    patchProvider(SocialProvider::Google, ['skip_two_factor' => true, 'enabled' => false]);
+
+    expect(SocialSettings::for(SocialProvider::Google)->skipsTwoFactor())->toBeFalse();
+});
+
+test('changing the skip-two-factor choice is written to the activity log', function () {
+    patchProvider(SocialProvider::Google, ['skip_two_factor' => true]);
+
+    $entry = ActivityLog::query()
+        ->where('action', Action::SettingsUpdated)
+        ->where('context->section', 'social-login.google')
+        ->latest('id')
+        ->first();
+
+    expect($entry)->not->toBeNull()
+        ->and($entry->context['skip_two_factor'])->toBeTrue();
 });

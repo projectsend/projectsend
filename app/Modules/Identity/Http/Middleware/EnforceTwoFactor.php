@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Modules\Identity\Http\Middleware;
 
+use App\Modules\Identity\SignIn;
+use App\Modules\Identity\Social\SocialProvider;
+use App\Modules\Identity\Social\SocialSettings;
 use App\Modules\Identity\TwoFactor\TwoFactorEnforcement;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -40,6 +43,13 @@ class EnforceTwoFactor
             return $next($request);
         }
 
+        // A session that began at a provider asking for a second factor of
+        // its own is not made to enrol either. Read against the provider as
+        // it is now, so switching it off applies to sessions already open.
+        if ($this->beganAtTrustedProvider($request)) {
+            return $next($request);
+        }
+
         // password.confirm* is on this list because the two-factor mutation
         // routes now require it: without the exemption, enrolling would
         // redirect to the confirm-password screen, which this middleware
@@ -67,5 +77,14 @@ class EnforceTwoFactor
         }
 
         return WriteSafeRedirect::apply($request, redirect()->route('two-factor.show')->with('two_factor_enforced_notice', true));
+    }
+
+    private function beganAtTrustedProvider(Request $request): bool
+    {
+        $key = $request->session()->get(SignIn::PROVIDER_SESSION);
+
+        $provider = is_string($key) ? SocialProvider::tryFrom($key) : null;
+
+        return $provider !== null && SocialSettings::for($provider)->skipsTwoFactor();
     }
 }

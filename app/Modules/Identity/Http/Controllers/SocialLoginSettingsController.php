@@ -54,6 +54,7 @@ class SocialLoginSettingsController extends Controller
                 'allowed_domains' => $settings->allowed_domains,
                 'auto_provision' => $settings->auto_provision,
                 'auto_approve' => $settings->auto_approve,
+                'skip_two_factor' => $settings->skip_two_factor,
                 'needs_issuer_url' => $provider->needsIssuerUrl(),
                 'needs_tenant_id' => $provider->needsTenantId(),
                 // Without this an administrator reads the verified-email
@@ -101,6 +102,7 @@ class SocialLoginSettingsController extends Controller
             'allowed_domains' => ['nullable', 'string', 'max:512'],
             'auto_provision' => ['required', 'boolean'],
             'auto_approve' => ['required', 'boolean'],
+            'skip_two_factor' => ['required', 'boolean'],
         ], [
             'tenant_id.not_in' => __('Enter a specific tenant ID. The shared "common", "organizations" and "consumers" endpoints let any Microsoft tenant assert any email address.'),
             'issuer_url.starts_with' => __('The issuer URL must start with https://.'),
@@ -120,6 +122,7 @@ class SocialLoginSettingsController extends Controller
             'allowed_domains' => $validated['allowed_domains'] ?? null,
             'auto_provision' => (bool) $validated['auto_provision'],
             'auto_approve' => (bool) $validated['auto_approve'],
+            'skip_two_factor' => (bool) $validated['skip_two_factor'],
         ]);
 
         // Blank means "leave it alone", so editing the allow-list does not
@@ -136,7 +139,13 @@ class SocialLoginSettingsController extends Controller
             $this->discovery->forget($issuer);
         }
 
-        $this->activity->log(Action::SettingsUpdated, context: ['section' => 'social-login.'.$case->value]);
+        // Whether the provider may stand in for two-factor is recorded
+        // alongside the section, as the Security settings record theirs: it
+        // is the one setting here that weakens a sign-in.
+        $this->activity->log(Action::SettingsUpdated, context: [
+            'section' => 'social-login.'.$case->value,
+            'skip_two_factor' => $settings->skip_two_factor,
+        ]);
 
         return back()->with('success', __(':provider settings saved.', ['provider' => $case->label()]));
     }

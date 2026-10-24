@@ -193,6 +193,19 @@ class ZipDownloadsController extends Controller
         // the whole archive is refused and a fresh one leaves the file out.
         $contained = $zipDownload->contained_file_ids;
 
+        // Asked on every fetch, the first and any later one, the way a
+        // single file's download asks the policy on every request. The
+        // archive was built while its requester could see everything in
+        // it, but it waits up to a day, and access can end in that time:
+        // unshared, expired, deleted. Without this the prepared archive is
+        // the way around the revocation. A deleted file is not found at
+        // all, so a member missing from the query refuses too.
+        abort_if(
+            $contained !== null && ! $this->stillViewable($contained, $user),
+            403,
+            __('You no longer have access to a file in this archive.'),
+        );
+
         abort_if(
             $contained !== null && File::query()
                 ->whereIn('id', $contained)
@@ -216,6 +229,20 @@ class ZipDownloadsController extends Controller
             ContentDisposition::attachment($this->filenameFor($zipDownload)),
             $size,
         );
+    }
+
+    /**
+     * Whether the requester may still see every file an archive holds.
+     *
+     * @param  list<int>  $fileIds
+     */
+    private function stillViewable(array $fileIds, User $requester): bool
+    {
+        $fileIds = array_values(array_unique($fileIds));
+        $files = File::query()->whereIn('id', $fileIds)->get();
+
+        return $files->count() === count($fileIds)
+            && $files->every(fn (File $file): bool => Gate::forUser($requester)->allows('view', $file));
     }
 
     /**
@@ -246,11 +273,9 @@ class ZipDownloadsController extends Controller
     {
         $recorded = $zipDownload->contained_file_ids;
 
-        // What the job wrote down, read back as it stands — deliberately
-        // not filtered by what the requester may see today. The bytes are
-        // in the archive already, so a file that has since expired or left
-        // their scope is still being given to them, and a count that
-        // quietly dropped it would understate what was taken.
+        // What the job wrote down, read back as it stands. download() has
+        // already refused the archive if the requester may no longer see
+        // any of it, so everything here is still theirs to take.
         $contained = $recorded === null
             ? $this->resolveSelection($zipDownload, $requester)
             : File::query()->whereIn('id', $recorded)->get();

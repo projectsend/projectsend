@@ -109,7 +109,15 @@ export default function Profile({
                             <InputError className="mt-2" message={errors.email} />
                         </div>
 
-                        {emailChanged && (
+                        {/* An account with no password here confirms through its
+                            provider instead: saving opens that dialog. */}
+                        {emailChanged && !auth.has_password && (
+                            <p className="text-muted-foreground text-sm">
+                                {t('A password reset goes to this address, so saving asks you to confirm it is you first.')}
+                            </p>
+                        )}
+
+                        {emailChanged && auth.has_password && (
                             <div className="grid gap-2">
                                 <Label htmlFor="current_password">{t('Current password')}</Label>
 

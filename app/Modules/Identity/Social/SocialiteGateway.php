@@ -31,9 +31,15 @@ class SocialiteGateway implements SocialGateway
         private readonly OidcDiscovery $discovery,
     ) {}
 
-    public function redirect(SocialSettings $settings): RedirectResponse
+    public function redirect(SocialSettings $settings, bool $reauthenticate = false): RedirectResponse
     {
-        return $this->driver($settings)->redirect();
+        $driver = $this->driver($settings);
+
+        if ($reauthenticate) {
+            $driver->with($settings->provider->reauthenticationParameters());
+        }
+
+        return $driver->redirect();
     }
 
     public function identity(SocialSettings $settings): ?SocialIdentity

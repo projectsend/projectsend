@@ -11,6 +11,8 @@ use App\Modules\Clients\ClientPortalCustomFields;
 use App\Modules\Files\DeletedAccountContent;
 use App\Modules\Identity\Erasure\ErasureSchedule;
 use App\Modules\Identity\Erasure\SelfDeletion;
+use App\Modules\Identity\Http\ConfirmationRequired;
+use App\Modules\Identity\Reauthentication;
 use App\Modules\Identity\StaffAccounts;
 use App\Modules\Identity\StartPage;
 use App\Modules\Identity\StartPages;
@@ -121,12 +123,20 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validate([
-            'password' => ['required', 'current_password'],
-        ]);
-
         $user = $request->user();
         assert($user !== null);
+
+        // The password, or for an account with none here a fresh sign-in
+        // at its provider, as the email change asks (ProfileUpdateRequest).
+        $reauthentication = app(Reauthentication::class);
+
+        if ($reauthentication->hasPassword($user)) {
+            $request->validate([
+                'password' => ['required', 'current_password'],
+            ]);
+        } elseif (! $reauthentication->recentlyConfirmed($request)) {
+            ConfirmationRequired::throw($request);
+        }
 
         // The rule every other door into this already asks: Staff update(),
         // guardDeletable(), and both role-conversion directions. This one

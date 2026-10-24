@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Modules\Identity\AuthSource;
 use App\Modules\Identity\Ldap\LdapAuthenticator;
+use App\Modules\Identity\StaffSignInPolicy;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,6 +21,7 @@ class NewPasswordController extends Controller
 {
     public function __construct(
         private readonly LdapAuthenticator $ldap,
+        private readonly StaffSignInPolicy $staffSignIn,
     ) {}
 
     /**
@@ -118,6 +120,19 @@ class NewPasswordController extends Controller
                 if ($this->ldap->isDirectoryAccount($user)) {
                     throw ValidationException::withMessages([
                         'email' => [__('This account signs in through your directory, so its password is not set here. Ask an administrator if you cannot sign in.')],
+                    ]);
+                }
+
+                // Same place and same reasoning: staff who must sign in
+                // through a provider would otherwise get a password back
+                // from their mailbox, which is the hole StaffSignInPolicy
+                // closes. The link was asked for like any other, so that
+                // asking says nothing; only its holder reads this.
+                $provider = $this->staffSignIn->providerFor($user);
+
+                if ($provider !== null) {
+                    throw ValidationException::withMessages([
+                        'email' => [__('Staff sign in with :provider here, so there is no password to set. Use the :provider button on the sign-in page.', ['provider' => $provider->label()])],
                     ]);
                 }
 

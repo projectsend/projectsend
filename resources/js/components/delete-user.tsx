@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 
 // Components...
@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 
 import HeadingSmall from '@/components/heading-small';
 import { useTranslation } from '@/hooks/use-translation';
+import { type SharedData } from '@/types';
 
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
@@ -30,6 +31,9 @@ export default function DeleteUser({ graceDays, filesWithdrawn, filesDeletedImme
         : filesWithdrawn
           ? t('The files you uploaded stop being available to everyone you shared them with as soon as you confirm.')
           : null;
+    // Without a password here, the server asks for a fresh sign-in at the
+    // connected provider instead, through the confirmation dialog.
+    const { has_password: hasPassword } = usePage<SharedData>().props.auth;
     const passwordInput = useRef<HTMLInputElement>(null);
     const { data, setData, delete: destroy, processing, reset, errors, clearErrors } = useForm({ password: '' });
 
@@ -74,13 +78,17 @@ export default function DeleteUser({ graceDays, filesWithdrawn, filesDeletedImme
                     <DialogContent>
                         <DialogTitle>{t('Are you sure you want to delete your account?')}</DialogTitle>
                         <DialogDescription>
-                            {t('Your account will be deactivated now and permanently erased after :days days. Enter your password to confirm.', {
-                                days: graceDays,
-                            })}
+                            {hasPassword
+                                ? t('Your account will be deactivated now and permanently erased after :days days. Enter your password to confirm.', {
+                                      days: graceDays,
+                                  })
+                                : t('Your account will be deactivated now and permanently erased after :days days. You will be asked to confirm it is you.', {
+                                      days: graceDays,
+                                  })}
                         </DialogDescription>
                         {filesDeletedImmediately && <p className="text-destructive text-sm font-medium">{filesNotice}</p>}
                         <form className="space-y-6" onSubmit={deleteUser}>
-                            <div className="grid gap-2">
+                            <div className="grid gap-2" hidden={!hasPassword}>
                                 <Label htmlFor="password" className="sr-only">
                                     {t('Password')}
                                 </Label>

@@ -27,6 +27,9 @@ class FakeSocialGateway implements SocialGateway
 
     public int $identityCalls = 0;
 
+    /** Whether the last redirect asked the provider to make the person sign in again. */
+    public ?bool $lastReauthenticate = null;
+
     public function __construct(private ?SocialIdentity $identity = null) {}
 
     public function willReturn(?SocialIdentity $identity): self
@@ -36,9 +39,10 @@ class FakeSocialGateway implements SocialGateway
         return $this;
     }
 
-    public function redirect(SocialSettings $settings): RedirectResponse
+    public function redirect(SocialSettings $settings, bool $reauthenticate = false): RedirectResponse
     {
         $this->redirects++;
+        $this->lastReauthenticate = $reauthenticate;
 
         return new RedirectResponse('https://provider.test/authorize');
     }

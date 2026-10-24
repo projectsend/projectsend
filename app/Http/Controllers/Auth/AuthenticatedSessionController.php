@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Modules\Identity\Ldap\LdapSettings;
+use App\Modules\Identity\StaffSignInPolicy;
 use App\Modules\Identity\StartPages;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -27,6 +28,10 @@ class AuthenticatedSessionController extends Controller
             'canRegister' => app(Settings::class)->get(Setting::ClientsCanRegister) === true,
             'status' => $request->session()->get('status'),
             'usernameSignIn' => LdapSettings::current()->allowsUsernameSignIn(),
+            // Said to everybody, because the password form refuses staff
+            // without saying why (StaffSignInPolicy): this is where they
+            // learn which button is theirs.
+            'staffSignInProvider' => app(StaffSignInPolicy::class)->provider()?->label(),
         ]);
     }
 

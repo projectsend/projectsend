@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useTranslation } from '@/hooks/use-translation';
+import { type ConfirmWith } from '@/types';
 
 interface Refused {
     // Typed as pending, but what the start event hands over is the request
@@ -17,6 +18,7 @@ interface Refused {
     // is what lets a replay finish the form's own submission.
     visit: PendingVisit;
     hasPassword: boolean;
+    confirmWith: ConfirmWith | null;
 }
 
 const visitKey = (method: string, url: string) => `${method.toUpperCase()} ${url}`;
@@ -76,7 +78,11 @@ export function PasswordConfirmationDialog() {
 
             setPassword('');
             setError(undefined);
-            setRefused({ visit, hasPassword: response.data?.has_password !== false });
+            setRefused({
+                visit,
+                hasPassword: response.data?.has_password !== false,
+                confirmWith: (response.data?.confirm_with as ConfirmWith | null | undefined) ?? null,
+            });
         });
 
         return () => {
@@ -139,7 +145,26 @@ export function PasswordConfirmationDialog() {
                     </DialogDescription>
                 </DialogHeader>
 
-                {refused && !refused.hasPassword ? (
+                {refused && !refused.hasPassword && refused.confirmWith ? (
+                    <div className="space-y-4">
+                        {/* Leaves the page: the provider's sign-in is a full
+                            navigation, and it comes back here confirmed. What
+                            was being done has to be done again. */}
+                        <p className="text-muted-foreground text-sm">
+                            {t('Sign in to :provider again to confirm it is you. You will come back to this page, and can then try again.', {
+                                provider: refused.confirmWith.label,
+                            })}
+                        </p>
+                        <DialogFooter>
+                            <Button variant="ghost" type="button" onClick={close}>
+                                {t('Cancel')}
+                            </Button>
+                            <Button type="button" onClick={() => router.post(route('password.confirm.provider', { provider: refused.confirmWith!.provider }))}>
+                                {t('Confirm with :provider', { provider: refused.confirmWith.label })}
+                            </Button>
+                        </DialogFooter>
+                    </div>
+                ) : refused && !refused.hasPassword ? (
                     <div className="space-y-4">
                         <p className="text-muted-foreground text-sm">
                             {t('You sign in through a connected account, so there is no password here to confirm. Set one to continue.')}

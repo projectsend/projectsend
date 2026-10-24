@@ -136,6 +136,15 @@ Route::middleware('auth')->group(function () {
         ->middleware('throttle:6,1,password-confirm')
         ->name('password.confirm.store');
 
+    // The same confirmation for an account with no password to type: it
+    // signs in again at its provider, and the callback checks that the
+    // identity that came back is the one connected to this account. See
+    // Reauthentication. Its own bucket, because the redirect is cheap and
+    // the provider's sign-in page is somebody else's to protect.
+    Route::post('confirm-password/{provider}', [SocialLoginController::class, 'confirm'])
+        ->middleware('throttle:6,1,password-confirm-provider')
+        ->name('password.confirm.provider');
+
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 });

@@ -11,6 +11,7 @@ use App\Modules\Groups\Models\MembershipRequest;
 use App\Modules\Identity\Passwords\PasswordPolicy;
 use App\Modules\Identity\Permissions\Permission;
 use App\Modules\Identity\Permissions\PermissionChecker;
+use App\Modules\Identity\Reauthentication;
 use App\Modules\Identity\Social\SocialSettings;
 use App\Modules\Mcp\Http\Middleware\EnsureConnectorCapability;
 use App\Modules\Notifications\InAppNotification;
@@ -75,6 +76,11 @@ class HandleInertiaRequests extends Middleware
                 'permissions' => ($user = $request->user()) !== null
                     ? app(PermissionChecker::class)->grantedKeys($user)
                     : [],
+                // Whether a "current password" field means anything for
+                // this account. Without one, the forms that ask for it
+                // leave it out and the confirmation dialog offers the
+                // connected provider instead (Reauthentication).
+                'has_password' => $user === null || app(Reauthentication::class)->hasPassword($user),
             ],
             'edition' => $capabilities->edition()->value,
             'noindex' => app(Settings::class)->get(Setting::DiscourageSearchIndexing),

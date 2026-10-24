@@ -11,6 +11,7 @@ use App\Modules\Identity\AuthSource;
 use App\Modules\Identity\Social\SocialAccount;
 use App\Modules\Identity\Social\SocialProvider;
 use App\Modules\Identity\Social\SocialSettings;
+use App\Modules\Identity\StaffSignInPolicy;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -85,6 +86,16 @@ class ConnectedAccountsController extends Controller
 
         if ($link === null) {
             return back();
+        }
+
+        // Staff who must sign in through this provider have no other way
+        // in at all, whatever else the account holds (StaffSignInPolicy).
+        if (app(StaffSignInPolicy::class)->providerFor($user) === $case) {
+            throw ValidationException::withMessages([
+                'provider' => __('Staff sign in with :provider here, so it cannot be disconnected.', [
+                    'provider' => $case->label(),
+                ]),
+            ]);
         }
 
         // The mirror image of AccountConversion::requiresNewPassword():

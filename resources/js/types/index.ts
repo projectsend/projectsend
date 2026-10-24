@@ -5,6 +5,14 @@ import { LucideIcon } from 'lucide-react';
 export interface Auth {
     user: User;
     permissions: string[];
+    /** False when this account has no password to type here; it confirms through its connected provider instead. */
+    has_password: boolean;
+}
+
+/** The provider an account with no password confirms through, from Reauthentication. */
+export interface ConfirmWith {
+    provider: string;
+    label: string;
 }
 
 export interface BreadcrumbItem {

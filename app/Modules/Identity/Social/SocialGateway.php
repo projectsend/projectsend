@@ -21,8 +21,11 @@ interface SocialGateway
 {
     /**
      * Begin the exchange: where to send the browser.
+     *
+     * With $reauthenticate, the provider is asked to make the person sign
+     * in again (SocialProvider::reauthenticationParameters()).
      */
-    public function redirect(SocialSettings $settings): RedirectResponse;
+    public function redirect(SocialSettings $settings, bool $reauthenticate = false): RedirectResponse;
 
     /**
      * The identity this provider just asserted.

@@ -149,7 +149,8 @@ class LoginRequest extends FormRequest
      * The account whose password checks out, or null.
      *
      * The rule itself -- local hash first, directory when the credentials
-     * live there -- is PasswordVerification's, because this is no longer
+     * live there, and never for staff who must sign in through a provider
+     * (StaffSignInPolicy) -- is PasswordVerification's, because this is no longer
      * the only screen that has to ask it. See that class.
      */
     private function verifyCredentials(?User $user): ?User

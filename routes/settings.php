@@ -248,6 +248,11 @@ Route::middleware('auth')->group(function () {
             ->name('system-settings.social-login.edit');
         Route::patch('system/settings/social-login/{provider}', [SocialLoginSettingsController::class, 'update'])
             ->name('system-settings.social-login.update');
+        // Its own path: under social-login/ it would be read as {provider}.
+        // password.confirm, because it decides how every staff member signs in.
+        Route::patch('system/settings/staff-sign-in', [SocialLoginSettingsController::class, 'updateStaffSignIn'])
+            ->middleware('password.confirm')
+            ->name('system-settings.staff-sign-in.update');
 
         // Unlike LDAP and social login above, this one does get a
         // capability: group — present in both editions, so a self-hosted

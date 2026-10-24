@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Modules\Mcp\OAuth\Http\Controllers;
 
 use App\Models\User;
+use App\Modules\Identity\Http\ConfirmationRequired;
 use App\Modules\Identity\PasswordVerification;
+use App\Modules\Identity\Reauthentication;
 use App\Modules\Mcp\Http\Middleware\EnsureConnectorCapability;
 use App\Modules\Mcp\OAuth\AuthorizationRequest;
 use App\Modules\Mcp\OAuth\AuthorizeRefused;
@@ -105,7 +107,16 @@ final class AuthorizeController
             return $this->screen($request, 'Your account cannot connect an assistant on this site.', 403);
         }
 
-        if (! $this->passwordVerifies($user, (string) ($validated['password'] ?? ''))) {
+        // The password once more, or for an account with no password here a
+        // fresh sign-in at its provider, through the dialog password.confirm
+        // opens (Reauthentication).
+        $reauthentication = app(Reauthentication::class);
+
+        if (! $reauthentication->hasPassword($user)) {
+            if (! $reauthentication->recentlyConfirmed($request)) {
+                ConfirmationRequired::throw($request);
+            }
+        } elseif (! $this->passwordVerifies($user, (string) ($validated['password'] ?? ''))) {
             throw ValidationException::withMessages(['password' => __('The password is incorrect.')]);
         }
 

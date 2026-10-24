@@ -407,6 +407,11 @@ enum Setting: string
     // assistants anywhere near the site turns it off here.
     case AiConnectorEnabled = 'ai_connector_enabled';
 
+    // The one sign-in provider staff must use, as a SocialProvider value,
+    // or '' for "passwords too". Read through StaffSignInPolicy, which
+    // only enforces it while that provider is switched on and configured.
+    case StaffSignInProvider = 'staff_sign_in_provider';
+
     public function type(): SettingType
     {
         return match ($this) {
@@ -440,7 +445,8 @@ enum Setting: string
             self::CaptchaKeySource,
             self::AccountErasureContentAction,
             self::AccountSelfDeleteFiles,
-            self::AccountSelfDeleteScope => SettingType::String,
+            self::AccountSelfDeleteScope,
+            self::StaffSignInProvider => SettingType::String,
 
             self::ClientsCanRegister,
             self::ClientsAutoApprove,
@@ -595,6 +601,7 @@ enum Setting: string
             // upgrade changes nothing about when files are deleted.
             self::AccountSelfDeleteFiles => 'after_grace_period',
             self::AccountSelfDeleteScope => 'any',
+            self::StaffSignInProvider => '',
             // Commenting is on for every file out of the box, but only
             // between people who are logged in: reaching the public
             // requires PublicCommentsEnabled, which is off by default.

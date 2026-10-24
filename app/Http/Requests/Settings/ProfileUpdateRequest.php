@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Modules\Clients\ClientFieldContext;
 use App\Modules\Clients\ClientPortalCustomFields;
 use App\Modules\Identity\AuthSource;
+use App\Modules\Identity\Http\ConfirmationRequired;
+use App\Modules\Identity\Reauthentication;
 use App\Modules\Identity\StartPages;
 use App\Support\Rules;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -48,8 +50,11 @@ class ProfileUpdateRequest extends FormRequest
             // The same rule destroy() one controller away has always
             // asked, for the same reason: both doors lead to owning the
             // account.
+            //
+            // An account with no password to type proves it another way,
+            // before validation runs: see prepareForValidation().
             'current_password' => [
-                Rule::excludeIf(! $this->changesEmail()),
+                Rule::excludeIf(! $this->changesEmail() || ! $this->hasPassword()),
                 'required',
                 'current_password',
             ],
@@ -106,6 +111,28 @@ class ProfileUpdateRequest extends FormRequest
      * profile with the address typed in a different case would be read as
      * a change and demand a password for nothing.
      */
+    /**
+     * An account with no password here — signed up through a provider, or
+     * staff who must sign in through one — confirms by signing in again at
+     * the provider instead, through the same dialog password.confirm opens.
+     */
+    protected function prepareForValidation(): void
+    {
+        $user = $this->user();
+
+        if ($user !== null && $this->changesEmail() && ! $this->hasPassword()
+            && ! app(Reauthentication::class)->recentlyConfirmed($this)) {
+            ConfirmationRequired::throw($this);
+        }
+    }
+
+    private function hasPassword(): bool
+    {
+        $user = $this->user();
+
+        return $user === null || app(Reauthentication::class)->hasPassword($user);
+    }
+
     private function changesEmail(): bool
     {
         $user = $this->user();

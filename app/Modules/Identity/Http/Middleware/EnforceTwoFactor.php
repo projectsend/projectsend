@@ -72,7 +72,12 @@ class EnforceTwoFactor
         // same exit now that a provider account's first password arrives by
         // email: asking for the link, opening it and saving it all happen
         // while signed in, before there is a password to enrol with.
-        if ($request->routeIs('two-factor.*', 'password.confirm*', 'password.edit', 'password.update', 'password.link', 'password.reset', 'password.store', 'logout', 'locale.update')) {
+        //
+        // social.callback is the other exit for that account: confirming by
+        // signing in again at its provider (password.confirm.provider)
+        // comes back through it while signed in. The callback only ever
+        // finishes an exchange this session started.
+        if ($request->routeIs('two-factor.*', 'password.confirm*', 'password.edit', 'password.update', 'password.link', 'password.reset', 'password.store', 'social.callback', 'logout', 'locale.update')) {
             return $next($request);
         }
 

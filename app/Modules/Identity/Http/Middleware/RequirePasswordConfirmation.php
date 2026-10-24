@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Identity\Http\Middleware;
 
-use App\Modules\Identity\AuthSource;
+use App\Modules\Identity\Http\ConfirmationRequired;
 use Closure;
 use Illuminate\Auth\Middleware\RequirePassword;
 use Illuminate\Http\Request;
@@ -51,15 +51,8 @@ class RequirePasswordConfirmation extends RequirePassword
 
     private function inertiaRefusal(Request $request): Response
     {
-        $user = $request->user();
-
-        return $this->responseFactory->json([
-            'message' => 'Password confirmation required.',
-            // The same question the confirm-password screen asks, and see
-            // there for why it is Social and not "anything but Local": an
-            // account provisioned by a provider has no password to type,
-            // and the dialog has to offer it a way to set one instead.
-            'has_password' => $user !== null && $user->auth_source !== AuthSource::Social,
-        ], 423, [self::HEADER => 'required']);
+        // has_password and confirm_with come from Reauthentication: an
+        // account with no password to type is offered its provider instead.
+        return ConfirmationRequired::response($request);
     }
 }

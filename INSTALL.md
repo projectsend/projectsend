@@ -369,6 +369,18 @@ server {
         fastcgi_buffers 8 32k;
     }
 
+    # Finishing a large upload can take longer than nginx's default 60
+    # seconds. Only these two addresses wait longer.
+    location ~ ^/(api/v1/)?uploads/[^/]+/complete$ {
+        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $realpath_root/index.php;
+        fastcgi_param SCRIPT_NAME /index.php;
+        fastcgi_buffer_size 32k;
+        fastcgi_buffers 8 32k;
+        fastcgi_read_timeout 900s;
+    }
+
     location ~ /\.(?!well-known) {
         deny all;
     }

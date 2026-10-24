@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Modules\Clients\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Platform\Seats\SeatAllowance;
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\Notifications\ClientAccountApprovedNotification;
 use App\Modules\Clients\Notifications\ClientAccountDeniedNotification;
-use App\Modules\Identity\UserType;
+use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use App\Support\Pagination;
@@ -25,6 +25,12 @@ use Inertia\Response;
 /**
  * The approval queue for self-registered clients (v1's
  * clients-requests.php): approve activates the account, deny deletes it.
+ *
+ * Narrowed by StaffLibraryScope like the client list. A self-registered
+ * account is assigned to nobody, so a client-scoped staff member holding
+ * approve_account_requests sees an empty queue and is refused (404) on any
+ * request that is not one of their clients. The permission alone is not
+ * the boundary.
  */
 class AccountRequestsController extends Controller
 {
@@ -32,6 +38,7 @@ class AccountRequestsController extends Controller
         private readonly SeatAllowance $seats,
         private readonly ActivityLogger $activity,
         private readonly Settings $settings,
+        private readonly StaffLibraryScope $scope,
     ) {}
 
     public function index(Request $request): Response
@@ -42,8 +49,10 @@ class AccountRequestsController extends Controller
 
         $filters = ['search' => $validated['search'] ?? null];
 
-        $requests = User::query()
-            ->where('type', UserType::Client)
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        $requests = $this->scope->clients($viewer)
             ->where('account_requested', true)
             ->when($filters['search'], fn (Builder $query, string $search) => $query->where(fn (Builder $q) => $q
                 ->where('name', 'like', "%{$search}%")
@@ -65,9 +74,9 @@ class AccountRequestsController extends Controller
         ]);
     }
 
-    public function approve(User $client): RedirectResponse
+    public function approve(Request $request, User $client): RedirectResponse
     {
-        abort_unless($client->isClient() && $client->account_requested, 404);
+        $this->guardRequest($request, $client);
 
         // The moment a request becomes a client this installation has taken
         // on, which is where the seat is spent — provisioning deliberately
@@ -89,9 +98,9 @@ class AccountRequestsController extends Controller
         return back()->with('success', __('Account request approved.'));
     }
 
-    public function deny(User $client): RedirectResponse
+    public function deny(Request $request, User $client): RedirectResponse
     {
-        abort_unless($client->isClient() && $client->account_requested, 404);
+        $this->guardRequest($request, $client);
 
         $name = $client->name;
         $email = $client->email;
@@ -109,5 +118,19 @@ class AccountRequestsController extends Controller
         }
 
         return back()->with('success', __('Account request denied.'));
+    }
+
+    /** A pending client this staff member may act on, or a 404 — the same answer whether it exists or not. */
+    private function guardRequest(Request $request, User $client): void
+    {
+        $viewer = $request->user();
+        assert($viewer !== null);
+
+        abort_unless(
+            $client->isClient()
+                && $client->account_requested
+                && $this->scope->canAssignClient($viewer, $client),
+            404,
+        );
     }
 }

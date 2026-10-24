@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
 use App\Modules\Comments\Access\VisibleCommentScope;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Queue\StalledZipBuilds;
 use App\Modules\Files\Scanning\ScanStatus;
@@ -12,7 +12,6 @@ use App\Modules\Identity\Passwords\PasswordPolicy;
 use App\Modules\Identity\Permissions\Permission;
 use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Identity\Social\SocialSettings;
-use App\Modules\Identity\UserType;
 use App\Modules\Mcp\Http\Middleware\EnsureConnectorCapability;
 use App\Modules\Notifications\InAppNotification;
 use App\Modules\Platform\Announcements\Events\ResolvingAnnouncement;
@@ -164,8 +163,9 @@ class HandleInertiaRequests extends Middleware
         $counts = [];
 
         if ($checker->allows($user, Permission::ApproveAccountRequests)) {
-            $counts['account_requests'] = User::query()
-                ->where('type', UserType::Client)
+            // The queue's own scope, so the badge never counts requests
+            // the queue would not show this person.
+            $counts['account_requests'] = app(StaffLibraryScope::class)->clients($user)
                 ->where('account_requested', true)
                 ->count();
         }

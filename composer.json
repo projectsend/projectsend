@@ -16,6 +16,7 @@
         "directorytree/ldaprecord": "^3",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
+        "laravel/mcp": "^1.0.1",
         "laravel/sanctum": "^4.3",
         "laravel/socialite": "^5.29",
         "laravel/tinker": "^2.10.1",

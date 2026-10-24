@@ -8,7 +8,7 @@ import { Link, usePage } from '@inertiajs/react';
 
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
     const { t } = useTranslation();
-    const { auth, social_login } = usePage<SharedData>().props;
+    const { auth, social_login, ai_connector } = usePage<SharedData>().props;
     const currentPath = window.location.pathname;
 
     const sidebarNavItems: NavItem[] = [
@@ -50,6 +50,19 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                   {
                       title: t('API tokens'),
                       url: '/settings/api-tokens',
+                      icon: null,
+                  },
+              ]
+            : []),
+        // The assistants connected through the MCP server. Staff only here:
+        // where a client may connect, a hosted edition links to it itself.
+        // Follows the installation's switch as well as the capability, so
+        // it never leads to a page that answers 404.
+        ...(auth.user.type === 'staff' && ai_connector
+            ? [
+                  {
+                      title: t('AI connections'),
+                      url: '/settings/ai-connections',
                       icon: null,
                   },
               ]

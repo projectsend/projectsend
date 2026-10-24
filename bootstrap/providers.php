@@ -7,6 +7,7 @@ use App\Modules\Comments\CommentsServiceProvider;
 use App\Modules\Files\FilesServiceProvider;
 use App\Modules\Groups\GroupsServiceProvider;
 use App\Modules\Identity\IdentityServiceProvider;
+use App\Modules\Mcp\McpServiceProvider;
 use App\Modules\Notifications\NotificationsServiceProvider;
 use App\Modules\Platform\Branding\BrandingServiceProvider;
 use App\Modules\Platform\PlatformServiceProvider;
@@ -20,6 +21,7 @@ return [
     FilesServiceProvider::class,
     GroupsServiceProvider::class,
     IdentityServiceProvider::class,
+    McpServiceProvider::class,
     NotificationsServiceProvider::class,
     PlatformServiceProvider::class,
     BrandingServiceProvider::class,

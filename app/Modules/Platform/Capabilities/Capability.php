@@ -167,6 +167,10 @@ enum Capability: string
     // sit unusable for a fleet that had everything else in place.
     case PlatformManaged = 'platform.managed';
 
+    // Both editions. The MCP server an AI assistant connects to: its
+    // tools act with the person's own live permissions, so a site that
+    // has it gives nobody a power they did not already have on the web.
+    // The key exists so a hosted plan can subtract it.
     case AiConnector = 'ai.connector';
 
     // Both editions, and present by default: a self-hosted installation
@@ -203,13 +207,13 @@ enum Capability: string
             self::UsersManage,
             self::CaptchaConfigure,
             self::Branding,
+            self::AiConnector,
             self::ZipDownloads => [Edition::Community, Edition::Cloud],
 
             self::AttributionHide,
             self::StorageManaged,
             self::CaptchaManagedKeys,
-            self::PlatformManaged,
-            self::AiConnector => [Edition::Cloud],
+            self::PlatformManaged => [Edition::Cloud],
         };
     }
 

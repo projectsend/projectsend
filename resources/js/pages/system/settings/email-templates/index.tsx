@@ -38,7 +38,7 @@ export default function EmailTemplatesIndex({ templates }: EmailTemplatesIndexPr
                     description={t('Customize the wording of any transactional email sent by this installation.')}
                 />
 
-                <div className="mt-6 overflow-x-auto rounded-lg border">
+                <div className="relative mt-6 overflow-x-auto rounded-lg border">
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="bg-muted/50 border-b text-left">

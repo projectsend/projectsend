@@ -97,7 +97,7 @@ export default function VirusScanningSettings({
             <Head title={t('Virus scanning')} />
 
             <div className="space-y-6 px-4 py-6">
-                <div className="flex items-start justify-between">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 [&>:not(:first-child)]:mb-6">
                     <Heading title={t('Virus scanning')} description={t('Uploaded files are checked before anyone can download them')} />
 
                     {/* The screen this one leads to: whatever the scanner

@@ -2355,5 +2355,12 @@
     "Unverified": "Sense verificar",
     "Verified": "Verificat",
     "What it can do": "Què podrà fer",
-    "Your own files": "Només els teus fitxers"
+    "Your own files": "Només els teus fitxers",
+    "Select all on this page": "Selecciona tot el que hi ha en aquesta pàgina",
+    "Select all :count items": "Selecciona els :count elements",
+    "All :count items are selected.": "Tots els :count elements estan seleccionats.",
+    "Selecting…": "Seleccionant…",
+    "Could not select every item. Try again.": "No s'ha pogut seleccionar tot. Torna-ho a provar.",
+    "Go to page": "Ves a la pàgina",
+    "Go": "Ves-hi"
 }

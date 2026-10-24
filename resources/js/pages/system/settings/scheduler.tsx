@@ -123,7 +123,7 @@ export default function SchedulerSettings({
                 </div>
 
                 {tab === 'tasks' && (
-                    <div className="overflow-x-auto rounded-lg border">
+                    <div className="relative overflow-x-auto rounded-lg border">
                         <table className="w-full text-sm">
                             <thead className="bg-muted/40 text-muted-foreground text-left text-xs">
                                 <tr>
@@ -243,7 +243,7 @@ export default function SchedulerSettings({
                             <p className="text-muted-foreground mt-4 text-sm">{t('No failed jobs.')}</p>
                         ) : (
                             <>
-                                <div className="mt-4 overflow-x-auto rounded-lg border">
+                                <div className="relative mt-4 overflow-x-auto rounded-lg border">
                                     <table className="w-full text-sm">
                                         <thead className="bg-muted/40 text-muted-foreground text-left text-xs">
                                             <tr>

@@ -2355,5 +2355,12 @@
     "Unverified": "Niet geverifieerd",
     "Verified": "Geverifieerd",
     "What it can do": "Wat het mag doen",
-    "Your own files": "Alleen je eigen bestanden"
+    "Your own files": "Alleen je eigen bestanden",
+    "Select all on this page": "Alles op deze pagina selecteren",
+    "Select all :count items": "Alle :count items selecteren",
+    "All :count items are selected.": "Alle :count items zijn geselecteerd.",
+    "Selecting…": "Bezig met selecteren…",
+    "Could not select every item. Try again.": "Niet alles kon worden geselecteerd. Probeer het opnieuw.",
+    "Go to page": "Ga naar pagina",
+    "Go": "Ga"
 }

@@ -2355,5 +2355,12 @@
     "Unverified": "未验证",
     "Verified": "已验证",
     "What it can do": "它可以做什么",
-    "Your own files": "仅您自己的文件"
+    "Your own files": "仅您自己的文件",
+    "Select all on this page": "选择本页全部",
+    "Select all :count items": "选择全部 :count 个项目",
+    "All :count items are selected.": "已选择全部 :count 个项目。",
+    "Selecting…": "正在选择…",
+    "Could not select every item. Try again.": "无法选择全部项目，请重试。",
+    "Go to page": "跳转到页",
+    "Go": "跳转"
 }

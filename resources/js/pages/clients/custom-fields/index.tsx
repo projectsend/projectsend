@@ -47,7 +47,7 @@ export default function CustomFieldsIndex({ fields, filters }: CustomFieldsIndex
             <Head title={t('Custom fields')} />
 
             <div className="px-4 py-6">
-                <div className="flex items-start justify-between">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 [&>:not(:first-child)]:mb-6">
                     <Heading title={t('Custom fields')} description={t('Extra fields shown on the client create and edit screens.')} />
                     <Button asChild>
                         <Link href={route('client-custom-fields.create')}>{t('New field')}</Link>

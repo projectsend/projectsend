@@ -62,7 +62,7 @@ export default function GroupsIndex({ groups, pagination, filters }: GroupsIndex
             <Head title={t('Groups')} />
 
             <div className="px-4 py-6">
-                <div className="flex items-start justify-between">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 [&>:not(:first-child)]:mb-6">
                     <Heading title={t('Groups')} description={t('Share files with several clients at once')} />
                     {can('create_groups') && (
                         <Button asChild>

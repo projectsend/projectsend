@@ -2355,5 +2355,12 @@
     "Unverified": "Belum terverifikasi",
     "Verified": "Terverifikasi",
     "What it can do": "Apa yang dapat dilakukannya",
-    "Your own files": "Hanya file Anda sendiri"
+    "Your own files": "Hanya file Anda sendiri",
+    "Select all on this page": "Pilih semua di halaman ini",
+    "Select all :count items": "Pilih semua :count item",
+    "All :count items are selected.": "Semua :count item dipilih.",
+    "Selecting…": "Memilih…",
+    "Could not select every item. Try again.": "Tidak dapat memilih semua item. Silakan coba lagi.",
+    "Go to page": "Ke halaman",
+    "Go": "Buka"
 }

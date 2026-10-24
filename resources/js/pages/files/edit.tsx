@@ -401,7 +401,7 @@ export default function FilesEdit({
                 </div>
 
                 {(can_update || comments_enabled || can_view_activity) && (
-                    <nav className="mt-6 flex gap-1 overflow-x-auto border-b">
+                    <nav className="relative mt-6 flex gap-1 overflow-x-auto border-b">
                         {[
                             ...(can_update ? (['general', 'sharing', 'links'] as Tab[]) : []),
                             ...(can_set_version ? (['versions'] as Tab[]) : []),

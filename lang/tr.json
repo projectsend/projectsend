@@ -2355,5 +2355,12 @@
     "Unverified": "Doğrulanmamış",
     "Verified": "Doğrulanmış",
     "What it can do": "Neler yapabilecek",
-    "Your own files": "Yalnızca kendi dosyalarınız"
+    "Your own files": "Yalnızca kendi dosyalarınız",
+    "Select all on this page": "Bu sayfadaki tümünü seçin",
+    "Select all :count items": ":count öğenin tümünü seçin",
+    "All :count items are selected.": "Tüm :count öğe seçildi.",
+    "Selecting…": "Seçiliyor…",
+    "Could not select every item. Try again.": "Öğelerin tümü seçilemedi. Lütfen tekrar deneyin.",
+    "Go to page": "Sayfaya git",
+    "Go": "Git"
 }

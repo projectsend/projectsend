@@ -156,17 +156,60 @@ export default function FilesIndex({
     // Withheld on some hosted plans. Only the zip buttons go: selection
     // also drives bulk edit here, so the checkboxes stay.
     const canZip = useCapability('downloads.zip');
-    const [selectedFileIds, setSelectedFileIds] = useState<Set<number>>(new Set());
-    const [selectedFolderIds, setSelectedFolderIds] = useState<Set<number>>(new Set());
+    const filterKey = JSON.stringify([folder?.id, search, category, uploader, visibility, downloads, role, version, expired]);
+    const carried = carriedSelection?.filterKey === filterKey ? carriedSelection : null;
+    const [selectedFileIds, setSelectedFileIds] = useState<Set<number>>(() => carried?.fileIds ?? new Set());
+    const [selectedFolderIds, setSelectedFolderIds] = useState<Set<number>>(() => carried?.folderIds ?? new Set());
     const selectionCount = selectedFileIds.size + selectedFolderIds.size;
+    // Set by "Select all :count items": the selection then spans every
+    // page of this listing, so paging keeps it. The ids come from
+    // files.selection, as are the files among them this person may delete.
+    const [crossPage, setCrossPage] = useState(carried !== null);
+    const [deletableAcrossPages, setDeletableAcrossPages] = useState<Set<number>>(() => carried?.deletable ?? new Set());
+    const [selectingAll, setSelectingAll] = useState(false);
+    const [selectAllFailed, setSelectAllFailed] = useState(false);
+
+    const clearSelection = () => {
+        carriedSelection = null;
+        setSelectedFileIds(new Set());
+        setSelectedFolderIds(new Set());
+        setCrossPage(false);
+        setDeletableAcrossPages(new Set());
+        setSelectAllFailed(false);
+    };
 
     // A new folder/search/category context (or a different page) means a
     // different set of rows on screen — stale selections would silently
-    // zip items no longer visible.
+    // zip items no longer visible. A selection made across pages survives
+    // paging, since it was made for all of them, but not a new filter.
+    const filterKeyRef = useRef(filterKey);
+    const crossPageRef = useRef(crossPage);
+    crossPageRef.current = crossPage;
     useEffect(() => {
-        setSelectedFileIds(new Set());
-        setSelectedFolderIds(new Set());
-    }, [folder?.id, search, category, uploader, visibility, downloads, role, version, expired, pagination.page]);
+        const filtersChanged = filterKeyRef.current !== filterKey;
+        filterKeyRef.current = filterKey;
+        if (crossPageRef.current && !filtersChanged) return;
+        clearSelection();
+    }, [filterKey, pagination.page]);
+
+    // Anything that changes the library (a bulk edit, a delete, a move)
+    // reloads the page, which mounts before the request's onSuccess
+    // runs, so the carried selection is dropped as the request starts.
+    // So is leaving the screen: only paging carries it.
+    useEffect(
+        () =>
+            router.on('before', (event) => {
+                const { method, url } = event.detail.visit;
+                if (method !== 'get' || url.pathname !== window.location.pathname) carriedSelection = null;
+            }),
+        [],
+    );
+
+    useEffect(() => {
+        carriedSelection = crossPage
+            ? { filterKey, folderIds: selectedFolderIds, fileIds: selectedFileIds, deletable: deletableAcrossPages }
+            : null;
+    }, [crossPage, filterKey, selectedFolderIds, selectedFileIds, deletableAcrossPages]);
 
     const toggleFile = (id: number) =>
         setSelectedFileIds((current) => {
@@ -182,10 +225,50 @@ export default function FilesIndex({
             else next.add(id);
             return next;
         });
-    const clearSelection = () => {
-        setSelectedFileIds(new Set());
-        setSelectedFolderIds(new Set());
+
+    const rowsOnPage = folders.length + files.length;
+    const selectedOnPage = folders.filter((row) => selectedFolderIds.has(row.id)).length + files.filter((row) => selectedFileIds.has(row.id)).length;
+    const pageSelection: boolean | 'indeterminate' =
+        rowsOnPage > 0 && selectedOnPage === rowsOnPage ? true : selectedOnPage > 0 ? 'indeterminate' : false;
+    const togglePage = (checked: boolean) => {
+        const folderIds = folders.map((row) => row.id);
+        const fileIds = files.map((row) => row.id);
+        const apply = (current: Set<number>, ids: number[]) => {
+            const next = new Set(current);
+            for (const id of ids) {
+                if (checked) next.add(id);
+                else next.delete(id);
+            }
+            return next;
+        };
+        setSelectedFolderIds((current) => apply(current, folderIds));
+        setSelectedFileIds((current) => apply(current, fileIds));
     };
+
+    const selectAllMatching = () => {
+        const params = new URLSearchParams(window.location.search);
+        params.delete('page');
+        const requestedFor = filterKey;
+        setSelectingAll(true);
+        setSelectAllFailed(false);
+
+        fetch(`${route('files.selection')}?${params.toString()}`, { credentials: 'same-origin', headers: { Accept: 'application/json' } })
+            .then((response) => {
+                if (!response.ok) throw new Error(String(response.status));
+                return response.json() as Promise<{ folder_ids: number[]; file_ids: number[]; deletable_file_ids: number[] }>;
+            })
+            .then((ids) => {
+                // The filters moved on while this was in flight.
+                if (filterKeyRef.current !== requestedFor) return;
+                setSelectedFolderIds(new Set(ids.folder_ids));
+                setSelectedFileIds(new Set(ids.file_ids));
+                setDeletableAcrossPages(new Set(ids.deletable_file_ids));
+                setCrossPage(true);
+            })
+            .catch(() => setSelectAllFailed(true))
+            .finally(() => setSelectingAll(false));
+    };
+
     const downloadSelectionAsZip = () => zip.start({ file_ids: [...selectedFileIds], folder_ids: [...selectedFolderIds] });
 
     const bulkEditFiles = (payload: BulkEditPayload) =>
@@ -198,7 +281,8 @@ export default function FilesIndex({
     // Only the selected files this person may delete. The server asks
     // each one again (FilesController::bulkDestroy); this decides whether
     // the button shows and what it says.
-    const deletableFileIds = files.filter((file) => selectedFileIds.has(file.id) && file.can_delete).map((file) => file.id);
+    const deletableOnPage = new Set(files.filter((file) => file.can_delete).map((file) => file.id));
+    const deletableFileIds = [...selectedFileIds].filter((id) => deletableOnPage.has(id) || deletableAcrossPages.has(id));
 
     const bulkDeleteFiles = () =>
         router.delete(route('files.bulk-destroy'), {
@@ -301,7 +385,7 @@ export default function FilesIndex({
             <Head title={t('Files')} />
 
             <div className="px-4 py-6">
-                <div className="flex items-start justify-between">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 [&>:not(:first-child)]:mb-6">
                     <Heading title={t('Files')} description={t('Your shared file library')} />
                     <div className="flex gap-2">
                         {canZip && folder !== null && !searching && (
@@ -534,7 +618,15 @@ export default function FilesIndex({
                     </FilterField>
                 </ListToolbar>
 
-                <div className="mb-3 flex justify-end">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                    {viewMode === 'grid' && rowsOnPage > 0 ? (
+                        <label className="text-muted-foreground flex items-center gap-2 text-sm">
+                            <Checkbox checked={pageSelection} onCheckedChange={(checked) => togglePage(checked === true)} />
+                            {t('Select all on this page')}
+                        </label>
+                    ) : (
+                        <span />
+                    )}
                     <ViewModeToggle value={viewMode} onChange={setViewMode} />
                 </div>
 
@@ -567,8 +659,20 @@ export default function FilesIndex({
 
                     {selectionCount > 0 && (
                         <div className="bg-muted/40 mb-3 flex items-center justify-between gap-3 rounded-lg border px-4 py-2">
-                            <p className="text-sm font-medium">{t(':count selected', { count: selectionCount })}</p>
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+                                <p className="font-medium" aria-live="polite">
+                                    {crossPage && selectionCount === pagination.total
+                                        ? t('All :count items are selected.', { count: pagination.total })
+                                        : t(':count selected', { count: selectionCount })}
+                                </p>
+                                {pageSelection === true && !crossPage && pagination.total > rowsOnPage && (
+                                    <Button variant="link" size="sm" className="h-auto p-0" disabled={selectingAll} onClick={selectAllMatching}>
+                                        {selectingAll ? t('Selecting…') : t('Select all :count items', { count: pagination.total })}
+                                    </Button>
+                                )}
+                                {selectAllFailed && <span className="text-destructive text-xs">{t('Could not select every item. Try again.')}</span>}
+                            </div>
+                            <div className="flex flex-wrap items-center justify-end gap-2">
                                 {canZip && (
                                     <Button size="sm" onClick={downloadSelectionAsZip}>
                                         <Archive className="size-4" />
@@ -642,8 +746,23 @@ export default function FilesIndex({
 
                     {viewMode === 'list' ? (
                         (folders.length > 0 || files.length > 0) && (
-                            <div className="overflow-x-auto rounded-lg border">
+                            <div className="relative overflow-x-auto rounded-lg border">
                                 <table className="w-full text-sm">
+                                    <thead className="bg-muted/40 border-b text-left">
+                                        <tr>
+                                            <th className="w-8 px-2 py-2.5">
+                                                <Checkbox
+                                                    checked={pageSelection}
+                                                    onCheckedChange={(checked) => togglePage(checked === true)}
+                                                    aria-label={t('Select all on this page')}
+                                                />
+                                            </th>
+                                            <th className="px-4 py-2.5 font-medium" colSpan={3}>
+                                                {t('Name')}
+                                            </th>
+                                            <th className="px-4 py-2.5 text-right font-medium">{t('Actions')}</th>
+                                        </tr>
+                                    </thead>
                                     <tbody>
                                         {folders.map((row) => (
                                             <FolderRow
@@ -714,6 +833,14 @@ export default function FilesIndex({
     );
 }
 
+/**
+ * A selection made with "Select all :count items", kept outside the page
+ * component: every Inertia visit, a page change included, mounts the page
+ * afresh, and this is what lets the selection outlive the visit. Only
+ * picked up again under the same filters.
+ */
+let carriedSelection: { filterKey: string; folderIds: Set<number>; fileIds: Set<number>; deletable: Set<number> } | null = null;
+
 // The whole row is the drag handle (and, for folders, the drop target). A 6px
 // activation distance keeps clicks on the title/action buttons from starting a
 // drag; the dimmed source row plus the floating DragChip show what's moving.
@@ -751,7 +878,9 @@ function FolderRow({
             </td>
             <td className="px-4 py-2.5">
                 <Link href={folderUrl(row.id)} draggable={false} className="inline-flex items-center gap-2 font-medium">
-                    <FolderIcon className="text-primary size-5 shrink-0" />
+                    <span className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded">
+                        <FolderIcon className="size-5" strokeWidth={1.75} />
+                    </span>
                     {row.name}
                     {row.public && (
                         <Badge variant="secondary" className="text-[11px] font-normal">
@@ -838,7 +967,9 @@ function FileRow({
                         {isThumbnailable(row.mime_type) ? (
                             <img src={route('files.thumbnail', row.id)} alt="" className="size-10 rounded border object-cover" draggable={false} />
                         ) : (
-                            <FileIcon className="text-muted-foreground mt-0.5 size-10 shrink-0" strokeWidth={1.25} />
+                            <span className="bg-muted text-muted-foreground flex size-10 shrink-0 items-center justify-center rounded border">
+                                <FileIcon className="size-5" strokeWidth={1.75} />
+                            </span>
                         )}
                     </FilePreviewDialog>
                     <div className="min-w-0">
@@ -979,7 +1110,7 @@ function FolderCard({
                 className="absolute top-3 left-3"
             />
             <Link href={folderUrl(row.id)} draggable={false} className="flex w-full flex-col items-center gap-2">
-                <FolderIcon className="text-primary size-10 shrink-0" strokeWidth={1.5} />
+                <FolderIcon className="text-primary size-10 shrink-0" strokeWidth={1.25} />
                 <span className="flex max-w-full items-center gap-1.5">
                     <p className="truncate text-sm font-medium">{row.name}</p>
                     {row.public && (

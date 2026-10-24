@@ -2355,5 +2355,12 @@
     "Unverified": "Non vérifié",
     "Verified": "Vérifié",
     "What it can do": "Ce qu’il pourra faire",
-    "Your own files": "Vos propres fichiers"
+    "Your own files": "Vos propres fichiers",
+    "Select all on this page": "Tout sélectionner sur cette page",
+    "Select all :count items": "Sélectionner les :count éléments",
+    "All :count items are selected.": "Les :count éléments sont sélectionnés.",
+    "Selecting…": "Sélection en cours…",
+    "Could not select every item. Try again.": "Impossible de tout sélectionner. Veuillez réessayer.",
+    "Go to page": "Aller à la page",
+    "Go": "OK"
 }

@@ -2355,5 +2355,12 @@
     "Unverified": "Neověřeno",
     "Verified": "Ověřeno",
     "What it can do": "Co bude moci dělat",
-    "Your own files": "Jen vaše soubory"
+    "Your own files": "Jen vaše soubory",
+    "Select all on this page": "Vybrat vše na této stránce",
+    "Select all :count items": "Vybrat všechny položky (:count)",
+    "All :count items are selected.": "Vybrány všechny položky (:count).",
+    "Selecting…": "Vybírání…",
+    "Could not select every item. Try again.": "Nepodařilo se vybrat všechny položky. Zkuste to znovu.",
+    "Go to page": "Přejít na stránku",
+    "Go": "Přejít"
 }

@@ -65,7 +65,7 @@ export default function UsersIndex({ users, pagination, filters, roles, reassign
             <Head title={t('System users')} />
 
             <div className="px-4 py-6">
-                <div className="flex items-start justify-between">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 [&>:not(:first-child)]:mb-6">
                     <Heading title={t('System users')} description={t('The people who administer this installation and upload files')} />
                     {can('create_users') && (
                         <SeatLimitedAction

@@ -41,7 +41,7 @@ export default function CategoriesIndex({ categories, filters, can_create, can_e
             <Head title={t('Categories')} />
 
             <div className="px-4 py-6">
-                <div className="flex items-start justify-between">
+                <div className="flex flex-wrap items-start justify-between gap-x-4 [&>:not(:first-child)]:mb-6">
                     <Heading title={t('Categories')} description={t('Flat labels for files — independent of folders. A file can have several.')} />
                     {can_create && (
                         <Button asChild>

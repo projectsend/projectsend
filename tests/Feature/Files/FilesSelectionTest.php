@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Modules\Files\Folders\FolderService;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Scanning\ScanStatus;
+use App\Modules\Identity\Models\Role;
+use App\Modules\Identity\Models\RolePermission;
 
 /*
  * "Select all :count items" on the library screen. files.selection hands
@@ -88,4 +90,33 @@ test('clients cannot reach it', function () {
     selectionFile($client, 'theirs');
 
     $this->actingAs($client)->getJson(route('files.selection'))->assertForbidden();
+});
+
+test('a client-scoped staff member selects only their own library', function () {
+    // The ids come straight back to the page, so this answer is a listing
+    // in its own right: it must stop where the library screen stops.
+    $role = Role::query()->create(['name' => 'Scoped selector', 'client_scoped' => true]);
+    RolePermission::query()->insert([
+        ['role_id' => $role->id, 'permission' => 'upload'],
+        ['role_id' => $role->id, 'permission' => 'delete_files'],
+        ['role_id' => $role->id, 'permission' => 'delete_others_files'],
+    ]);
+    $scoped = User::factory()->create(['role_id' => $role->id]);
+    $mine = User::factory()->client()->create();
+    $scoped->assignedClients()->attach($mine->id);
+
+    $theirs = selectionFile($this->admin, 'shared with mine');
+    shareFileWith($theirs, $mine);
+    $elsewhere = selectionFile($this->admin, 'shared with a stranger');
+    shareFileWith($elsewhere, User::factory()->client()->create());
+    $unshared = selectionFile($this->admin, 'shared with nobody');
+    app(FolderService::class)->create('shared folder', null);
+
+    foreach ([[], ['search' => 'shared']] as $filters) {
+        $response = $this->actingAs($scoped)->getJson(route('files.selection', $filters))->assertOk();
+
+        expect($response->json('file_ids'))->toBe([$theirs->id])
+            ->and($response->json('deletable_file_ids'))->toBe([$theirs->id])
+            ->and($response->json('folder_ids'))->toBe([]);
+    }
 });

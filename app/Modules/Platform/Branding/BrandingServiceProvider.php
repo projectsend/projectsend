@@ -62,17 +62,15 @@ class BrandingServiceProvider extends ServiceProvider
         Event::listen(RenderingImage::class, [ThumbnailWatermarker::class, 'handle']);
         Event::listen(ResolvingImageRendering::class, [ThumbnailWatermarker::class, 'resolve']);
 
-        // Gated like the screen that sets it. Without the capability there
-        // is no branding page to reach, so a row that outlived a gate
-        // change — a downgraded plan, a restored backup — would put
-        // somebody's logo on every page of an installation offering no way
-        // to see it, change it or take it off. Evaluated per request, so
-        // uploading a logo or changing plan takes effect on the next one.
+        // Gated like the screen that sets it, through the same rule the
+        // Branded email theme asks (BrandingSetting::shownLogoUrl()).
+        // Evaluated per request, so uploading a logo or changing plan
+        // takes effect on the next one.
         Inertia::share('branding', function (): array {
             $setting = $this->available() ? BrandingSetting::query()->first() : null;
 
             return [
-                'logo_url' => $setting?->logoUrl(),
+                'logo_url' => BrandingSetting::shownLogoUrl(),
                 'show_site_name' => $setting->show_site_name ?? false,
             ];
         });

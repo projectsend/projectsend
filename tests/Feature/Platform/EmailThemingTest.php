@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Clients\Notifications\ClientWelcomeNotification;
 use App\Modules\Platform\Attribution\Events\ResolvingAttribution;
+use App\Modules\Platform\Branding\Models\BrandingSetting;
 use App\Modules\Platform\Notifications\ThemedMailChannel;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -84,6 +85,29 @@ test('the branded email theme renders its own css and the stock logo', function 
     expect($html)->toContain('#3b0764')
         ->and($html)->toContain('<img')
         ->and($html)->toContain('apple-touch-icon.png');
+});
+
+// #1824. The logo uploaded under Settings → Branding is the one people
+// expect at the top of a "branded" email.
+test('the branded email theme uses the logo uploaded under Branding', function () {
+    app(Settings::class)->set(Setting::EmailTheme, 'branded');
+    BrandingSetting::current()->forceFill(['logo_path' => 'branding/our-logo.png'])->save();
+
+    $html = renderThemedNotificationHtml();
+
+    expect($html)->toContain('storage/branding/our-logo.png')
+        ->and($html)->not->toContain('apple-touch-icon.png');
+});
+
+test('a withheld branding capability puts the stock logo back in branded emails', function () {
+    app(Settings::class)->set(Setting::EmailTheme, 'branded');
+    BrandingSetting::current()->forceFill(['logo_path' => 'branding/our-logo.png'])->save();
+    config(['projectsend.capabilities_disabled' => 'branding.customize']);
+
+    $html = renderThemedNotificationHtml();
+
+    expect($html)->toContain('apple-touch-icon.png')
+        ->and($html)->not->toContain('our-logo.png');
 });
 
 test('every email theme carries the attribution line in its footer', function (string $theme) {

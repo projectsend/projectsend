@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\Platform\Branding\Models;
 
+use App\Modules\Platform\Capabilities\Capability;
+use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use Illuminate\Database\Eloquent\Model;
 use App\Modules\Platform\Branding\Watermark\WatermarkPosition;
 
@@ -60,6 +62,25 @@ class BrandingSetting extends Model
     public static function current(): self
     {
         return static::query()->firstOrCreate([]);
+    }
+
+    /**
+     * The uploaded logo, where this installation may show one, or null.
+     *
+     * Gated like the screen that sets it. Without the capability there is
+     * no branding page to reach, so a row that outlived a gate change — a
+     * downgraded plan, a restored backup — would put somebody's logo in
+     * front of people with no way to see it, change it or take it off.
+     * Asked per call, so an upload or a plan change applies to the next
+     * page and the next email.
+     */
+    public static function shownLogoUrl(): ?string
+    {
+        if (! app(CapabilityRegistry::class)->has(Capability::Branding)) {
+            return null;
+        }
+
+        return static::query()->first()?->logoUrl();
     }
 
     public function logoUrl(): ?string

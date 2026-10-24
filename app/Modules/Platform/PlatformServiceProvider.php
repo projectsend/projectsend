@@ -7,10 +7,12 @@ namespace App\Modules\Platform;
 use App\Modules\Files\Storage\ResolvingUploadDisk;
 use App\Modules\Notifications\NotificationTypeDefinition;
 use App\Modules\Notifications\NotificationTypeRegistry;
+use App\Modules\Platform\Branding\Models\BrandingSetting;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Capabilities\Edition;
 use App\Modules\Platform\Captcha\Console\DisableCaptchaCommand;
 use App\Modules\Platform\Captcha\Console\TestCaptchaCommand;
+use App\Modules\Platform\Installation\Console\StatusCommand;
 use App\Modules\Platform\Localization\LocaleRegistry;
 use App\Modules\Platform\Localization\TimezoneRegistry;
 use App\Modules\Platform\Mail\Console\RefreshMailOAuthTokensCommand;
@@ -19,9 +21,8 @@ use App\Modules\Platform\Mail\MicrosoftGraphTransport;
 use App\Modules\Platform\News\Console\FetchNewsCommand;
 use App\Modules\Platform\Notifications\ThemedMailChannel;
 use App\Modules\Platform\Scheduling\Console\PurgeFailedJobsCommand;
-use App\Modules\Platform\Installation\Console\StatusCommand;
-use App\Modules\Platform\Settings\Console\SeedSettingsCommand;
 use App\Modules\Platform\Scheduling\RecordsScheduledTaskRuns;
+use App\Modules\Platform\Settings\Console\SeedSettingsCommand;
 use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
 use App\Modules\Platform\Settings\MailConfigApplier;
 use App\Modules\Platform\Settings\Settings;
@@ -181,16 +182,15 @@ class PlatformServiceProvider extends ServiceProvider
         // and inbox.
         $emailThemes->register('drive', 'Drive', __('Blue accents and clean structure inspired by cloud storage apps — pairs with the Drive look.'));
         // Paired with 'gallery' above (mismatched key names predate the
-        // same-key convention, see ThemeRegistry's docblock). No custom
-        // logo integration — just the stock ProjectSend mark; Cloud's
-        // Branding module (private cloud-modules package) is a
-        // completely separate, edition-exclusive feature.
+        // same-key convention, see ThemeRegistry's docblock). The logo
+        // uploaded under Settings → Branding when there is one, and the
+        // stock ProjectSend mark when there is not (#1824).
         $emailThemes->register(
             'branded',
             'Branded',
             __('A bold header built around your logo — pairs with the Gallery look for a polished, on-brand inbox.'),
             null,
-            fn (): array => ['logo_url' => asset('apple-touch-icon.png')],
+            fn (): array => ['logo_url' => BrandingSetting::shownLogoUrl() ?? asset('apple-touch-icon.png')],
         );
     }
 }

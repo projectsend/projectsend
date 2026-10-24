@@ -10,6 +10,7 @@ use App\Modules\Identity\Permissions\Permission;
 use App\Modules\Identity\Permissions\SystemRole;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Testing\TestResponse;
 use Illuminate\Validation\ValidationException;
 
 beforeEach(function () {
@@ -240,4 +241,106 @@ test('linking never leaves a partial state when a guard rejects it', function ()
 
     expect(FileAssignment::query()->where('file_id', $revision->id)->count())->toBe(1)
         ->and($revision->fresh()->previous_file_id)->toBeNull();
+});
+
+/*
+| Linking moves the new file's recipients onto the ROOT of the chain, which
+| is not necessarily the file it was linked to. Both guards below are about
+| that move: it must not reach a root the actor may not change, and it must
+| not reach anybody the actor could not have shared the root with directly.
+*/
+
+function linkVersionVia(string $via, User $actor, File $file, File $previous): TestResponse
+{
+    if ($via === 'api') {
+        $token = $actor->createToken('t', [Permission::EditFiles->value])->plainTextToken;
+
+        return test()->withToken($token)->putJson("/api/v1/files/{$file->id}/version", ['previous_file_id' => $previous->id]);
+    }
+
+    return test()->actingAs($actor)->putJson(route('files.version.store', $file), ['previous_file_id' => $previous->id]);
+}
+
+function canSeeFile(User $client, File $file): bool
+{
+    return File::query()->whereKey($file->id)->visibleToClient($client)->exists();
+}
+
+test('linking onto a revision cannot widen a root the actor may not edit', function (string $via) {
+    // edit_files without edit_others_files: their own uploads only.
+    $staffer = staffWithPermissions([Permission::Upload->value, Permission::EditFiles->value]);
+    $client = User::factory()->client()->create();
+
+    $root = File::factory()->create(['uploaded_by' => $this->admin->id]);
+    $revision = File::factory()->create(['uploaded_by' => $staffer->id]);
+    $this->versions->link($revision, $root, $this->admin);
+
+    $theirs = File::factory()->create(['uploaded_by' => $staffer->id]);
+    shareFileWith($theirs, $client);
+
+    expect(canSeeFile($client, $root))->toBeFalse();
+
+    linkVersionVia($via, $staffer, $theirs, $revision->fresh())->assertForbidden();
+
+    expect(canSeeFile($client, $root))->toBeFalse()
+        ->and($theirs->fresh()->previous_file_id)->toBeNull();
+})->with(['web', 'api']);
+
+test('a client-scoped staffer cannot carry an out-of-roster recipient onto the original', function (string $via) {
+    $mine = User::factory()->client()->create();
+    $outside = User::factory()->client()->create();
+
+    $staffer = User::factory()->role(SystemRole::ClientManager)->create();
+    $staffer->assignedClients()->attach($mine->id);
+
+    $original = File::factory()->create(['uploaded_by' => $staffer->id]);
+    // Somebody else shared the staffer's upload with a client outside
+    // their roster. Sharing $original with that client directly is refused.
+    $upload = File::factory()->create(['uploaded_by' => $staffer->id]);
+    shareFileWith($upload, $outside);
+
+    $this->actingAs($staffer)
+        ->post(route('files.assignments.store', $original), ['type' => 'client', 'id' => $outside->id])
+        ->assertSessionHasErrors('id');
+
+    linkVersionVia($via, $staffer, $upload, $original)->assertUnprocessable();
+
+    expect(canSeeFile($outside, $original))->toBeFalse()
+        ->and($upload->fresh()->previous_file_id)->toBeNull()
+        // Refused, not half-done: the upload keeps its recipient.
+        ->and(canSeeFile($outside, $upload))->toBeTrue();
+})->with(['web', 'api']);
+
+test('a client-scoped staffer may still link when every recipient is on their roster', function () {
+    $mine = User::factory()->client()->create();
+
+    $staffer = User::factory()->role(SystemRole::ClientManager)->create();
+    $staffer->assignedClients()->attach($mine->id);
+
+    $original = File::factory()->create(['uploaded_by' => $staffer->id]);
+    $upload = File::factory()->create(['uploaded_by' => $staffer->id]);
+    shareFileWith($upload, $mine);
+
+    $this->versions->link($upload, $original, $staffer);
+
+    expect($upload->fresh()->previous_file_id)->toBe($original->id)
+        ->and(canSeeFile($mine, $original))->toBeTrue();
+});
+
+test('a recipient the original already has does not block a scoped link', function () {
+    // Nobody gains anything from them, so they are not the actor's to vouch for.
+    $mine = User::factory()->client()->create();
+    $outside = User::factory()->client()->create();
+
+    $staffer = User::factory()->role(SystemRole::ClientManager)->create();
+    $staffer->assignedClients()->attach($mine->id);
+
+    $original = File::factory()->create(['uploaded_by' => $staffer->id]);
+    shareFileWith($original, $outside);
+    $upload = File::factory()->create(['uploaded_by' => $staffer->id]);
+    shareFileWith($upload, $outside);
+
+    $this->versions->link($upload, $original, $staffer);
+
+    expect($upload->fresh()->previous_file_id)->toBe($original->id);
 });

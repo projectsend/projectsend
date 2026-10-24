@@ -7,6 +7,7 @@ namespace App\Modules\Files\Versions;
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\FileAssignment;
@@ -64,6 +65,7 @@ class FileVersions
         private readonly ActivityLogger $activity,
         private readonly Notifier $notifier,
         private readonly NotificationDigester $digester,
+        private readonly StaffLibraryScope $scope,
     ) {}
 
     /**
@@ -466,6 +468,21 @@ class FileVersions
         Gate::forUser($actor)->authorize('setVersion', $file);
         Gate::forUser($actor)->authorize('setVersion', $previous);
 
+        // And the root, which is where the recipients actually go
+        // (moveAssignmentsToRoot). When $previous is itself a revision the
+        // root is a third file, and being allowed to change a revision says
+        // nothing about its original: without this, linking onto somebody's
+        // revision shared the original with this file's recipients.
+        $root = File::query()->find($previous->version_root_id ?? $previous->id);
+
+        if ($root !== null && ! $root->is($previous)) {
+            Gate::forUser($actor)->authorize('setVersion', $root);
+        }
+
+        if ($root !== null) {
+            $this->guardRecipientsAssignable($file, $root, $actor);
+        }
+
         // A client links at upload time, when the file has no recipients.
         // Allowing it later would let them push their own file's audience
         // onto an original — the mirror of the escalation setVersion
@@ -490,6 +507,54 @@ class FileVersions
         }
 
         $this->guardAgainstCycle($file, $previous);
+    }
+
+    /**
+     * Every recipient the link carries onto the root must be one the actor
+     * could have shared the root with directly.
+     *
+     * The move goes through FileSharing::assign(), which authorizes
+     * nothing, so the share endpoints' rule has to be asked here: a
+     * client-scoped staff member may only share with their own clients
+     * and their groups. Without it, a file somebody else shared with an
+     * outside client became the way to share any file in their library
+     * with that client. Refused rather than dropping the recipient, which
+     * would take the file away from them. A recipient the root already
+     * holds gains nothing and is not asked about.
+     *
+     * @throws ValidationException
+     */
+    private function guardRecipientsAssignable(File $file, File $root, User $actor): void
+    {
+        if (! $actor->isStaff()) {
+            return;
+        }
+
+        foreach ($file->assignments()->with('assignable')->get() as $assignment) {
+            $target = $assignment->assignable;
+
+            $allowed = match (true) {
+                $target instanceof Group => $this->scope->canAssignGroup($actor, $target),
+                $target instanceof User => $this->scope->canAssignClient($actor, $target),
+                default => true,
+            };
+
+            if ($allowed) {
+                continue;
+            }
+
+            $alreadyOnRoot = FileAssignment::query()
+                ->where('file_id', $root->id)
+                ->where('assignable_type', $assignment->assignable_type)
+                ->where('assignable_id', $assignment->assignable_id)
+                ->exists();
+
+            if (! $alreadyOnRoot) {
+                throw ValidationException::withMessages([
+                    'previous_file_id' => __('This file is shared with someone you can\'t share files with, so it can\'t be marked as a new version. Ask an administrator to do it.'),
+                ]);
+            }
+        }
     }
 
     /**

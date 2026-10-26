@@ -471,9 +471,15 @@ class ChunkedUploadsController extends Controller
         // throwing away somebody's finished transfer over a folder that
         // vanished underneath them is the harsher of the two surprises —
         // the file lands somewhere they can see it and move it.
-        $folderId = $session->folder_id !== null && Folder::query()->whereKey($session->folder_id)->exists()
-            ? $session->folder_id
-            : null;
+        //
+        // The same goes for store()'s permission check, which is asked
+        // again here for the same reason: a role can lose the right to
+        // upload there, or the folder can turn public, while the bytes are
+        // in flight. Filing it anyway would publish a file for somebody no
+        // longer allowed to (GHSA-8xm4-pp4x-r3j6). The root publishes
+        // nothing, so the file goes there instead.
+        $folder = $session->folder_id !== null ? Folder::query()->whereKey($session->folder_id)->first() : null;
+        $folderId = $folder !== null && Folder::uploadableBy($user, $folder) ? $folder->id : null;
 
         $file = $this->storeFile->create(
             uploader: $user,

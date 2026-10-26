@@ -7,15 +7,19 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
 use App\Modules\Files\Http\Controllers\ChunkedUploadsController;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Uploads\UploadSession;
+use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Models\RolePermission;
 use App\Modules\Identity\Permissions\Permission;
+use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 
 /**
@@ -440,6 +444,91 @@ test('a folder that survives the upload still receives the file', function () {
     putPart($session, 1, 'hello world')->assertOk();
 
     $fileId = $this->postJson("/uploads/{$session}/complete")->assertOk()->json('file_id');
+
+    expect(File::query()->whereKey($fileId)->value('folder_id'))->toBe($folder->id);
+});
+
+// The same two-request gap, with the permission instead of the folder.
+// store() asks Folder::uploadableBy() before a byte is sent; if the answer
+// changes while the transfer runs, complete() is where it has to be asked
+// again, or a session opened while allowed outlives the permission that
+// allowed it. Reported by @nguyenvantiennani (GHSA-8xm4-pp4x-r3j6).
+function startPublicFolderUpload(User $staff, int $folderId): string
+{
+    $session = test()->actingAs($staff)->postJson('/uploads', [
+        'filename' => 'brochure.pdf',
+        'size' => 11,
+        'type' => 'application/pdf',
+        'folder_id' => $folderId,
+    ])->assertOk()->json('uploadId');
+
+    putPart($session, 1, 'hello world')->assertOk();
+
+    return $session;
+}
+
+function publicUploadStaff(Permission ...$permissions): User
+{
+    $role = Role::query()->create(['name' => 'Role '.Str::random(6)]);
+
+    foreach ([Permission::Upload, ...$permissions] as $permission) {
+        RolePermission::query()->create(['role_id' => $role->id, 'permission' => $permission->value]);
+    }
+
+    return User::factory()->create(['role_id' => $role->id]);
+}
+
+test('a public-folder permission revoked mid-upload keeps the file out of the folder', function () {
+    $folder = Folder::query()->create([
+        'name' => 'Brochures', 'slug' => 'brochures', 'path' => '/', 'public' => true,
+    ]);
+    $staff = publicUploadStaff(Permission::UploadToPublicFolders);
+
+    $session = startPublicFolderUpload($staff, $folder->id);
+
+    RolePermission::query()
+        ->where('role_id', $staff->role_id)
+        ->where('permission', Permission::UploadToPublicFolders->value)
+        ->delete();
+
+    // The checker remembers a role's keys for the rest of the request. A
+    // real revoke and the completion are separate requests; in a test they
+    // share one application, so the memory has to be dropped by hand.
+    app()->forgetInstance(PermissionChecker::class);
+
+    $fileId = test()->actingAs($staff->fresh())->postJson("/uploads/{$session}/complete")->assertOk()->json('file_id');
+
+    // Kept, for the reason the deleted-folder case keeps it: the bytes are
+    // already here. At the root it publishes nothing.
+    $file = File::query()->findOrFail($fileId);
+    expect($file->folder_id)->toBeNull()
+        ->and($file->isEffectivelyPublic())->toBeFalse();
+});
+
+test('a folder made public mid-upload does not publish an uploader who may not publish', function () {
+    $folder = Folder::query()->create([
+        'name' => 'Drafts', 'slug' => 'drafts', 'path' => '/', 'public' => false,
+    ]);
+    $staff = publicUploadStaff();
+
+    $session = startPublicFolderUpload($staff, $folder->id);
+
+    $folder->update(['public' => true]);
+
+    $fileId = test()->actingAs($staff)->postJson("/uploads/{$session}/complete")->assertOk()->json('file_id');
+
+    expect(File::query()->whereKey($fileId)->value('folder_id'))->toBeNull();
+});
+
+test('an uploader who still may upload there still lands in the public folder', function () {
+    $folder = Folder::query()->create([
+        'name' => 'Brochures', 'slug' => 'brochures', 'path' => '/', 'public' => true,
+    ]);
+    $staff = publicUploadStaff(Permission::UploadToPublicFolders);
+
+    $session = startPublicFolderUpload($staff, $folder->id);
+
+    $fileId = test()->actingAs($staff)->postJson("/uploads/{$session}/complete")->assertOk()->json('file_id');
 
     expect(File::query()->whereKey($fileId)->value('folder_id'))->toBe($folder->id);
 });

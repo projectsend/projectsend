@@ -210,6 +210,31 @@ new version the whole time you are trying to work out why.
 If it happens anyway, ProjectSend now says so: staff see a banner naming the version being served,
 the version that was installed, and the command that fixes it.
 
+### Keeping your own service providers
+
+An update overwrites every file the release contains, `bootstrap/providers.php` included, so a
+line you added there is gone afterwards. Files the release does *not* contain are left where they
+are. That is what `bootstrap/providers.local.php` is for. No release ships it, and when it exists,
+ProjectSend loads the providers it lists after its own:
+
+```php
+<?php
+
+// bootstrap/providers.local.php
+return [
+    App\Providers\AcmeServiceProvider::class,
+];
+```
+
+Put the class itself somewhere the release does not ship either, such as
+`app/Providers/AcmeServiceProvider.php`. A local provider is the update-safe place for anything the
+registries accept. For example, an email theme of your own: register it on `EmailThemeRegistry` in
+`boot()`, and put its stylesheet at `resources/views/vendor/mail/html/themes/<key>.css`. Because the
+local providers boot after ProjectSend's, one of them can also replace a theme ProjectSend
+registered.
+
+If the file names a class that no longer exists, that provider is skipped. The site still loads.
+
 ---
 
 ## When it goes wrong

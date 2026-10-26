@@ -10,6 +10,7 @@
 /.phpunit.cache
 /.vscode
 /.zed
+/bootstrap/providers.local.php
 /bootstrap/ssr
 /node_modules
 /packages

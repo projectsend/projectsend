@@ -178,6 +178,20 @@ enum Permission: string
         };
     }
 
+    /**
+     * Works on the storage as a whole rather than on a library, so there is
+     * nothing a client-scoped role's boundary could narrow it to.
+     * PermissionChecker refuses these to such a role, ticked or not.
+     *
+     * The orphan tool is one: stray bytes have no row, so no owner and no
+     * client, and its missing-files tab lists rows from every client
+     * (GHSA-767q-xvq3-r3fv).
+     */
+    public function spansAllClients(): bool
+    {
+        return $this === self::ImportOrphans;
+    }
+
     public function category(): PermissionCategory
     {
         return match ($this) {

@@ -83,6 +83,10 @@ class PermissionChecker
             return false;
         }
 
+        if ($permission->spansAllClients() && $role->client_scoped) {
+            return false;
+        }
+
         if ($role->is_administrator) {
             return true;
         }
@@ -107,7 +111,11 @@ class PermissionChecker
             ? array_map(fn (Permission $permission): string => $permission->value, Permission::cases())
             : array_keys($this->grantedFor($role));
 
-        return array_values(array_filter($keys, fn (string $key): bool => $this->withinCeiling($user, $key)));
+        return array_values(array_filter(
+            $keys,
+            fn (string $key): bool => $this->withinCeiling($user, $key)
+                && ! ($role->client_scoped && Permission::tryFrom($key)?->spansAllClients() === true),
+        ));
     }
 
     private function withinCeiling(User $user, string $key): bool

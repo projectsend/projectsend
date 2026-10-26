@@ -14,6 +14,11 @@ import { useTranslation } from '@/hooks/use-translation';
 const FOLDERS_PERMISSION = 'create_own_folders';
 const UPLOAD_PERMISSION = 'upload';
 
+// Works on the whole storage, so a role limited to assigned clients never
+// holds it (Permission::spansAllClients(), enforced in PermissionChecker).
+// Shown disabled here so the box never looks like it does something.
+const ORPHANS_PERMISSION = 'import_orphans';
+
 export interface PermissionCatalogCategory {
     key: string;
     label: string;
@@ -60,6 +65,13 @@ export function RoleForm({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [hasUpload]);
 
+    useEffect(() => {
+        if (clientScoped && permissions.includes(ORPHANS_PERMISSION)) {
+            onPermissionsChange(permissions.filter((permission) => permission !== ORPHANS_PERMISSION));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [clientScoped]);
+
     const toggle = (key: string, checked: boolean) => {
         let next = checked ? [...permissions, key] : permissions.filter((permission) => permission !== key);
 
@@ -76,7 +88,8 @@ export function RoleForm({
     const toggleCategory = (category: PermissionCatalogCategory, checked: boolean) => {
         const keys = category.permissions.map((permission) => permission.key);
         const rest = permissions.filter((permission) => !keys.includes(permission));
-        onPermissionsChange(checked ? [...rest, ...keys] : rest);
+        const added = clientScoped ? keys.filter((key) => key !== ORPHANS_PERMISSION) : keys;
+        onPermissionsChange(checked ? [...rest, ...added] : rest);
     };
 
     return (
@@ -110,7 +123,9 @@ export function RoleForm({
 
             <div className="space-y-6">
                 {catalog.map((category) => {
-                    const allChecked = category.permissions.every((permission) => permissions.includes(permission.key));
+                    const allChecked = category.permissions
+                        .filter((permission) => !(clientScoped && permission.key === ORPHANS_PERMISSION))
+                        .every((permission) => permissions.includes(permission.key));
 
                     return (
                         <div key={category.key} className="rounded-lg border p-4">
@@ -126,7 +141,13 @@ export function RoleForm({
                             </div>
                             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                                 {category.permissions.map((permission) => {
-                                    const disabled = permission.key === FOLDERS_PERMISSION && !hasUpload;
+                                    const disabledReason =
+                                        permission.key === FOLDERS_PERMISSION && !hasUpload
+                                            ? t('Requires Upload files')
+                                            : permission.key === ORPHANS_PERMISSION && clientScoped
+                                              ? t('Not available to a role limited to assigned clients')
+                                              : null;
+                                    const disabled = disabledReason !== null;
                                     const checkbox = (
                                         <div className="flex items-center gap-2">
                                             <Checkbox
@@ -151,7 +172,7 @@ export function RoleForm({
                                                 <TooltipTrigger asChild>
                                                     <span>{checkbox}</span>
                                                 </TooltipTrigger>
-                                                <TooltipContent>{t('Requires Upload files')}</TooltipContent>
+                                                <TooltipContent>{disabledReason}</TooltipContent>
                                             </Tooltip>
                                         </TooltipProvider>
                                     );

@@ -122,3 +122,20 @@ test('stale permission keys in the pivot are ignored', function () {
     expect($user->can(Permission::Upload->value))->toBeTrue()
         ->and(app(PermissionChecker::class)->grantedKeys($user))->toBe(['upload']);
 });
+
+test('a queue worker sees a permission revoked between two jobs', function () {
+    // The checker remembers a role's keys. A queue worker runs many jobs in
+    // one process and forgets scoped instances before each one, which is
+    // what this calls. As a singleton the checker survived that, so a job
+    // after the revoke still read the old grant.
+    $role = Role::query()->create(['name' => 'Importer']);
+    RolePermission::query()->create(['role_id' => $role->id, 'permission' => Permission::ImportOrphans->value]);
+    $user = User::factory()->create(['role_id' => $role->id]);
+
+    expect($user->can(Permission::ImportOrphans->value))->toBeTrue();
+
+    RolePermission::query()->where('role_id', $role->id)->delete();
+    app()->forgetScopedInstances();
+
+    expect($user->fresh()->can(Permission::ImportOrphans->value))->toBeFalse();
+});

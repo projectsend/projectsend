@@ -103,7 +103,7 @@ function enableTwoFactor(User $user): string
  * A test process handles several requests against one application
  * instance. Two caches are deliberately request-scoped in production and
  * therefore leak across requests here: AuthManager holds the guard and the
- * User it resolved, and PermissionChecker is a singleton that memoises a
+ * User it resolved, and PermissionChecker is a scoped instance that memoises a
  * role's granted keys. A test that changes an account mid-test —
  * deactivating it, stripping a permission — and asserts on the *next*
  * request would otherwise be asserting against stale memory rather than

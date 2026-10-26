@@ -12,7 +12,6 @@ use App\Modules\Files\Uploads\UploadSession;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Models\RolePermission;
 use App\Modules\Identity\Permissions\Permission;
-use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -491,10 +490,8 @@ test('a public-folder permission revoked mid-upload keeps the file out of the fo
         ->where('permission', Permission::UploadToPublicFolders->value)
         ->delete();
 
-    // The checker remembers a role's keys for the rest of the request. A
-    // real revoke and the completion are separate requests; in a test they
-    // share one application, so the memory has to be dropped by hand.
-    app()->forgetInstance(PermissionChecker::class);
+    // A real revoke and the completion are separate requests.
+    forgetRequestState();
 
     $fileId = test()->actingAs($staff->fresh())->postJson("/uploads/{$session}/complete")->assertOk()->json('file_id');
 

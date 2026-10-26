@@ -22,7 +22,12 @@ class IdentityServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(PermissionChecker::class);
+        // Scoped, not a singleton: it remembers a role's keys, and that
+        // memory must not outlive one unit of work. A web request ends the
+        // process anyway, but a queue worker runs job after job in one, and
+        // a singleton would keep honouring a permission revoked between
+        // them. The worker forgets scoped instances before every job.
+        $this->app->scoped(PermissionChecker::class);
 
         // Bound to the interface, not resolved concretely, so a test can
         // swap in a fake directory and exercise the whole login flow —

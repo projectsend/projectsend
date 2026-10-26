@@ -7,9 +7,13 @@
 #   2. Create a PAT with 'repo' scope that can write to it
 #   3. Add it as a secret named PERSONAL_ACCESS_TOKEN in this repository
 #
-# The two github.com/projectsend/projectsend URLs below are shown to
+# The github.com/projectsend/projectsend URLs below are shown to
 # contributors when the bot asks them to sign. They must point at a repo an
 # outside contributor can actually read.
+#
+# The CLA link in custom-notsigned-prcomment is written out in full, not as
+# $pathToCLADocument. The action fills in only $you in a custom comment, so
+# the placeholder reached contributors as literal text (#1830).
 
 name: CLA Assistant
 
@@ -78,7 +82,7 @@ jobs:
             development of the free version. The reasoning is written out in
             [CONTRIBUTING.md](https://github.com/projectsend/projectsend/blob/main/CONTRIBUTING.md#licensing-and-the-contributor-license-agreement).
 
-            Please read the **[CLA]($pathToCLADocument)**, then post exactly this as a comment
+            Please read the **[CLA](https://github.com/projectsend/projectsend/blob/main/CLA-INDIVIDUAL.md)**, then post exactly this as a comment
             on this pull request:
 
           # Not decoration, although it repeats the action's default phrase.

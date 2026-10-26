@@ -58,7 +58,7 @@ Route::get('openapi.json', OpenApiController::class)
     ->middleware('throttle:api')
     ->name('api.openapi');
 
-Route::middleware(['auth:sanctum', 'api-active', 'staff-token'])->group(function () {
+Route::middleware(['auth:sanctum', 'api-active', 'staff-token', 'token-ceiling'])->group(function () {
     Route::get('me', MeController::class)->name('api.me');
 
     // Revokes only the token that made the call. Revoking someone else's

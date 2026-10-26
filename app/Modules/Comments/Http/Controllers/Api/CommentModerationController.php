@@ -9,6 +9,7 @@ use App\Modules\Comments\FileComments;
 use App\Modules\Comments\Http\Resources\Api\FileCommentResource;
 use App\Modules\Comments\Models\FileComment;
 use App\Modules\Files\Access\ViewableFileScope;
+use App\Modules\Identity\Permissions\PermissionChecker;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
@@ -31,6 +32,7 @@ class CommentModerationController extends Controller
     public function __construct(
         private readonly FileComments $comments,
         private readonly ViewableFileScope $viewable,
+        private readonly PermissionChecker $permissions,
     ) {}
 
     /**
@@ -50,7 +52,8 @@ class CommentModerationController extends Controller
 
         $pending = FileComment::query()
             ->whereNull('approved_at')
-            ->whereIn('file_id', $this->viewable->for($viewer)->select('id'))
+            // The role's files, as FileCommentPolicy::moderate() reads them.
+            ->whereIn('file_id', $this->permissions->asRole(fn () => $this->viewable->for($viewer)->select('id')))
             ->with(['author', 'clientContext'])
             ->orderBy('created_at')
             ->orderBy('id')

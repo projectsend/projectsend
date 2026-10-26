@@ -5,6 +5,7 @@ use App\Http\Middleware\ValidateCsrfToken;
 use App\Modules\Api\Http\Middleware\EnsureApiAccountIsActive;
 use App\Modules\Api\Http\Middleware\EnsureStaffToken;
 use App\Modules\Api\Http\Middleware\EnsureTokenCan;
+use App\Modules\Api\Http\Middleware\LimitPermissionsToToken;
 use App\Modules\Api\Http\Middleware\RecordApiRequest;
 use App\Modules\Api\Http\Middleware\SetApiLocale;
 use App\Modules\Api\Support\ProblemDetails;
@@ -104,6 +105,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'staff' => EnsureStaff::class,
             'staff-token' => EnsureStaffToken::class,
             'token-can' => EnsureTokenCan::class,
+            'token-ceiling' => LimitPermissionsToToken::class,
             'api-active' => EnsureApiAccountIsActive::class,
             // Replaces the framework's own: a write that needs the password
             // re-proved gets a dialog over the page instead of a redirect

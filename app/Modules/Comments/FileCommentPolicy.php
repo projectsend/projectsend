@@ -9,6 +9,7 @@ use App\Modules\Comments\Access\VisibleCommentScope;
 use App\Modules\Comments\Models\FileComment;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Access\ViewableFileScope;
+use App\Modules\Identity\Permissions\PermissionChecker;
 use Illuminate\Support\Facades\Gate;
 
 /**
@@ -24,6 +25,7 @@ class FileCommentPolicy
         private readonly CommentingRules $rules,
         private readonly StaffLibraryScope $library,
         private readonly ViewableFileScope $viewable,
+        private readonly PermissionChecker $permissions,
     ) {}
 
     public function view(User $user, FileComment $comment): bool
@@ -76,7 +78,12 @@ class FileCommentPolicy
         // forms. Without one of the three file keys this user gets a 403 on
         // every file these comments are about, and approving one hands back
         // its body — so this is a reading door, not only a writing one.
-        if (! $this->viewable->permitsAnyFile($user)) {
+        //
+        // From the role, not an API token's abilities: a token granted
+        // moderate_comments was granted reading the comments it moderates,
+        // and nothing more (see PermissionChecker::asRole()). The
+        // moderate_comments check above stays capped.
+        if (! $this->permissions->asRole(fn (): bool => $this->viewable->permitsAnyFile($user))) {
             return false;
         }
 

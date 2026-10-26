@@ -162,14 +162,19 @@ test('a token can edit and delete its own comment, but not somebody else\'s word
 
     $this->patchJson("/api/v1/comments/{$theirs->id}", ['body' => 'Rewritten'])->assertForbidden();
 
-    // Moderation does extend to removing one, though.
+    // Removing it is moderation, so it takes the moderation ability on the
+    // token. The owner's role holding it is not enough (GHSA-w79h-hrf3-846q).
+    $this->deleteJson("/api/v1/comments/{$theirs->id}")->assertForbidden();
+
+    Sanctum::actingAs($this->admin, ['edit_others_files', 'moderate_comments']);
     $this->deleteJson("/api/v1/comments/{$theirs->id}")->assertNoContent();
 });
 
 test('the commentable flag is readable and writable, but only under the scope that uses it', function () {
     $file = File::factory()->create(['uploaded_by' => $this->admin->id, 'commentable' => false]);
 
-    Sanctum::actingAs($this->admin, ['edit_others_files']);
+    // Its owner's own file, so the own-files key.
+    Sanctum::actingAs($this->admin, ['edit_files']);
 
     $this->patchJson("/api/v1/files/{$file->id}", ['commentable' => true])
         ->assertOk()->assertJsonPath('data.commentable', false);

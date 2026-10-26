@@ -101,8 +101,7 @@ There is no ability for *writing* a comment. Who may comment is an installation 
 a per-role permission, so the file abilities are the gate — the same question the web asks, which is
 "can you see this file". Removing somebody *else's* comment sits there too, because the same
 endpoint also lets an author remove their own within the editing window and that is not moderation;
-it additionally requires the token's owner to hold `moderate_comments`, checked live against the
-account rather than carried by the token.
+it additionally requires `moderate_comments`, on the token as well as on its owner's role.
 
 **`edit_clients` and `edit_users` are control of the accounts they reach.** Setting a password and
 removing a second factor are what an administrator does for somebody who is locked out, so a token
@@ -111,9 +110,13 @@ edit, and do what that account can do. Give these abilities to a token only when
 holder with those accounts themselves. Your *own* credentials are never reachable this way (see
 "Staff accounts").
 
-Where an endpoint accepts several — `edit_files` *or* `edit_others_files` — holding either is enough,
-and which one applies to a given file depends on whether you uploaded it. For a folder, it depends
-on whether you created it.
+Where an endpoint accepts several — `edit_files` *or* `edit_others_files` — holding either gets the
+request in, and then the one that applies to the file must be on the token: `edit_files` for a file
+you uploaded, `edit_others_files` for anybody else's. For a folder, it depends on whether you created
+it. A token never borrows an ability from its owner's role, even one the owner holds.
+
+The one exception is moderation: a token with `moderate_comments` may read the comments it moderates
+without also holding a file ability, as long as its owner's role can read files.
 
 Every operation in the OpenAPI document names its own requirement.
 

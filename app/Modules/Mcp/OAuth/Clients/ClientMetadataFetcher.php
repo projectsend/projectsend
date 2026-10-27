@@ -39,10 +39,11 @@ final class ClientMetadataFetcher
         $hops = 0;
 
         while (true) {
-            $this->assertFetchable($url);
+            $pin = $this->assertFetchable($url);
 
             try {
                 $response = Http::withoutRedirecting()
+                    ->withOptions(['curl' => [CURLOPT_RESOLVE => $pin]])
                     ->timeout(self::TIMEOUT_SECONDS)
                     ->connectTimeout(self::TIMEOUT_SECONDS)
                     ->accept('application/json')
@@ -69,10 +70,24 @@ final class ClientMetadataFetcher
     }
 
     /**
+     * Checks the URL, and returns the CURLOPT_RESOLVE entry that holds the
+     * connection to the addresses just checked. Without it, curl looks the
+     * name up again, and a name that answers public to the check and
+     * private to the connection reaches inside the network
+     * (GHSA-q6jm-vwg8-ppx9).
+     *
+     * @return list<string>
+     *
      * @throws ClientMetadataUnavailable
      */
-    private function assertFetchable(string $url): void
+    private function assertFetchable(string $url): array
     {
+        // Only curl takes the pin. Any other handler would look the name
+        // up itself, so the check would stop meaning anything.
+        if (! extension_loaded('curl')) {
+            throw new ClientMetadataUnavailable('Client metadata documents need the PHP curl extension.');
+        }
+
         $parts = parse_url($url);
 
         if ($parts === false || ($parts['scheme'] ?? '') !== 'https' || ! isset($parts['host']) || isset($parts['user']) || isset($parts['pass'])) {
@@ -83,7 +98,16 @@ final class ClientMetadataFetcher
             throw new ClientMetadataUnavailable('A client metadata document is served on the standard HTTPS port.');
         }
 
-        $this->addresses->assertPublic($parts['host']);
+        $addresses = $this->addresses->assertPublic($parts['host']);
+
+        // An address in the URL is not looked up, so there is nothing to pin.
+        if (filter_var(trim($parts['host'], '[]'), FILTER_VALIDATE_IP) !== false) {
+            return [];
+        }
+
+        $addresses = array_map(static fn (string $address): string => str_contains($address, ':') ? "[{$address}]" : $address, $addresses);
+
+        return [$parts['host'].':443:'.implode(',', $addresses)];
     }
 
     /**

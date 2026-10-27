@@ -334,6 +334,43 @@ it('refuses a document that does not name its own URL, and never fetches from a 
     Http::assertNothingSent();
 });
 
+it('connects to the address it checked, never to a second lookup of the name', function (): void {
+    // The guard resolved the name and checked the answer; the request then
+    // resolved it again on its own. A name that answers public first and
+    // private second passed the check and connected inside the network
+    // (GHSA-q6jm-vwg8-ppx9). The request is now pinned to what was checked.
+    $lookups = 0;
+    app()->instance(PublicAddress::class, new PublicAddress(function (string $host) use (&$lookups): array {
+        $lookups++;
+
+        return $lookups === 1 ? ['104.18.32.1', '2606:4700::6812:2001'] : ['10.0.0.5'];
+    }));
+
+    $pinned = null;
+    Http::fake(function ($request, array $options) use (&$pinned) {
+        $pinned = $options['curl'][CURLOPT_RESOLVE] ?? null;
+
+        return Http::response(['client_id' => OAUTH_CIMD, 'client_name' => 'Claude', 'redirect_uris' => [OAUTH_CALLBACK]], 200, ['Content-Type' => 'application/json']);
+    });
+
+    oauthAuthorize(oauthStaff())->assertOk();
+
+    expect($lookups)->toBe(1)
+        ->and($pinned)->toBe(['claude.ai:443:104.18.32.1,[2606:4700::6812:2001]']);
+});
+
+it('limits how often one person can ask the server to fetch a client document', function (): void {
+    Http::fake(fn () => Http::response('', 404));
+    $staff = oauthStaff();
+
+    foreach (range(1, 30) as $n) {
+        oauthAuthorize($staff, ['client_id' => "https://claude.ai/client-{$n}.json"])->assertStatus(400);
+    }
+
+    oauthAuthorize($staff, ['client_id' => 'https://claude.ai/client-31.json'])->assertStatus(429);
+    Http::assertSentCount(30);
+});
+
 // ── Authorize: what is refused before drawing anything ───────────────
 
 it('shows a redirect that was not registered on screen, and allows a loopback port to differ', function (): void {

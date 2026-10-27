@@ -43,7 +43,10 @@ Route::middleware([AllowCrossOrigin::class])->group(function (): void {
 });
 
 Route::middleware(['web', 'auth'])->group(function (): void {
+    // Showing the screen can fetch a client_id URL somebody else chose, so
+    // it is not a free way to make the server send requests.
     Route::get('/oauth/mcp/authorize', [AuthorizeController::class, 'show'])
+        ->middleware('throttle:30,1,mcp-authorize')
         ->name('mcp.oauth.authorize');
     // A password is typed here: the same allowance as the app's own
     // confirm-password screen.

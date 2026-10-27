@@ -26,9 +26,15 @@ final class PublicAddress
     }
 
     /**
+     * The addresses the host resolved to, every one of them public. The
+     * caller connects to these and nothing else: a second lookup could get
+     * a different answer (DNS rebinding, GHSA-q6jm-vwg8-ppx9).
+     *
+     * @return non-empty-list<string>
+     *
      * @throws ClientMetadataUnavailable
      */
-    public function assertPublic(string $host): void
+    public function assertPublic(string $host): array
     {
         $host = strtolower(trim($host, '[]'));
 
@@ -47,6 +53,8 @@ final class PublicAddress
                 throw new ClientMetadataUnavailable("\"{$host}\" resolves to a private address.");
             }
         }
+
+        return $addresses;
     }
 
     public static function isPublic(string $address): bool

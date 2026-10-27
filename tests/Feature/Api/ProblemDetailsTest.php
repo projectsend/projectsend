@@ -69,3 +69,22 @@ test('web routes are untouched by the API error format', function () {
 
     expect($response->headers->get('content-type'))->not->toContain('problem+json');
 });
+
+test('a throttled request is a problem+json 429 that says when to retry', function () {
+    // The throttle sets Retry-After and X-RateLimit-* as integers, and the
+    // header bag only takes strings: copying them as they came turned every
+    // 429 into a 500 with no Retry-After (#1831).
+    config(['api.rate_limits' => [
+        'community' => ['default' => 1, 'uploads' => 1],
+        'cloud' => ['default' => 1, 'uploads' => 1],
+    ]]);
+
+    $this->withToken($this->token)->getJson('/api/v1/me')->assertOk();
+
+    $this->withToken($this->token)->getJson('/api/v1/me')
+        ->assertStatus(429)
+        ->assertHeader('content-type', 'application/problem+json')
+        ->assertHeader('Retry-After')
+        ->assertHeader('X-RateLimit-Limit', '1')
+        ->assertJsonPath('status', 429);
+});

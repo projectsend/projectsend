@@ -77,9 +77,12 @@ class ProblemDetails
         // Throttling and 405s carry headers the caller genuinely needs
         // (Retry-After, Allow); dropping them would make the error
         // unactionable, so copy whatever the exception already decided.
+        // The throttle sets Retry-After and X-RateLimit-* as integers, and
+        // the header bag takes only strings: copied as they came, every 429
+        // became a 500 (#1831).
         if ($e instanceof HttpExceptionInterface) {
             foreach ($e->getHeaders() as $name => $value) {
-                $response->headers->set($name, $value);
+                $response->headers->set($name, is_array($value) ? array_map(strval(...), $value) : (string) $value);
             }
         }
 

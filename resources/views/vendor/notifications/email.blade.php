@@ -10,6 +10,11 @@
      file per half, which is how every other component in this message
      already handles the same problem.
 
+     The greeting and every line go through x-mail::literal, which escapes
+     Markdown in the HTML half only. They carry names and file names other
+     people chose, and the HTML half is parsed as Markdown
+     (GHSA-64r6-jqg3-7x36).
+
      The salutation's fallback needs to read the installation's own name
      rather than the one baked into config('app.name') at install time —
      the same reason resources/views/vendor/mail/*/message.blade.php are
@@ -21,7 +26,7 @@
 <x-mail::message>
 {{-- Greeting --}}
 @if (! empty($greeting))
-# {{ $greeting }}
+# <x-mail::literal :text="$greeting" />
 @else
 @if ($level === 'error')
 # @lang('Whoops!')
@@ -32,7 +37,7 @@
 
 {{-- Intro Lines --}}
 @foreach ($introLines as $line)
-{{ $line }}
+<x-mail::literal :text="$line" />
 
 @endforeach
 
@@ -51,7 +56,7 @@
 
 {{-- Outro Lines --}}
 @foreach ($outroLines as $line)
-{{ $line }}
+<x-mail::literal :text="$line" />
 
 @endforeach
 

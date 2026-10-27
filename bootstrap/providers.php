@@ -26,4 +26,13 @@ return [
     PlatformServiceProvider::class,
     BrandingServiceProvider::class,
     AppServiceProvider::class,
+
+    // An installation's own providers, if it has any. No release ships
+    // this file, so an update leaves it alone where it overwrites this one
+    // — the update-safe place to register a theme or anything else the
+    // registries accept. Spread last so a local provider boots after core
+    // and can replace what core registered, and kept in this file rather
+    // than in withProviders(), which Laravel merges *before* it. A listed
+    // class that no longer exists is skipped by Laravel, not fatal.
+    ...(is_file(__DIR__.'/providers.local.php') ? require __DIR__.'/providers.local.php' : []),
 ];

@@ -9,6 +9,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Identity\Reauthentication;
 use App\Modules\Identity\SignIn;
+use App\Modules\Identity\StaffSignInPolicy;
 use App\Modules\Identity\Social\SocialAccount;
 use App\Modules\Identity\StartPages;
 use App\Modules\Identity\Social\SocialAuthenticator;
@@ -47,6 +48,7 @@ class SocialLoginController extends Controller
         private readonly ActivityLogger $activity,
         private readonly StartPages $startPages,
         private readonly Reauthentication $reauthentication,
+        private readonly StaffSignInPolicy $staffSignIn,
     ) {}
 
     /**
@@ -144,6 +146,17 @@ class SocialLoginController extends Controller
             $this->activity->log(Action::SocialAccountLinked, $resolution->user, $resolution->user, [
                 'provider' => $case->label(),
             ]);
+        }
+
+        // Staff who must sign in through one provider may not use another
+        // they happen to have connected: switching them off in the
+        // directory has to be enough to keep them out (#1828).
+        $required = $this->staffSignIn->providerFor($resolution->user);
+
+        if ($required !== null && $required !== $case) {
+            return redirect()->route('login')->with('error', __('Staff sign in with :provider here.', [
+                'provider' => $required->label(),
+            ]));
         }
 
         // The same account-state check a password login gets, with the

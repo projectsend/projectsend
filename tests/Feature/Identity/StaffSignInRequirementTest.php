@@ -129,6 +129,32 @@ test('staff still sign in through the required provider', function () {
     expect(auth()->id())->toBe($this->staff->id);
 });
 
+test('staff cannot sign in through another provider they have connected', function () {
+    // Otherwise a Google account kept them in after the directory
+    // switched them off.
+    staffSsoProvider(SocialProvider::Google);
+    staffSsoConnect($this->staff, SocialProvider::Google, 'staff-google');
+    staffSsoRequire($this->provider);
+    staffSsoGateway(new SocialIdentity(SocialProvider::Google, 'staff-google', 'staff@example.test', true, 'Staff'));
+
+    $this->get(route('social.redirect', ['provider' => 'google']));
+    $this->get(route('social.callback', ['provider' => 'google']))->assertRedirect(route('login'));
+
+    expect(auth()->check())->toBeFalse();
+});
+
+test('clients still sign in through any provider', function () {
+    staffSsoProvider(SocialProvider::Google);
+    staffSsoConnect($this->client, SocialProvider::Google, 'client-google');
+    staffSsoRequire($this->provider);
+    staffSsoGateway(new SocialIdentity(SocialProvider::Google, 'client-google', 'client@example.test', true, 'Client'));
+
+    $this->get(route('social.redirect', ['provider' => 'google']));
+    $this->get(route('social.callback', ['provider' => 'google']))->assertRedirect();
+
+    expect(auth()->id())->toBe($this->client->id);
+});
+
 test('the sign-in page names the provider staff use', function () {
     staffSsoRequire($this->provider);
 

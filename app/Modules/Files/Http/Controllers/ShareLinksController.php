@@ -116,7 +116,7 @@ class ShareLinksController extends Controller
         return back()->with('success', __('Public link created.'));
     }
 
-    public function destroy(ShareLink $shareLink): RedirectResponse
+    public function destroy(Request $request, ShareLink $shareLink): RedirectResponse
     {
         $file = $shareLink->shareable;
         abort_unless($file instanceof File, 404);
@@ -125,6 +125,13 @@ class ShareLinksController extends Controller
         // revoking takes access away. Somebody whose permission to publish
         // was withdrawn must still be able to undo what they published.
         Gate::authorize('update', $file);
+
+        // A client revokes only what they made. Being able to edit their
+        // own upload does not make a staff member's link on it theirs, to
+        // read or to take away (GHSA-j8xv-mpp6-pv6f). Staff keep the file
+        // policy alone.
+        $user = $request->user();
+        abort_if($user !== null && ! $user->isStaff() && (int) $shareLink->created_by !== $user->id, 403);
 
         $shareLink->delete();
 

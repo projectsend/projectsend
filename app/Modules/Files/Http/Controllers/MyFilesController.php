@@ -455,7 +455,11 @@ class MyFilesController extends Controller
             // one — the same shape the staff screen uses. A file marked
             // public used to say "anyone with the link can open it" and
             // then show no link at all.
-            'share_links' => $file->shareLinks()->orderByDesc('created_at')->get()
+            // Only the links this client made: a staff link on their own
+            // upload is still the staff member's to hand out, the same rule
+            // ClientShareLinks applies to the portal list
+            // (GHSA-j8xv-mpp6-pv6f).
+            'share_links' => $file->shareLinks()->where('created_by', $client->id)->orderByDesc('created_at')->get()
                 ->map(fn (ShareLink $link): array => [
                     'id' => $link->id,
                     'url' => route('share.show', $link->token),

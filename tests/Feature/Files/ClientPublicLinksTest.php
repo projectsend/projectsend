@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\ShareLink;
+use App\Modules\Files\Sharing\CreateShareLink;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Models\RolePermission;
 use App\Modules\Identity\Permissions\Permission;
@@ -127,6 +128,45 @@ test('a client cannot revoke a link on a file that is not theirs', function () {
     $this->actingAs($client)->delete("/share-links/{$link->id}")->assertForbidden();
 
     expect(ShareLink::query()->count())->toBe(1);
+});
+
+test('a staff link on a client\'s own upload is not shown in their editor', function () {
+    // Their upload, but the staff member's link: handing over the URL
+    // would let a client who may not publish pass it on anyway, the same
+    // rule the portal list applies (GHSA-j8xv-mpp6-pv6f, found by @Liam-G).
+    $client = clientWith(Permission::EditFiles, Permission::UploadPublic);
+    $file = fileOf($client);
+    $staffLink = app(CreateShareLink::class)->for($file, $this->admin);
+    $this->actingAs($client)->post("/files/{$file->id}/share-links");
+    $own = ShareLink::query()->where('created_by', $client->id)->sole();
+
+    $page = $this->actingAs($client)->get("/my-files/{$file->id}/edit");
+
+    $page->assertInertia(fn (AssertableInertia $page) => $page
+        ->has('share_links', 1)
+        ->where('share_links.0.id', $own->id));
+    expect($page->getContent())->not->toContain($staffLink->token);
+});
+
+test('a client cannot revoke a staff link on their own upload', function () {
+    $client = clientWith(Permission::EditFiles);
+    $file = fileOf($client);
+    $link = app(CreateShareLink::class)->for($file, $this->admin);
+
+    $this->actingAs($client)->delete("/share-links/{$link->id}")->assertForbidden();
+
+    expect(ShareLink::query()->whereKey($link->id)->exists())->toBeTrue();
+});
+
+test('staff still revoke a link a client made', function () {
+    $client = clientWith(Permission::EditFiles, Permission::UploadPublic);
+    $file = fileOf($client);
+    $this->actingAs($client)->post("/files/{$file->id}/share-links");
+    $link = ShareLink::query()->sole();
+
+    $this->actingAs($this->admin)->delete("/share-links/{$link->id}")->assertSessionHasNoErrors();
+
+    expect(ShareLink::query()->count())->toBe(0);
 });
 
 test('staff are not asked for the publishing key they never needed', function () {

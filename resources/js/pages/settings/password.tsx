@@ -18,11 +18,13 @@ interface PasswordProps {
     has_local_password: boolean;
     /** True for an account whose password lives in a directory, which this screen cannot change. */
     managed_elsewhere: boolean;
+    /** The provider staff must sign in with here, which leaves no password to set. Null otherwise. */
+    required_provider: string | null;
     /** 'password-link-sent' once the link for a first password has been emailed. */
     status?: string;
 }
 
-export default function Password({ has_local_password, managed_elsewhere, status }: PasswordProps) {
+export default function Password({ has_local_password, managed_elsewhere, required_provider, status }: PasswordProps) {
     const { t } = useTranslation();
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -44,7 +46,7 @@ export default function Password({ has_local_password, managed_elsewhere, status
     // An account that signs in through a provider gets its first password
     // from a link emailed to its own address, not from this form: the
     // session alone must not be able to choose it.
-    const needsLink = !has_local_password && !managed_elsewhere;
+    const needsLink = !has_local_password && !managed_elsewhere && !required_provider;
     const linkForm = useForm({});
 
     const sendLink: FormEventHandler = (e) => {
@@ -87,6 +89,12 @@ export default function Password({ has_local_password, managed_elsewhere, status
                         }
                     />
 
+                    {required_provider && (
+                        <p className="text-muted-foreground text-sm">
+                            {t('Staff sign in with :provider here, so there is no password to set.', { provider: required_provider })}
+                        </p>
+                    )}
+
                     {managed_elsewhere && (
                         <p className="text-muted-foreground text-sm">
                             {t('Your password is managed by your organisation\'s directory, so it cannot be changed here.')}
@@ -108,7 +116,7 @@ export default function Password({ has_local_password, managed_elsewhere, status
                         </form>
                     )}
 
-                    <form onSubmit={updatePassword} className="space-y-6" hidden={managed_elsewhere || needsLink}>
+                    <form onSubmit={updatePassword} className="space-y-6" hidden={managed_elsewhere || needsLink || required_provider !== null}>
                         <div className="grid gap-2" hidden={!has_local_password}>
                             <Label htmlFor="current_password">{t('Current password')}</Label>
 

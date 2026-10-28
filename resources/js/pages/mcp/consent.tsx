@@ -1,4 +1,4 @@
-import { Head, router, useForm } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useTranslation } from '@/hooks/use-translation';
 import AuthLayout from '@/layouts/auth-layout';
+import { type SharedData } from '@/types';
 
 interface ConsentProps {
     request_id: string;
@@ -40,6 +41,9 @@ interface ConsentForm {
  */
 export default function Consent({ request_id, client, actor, grant }: ConsentProps) {
     const { t } = useTranslation();
+    // No password here: Allow opens the dialog that confirms through the
+    // connected provider instead.
+    const { has_password: hasPassword } = usePage<SharedData>().props.auth;
 
     const { data, setData, post, processing, errors } = useForm<ConsentForm>({
         request_id,
@@ -139,19 +143,21 @@ export default function Consent({ request_id, client, actor, grant }: ConsentPro
                     </div>
                 )}
 
-                <div className="grid gap-2">
-                    <Label htmlFor="password">{t('Confirm your password')}</Label>
-                    <Input
-                        id="password"
-                        type="password"
-                        required
-                        autoComplete="current-password"
-                        value={data.password}
-                        onChange={(e) => setData('password', e.target.value)}
-                        autoFocus
-                    />
-                    <InputError message={errors.password} />
-                </div>
+                {hasPassword && (
+                    <div className="grid gap-2">
+                        <Label htmlFor="password">{t('Confirm your password')}</Label>
+                        <Input
+                            id="password"
+                            type="password"
+                            required
+                            autoComplete="current-password"
+                            value={data.password}
+                            onChange={(e) => setData('password', e.target.value)}
+                            autoFocus
+                        />
+                        <InputError message={errors.password} />
+                    </div>
+                )}
 
                 <div className="flex items-center gap-3">
                     <Button type="submit" disabled={processing}>

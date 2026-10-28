@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Identity\AuthSource;
 use App\Modules\Identity\PasswordVerification;
+use App\Modules\Identity\Reauthentication;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
@@ -22,20 +22,11 @@ class ConfirmablePasswordController extends Controller
         $user = $request->user();
         assert($user !== null);
 
-        return Inertia::render('auth/confirm-password', [
-            // An account provisioned by a provider has no password to
-            // confirm with — its stored hash is a generated string nobody
-            // has seen. The screen offers to set one instead of asking for
-            // it, which is the only way past this for those accounts, and
-            // this screen stands in front of two-factor enrolment.
-            //
-            // Social, not "anything but Local": a directory account has a
-            // password -- the directory's -- and store() accepts it. Asking
-            // whether the account was Local told those accounts to set one
-            // here instead, which /settings/password refuses them, and left
-            // them no way past this screen at all.
-            'has_password' => $user->auth_source !== AuthSource::Social,
-        ]);
+        // Reauthentication decides: a password for an account that has
+        // one (a directory account's included, which store() accepts), and
+        // the connected provider for one that has none. Social, not
+        // "anything but Local", for that reason.
+        return Inertia::render('auth/confirm-password', app(Reauthentication::class)->screen($user));
     }
 
     /**

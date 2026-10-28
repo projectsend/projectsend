@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Identity\AuthSource;
+use App\Modules\Identity\StaffSignInPolicy;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -39,6 +40,9 @@ class PasswordController extends Controller
             'has_local_password' => $user->auth_source === AuthSource::Local,
             // A directory's password is not this installation's to change.
             'managed_elsewhere' => $user->auth_source === AuthSource::Ldap,
+            // Staff who must sign in through a provider have no password
+            // here at all, and cannot set one (StaffSignInPolicy).
+            'required_provider' => app(StaffSignInPolicy::class)->providerFor($user)?->label(),
         ]);
     }
 
@@ -54,6 +58,10 @@ class PasswordController extends Controller
         // hash here would change nothing anybody signs in with, so the
         // honest answer is to refuse rather than to appear to work.
         abort_if($user->auth_source === AuthSource::Ldap, 403);
+
+        // A password nobody may sign in with would be one more thing to
+        // leak, and the screen says so instead of offering the form.
+        abort_if(app(StaffSignInPolicy::class)->refusesPassword($user), 403);
 
         // An account that signs in through a provider has no password to
         // prove, so this screen cannot ask it for one, and the session
@@ -106,6 +114,7 @@ class PasswordController extends Controller
         // An account with a password uses the form above; a directory
         // account's password is not this installation's to set.
         abort_unless($user->auth_source === AuthSource::Social, 403);
+        abort_if(app(StaffSignInPolicy::class)->refusesPassword($user), 403);
 
         $status = PasswordBroker::broker()->sendResetLink(['email' => $user->email]);
 

@@ -5,13 +5,21 @@ declare(strict_types=1);
 namespace App\Modules\Identity\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Identity\Reauthentication;
 use App\Modules\Identity\Social\OidcDiscovery;
 use App\Modules\Identity\Social\SocialProvider;
 use App\Modules\Identity\Social\SocialSettings;
+use App\Modules\Identity\StaffSignInPolicy;
+use App\Modules\Identity\UserType;
+use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -32,10 +40,16 @@ class SocialLoginSettingsController extends Controller
     public function __construct(
         private readonly ActivityLogger $activity,
         private readonly OidcDiscovery $discovery,
+        private readonly StaffSignInPolicy $staffSignIn,
+        private readonly Reauthentication $reauthentication,
+        private readonly Settings $settings,
     ) {}
 
-    public function edit(): Response
+    public function edit(Request $request): Response
     {
+        $user = $request->user();
+        assert($user !== null);
+
         $providers = [];
 
         foreach (SocialSettings::allProviders() as $key => $settings) {
@@ -66,9 +80,81 @@ class SocialLoginSettingsController extends Controller
             ];
         }
 
+        $configured = $this->staffSignIn->configuredProvider();
+
         return Inertia::render('system/settings/social-login', [
             'providers' => $providers,
+            'staff_sign_in' => [
+                'provider' => $configured->value ?? '',
+                // Chosen but not in force, because the provider is off or
+                // half-configured — passwords work meanwhile, and the
+                // screen says so rather than letting it look enforced.
+                'enforced' => $this->staffSignIn->provider() !== null,
+                'options' => collect(SocialProvider::cases())
+                    ->filter(fn (SocialProvider $provider): bool => SocialSettings::for($provider)->usable())
+                    ->map(fn (SocialProvider $provider): array => [
+                        'provider' => $provider->value,
+                        'label' => $provider->label(),
+                        // The administrator choosing this has to be able to
+                        // sign in with it, or the next sign-in is their last.
+                        'connected' => $this->reauthentication->isConnected($user, $provider),
+                    ])
+                    ->values()
+                    ->all(),
+            ],
         ]);
+    }
+
+    /**
+     * Which provider staff must sign in with, or none (#1828).
+     *
+     * Only a provider that is switched on and configured, and only one the
+     * administrator making the change is connected to themselves: choosing
+     * a provider you cannot sign in with locks you out at your next
+     * sign-in, and every other staff member with you if nobody is.
+     */
+    public function updateStaffSignIn(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+        assert($user !== null);
+
+        $validated = $request->validate([
+            'provider' => ['present', 'nullable', 'string', Rule::in(['', ...array_map(fn (SocialProvider $p): string => $p->value, SocialProvider::cases())])],
+        ]);
+
+        $provider = SocialProvider::tryFrom((string) ($validated['provider'] ?? ''));
+
+        if ($provider !== null && ! SocialSettings::for($provider)->usable()) {
+            throw ValidationException::withMessages([
+                'provider' => __('Switch :provider on and finish setting it up first.', ['provider' => $provider->label()]),
+            ]);
+        }
+
+        if ($provider !== null && ! $this->reauthentication->isConnected($user, $provider)) {
+            throw ValidationException::withMessages([
+                'provider' => __('Connect :provider to your own account first, under Settings → Connected accounts, so that you can still sign in.', ['provider' => $provider->label()]),
+            ]);
+        }
+
+        $this->settings->set(Setting::StaffSignInProvider, $provider->value ?? '');
+
+        // A "remember me" cookie from a password sign-in would otherwise
+        // keep signing its holder back in for as long as it lives, without
+        // the provider ever being asked — so switching somebody off there
+        // would not keep them out here. None can be made from now on:
+        // passwords are refused and provider sign-ins never remember.
+        if ($provider !== null) {
+            User::query()->where('type', UserType::Staff)->update(['remember_token' => null]);
+        }
+
+        $this->activity->log(Action::SettingsUpdated, context: [
+            'section' => 'staff-sign-in',
+            'provider' => $provider?->label(),
+        ]);
+
+        return back()->with('success', $provider === null
+            ? __('Staff can sign in with a password again.')
+            : __('Staff now sign in with :provider only.', ['provider' => $provider->label()]));
     }
 
     public function update(Request $request, string $provider): RedirectResponse

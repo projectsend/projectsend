@@ -28,9 +28,11 @@ interface LoginProps {
     canRegister: boolean;
     /** A directory username attribute is configured, so the field also takes a username. */
     usernameSignIn: boolean;
+    /** Staff must use this provider; their password is refused. Null when passwords work for everybody. */
+    staffSignInProvider: string | null;
 }
 
-export default function Login({ status, canResetPassword, canRegister, usernameSignIn }: LoginProps) {
+export default function Login({ status, canResetPassword, canRegister, usernameSignIn, staffSignInProvider }: LoginProps) {
     const { t } = useTranslation();
     const { flash } = usePage<SharedData>().props;
     const captcha = useRef<CaptchaHandle>(null);
@@ -139,6 +141,12 @@ export default function Login({ status, canResetPassword, canRegister, usernameS
                 </div>
 
                 <SocialLoginButtons />
+
+                {staffSignInProvider && (
+                    <p className="text-muted-foreground text-center text-sm">
+                        {t('Staff sign in with :provider.', { provider: staffSignInProvider })}
+                    </p>
+                )}
 
                 {canRegister && (
                     <div className="text-muted-foreground text-center text-sm">

@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
@@ -34,7 +35,16 @@ interface ProviderSettings {
     redirect_uri: string;
 }
 
-export default function SocialLoginSettingsPage({ providers }: { providers: ProviderSettings[] }) {
+interface StaffSignIn {
+    /** The chosen provider, or '' for passwords too. */
+    provider: string;
+    /** False while the chosen provider is off or half-configured: passwords work meanwhile. */
+    enforced: boolean;
+    /** Providers that are on and configured, and whether the viewing administrator is connected to each. */
+    options: { provider: string; label: string; connected: boolean }[];
+}
+
+export default function SocialLoginSettingsPage({ providers, staff_sign_in }: { providers: ProviderSettings[]; staff_sign_in: StaffSignIn }) {
     const { t } = useTranslation();
     const [open, setOpen] = useState<string | null>(providers.find((provider) => provider.enabled)?.provider ?? null);
 
@@ -53,6 +63,8 @@ export default function SocialLoginSettingsPage({ providers }: { providers: Prov
                     description={t('Let people sign in with an account they already have somewhere else.')}
                 />
 
+                <StaffSignInSection staffSignIn={staff_sign_in} />
+
                 <div className="max-w-3xl space-y-3">
                     {providers.map((provider) => (
                         <ProviderCard
@@ -65,6 +77,79 @@ export default function SocialLoginSettingsPage({ providers }: { providers: Prov
                 </div>
             </div>
         </AppLayout>
+    );
+}
+
+/**
+ * "Staff sign in through this provider, and nothing else" (#1828).
+ *
+ * The server refuses a provider the administrator is not connected to, so
+ * the list says which ones those are rather than letting them find out
+ * from an error.
+ */
+function StaffSignInSection({ staffSignIn }: { staffSignIn: StaffSignIn }) {
+    const { t } = useTranslation();
+
+    const form = useForm({ provider: staffSignIn.provider === '' ? 'none' : staffSignIn.provider });
+
+    const chosen = staffSignIn.options.find((option) => option.provider === form.data.provider);
+
+    const submit: FormEventHandler = (e) => {
+        e.preventDefault();
+        form.transform((data) => ({ provider: data.provider === 'none' ? '' : data.provider }));
+        form.patch(route('system-settings.staff-sign-in.update'), { preserveScroll: true });
+    };
+
+    return (
+        <form onSubmit={submit} className="mb-8 max-w-3xl space-y-4 rounded-lg border p-4">
+            <div className="space-y-1">
+                <h2 className="text-base font-medium">{t('Staff sign-in')}</h2>
+                <p className="text-muted-foreground text-sm">
+                    {t(
+                        'Require staff to sign in through one provider, such as your Microsoft or Google organisation. Their passwords here then stop working and cannot be set again, so switching someone off at the provider keeps them out of here too. Clients keep their passwords.',
+                    )}
+                </p>
+            </div>
+
+            <div className="grid gap-2">
+                <Label htmlFor="staff_sign_in_provider">{t('Staff sign in with')}</Label>
+                <Select value={form.data.provider} onValueChange={(value) => form.setData('provider', value)}>
+                    <SelectTrigger id="staff_sign_in_provider" className="w-full sm:w-80">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="none">{t('A password or any provider')}</SelectItem>
+                        {staffSignIn.options.map((option) => (
+                            <SelectItem key={option.provider} value={option.provider} disabled={!option.connected}>
+                                {option.connected
+                                    ? t(':provider only', { provider: option.label })
+                                    : t(':provider only (connect it to your own account first)', { provider: option.label })}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <InputError message={form.errors.provider} />
+            </div>
+
+            {staffSignIn.provider !== '' && !staffSignIn.enforced && (
+                <Alert>
+                    <AlertDescription>
+                        {t('The provider chosen for staff is switched off or not fully set up, so staff can sign in with a password until it works again.')}
+                    </AlertDescription>
+                </Alert>
+            )}
+
+            {chosen && (
+                <p className="text-muted-foreground text-sm">
+                    {t(
+                        'Switching someone off at :provider stops their next sign-in here. A session they already have open lasts until it times out, and their API tokens and AI assistant connections keep working until you deactivate their account here, which ends all three at once.',
+                        { provider: chosen.label },
+                    )}
+                </p>
+            )}
+
+            <SaveButton processing={form.processing} recentlySuccessful={form.recentlySuccessful} />
+        </form>
     );
 }
 

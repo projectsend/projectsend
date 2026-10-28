@@ -32,9 +32,26 @@ use Illuminate\Support\Facades\Auth;
  */
 class PasswordVerification
 {
-    public function __construct(private readonly LdapAuthenticator $ldap) {}
+    public function __construct(
+        private readonly LdapAuthenticator $ldap,
+        private readonly StaffSignInPolicy $staffSignIn,
+    ) {}
 
+    /**
+     * Staff who must sign in through a provider have no password here, so
+     * the answer for them is always no — on the sign-in form, the confirm
+     * screen, and the AI assistant consent alike. Decided after the real
+     * check rather than instead of it, so a refused password takes as long
+     * as any other and the timing says nothing about whose it was.
+     */
     public function verify(User $user, string $password): bool
+    {
+        $matches = $this->matches($user, $password);
+
+        return $matches && ! $this->staffSignIn->refusesPassword($user);
+    }
+
+    private function matches(User $user, string $password): bool
     {
         if (! $this->ldap->isDirectoryAccount($user)
             && Auth::guard('web')->validate(['email' => $user->email, 'password' => $password])) {

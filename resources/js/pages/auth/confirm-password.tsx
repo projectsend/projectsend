@@ -1,5 +1,5 @@
 // Components
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -9,13 +9,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useTranslation } from '@/hooks/use-translation';
 import AuthLayout from '@/layouts/auth-layout';
+import { type ConfirmWith } from '@/types';
 
 interface ConfirmPasswordProps {
-    /** False for an account that signs in through a provider and has no password to confirm with. */
+    /** False for an account that has no password here: it signs in through a provider. */
     has_password: boolean;
+    /** The connected provider such an account confirms through, or null when it has none it can use. */
+    confirm_with: ConfirmWith | null;
 }
 
-export default function ConfirmPassword({ has_password }: ConfirmPasswordProps) {
+export default function ConfirmPassword({ has_password, confirm_with }: ConfirmPasswordProps) {
     const { t } = useTranslation();
 
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -37,7 +40,18 @@ export default function ConfirmPassword({ has_password }: ConfirmPasswordProps) 
         >
             <Head title={t('Confirm password')} />
 
-            {!has_password && (
+            {!has_password && confirm_with && (
+                <div className="space-y-4">
+                    <p className="text-muted-foreground text-sm">
+                        {t('Sign in to :provider again to confirm it is you.', { provider: confirm_with.label })}
+                    </p>
+                    <Button className="w-full" type="button" onClick={() => router.post(route('password.confirm.provider', { provider: confirm_with.provider }))}>
+                        {t('Confirm with :provider', { provider: confirm_with.label })}
+                    </Button>
+                </div>
+            )}
+
+            {!has_password && !confirm_with && (
                 <div className="space-y-4">
                     <p className="text-muted-foreground text-sm">
                         {t('You sign in through a connected account, so there is no password here to confirm. Set one to continue.')}

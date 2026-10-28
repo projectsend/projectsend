@@ -7,7 +7,9 @@ namespace App\Modules\Identity\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Identity\Reauthentication;
 use App\Modules\Identity\SignIn;
+use App\Modules\Identity\Social\SocialAccount;
 use App\Modules\Identity\StartPages;
 use App\Modules\Identity\Social\SocialAuthenticator;
 use App\Modules\Identity\Social\SocialGateway;
@@ -37,11 +39,14 @@ class SocialLoginController extends Controller
 
     private const PROVIDER = 'social.provider';
 
+    private const RETURN_TO = 'social.return';
+
     public function __construct(
         private readonly SocialAuthenticator $authenticator,
         private readonly SignIn $signIn,
         private readonly ActivityLogger $activity,
         private readonly StartPages $startPages,
+        private readonly Reauthentication $reauthentication,
     ) {}
 
     /**
@@ -71,6 +76,28 @@ class SocialLoginController extends Controller
         return $this->begin($request, $provider, 'link');
     }
 
+    /**
+     * Prove it is still you, for an account with no password to type: sign
+     * in again at the provider it is connected to. See Reauthentication,
+     * which decides who is offered this and which provider.
+     */
+    public function confirm(Request $request, string $provider): Response
+    {
+        $user = $request->user();
+        assert($user !== null);
+
+        if ($this->reauthentication->provider($user) !== $this->provider($provider)) {
+            return back()->with('error', __('That sign-in method is not available.'));
+        }
+
+        // Back to the page that asked, which is where the person was
+        // working: the confirm-password screen's own intended URL when it
+        // was that screen, otherwise the page the dialog opened over.
+        $request->session()->put(self::RETURN_TO, url()->previous());
+
+        return $this->begin($request, $provider, 'confirm');
+    }
+
     public function callback(Request $request, string $provider): RedirectResponse
     {
         $case = $this->provider($provider);
@@ -92,13 +119,19 @@ class SocialLoginController extends Controller
         $identity = $this->gateway()->identity($settings);
 
         if ($identity === null) {
-            return $intent === 'link'
-                ? redirect()->route('connected-accounts.edit')->with('error', __('That sign-in could not be completed. Please try again.'))
-                : redirect()->route('login')->with('error', __('That sign-in could not be completed. Please try again.'));
+            return (match ($intent) {
+                'link' => redirect()->route('connected-accounts.edit'),
+                'confirm' => $this->returnFromConfirm($request),
+                default => redirect()->route('login'),
+            })->with('error', __('That sign-in could not be completed. Please try again.'));
         }
 
         if ($intent === 'link') {
             return $this->completeLink($request, $settings, $identity);
+        }
+
+        if ($intent === 'confirm') {
+            return $this->completeConfirm($request, $settings, $identity);
         }
 
         $resolution = $this->authenticator->resolve($settings, $identity);
@@ -141,8 +174,11 @@ class SocialLoginController extends Controller
         $settings = SocialSettings::for($case);
 
         if (! $settings->usable()) {
-            return redirect()->route($intent === 'link' ? 'connected-accounts.edit' : 'login')
-                ->with('error', __('That sign-in method is not available.'));
+            return (match ($intent) {
+                'link' => redirect()->route('connected-accounts.edit'),
+                'confirm' => $this->returnFromConfirm($request),
+                default => redirect()->route('login'),
+            })->with('error', __('That sign-in method is not available.'));
         }
 
         $request->session()->put([self::INTENT => $intent, self::PROVIDER => $case->value]);
@@ -153,7 +189,55 @@ class SocialLoginController extends Controller
         // person ever leaves the page. The 409 + X-Inertia-Location pair
         // makes the client navigate top-level instead; a plain browser
         // request — the login flow — passes through unchanged.
-        return Inertia::location($this->gateway()->redirect($settings));
+        // A confirmation stands in for typing a password, so the provider
+        // is asked to make the person sign in again rather than accept the
+        // session it already has.
+        return Inertia::location($this->gateway()->redirect($settings, reauthenticate: $intent === 'confirm'));
+    }
+
+    /**
+     * The confirmation's other half. The identity that came back must be
+     * the one connected to *this* account — by subject, as signing in
+     * matches it — or anybody signed in at the provider in this browser
+     * could confirm for whoever holds the session here.
+     */
+    private function completeConfirm(Request $request, SocialSettings $settings, SocialIdentity $identity): RedirectResponse
+    {
+        $user = $request->user();
+
+        if ($user === null) {
+            return redirect()->route('login');
+        }
+
+        $connected = SocialAccount::resolve($identity);
+
+        if ($connected === null || ! $connected->is($user) || $this->reauthentication->provider($user) !== $settings->provider) {
+            return $this->returnFromConfirm($request)->with('error', __('That :provider account is not the one connected to yours. Sign in to :provider as yourself and try again.', [
+                'provider' => $settings->provider->label(),
+            ]));
+        }
+
+        $this->reauthentication->markConfirmed($request);
+
+        return $this->returnFromConfirm($request)->with('success', __('Confirmed. You can carry on.'));
+    }
+
+    /**
+     * Where a confirmation goes back to: the URL the framework kept for the
+     * confirm-password screen, else the page the dialog was opened over.
+     * Only ever this site — url()->previous() is read from the session.
+     */
+    private function returnFromConfirm(Request $request): RedirectResponse
+    {
+        $back = $request->session()->pull(self::RETURN_TO);
+        $home = url('/');
+        $user = $request->user();
+
+        $fallback = is_string($back) && ($back === $home || str_starts_with($back, $home.'/'))
+            ? $back
+            : ($user === null ? route('login') : $this->startPages->pathFor($user));
+
+        return redirect()->intended($fallback);
     }
 
     private function completeLink(Request $request, SocialSettings $settings, SocialIdentity $identity): RedirectResponse

@@ -101,6 +101,27 @@ enum SocialProvider: string
         return $this !== self::Facebook;
     }
 
+    /**
+     * What to add to the authorization request so the provider asks the
+     * person to sign in again, rather than waving through a session it
+     * already has. Used when the sign-in stands in for typing a password
+     * (Reauthentication): a confirmation the provider can answer without
+     * asking anybody anything proves only that a browser is signed in
+     * there. `prompt=login` is OpenID Connect's; Facebook spells it
+     * `auth_type`. GitHub has no equivalent, and says so by asking for
+     * nothing.
+     *
+     * @return array<string, string>
+     */
+    public function reauthenticationParameters(): array
+    {
+        return match ($this) {
+            self::Google, self::Microsoft, self::Oidc, self::LinkedIn => ['prompt' => 'login'],
+            self::Facebook => ['auth_type' => 'reauthenticate'],
+            self::Github => [],
+        };
+    }
+
     /** The URI to register with the provider. Shown on the settings card. */
     public function redirectUri(): string
     {

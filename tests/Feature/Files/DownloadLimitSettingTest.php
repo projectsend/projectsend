@@ -162,7 +162,9 @@ test('a bulk edit silently ignores a limit the editor may not set', function () 
 });
 
 test('the API sets a limit and reports what is left', function () {
-    $token = $this->admin->createToken('t', ['upload', 'edit_files', 'edit_others_files'])->plainTextToken;
+    // On the token as well as the role: a token holds the file settings it
+    // was granted, not its owner's (GHSA-q84h-845v-9p26).
+    $token = $this->admin->createToken('t', ['upload', 'edit_files', 'edit_others_files', 'limit_downloads'])->plainTextToken;
     $file = File::factory()->create(['uploaded_by' => $this->admin->id]);
 
     $this->withToken($token)

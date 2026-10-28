@@ -32,10 +32,10 @@ class PermissionChecker
      * to an administrator too: a token minted for one thing is that one
      * thing, whoever minted it.
      *
-     * Only the keys in $grantable are capped. The rest -- upload_public,
-     * limit_downloads and the like -- refine what a request may set, and no
-     * token can be given them, so capping them would take them away from
-     * every token. They keep following the role.
+     * Only the keys in $grantable are capped: the ones a token can be
+     * given, which TokenAbilities::inUse() lists. That includes the file
+     * settings such as upload_public (GHSA-q84h-845v-9p26). Keys outside it
+     * belong to screens the API does not reach, and follow the role.
      *
      * @param  list<string>  $grantable
      */

@@ -22,9 +22,9 @@ use Symfony\Component\HttpFoundation\Response;
  * for "Edit own files" edited other people's files whenever its owner
  * could (GHSA-w79h-hrf3-846q). Capping the permission checker here makes
  * every policy, and every other permission check in the request, answer
- * for the token rather than for the person -- for the abilities a token
- * can hold. The finer keys no token can be given still follow the role;
- * see PermissionChecker::limitTo().
+ * for the token rather than for the person -- for every ability a token
+ * can hold, the file settings such as upload_public included
+ * (GHSA-q84h-845v-9p26); see PermissionChecker::limitTo().
  *
  * The cap names the token's owner. Other people's permissions -- whom to
  * notify, say -- are still read from their roles.

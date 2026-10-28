@@ -87,7 +87,8 @@ list for your account.
 | `set_file_expiration_date` | set `expires_at` when editing |
 | `set_file_categories` | set `categories` when editing |
 | `limit_downloads` | set `download_limit` and `download_limit_scope` when editing |
-| `upload_public` | set `public` when editing |
+| `upload_public` | set `public` when editing, and upload into a public folder |
+| `upload_to_public_folders` | upload into a public folder |
 | `upload` / `edit_files` / `edit_others_files` | read and write a file's comments |
 | `manage_clients` | list clients |
 | `create_clients` / `edit_clients` / `delete_clients` | create, read and edit, delete clients; `edit_clients` also sets a client's password and removes their two-factor authentication |
@@ -96,6 +97,10 @@ list for your account.
 | `moderate_comments` | list what is awaiting approval, and approve it |
 | `manage_users` | list staff accounts and the roles you may assign |
 | `create_users` / `edit_users` / `delete_users` | create, read and edit, delete staff accounts; `edit_users` also sets an account's password and removes its two-factor authentication |
+
+A field your token may not set is left as it was rather than refusing the edit, the same as on the
+web. So a token without `upload_public` that sends `"public": true` gets a `200` and a file that is
+still private: check the response rather than the status.
 
 There is no ability for *writing* a comment. Who may comment is an installation setting rather than
 a per-role permission, so the file abilities are the gate — the same question the web asks, which is

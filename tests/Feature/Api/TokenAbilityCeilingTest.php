@@ -122,3 +122,68 @@ test('the cap holds its own user only', function () {
     expect($checker->allows($this->owner, Permission::EditOthersFiles))->toBeFalse()
         ->and($checker->allows($this->colleague, Permission::EditOthersFiles))->toBeTrue();
 });
+
+/*
+| The file settings a request may change (GHSA-q84h-845v-9p26, found by
+| @einsz). They used to follow the owner's role, because no route asked for
+| them and so no token could be given them. Making a file public is a
+| confidentiality boundary, not a detail of the edit.
+*/
+
+test('an edit-own token cannot make its owner\'s file public, or change its limits', function () {
+    $this->own->forceFill(['public' => false])->save();
+
+    $this->withToken(ceilingToken($this->owner, ['edit_files']))
+        ->patchJson("/api/v1/files/{$this->own->id}", [
+            'public' => true,
+            'slug' => 'own-file',
+            'expires_at' => now()->addMonth()->toDateString(),
+            'download_limit' => 3,
+        ])
+        ->assertOk();
+
+    $file = $this->own->fresh();
+    expect($file->public)->toBeFalse()
+        ->and($file->expires_at)->toBeNull()
+        ->and($file->download_limit)->toBeNull();
+});
+
+test('a token granted those settings changes them', function () {
+    $this->own->forceFill(['public' => false])->save();
+
+    $this->withToken(ceilingToken($this->owner, ['edit_files', 'upload_public', 'set_file_expiration_date']))
+        ->patchJson("/api/v1/files/{$this->own->id}", [
+            'public' => true,
+            'slug' => 'own-file',
+            'expires_at' => now()->addMonth()->toDateString(),
+        ])
+        ->assertOk();
+
+    $file = $this->own->fresh();
+    expect($file->public)->toBeTrue()
+        ->and($file->expires_at)->not->toBeNull();
+});
+
+test('an upload token cannot publish by uploading into a public folder', function () {
+    // Either key opens a public folder to staff, so both are capped. An
+    // administrator holds both, so neither can be the one left open.
+    $admin = User::factory()->create();
+    $folder = Folder::query()->create([
+        'name' => 'Public', 'slug' => 'public-one', 'path' => '/', 'public' => true, 'created_by' => $admin->id,
+    ]);
+
+    $this->withToken(ceilingToken($admin, ['upload']))
+        ->post('/api/v1/files', [
+            'file' => \Illuminate\Http\UploadedFile::fake()->create('a.txt', 1),
+            'folder_id' => $folder->id,
+        ], ['Accept' => 'application/json'])
+        ->assertForbidden();
+});
+
+test('the settings can be granted to a token', function () {
+    // An administrator, whose role holds all five: a token is only ever
+    // offered what its owner has.
+    $available = app(\App\Modules\Api\Auth\TokenAbilities::class)->availableFor(User::factory()->create());
+
+    expect($available)->toContain('upload_public', 'upload_to_public_folders', 'set_file_expiration_date', 'limit_downloads', 'set_file_categories');
+});

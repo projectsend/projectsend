@@ -41,6 +41,22 @@ use Illuminate\Support\Facades\Route as Router;
  */
 class TokenAbilities
 {
+    /**
+     * Abilities no route asks for, because they refine what a request may
+     * set rather than whether it may be made: whether a file is public, its
+     * expiry, its download limit, its categories, and uploading into a
+     * public folder. They are still a token's to hold or not. Left to the
+     * owner's role, a token granted only "Edit files" made files public
+     * whenever its owner could (GHSA-q84h-845v-9p26).
+     */
+    private const REFINEMENTS = [
+        'upload_public',
+        'upload_to_public_folders',
+        'set_file_expiration_date',
+        'limit_downloads',
+        'set_file_categories',
+    ];
+
     /** @var list<string>|null */
     private ?array $inUse = null;
 
@@ -112,7 +128,7 @@ class TokenAbilities
 
     /**
      * Abilities named by a `token-can:` middleware on any registered
-     * /api/v1 route — core or module.
+     * /api/v1 route — core or module — plus the REFINEMENTS above.
      *
      * Read off the route table rather than declared in a list, so this can
      * never disagree with what the endpoints actually require. Route
@@ -127,7 +143,7 @@ class TokenAbilities
             return $this->inUse;
         }
 
-        $abilities = [];
+        $abilities = array_fill_keys(self::REFINEMENTS, true);
 
         foreach (Router::getRoutes()->getRoutes() as $route) {
             if (! str_starts_with($route->uri(), 'api/')) {

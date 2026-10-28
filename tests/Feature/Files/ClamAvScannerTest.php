@@ -20,7 +20,8 @@ use App\Modules\Platform\Settings\Settings;
  * `$instream` is what it does with a scan: "limit" reads a little, says
  * the stream is too long and hangs up, as clamd does at StreamMaxLength;
  * "greeting" answers every connection like a MySQL server would, before
- * anything is asked.
+ * anything is asked; "refusing" answers with an error line instead of
+ * a version.
  *
  * @return array{0: resource, 1: resource}
  */
@@ -36,6 +37,12 @@ function startFakeClamd(string $instream): array
             $client = @stream_socket_accept($server, 10);
             if ($client === false) {
                 break;
+            }
+
+            if ($mode === 'refusing') {
+                fwrite($client, "UNKNOWN COMMAND\0");
+                fclose($client);
+                continue;
             }
 
             if ($mode === 'greeting') {
@@ -116,4 +123,34 @@ test('a service that is not clamd is not reported as a scanner', function () {
     // shown as the engine's name.
     expect($status->reachable)->toBeFalse()
         ->and($status->error)->toContain('not a ClamAV scanner');
+});
+
+test('the error says what the address answered instead', function () {
+    // Reported on Discord: a unix socket that connected but was "not a
+    // ClamAV scanner", with nothing to say what it was. The answer itself
+    // is the clue.
+    $server = startFakeClamd('refusing');
+
+    try {
+        $status = app(ClamAvScanner::class)->status();
+    } finally {
+        stopFakeClamd($server);
+    }
+
+    expect($status->reachable)->toBeFalse()
+        ->and($status->error)->toContain('not a ClamAV scanner')
+        ->and($status->error)->toContain('It answered: "UNKNOWN COMMAND".');
+});
+
+test('a greeting is shown up to its first NUL', function () {
+    $server = startFakeClamd('greeting');
+
+    try {
+        $status = app(ClamAvScanner::class)->status();
+    } finally {
+        stopFakeClamd($server);
+    }
+
+    // The MySQL-style greeting stops at its first NUL, leaving "J".
+    expect($status->error)->toContain('It answered: "J".');
 });

@@ -159,10 +159,14 @@ class ClamAvScanner implements VirusScanner
         // Anything listening on the port answers something. Without this a
         // database or a web server "answered", and the first bytes of its
         // greeting were shown as the engine's name.
+        // What it said is the one clue to what it is, so it goes in the
+        // message: printable characters only, and short.
         if (! str_starts_with($parts[0], 'ClamAV ')) {
+            $answered = mb_strimwidth(trim((string) preg_replace('/[^\x20-\x7E]+/', ' ', $reply)), 0, 80, '…');
+
             return ScannerStatus::unreachable(__('Something answered at :address, but it is not a ClamAV scanner.', [
                 'address' => $this->config->address(),
-            ]));
+            ]).' '.__('It answered: ":reply".', ['reply' => $answered]));
         }
 
         $definitions = isset($parts[1]) && is_numeric(trim($parts[1])) ? (int) trim($parts[1]) : null;

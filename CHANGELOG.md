@@ -10,6 +10,91 @@ Anything under **⚠️ Important — do these yourself** is something you have 
 we did. It sits at the top of a release for that reason. Older entries call the same section
 **Upgrade notes**.
 
+## 2.8.0 — 28 October 2026
+
+Connect an AI assistant to your account, require staff to sign in through your organisation's
+provider, and a large batch of security fixes.
+
+### ⚠️ Important — do these yourself
+
+Everything else in this release happens on its own, and nothing here stops the upgrade.
+
+- **Re-create API tokens that set file details.** Making a file public, its expiry date, its
+  download limit, its categories and uploading into a public folder are now abilities you tick on
+  the token. Older tokens do not have them, so those fields are quietly left as they were until the
+  token is re-created with them.
+- **Check API tokens that act on other people's files or manage staff.** A token now does only what
+  it was given, even when its owner could do more. "Edit others' files" no longer covers the owner's
+  own files, removing somebody else's comment needs "Moderate comments" on the token, and a token
+  that manages staff accounts needs the abilities those accounts' roles carry. Only a token holding
+  every ability can create or manage an administrator.
+- **Check custom email templates that used Markdown.** Lines in a notification email are now shown
+  as plain text, so links and formatting typed into a custom template appear as written.
+- **If you installed from the zip and upload very large files,** add the upload-completion block
+  from the nginx example in `INSTALL.md`. Without it, finishing a multi-gigabyte upload on slow
+  storage can time out after a minute.
+
+**New**
+
+- **Connect an AI assistant.** Staff can connect Claude, ChatGPT or another assistant to their
+  account. It can only do what that person can do, and everything it does appears in the activity
+  log. It is on by default; Settings → AI assistants turns it off for everybody at once.
+- **Require staff to sign in through one provider**, such as your Microsoft or Google organisation,
+  from Settings → Social login. Switching somebody off there then keeps them out here too. Clients
+  keep their passwords.
+- **Skip two-factor for a provider** that already asks for a second factor of its own.
+- **Select a whole page or the whole listing** on the files screen, and jump straight to a page.
+- **The Branded email theme shows your logo.**
+- *(Self-hosted)* **Register your own service providers** in `bootstrap/providers.local.php`, which
+  updates leave alone.
+
+**Closed holes in who can see what**
+
+- An API token can no longer do more than it was given, on the API or through an AI assistant.
+- A client's file editor shows and revokes only the public links that client made.
+- Names and file names in notification emails are shown as text, so nobody can plant links or
+  images in mail the site sends.
+- A prepared zip is refused once its requester can no longer see a file in it. Zips prepared before
+  this update must be prepared again.
+- Marking a file as a new version can no longer share it, or the original, with people the staff
+  member could not share with.
+- A finished upload goes into its folder only if the uploader may still put it there.
+- A staff member limited to some clients now sees and decides only their own clients' account
+  requests, selects only their own library, and no longer has the orphan file tool.
+- The first sign-in that links an existing account to a provider by email address still asks for
+  two-factor.
+- Erasing an account now also removes its API tokens.
+
+**Fixed**
+
+- Interrupted upload parts are kept, and very large files finish.
+- A rate-limited API request answers 429 with a time to retry, not a 500.
+- The virus scanner's error says what answered at the address when it is not ClamAV.
+- The dashboard, the API page and the API guide fit on a phone.
+- Third-party libraries are updated, including fixes for published security advisories.
+
+Thanks to [@nguyenvantiennani](https://github.com/nguyenvantiennani),
+[@Ratstack2](https://github.com/Ratstack2), [@auuftakt](https://github.com/auuftakt),
+[@HuzaifaDal](https://github.com/HuzaifaDal), [@Haind03](https://github.com/Haind03),
+[@echosecure](https://github.com/echosecure), [@Liam-G](https://github.com/Liam-G),
+[@einsz](https://github.com/einsz), [@BradleyIRP](https://github.com/BradleyIRP),
+[@CrawdadWarden](https://github.com/CrawdadWarden), [@BakerLabsBrad](https://github.com/BakerLabsBrad),
+[@laurensprimusz](https://github.com/laurensprimusz), [@agardiol](https://github.com/agardiol),
+[@JensS](https://github.com/JensS), [@veenone](https://github.com/veenone) and
+[@mash2k3](https://github.com/mash2k3) for reporting and fixing.
+
+### Issues closed since 2.7.1
+
+The summary above is what changed. This is the paper trail, for anyone who wants to read the
+original report.
+
+- [#1791](https://github.com/projectsend/projectsend/issues/1791) — MFA dialog is shown even when OpenID Connect already has requested a second factor
+- [#1819](https://github.com/projectsend/projectsend/issues/1819) — Branding logo does not appear v2.7.0 (zip install)
+- [#1822](https://github.com/projectsend/projectsend/issues/1822) — [docker] Critical php RCE fixes available
+- [#1824](https://github.com/projectsend/projectsend/issues/1824) — Update-safe way to register a custom email theme (local service providers)
+- [#1828](https://github.com/projectsend/projectsend/issues/1828) — [Feature Request] Require Microsoft sign-in for staff while preserving local authentication for clients
+- [#1831](https://github.com/projectsend/projectsend/issues/1831) — API: rate-limited requests return 500 instead of 429
+
 ## 2.7.1 — 22 October 2026
 
 A security update for PHP itself, and fixes for email encryption, SELinux servers, older MariaDB

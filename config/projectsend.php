@@ -234,7 +234,7 @@ return [
     // A slow disk or a large source wants longer than the default 15.
     'rendition_lock_wait_seconds' => env('PROJECTSEND_RENDITION_LOCK_WAIT_SECONDS'),
 
-    'version' => '2.7.1',
+    'version' => '2.8.0',
 
     /*
     |--------------------------------------------------------------------------

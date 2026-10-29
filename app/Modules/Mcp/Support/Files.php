@@ -126,13 +126,30 @@ final class Files
     }
 
     /**
-     * The file's share links, newest first.
+     * The file's share links this account may be shown, newest first.
      *
      * @return list<ShareLink>
      */
-    public static function links(File $file): array
+    public static function links(File $file, Account $account): array
     {
-        return array_values($file->shareLinks()->orderByDesc('id')->get()->all());
+        return array_values(array_filter(
+            $file->shareLinks()->orderByDesc('id')->get()->all(),
+            fn (ShareLink $link): bool => self::mayHandle($account, $file, $link),
+        ));
+    }
+
+    /**
+     * Whether this account may see, reuse or revoke the link. Staff: any
+     * link on a file they can see. A client: only a link they made, on a
+     * file they uploaded, the rule ClientShareLinks applies on the web. A
+     * staff member's link is that person's decision about who may reach
+     * the file, even on the client's own upload (GHSA-j8xv-mpp6-pv6f).
+     */
+    public static function mayHandle(Account $account, File $file, ShareLink $link): bool
+    {
+        return ! $account->isClient()
+            || ((int) $file->getAttribute('uploaded_by') === $account->id()
+                && (int) $link->getAttribute('created_by') === $account->id());
     }
 
     /**

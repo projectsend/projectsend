@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Mcp\Tools;
 
+use App\Modules\Files\Models\ShareLink;
 use App\Modules\Mcp\Support\Account;
 use App\Modules\Mcp\Support\Envelope;
 use App\Modules\Mcp\Support\Files;
@@ -93,7 +94,9 @@ class ListFiles extends ToolBase
         $files = [];
 
         foreach ($page->items() as $file) {
-            $link = Presenter::activeLink($file->shareLinks);
+            $link = Presenter::activeLink($file->shareLinks->filter(
+                fn (ShareLink $link): bool => Files::mayHandle($account, $file, $link),
+            ));
 
             $files[] = Presenter::file($file, $account) + [
                 'link' => $link === null ? null : Presenter::link($link),

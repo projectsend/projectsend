@@ -107,8 +107,11 @@ class RevokeLink extends ToolBase
         }
 
         // A link of a file this account cannot see is, to this account,
-        // no link at all.
-        return Files::find($account, (int) $link->getAttribute('shareable_id')) === null ? null : $link;
+        // no link at all. So is one it may not handle: a staff member's,
+        // to a client (Files::mayHandle).
+        $file = Files::find($account, (int) $link->getAttribute('shareable_id'));
+
+        return $file !== null && Files::mayHandle($account, $file, $link) ? $link : null;
     }
 
     private static function tokenFromUrl(string $url): ?string

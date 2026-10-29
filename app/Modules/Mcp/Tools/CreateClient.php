@@ -17,6 +17,7 @@ use App\Modules\Mcp\Support\ToolFailure;
 use App\Modules\Mcp\Support\Uploads;
 use App\Modules\Mcp\Support\Web;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -67,18 +68,34 @@ class CreateClient extends ToolBase
         $email = strtolower(trim((string) $validated['email']));
         $key = isset($validated['idempotency_key']) ? (string) $validated['idempotency_key'] : null;
 
-        $create = fn (): array => $this->create($account, (string) $validated['name'], $email, $validated);
-
         if ($key === null) {
-            $payload = $create();
-        } else {
-            $fingerprint = Uploads::fingerprint(['name' => $validated['name'], 'email' => $email, 'storage_quota_mb' => $validated['storage_quota_mb'] ?? null]);
+            return Response::structured($this->create($account, (string) $validated['name'], $email, $validated));
+        }
 
-            try {
-                [$payload] = app(Idempotency::class)->remember('mcp', 'mcp:'.$account->id().':create_client:'.$key, $fingerprint, $create);
-            } catch (IdempotencyConflict) {
-                return ToolError::idempotencyConflict(now()->toIso8601String());
+        // The answer is remembered for a retry, whose whole point is an
+        // answer that never arrived, so the password has to survive it.
+        // Encrypted with the app key, never as plain text: the cache is a
+        // database table or Redis.
+        $create = function () use ($account, $validated, $email): array {
+            $payload = $this->create($account, (string) $validated['name'], $email, $validated);
+
+            if (is_string($payload['password_once'] ?? null)) {
+                $payload['password_once'] = Crypt::encryptString($payload['password_once']);
             }
+
+            return $payload;
+        };
+
+        $fingerprint = Uploads::fingerprint(['name' => $validated['name'], 'email' => $email, 'storage_quota_mb' => $validated['storage_quota_mb'] ?? null]);
+
+        try {
+            [$payload] = app(Idempotency::class)->remember('mcp', 'mcp:'.$account->id().':create_client:'.$key, $fingerprint, $create);
+        } catch (IdempotencyConflict) {
+            return ToolError::idempotencyConflict(now()->toIso8601String());
+        }
+
+        if (is_string($payload['password_once'] ?? null)) {
+            $payload['password_once'] = Crypt::decryptString($payload['password_once']);
         }
 
         return Response::structured($payload);

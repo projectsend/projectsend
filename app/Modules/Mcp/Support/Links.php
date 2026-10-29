@@ -98,10 +98,10 @@ final class Links
         );
     }
 
-    /** The newest link that works and carries neither expiry nor cap. */
-    public static function plainActive(File $file): ?ShareLink
+    /** The newest link this account may use that works and carries neither expiry nor cap. */
+    public static function plainActive(File $file, Account $account): ?ShareLink
     {
-        foreach (Files::links($file) as $link) {
+        foreach (Files::links($file, $account) as $link) {
             if ($link->isActive() && $link->getAttribute('expires_at') === null && $link->getAttribute('max_downloads') === null) {
                 return $link;
             }

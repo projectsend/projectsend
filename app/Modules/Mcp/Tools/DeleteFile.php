@@ -50,7 +50,7 @@ class DeleteFile extends ToolBase
         $id = (int) $file->getAttribute('id');
         $name = (string) $file->getAttribute('name');
         $size = (int) $file->getAttribute('size');
-        $linksRevoked = count(array_filter(Files::links($file), fn (ShareLink $link): bool => $link->isActive()));
+        $linksRevoked = count(array_filter(Files::links($file, $account), fn (ShareLink $link): bool => $link->isActive()));
 
         // A soft delete, as the web does: File's own hooks clean the
         // bytes up on commit, and the row stays for version chains, the

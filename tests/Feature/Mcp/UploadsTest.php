@@ -7,6 +7,7 @@ use App\Modules\Audit\ActivityLog;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Uploads\UploadSession;
 use App\Modules\Files\Uploads\UploadTypeRestriction;
+use App\Modules\Identity\Models\RolePermission;
 use App\Modules\Mcp\Support\McpContext;
 use App\Modules\Mcp\Support\Uploads;
 use App\Modules\Mcp\Tools\CompleteUpload;
@@ -179,6 +180,8 @@ it('opens a resumable upload with signed part URLs, and resumes it under the sam
 
 it('says what a portal of their own adds when a free upload asks for a link that expires, instead of dropping it in silence', function (): void {
     $client = McpWorld::client();
+    // Making a link is publishing, which a client needs this for.
+    RolePermission::query()->create(['role_id' => $client->role_id, 'permission' => 'upload_public']);
 
     $opened = McpWorld::call(CreateUpload::class, ['filename' => 'quote.txt', 'size_bytes' => 10], $client);
     mcpPutPart($opened['upload_id'], 1, str_repeat('a', 10));

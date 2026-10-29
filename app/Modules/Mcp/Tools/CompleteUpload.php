@@ -117,9 +117,12 @@ class CompleteUpload extends ToolBase
         // Where clients are a free plan, the hosted edition minted their
         // link the moment the file was stored; a client asking for one
         // gets that one. Staff get one only when they ask.
-        $link = Links::plainActive($file);
+        $link = Links::plainActive($file, $account);
 
-        if ($link === null && ($share || $account->isClient())) {
+        // A client only where they may publish, as share_by_link asks.
+        $mayMint = $account->isClient() ? $account->can('upload_public') : $share;
+
+        if ($link === null && $mayMint) {
             $link = Links::mint($file, $account, $expiresAt, $maxDownloads, $warnings);
         }
 

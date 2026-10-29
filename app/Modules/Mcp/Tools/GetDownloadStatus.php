@@ -118,8 +118,11 @@ class GetDownloadStatus extends ToolBase
         }
 
         if ($account->isClient()) {
-            // Their own files only, whichever way the question was asked.
-            $query->whereIn('subject_id', Files::visibleTo($account)->select('id'));
+            // Their own files only, whichever way the question was asked:
+            // the ones they uploaded, as OwnFileDownloads counts them. A
+            // file shared with them is visible, but who else downloaded it
+            // is not theirs to know.
+            $query->whereIn('subject_id', File::query()->where('uploaded_by', $account->id())->select('id'));
         }
 
         if (isset($validated['since'])) {

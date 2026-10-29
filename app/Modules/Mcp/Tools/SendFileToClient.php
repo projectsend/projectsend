@@ -88,6 +88,9 @@ class SendFileToClient extends ToolBase
 
             Files::requireSharingRoot($file, $this->name(), ['client_id' => (int) $client->getAttribute('id')]);
         } else {
+            // A new file, so the key every other way of making one asks.
+            $this->requirePermission($account, 'upload');
+
             $file = CreateFileFromContent::save(
                 $account,
                 (string) $validated['filename'],

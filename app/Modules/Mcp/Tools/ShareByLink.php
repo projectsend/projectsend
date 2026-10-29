@@ -65,12 +65,19 @@ class ShareByLink extends ToolBase
         );
 
         $wantsOptions = $expiresAt !== null || $maxDownloads !== null;
-        $existing = $wantsOptions ? null : Links::plainActive($file);
+        $existing = $wantsOptions ? null : Links::plainActive($file, $account);
         $created = false;
 
         if ($existing !== null) {
             $link = $existing;
         } else {
+            // Making a new public link is publishing, which a client may
+            // do only with upload_public, as on the web
+            // (ShareLinksController::store). Staff were never asked.
+            if ($account->isClient() && ! $account->can('upload_public')) {
+                return ToolError::permissionMissing('upload_public', Web::files($account));
+            }
+
             $link = Links::mint($file, $account, $expiresAt, $maxDownloads, $warnings);
             $created = true;
         }

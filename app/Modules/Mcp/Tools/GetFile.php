@@ -49,7 +49,7 @@ class GetFile extends ToolBase
         }
 
         $id = (int) $file->getAttribute('id');
-        $links = array_values(array_filter(Files::links($file), fn (ShareLink $link): bool => $link->isActive()));
+        $links = array_values(array_filter(Files::links($file, $account), fn (ShareLink $link): bool => $link->isActive()));
         $downloads = self::downloads($file);
 
         $uploader = $file->uploader;

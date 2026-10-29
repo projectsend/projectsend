@@ -344,3 +344,23 @@ test('a recipient the original already has does not block a scoped link', functi
 
     expect($upload->fresh()->previous_file_id)->toBe($original->id);
 });
+
+test('a client-scoped staffer cannot hand their file to the original\'s out-of-roster recipients', function (string $via) {
+    // The other direction (2026-10-28 scan): a revision is seen by
+    // everybody the original is shared with. Sharing $upload with that
+    // client directly is refused, so linking must be too.
+    $mine = User::factory()->client()->create();
+    $outside = User::factory()->client()->create();
+
+    $staffer = User::factory()->role(SystemRole::ClientManager)->create();
+    $staffer->assignedClients()->attach($mine->id);
+
+    $original = File::factory()->create(['uploaded_by' => $staffer->id]);
+    shareFileWith($original, $outside);
+    $upload = File::factory()->create(['uploaded_by' => $staffer->id]);
+
+    linkVersionVia($via, $staffer, $upload, $original)->assertUnprocessable();
+
+    expect($upload->fresh()->previous_file_id)->toBeNull()
+        ->and(canSeeFile($outside, $upload))->toBeFalse();
+})->with(['web', 'api']);

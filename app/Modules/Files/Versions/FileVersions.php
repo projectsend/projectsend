@@ -511,7 +511,8 @@ class FileVersions
 
     /**
      * Every recipient the link carries onto the root must be one the actor
-     * could have shared the root with directly.
+     * could have shared the root with directly, and every recipient of the
+     * root one they could have shared this file with.
      *
      * The move goes through FileSharing::assign(), which authorizes
      * nothing, so the share endpoints' rule has to be asked here: a
@@ -552,6 +553,36 @@ class FileVersions
             if (! $alreadyOnRoot) {
                 throw ValidationException::withMessages([
                     'previous_file_id' => __('This file is shared with someone you can\'t share files with, so it can\'t be marked as a new version. Ask an administrator to do it.'),
+                ]);
+            }
+        }
+
+        // And the other way. Everybody the original is shared with sees
+        // its revisions, so linking hands this file to them: the same as
+        // sharing it with them, which the same rule refuses. A recipient
+        // the file already has gains nothing.
+        foreach ($root->assignments()->with('assignable')->get() as $assignment) {
+            $target = $assignment->assignable;
+
+            $allowed = match (true) {
+                $target instanceof Group => $this->scope->canAssignGroup($actor, $target),
+                $target instanceof User => $this->scope->canAssignClient($actor, $target),
+                default => true,
+            };
+
+            if ($allowed) {
+                continue;
+            }
+
+            $alreadyOnFile = FileAssignment::query()
+                ->where('file_id', $file->id)
+                ->where('assignable_type', $assignment->assignable_type)
+                ->where('assignable_id', $assignment->assignable_id)
+                ->exists();
+
+            if (! $alreadyOnFile) {
+                throw ValidationException::withMessages([
+                    'previous_file_id' => __('The original is shared with someone you can\'t share files with, so this file can\'t be marked as its new version. Ask an administrator to do it.'),
                 ]);
             }
         }

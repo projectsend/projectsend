@@ -14,6 +14,13 @@ final class RedirectUris
 {
     public const MAX_LENGTH = 2048;
 
+    /**
+     * Schemes a browser runs or reads instead of handing to a program.
+     * Both answers to the consent send the browser to the redirect, so a
+     * `javascript:` one ran on this site the moment somebody clicked Deny.
+     */
+    private const REFUSED_SCHEMES = ['javascript', 'data', 'vbscript', 'file', 'blob', 'about', 'filesystem', 'view-source'];
+
     public static function isAcceptable(string $uri): bool
     {
         if ($uri === '' || strlen($uri) > self::MAX_LENGTH || str_contains($uri, '#')) {
@@ -34,6 +41,10 @@ final class RedirectUris
 
         if ($scheme === 'http') {
             return self::isLoopbackHost($parts['host'] ?? '');
+        }
+
+        if (in_array($scheme, self::REFUSED_SCHEMES, true)) {
+            return false;
         }
 
         // A scheme of the client's own, `cursor://…`: accepted as registered.

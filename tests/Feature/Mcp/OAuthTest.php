@@ -678,3 +678,30 @@ it('prunes what the tables no longer need, and expires what ran out', function (
     expect(McpConnection::query()->find(McpConnection::query()->where('family', '!=', 'f2')->whereNull('revoked_at')->value('id')))->not->toBeNull()
         ->and(oauthRefresh($live['refresh_token'])->status())->toBe(200);
 });
+
+// ── Found in the 2026-10-28 scan ─────────────────────────────────────
+
+it('refuses a redirect address the browser would run instead of visit', function (): void {
+    // Both answers to the consent send the browser to the redirect, so a
+    // `javascript:` one ran on this site the moment somebody clicked Deny.
+    $register = fn (array $uris): TestResponse => withHostCapabilities(['ai.connector'], fn (): TestResponse => test()->postJson('/oauth/mcp/register', ['redirect_uris' => $uris]));
+
+    foreach (['javascript:alert(document.domain)//', 'JavaScript:alert(1)', 'data:text/html,hi', 'vbscript:msgbox(1)', 'file:///etc/passwd', 'blob:https://a.example/x'] as $uri) {
+        $register([$uri])->assertStatus(400)->assertJsonPath('error', 'invalid_redirect_uri');
+    }
+
+    expect(McpClient::query()->count())->toBe(0);
+});
+
+it('will not send anybody to such an address registered before it was refused', function (): void {
+    McpClient::query()->create([
+        'client_id' => 'legacy', 'client_id_hash' => McpClient::hashOf('legacy'), 'kind' => 'dcr', 'name' => 'Old',
+        'redirect_uris' => ['javascript:alert(document.domain)//'],
+    ]);
+    $staff = oauthStaff();
+
+    oauthAuthorize($staff, ['client_id' => 'legacy', 'redirect_uri' => 'javascript:alert(document.domain)//'])
+        ->assertStatus(400)
+        ->assertJsonPath('component', 'mcp/authorize-error')
+        ->assertJsonMissingPath('props.request_id');
+});

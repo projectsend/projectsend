@@ -140,6 +140,12 @@ final class Clients
 
     public function redirectMatches(McpClient $client, string $presented): bool
     {
+        // Asked of the presented address too, so one registered before
+        // the rules tightened is never used.
+        if (! RedirectUris::isAcceptable($presented)) {
+            return false;
+        }
+
         foreach ($client->redirect_uris as $registered) {
             if (RedirectUris::matches($registered, $presented)) {
                 return true;

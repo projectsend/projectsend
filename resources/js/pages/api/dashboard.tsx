@@ -112,7 +112,7 @@ export default function ApiDashboard({ summary, daily, tokens, recent_actions, t
                                 : t('Your tokens and what they have been doing.')
                         }
                     />
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                         {scope.can_view_install_wide && (
                             <Button variant="outline" size="sm" onClick={toggleScope}>
                                 {scope.install_wide ? t('Show only mine') : t('Show all tokens')}

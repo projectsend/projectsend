@@ -358,7 +358,7 @@ export default function Dashboard({
                     onDragOver={handleDragOver}
                     onDragEnd={handleDragEnd}
                 >
-                    <div className={`grid gap-6 ${COLUMN_CLASSES[columnsCount] ?? COLUMN_CLASSES[2]}`}>
+                    <div className={`grid grid-cols-1 gap-6 ${COLUMN_CLASSES[columnsCount] ?? COLUMN_CLASSES[2]}`}>
                         {displayColumns.map((widgets, index) => (
                             <Column key={index} index={index} widgets={widgets} renderWidget={renderWidget} />
                         ))}

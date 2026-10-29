@@ -60,12 +60,9 @@ test('the purge command erases only accounts past their grace period', function 
 test('every administrative deletion path schedules permanent erasure', function () {
     app(Settings::class)->set(Setting::AccountErasureGraceDays, 30);
 
-    $token = $this->admin->createToken('t', [
-        Permission::ManageUsers->value,
-        Permission::DeleteUsers->value,
-        Permission::ManageClients->value,
-        Permission::DeleteClients->value,
-    ])->plainTextToken;
+    // Everything the administrator may give a token: removing an account
+    // takes a token that holds what that account's role carries.
+    $token = $this->admin->createToken('t', app(\App\Modules\Api\Auth\TokenAbilities::class)->availableFor($this->admin))->plainTextToken;
 
     $staffUi = User::factory()->create();
     $this->actingAs($this->admin)->delete("/users/{$staffUi->id}")->assertRedirect('/users');

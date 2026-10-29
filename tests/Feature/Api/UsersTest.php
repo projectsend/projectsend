@@ -17,7 +17,10 @@ use Illuminate\Support\Facades\Storage;
 beforeEach(function () {
     Storage::fake('files');
     $this->admin = User::factory()->create();
-    $this->token = $this->admin->createToken('t', [
+    // Everything the administrator may give a token. A token hands out,
+    // and reaches, only roles whose permissions it holds.
+    $this->token = $this->admin->createToken('t', app(\App\Modules\Api\Auth\TokenAbilities::class)->availableFor($this->admin))->plainTextToken;
+    $this->narrowToken = $this->admin->createToken('n', [
         Permission::ManageUsers->value,
         Permission::CreateUsers->value,
         Permission::EditUsers->value,
@@ -531,4 +534,40 @@ test('a client is not addressable through the staff two-factor route', function 
     $this->withToken($this->token)
         ->deleteJson("/api/v1/users/{$client->id}/two-factor")
         ->assertNotFound();
+});
+
+/*
+| An administrator's token is a token too (2026-10-28 scan). Its owner
+| holds every permission, but the token holds what it was given, and an
+| account it creates signs in on the web with no token in the way.
+*/
+
+test('an administrator\'s user-management token cannot create an administrator', function () {
+    $this->withToken($this->narrowToken)->postJson('/api/v1/users', [
+        'name' => 'Escalation',
+        'email' => 'escalation@example.test',
+        'role_id' => roleId(SystemRole::SystemAdministrator),
+        'password' => 'correct-horse-battery-staple',
+    ])->assertStatus(422);
+
+    expect(User::query()->where('email', 'escalation@example.test')->exists())->toBeFalse();
+});
+
+test('nor hand out a role carrying permissions the token does not hold', function () {
+    $this->withToken($this->narrowToken)->postJson('/api/v1/users', [
+        'name' => 'Uploader',
+        'email' => 'uploader@example.test',
+        'role_id' => roleId(SystemRole::Uploader),
+        'password' => 'correct-horse-battery-staple',
+    ])->assertStatus(422);
+});
+
+test('an administrator on the web still grants any role, a retired permission key included', function () {
+    $role = Role::query()->create(['name' => 'Old keys']);
+    RolePermission::query()->create(['role_id' => $role->id, 'permission' => 'upload']);
+    RolePermission::query()->create(['role_id' => $role->id, 'permission' => 'a_key_that_no_longer_exists']);
+    $staffAccounts = app(\App\Modules\Identity\StaffAccounts::class);
+
+    expect($staffAccounts->mayGrant($this->admin, $role))->toBeTrue()
+        ->and($staffAccounts->mayGrant($this->admin, Role::query()->findOrFail(roleId(SystemRole::SystemAdministrator))))->toBeTrue();
 });

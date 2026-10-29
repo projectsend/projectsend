@@ -435,8 +435,11 @@ section sits behind `manage_users` and each button behind its own key.
 ### Three rules that will refuse you
 
 **You cannot hand out authority you do not hold.** `role_id` must name a role you could grant
-yourself: a caller who is not an administrator may not create one, nor assign any role carrying a
-permission they lack, nor touch an account whose role already outranks them (that one is a `403`).
+yourself: a caller may not create an administrator, nor assign any role carrying a permission they
+lack, nor touch an account whose role already outranks them (that one is a `403`). "What you hold"
+is what your token holds, for an administrator too: an account the token creates can sign in on the
+web with no token in the way, so a token that manages staff must itself hold the abilities their
+roles carry, and only a token holding every ability may create or manage an administrator.
 `GET /roles` lists exactly what is available to you, so the safe move is to read it rather than
 guess an id.
 

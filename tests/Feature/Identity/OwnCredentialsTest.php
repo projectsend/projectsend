@@ -20,7 +20,9 @@ use Illuminate\Support\Facades\Hash;
  */
 beforeEach(function () {
     $this->admin = User::factory()->role(SystemRole::SystemAdministrator)->create(['password' => 'Original-pass-1!']);
-    $this->token = $this->admin->createToken('t', ['manage_users', 'edit_users'])->plainTextToken;
+    // Everything the administrator may give a token: changing a colleague's
+    // account takes a token that holds what their role carries.
+    $this->token = $this->admin->createToken('t', app(\App\Modules\Api\Auth\TokenAbilities::class)->availableFor($this->admin))->plainTextToken;
 });
 
 test('a token cannot set a new password for its own owner', function () {

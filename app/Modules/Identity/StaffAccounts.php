@@ -12,6 +12,7 @@ use App\Modules\Identity\Erasure\ErasureSchedule;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Mcp\OAuth\Grants;
 use App\Modules\Platform\Seats\SeatAllowance;
+use App\Modules\Identity\Permissions\Permission;
 use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Identity\Permissions\SystemRole;
 use Illuminate\Support\Collection;
@@ -61,25 +62,33 @@ class StaffAccounts
      * and an account may edit its own.
      *
      * An administrator holds every permission by construction and is
-     * never client-scoped, so this is always true for them and the admin
-     * experience is unchanged.
+     * never client-scoped, so on the web this is always true for them.
+     * On an API token it is not: `grantedKeys()` is what the token holds,
+     * and an account the token creates signs in on the web with no token
+     * in the way. So an administrator's token hands out only what it holds,
+     * the administrator role only when it holds every key, the same rule as
+     * anybody's.
      */
     public function mayGrant(User $actor, Role $role): bool
     {
-        if ($actor->role?->is_administrator === true) {
-            return true;
+        if ($actor->role?->is_administrator !== true) {
+            if ($role->is_administrator) {
+                return false;
+            }
+
+            if ($actor->isClientScoped() && ! $role->client_scoped) {
+                return false;
+            }
         }
 
-        if ($role->is_administrator) {
-            return false;
-        }
-
-        if ($actor->isClientScoped() && ! $role->client_scoped) {
-            return false;
-        }
-
+        $known = array_map(fn (Permission $permission): string => $permission->value, Permission::cases());
         $held = $this->permissions->grantedKeys($actor);
-        $granting = $role->permissions()->pluck('permission')->all();
+
+        // Keys no longer in the vocabulary grant nothing, so they are not
+        // asked about (PermissionChecker ignores them the same way).
+        $granting = $role->is_administrator
+            ? $known
+            : array_intersect($role->permissions()->pluck('permission')->all(), $known);
 
         return array_diff($granting, $held) === [];
     }

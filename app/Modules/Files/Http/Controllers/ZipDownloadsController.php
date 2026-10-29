@@ -21,7 +21,6 @@ use App\Modules\Files\Uploads\StoreUploadedFile;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use App\Support\ContentDisposition;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -193,6 +192,15 @@ class ZipDownloadsController extends Controller
         // the whole archive is refused and a fresh one leaves the file out.
         $contained = $zipDownload->contained_file_ids;
 
+        // An archive from an older release recorded no contents, so there
+        // is nothing to ask the question of. Refused rather than handed
+        // over unchecked; ordering the selection again is one click.
+        abort_if(
+            $contained === null,
+            423,
+            __('This archive was prepared before an update. Download the selection again.'),
+        );
+
         // Asked on every fetch, the first and any later one, the way a
         // single file's download asks the policy on every request. The
         // archive was built while its requester could see everything in
@@ -201,13 +209,13 @@ class ZipDownloadsController extends Controller
         // the way around the revocation. A deleted file is not found at
         // all, so a member missing from the query refuses too.
         abort_if(
-            $contained !== null && ! $this->stillViewable($contained, $user),
+            ! $this->stillViewable($contained, $user),
             403,
             __('You no longer have access to a file in this archive.'),
         );
 
         abort_if(
-            $contained !== null && File::query()
+            File::query()
                 ->whereIn('id', $contained)
                 ->whereNotIn('scan_status', ScanStatus::availableValues())
                 ->exists(),
@@ -261,28 +269,17 @@ class ZipDownloadsController extends Controller
      * the same selection afresh is the way through: the build leaves the
      * spent file out and names it in skipped_files.
      *
-     * An archive from before the job recorded its contents is handed over
-     * the way it always was, without this check. Its contents can only be
-     * guessed at by resolving the selection again, and guessing is exactly
-     * what must not decide a refusal: the same reconstruction both refuses
-     * over files the archive does not hold and misses files it does. Those
-     * rows stop existing within a day or two of an upgrade, and until then
-     * they behave as they did before this change rather than worse.
+     * download() has already refused an archive with no recorded contents.
      */
     private function deliverOnce(ZipDownload $zipDownload, User $requester): void
     {
-        $recorded = $zipDownload->contained_file_ids;
-
         // What the job wrote down, read back as it stands. download() has
         // already refused the archive if the requester may no longer see
         // any of it, so everything here is still theirs to take.
-        $contained = $recorded === null
-            ? $this->resolveSelection($zipDownload, $requester)
-            : File::query()->whereIn('id', $recorded)->get();
+        $contained = File::query()->whereIn('id', $zipDownload->contained_file_ids ?? [])->get();
 
         abort_if(
-            $recorded !== null
-                && $contained->contains(fn (File $file): bool => ! $this->allowance->allows($file, $requester)),
+            $contained->contains(fn (File $file): bool => ! $this->allowance->allows($file, $requester)),
             403,
             __('Those files have reached their download limit.'),
         );
@@ -307,36 +304,6 @@ class ZipDownloadsController extends Controller
         foreach ($contained as $file) {
             $this->activity->log(Action::FileDownloaded, subject: $file);
         }
-    }
-
-    /**
-     * What an archive built before the job recorded its contents is taken
-     * to hold: the selection, resolved again, which is how this worked
-     * throughout. Only reachable for rows written by an older release,
-     * and PurgeZipDownloadsCommand removes those within a day.
-     *
-     * @return Collection<int, File>
-     */
-    private function resolveSelection(ZipDownload $zipDownload, User $requester): Collection
-    {
-        $visible = $this->viewable->for($requester);
-        $fileIds = collect($zipDownload->file_ids);
-
-        foreach ($zipDownload->folder_ids as $folderId) {
-            $folder = Folder::query()->find($folderId);
-
-            if ($folder !== null) {
-                $fileIds = $fileIds->merge((clone $visible)->whereIn('folder_id', $folder->subtreeFolderIds())->pluck('id'));
-            }
-        }
-
-        // Whatever the job left out is not in the archive and must not
-        // be logged as delivered — otherwise a file refused for reaching
-        // its limit would be recorded as downloaded again, pushing it
-        // further past it.
-        $skipped = collect($zipDownload->skipped_files ?? [])->pluck('id')->all();
-
-        return (clone $visible)->whereIn('id', $fileIds->unique())->whereNotIn('id', $skipped)->get();
     }
 
     private function filenameFor(ZipDownload $zipDownload): string

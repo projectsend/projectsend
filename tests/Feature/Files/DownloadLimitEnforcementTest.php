@@ -322,7 +322,10 @@ test('a spent file that is not in the archive does not refuse it', function () {
         ->and($late->downloads()->count())->toBe(1);
 });
 
-test('an archive from before its contents were recorded is handed over as it always was', function () {
+test('an archive from before its contents were recorded is refused, and nothing is counted', function () {
+    // Such a row has no contents to check limits or access against. It
+    // used to be handed over unchecked; it is refused now, and ordering
+    // the selection again builds one that records them (2026-10-28 scan).
     $folder = makeFolder('Shared');
 
     $bundled = limitedFile(['name' => 'Bundled', 'original_name' => 'bundled.pdf', 'download_limit' => null]);
@@ -335,21 +338,13 @@ test('an archive from before its contents were recorded is handed over as it alw
 
     $zip = ZipDownload::query()->findOrFail($response->json('id'));
 
-    // Stands in for a row written by an older release, which has no
-    // record of what went into the archive.
+    // Stands in for a row written by an older release.
     ZipDownload::query()->whereKey($zip->id)->update(['contained_file_ids' => null]);
 
-    // A spent file joins the folder afterwards. Resolving the selection
-    // again — all such a row can do — would sweep it up and refuse over a
-    // file the archive does not hold, so this path refuses nothing.
-    $late = limitedFile(['name' => 'Late', 'original_name' => 'late.pdf']);
-    $late->update(['folder_id' => $folder->id]);
-    spend($late, $staff);
+    $this->actingAs($staff)->get("/zip-downloads/{$zip->id}/download")->assertStatus(423);
 
-    $this->actingAs($staff)->get("/zip-downloads/{$zip->id}/download")->assertOk();
-
-    expect($bundled->downloads()->count())->toBe(1)
-        ->and($zip->fresh()->delivered_at)->not->toBeNull();
+    expect($bundled->downloads()->count())->toBe(0)
+        ->and($zip->fresh()->delivered_at)->toBeNull();
 });
 
 test('two fetches of one archive arriving together still count as one delivery', function () {

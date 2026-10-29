@@ -107,3 +107,15 @@ test('staff still get an archive holding a file that has expired', function () {
 
     $this->actingAs($this->admin)->get("/zip-downloads/{$zip->id}/download")->assertOk();
 });
+
+test('an archive prepared before its contents were recorded is refused, not handed over unchecked', function () {
+    // Rows written by an older release have no contents to check, and they
+    // waited up to a day (2026-10-28 scan). Preparing it again is one click.
+    $zip = zipFor($this->client, $this->file);
+    $zip->forceFill(['contained_file_ids' => null])->save();
+    unshareFromClient($this->file, $this->client);
+
+    $this->actingAs($this->client)->get("/zip-downloads/{$zip->id}/download")->assertStatus(423);
+
+    expect($zip->fresh()->delivered_at)->toBeNull();
+});

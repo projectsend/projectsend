@@ -64,7 +64,8 @@ final class Issuer
             'authorization_servers' => [self::url()],
             'scopes_supported' => self::scopesSupported(),
             'bearer_methods_supported' => ['header'],
-            'resource_name' => is_string($site) && $site !== '' ? 'ProjectSend — '.$site : 'ProjectSend',
+            // Once, not "ProjectSend — ProjectSend", on a site never renamed.
+            'resource_name' => is_string($site) && $site !== '' && strcasecmp(trim($site), 'ProjectSend') !== 0 ? 'ProjectSend — '.$site : 'ProjectSend',
             'resource_documentation' => (string) config('mcp-connector.docs_url'),
         ];
     }

@@ -805,3 +805,13 @@ it('cannot be framed by another site', function (): void {
         ->assertHeader('X-Frame-Options', 'DENY')
         ->assertHeader('Content-Security-Policy', "frame-ancestors 'none'");
 });
+
+it('names the resource once when the site is still called ProjectSend', function (): void {
+    app(\App\Modules\Platform\Settings\Settings::class)->set(\App\Modules\Platform\Settings\Setting::SiteName, 'ProjectSend');
+    withHostCapabilities(['ai.connector'], fn () => test()->getJson('/.well-known/oauth-protected-resource/mcp'))
+        ->assertJsonPath('resource_name', 'ProjectSend');
+
+    app(\App\Modules\Platform\Settings\Settings::class)->set(\App\Modules\Platform\Settings\Setting::SiteName, 'Acme Files');
+    withHostCapabilities(['ai.connector'], fn () => test()->getJson('/.well-known/oauth-protected-resource/mcp'))
+        ->assertJsonPath('resource_name', 'ProjectSend — Acme Files');
+});

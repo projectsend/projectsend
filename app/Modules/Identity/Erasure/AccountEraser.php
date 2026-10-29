@@ -71,6 +71,11 @@ class AccountEraser
                     $entry->forceFill(['context' => $context])->save();
                 });
 
+            // Sanctum's table points at its owner without a foreign key, so
+            // nothing removes these with the account, and they carry the
+            // names people gave them. The AI assistant's tables cascade.
+            $user->tokens()->delete();
+
             $type = $user->type->value;
 
             $user->forceDelete();

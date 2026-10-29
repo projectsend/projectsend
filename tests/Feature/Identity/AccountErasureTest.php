@@ -228,3 +228,15 @@ test('a staff member\'s content still goes to another staff member', function ()
 
     expect(File::find($file->id)?->uploaded_by)->toBe($inheritor->id);
 });
+
+test('erasure removes the account\'s API tokens, names and all', function () {
+    // The token table points at its owner without a foreign key, so the
+    // rows outlived the account, with the names people gave them.
+    $staff = User::factory()->create(['email' => 'leaving@example.com']);
+    $staff->createToken('Zapier for Leaving Person', ['upload']);
+    $id = $staff->id;
+
+    $this->artisan('projectsend:erase-account', ['email' => 'leaving@example.com', '--force' => true])->assertSuccessful();
+
+    expect(\Laravel\Sanctum\PersonalAccessToken::query()->where('tokenable_id', $id)->exists())->toBeFalse();
+});

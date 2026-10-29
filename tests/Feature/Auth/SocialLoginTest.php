@@ -629,3 +629,21 @@ test('a provider sign-in lands on the account\'s start page, like a password sig
 
     signInWith()->assertRedirect('/my-files');
 });
+
+test('the first sign-in that links an account by its address is still challenged', function () {
+    // Matching by email is what the second factor stands behind: the
+    // provider vouches for an address, not for this account (2026-10-28
+    // scan). Once linked, the provider's own sign-in can stand in for it.
+    socialSettings(skipTwoFactor: true);
+    $client = User::factory()->client()->create(['email' => 'client@example.test']);
+    $client->forceFill([
+        'two_factor_secret' => app(TwoFactorService::class)->generateSecret(),
+        'two_factor_confirmed_at' => now(),
+    ])->save();
+    fakeProvider(identity(email: 'client@example.test'));
+
+    signInWith()->assertRedirect(route('two-factor.challenge'));
+
+    expect(auth()->check())->toBeFalse()
+        ->and(SocialAccount::query()->where('user_id', $client->id)->exists())->toBeTrue();
+});

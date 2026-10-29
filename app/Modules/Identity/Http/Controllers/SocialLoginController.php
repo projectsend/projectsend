@@ -172,7 +172,14 @@ class SocialLoginController extends Controller
         // the administrator has said that this provider asks for a second
         // factor of its own. SignIn decides, so that this is the only door
         // that can ask.
-        if ($this->signIn->begin($resolution->user, remember: false, viaProvider: $settings)) {
+        //
+        // Not on the sign-in that has just linked an existing account by its
+        // address, though: there the provider vouched for an address, not
+        // for this account, and the second factor is what stands behind a
+        // match by address. Once linked, sign-ins match by subject.
+        $linkedByAddress = $resolution->linked && ! $resolution->provisioned;
+
+        if ($this->signIn->begin($resolution->user, remember: false, viaProvider: $linkedByAddress ? null : $settings)) {
             return redirect()->route('two-factor.challenge');
         }
 

@@ -23,7 +23,7 @@ use Tests\Support\McpWorld;
 | What the tools let an account do that the web would not, found in a
 | security review of the work since 2.7.0 (2026-10-28). Mostly a client's:
 | the web holds a client to the links they made themselves, on files
-| they uploaded (ClientShareLinks, GHSA-j8xv-mpp6-pv6f), and to their own
+| they uploaded (ClientShareLinks, GHSA-g9g5-qxp7-f7v2), and to their own
 | files' downloads (OwnFileDownloads).
 */
 

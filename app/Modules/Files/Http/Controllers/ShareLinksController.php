@@ -128,7 +128,7 @@ class ShareLinksController extends Controller
 
         // A client revokes only what they made. Being able to edit their
         // own upload does not make a staff member's link on it theirs, to
-        // read or to take away (GHSA-j8xv-mpp6-pv6f). Staff keep the file
+        // read or to take away (GHSA-g9g5-qxp7-f7v2). Staff keep the file
         // policy alone.
         $user = $request->user();
         abort_if($user !== null && ! $user->isStaff() && (int) $shareLink->created_by !== $user->id, 403);

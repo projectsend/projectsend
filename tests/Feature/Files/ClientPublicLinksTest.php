@@ -133,7 +133,7 @@ test('a client cannot revoke a link on a file that is not theirs', function () {
 test('a staff link on a client\'s own upload is not shown in their editor', function () {
     // Their upload, but the staff member's link: handing over the URL
     // would let a client who may not publish pass it on anyway, the same
-    // rule the portal list applies (GHSA-j8xv-mpp6-pv6f, found by @Liam-G).
+    // rule the portal list applies (GHSA-g9g5-qxp7-f7v2, found by @Liam-G).
     $client = clientWith(Permission::EditFiles, Permission::UploadPublic);
     $file = fileOf($client);
     $staffLink = app(CreateShareLink::class)->for($file, $this->admin);

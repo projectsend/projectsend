@@ -143,7 +143,7 @@ final class Files
      * link on a file they can see. A client: only a link they made, on a
      * file they uploaded, the rule ClientShareLinks applies on the web. A
      * staff member's link is that person's decision about who may reach
-     * the file, even on the client's own upload (GHSA-j8xv-mpp6-pv6f).
+     * the file, even on the client's own upload (GHSA-g9g5-qxp7-f7v2).
      */
     public static function mayHandle(Account $account, File $file, ShareLink $link): bool
     {

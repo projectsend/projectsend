@@ -92,6 +92,10 @@ class McpServiceProvider extends ServiceProvider
                 // The app's own: a deactivated account's token stops
                 // working here the same day it stops working on the API.
                 'api-active',
+                // A personal API token here is held to its own abilities, as
+                // on the API. A connection's token is left alone (it carries
+                // scopes, not permission keys); see LimitPermissionsToToken.
+                'token-ceiling',
                 EnsureConnectorCapability::class,
                 // Its own named bucket, so it never shares an allowance with
                 // whatever else forgot to name theirs. Per token, because the

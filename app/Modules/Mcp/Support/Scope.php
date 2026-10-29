@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Modules\Mcp\Support;
 
+use Laravel\Sanctum\PersonalAccessToken;
+
 /**
  * What the credential on this request lets the assistant do — the scope,
  * which only ever subtracts. The ceiling is the person's live permission,
@@ -110,6 +112,23 @@ final class Scope
         }
 
         return new self('api', $abilities);
+    }
+
+    /**
+     * Whether a token is one an AI assistant connection holds, rather than
+     * a personal API token. The two never mix: the token screen only
+     * offers permission keys, and a connection only ever carries these
+     * scopes.
+     */
+    public static function isConnectorToken(mixed $token): bool
+    {
+        if (! $token instanceof PersonalAccessToken) {
+            return false;
+        }
+
+        $abilities = array_values(array_filter((array) $token->abilities, 'is_string'));
+
+        return ! self::fromAbilities($abilities)->isApiToken();
     }
 
     public function isOwn(): bool

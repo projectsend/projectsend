@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Api\Http\Middleware;
 
+use App\Modules\Mcp\Support\Scope;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,6 +34,14 @@ class EnsureStaffToken
         }
 
         if (! $user->isStaff()) {
+            abort(403);
+        }
+
+        // An AI assistant connection's token is for /mcp. The person
+        // consented to an assistant, not to an integration with the API,
+        // and its scopes mean nothing to the routes here: the ones without
+        // a `token-can:` of their own let it in.
+        if (Scope::isConnectorToken($user->currentAccessToken())) {
             abort(403);
         }
 

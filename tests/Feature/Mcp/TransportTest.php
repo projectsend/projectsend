@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Models\User;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Files\Models\ShareLink;
 use App\Modules\Mcp\Support\McpContext;
 use App\Modules\Platform\Capabilities\Edition;
 use Illuminate\Testing\TestResponse;
@@ -134,4 +135,55 @@ it('runs a tool over HTTP and records it as the assistant, by the connector\'s n
 
     expect($entry->origin->value)->toBe('mcp')
         ->and($entry->api_token_name)->toBe('Claude Code');
+});
+
+it('holds a personal API token to its own abilities here, as the API does', function (): void {
+    // A token minted for "edit own files" shared, and deleted, other
+    // people's files whenever its owner's role could (2026-10-28 scan).
+    $staff = McpWorld::staff(tokenAbilities: ['edit_files', 'delete_files'], tokenName: 'integration');
+    $colleague = McpWorld::staff();
+    $theirs = McpWorld::file($colleague);
+
+    $share = mcpPost(['jsonrpc' => '2.0', 'id' => 4, 'method' => 'tools/call', 'params' => [
+        'name' => 'share_by_link', 'arguments' => ['file_id' => $theirs->id],
+    ]], $staff);
+    $delete = mcpPost(['jsonrpc' => '2.0', 'id' => 5, 'method' => 'tools/call', 'params' => [
+        'name' => 'delete_file', 'arguments' => ['file_id' => $theirs->id],
+    ]], $staff);
+
+    expect($share->json('result.isError'))->toBeTrue()
+        ->and($delete->json('result.isError'))->toBeTrue()
+        ->and(ShareLink::query()->count())->toBe(0)
+        ->and($theirs->fresh()?->trashed())->toBeFalse();
+});
+
+it('lets a connection the person granted act with their role', function (): void {
+    $staff = McpWorld::staff();
+    $theirs = McpWorld::file(McpWorld::staff());
+
+    $share = mcpPost(['jsonrpc' => '2.0', 'id' => 4, 'method' => 'tools/call', 'params' => [
+        'name' => 'share_by_link', 'arguments' => ['file_id' => $theirs->id],
+    ]], $staff);
+
+    expect($share->json('result.isError'))->toBeFalsy()
+        ->and(ShareLink::query()->count())->toBe(1);
+});
+
+it('does not accept an assistant connection\'s token on the REST API', function (): void {
+    $staff = McpWorld::staff();
+    app('auth')->forgetGuards();
+
+    test()->withToken(McpWorld::$plainTokens[$staff->id])->getJson('/api/v1/me')->assertForbidden();
+    test()->withToken(McpWorld::$plainTokens[$staff->id])->deleteJson('/api/v1/tokens/current')->assertForbidden();
+
+    expect($staff->tokens()->count())->toBe(1);
+});
+
+it('does not hand a narrow API token the client list as a resource', function (): void {
+    $staff = McpWorld::staff(tokenAbilities: ['upload'], tokenName: 'integration');
+    McpWorld::clientAccount('secret@acme.example', 'Secret Client');
+
+    $read = mcpPost(['jsonrpc' => '2.0', 'id' => 6, 'method' => 'resources/read', 'params' => ['uri' => 'projectsend://clients']], $staff);
+
+    expect((string) $read->getContent())->not->toContain('secret@acme.example');
 });

@@ -6,6 +6,7 @@ namespace App\Modules\Api\Http\Middleware;
 
 use App\Modules\Api\Auth\TokenAbilities;
 use App\Modules\Identity\Permissions\PermissionChecker;
+use App\Modules\Mcp\Support\Scope;
 use Closure;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -45,7 +46,9 @@ class LimitPermissionsToToken
 
         // A personal access token, not Sanctum's TransientToken: that one
         // stands for a first-party session and answers yes to everything.
-        if ($user !== null && $token instanceof PersonalAccessToken) {
+        // Nor an AI assistant connection's: it carries scopes, not
+        // permission keys, and acts with the role the person consented to.
+        if ($user !== null && $token instanceof PersonalAccessToken && ! Scope::isConnectorToken($token)) {
             $this->permissions->limitTo($user, $token, $this->abilities->inUse());
         }
 

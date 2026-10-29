@@ -9,6 +9,7 @@ use App\Modules\Mcp\OAuth\Http\Controllers\RegisterController;
 use App\Modules\Mcp\OAuth\Http\Controllers\RevokeController;
 use App\Modules\Mcp\OAuth\Http\Controllers\TokenController;
 use App\Modules\Mcp\OAuth\Http\Middleware\AllowCrossOrigin;
+use App\Modules\Mcp\OAuth\Http\Middleware\DenyFraming;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,12 +47,12 @@ Route::middleware(['web', 'auth'])->group(function (): void {
     // Showing the screen can fetch a client_id URL somebody else chose, so
     // it is not a free way to make the server send requests.
     Route::get('/oauth/mcp/authorize', [AuthorizeController::class, 'show'])
-        ->middleware('throttle:30,1,mcp-authorize')
+        ->middleware(['throttle:30,1,mcp-authorize', DenyFraming::class])
         ->name('mcp.oauth.authorize');
     // A password is typed here: the same allowance as the app's own
     // confirm-password screen.
     Route::post('/oauth/mcp/authorize', [AuthorizeController::class, 'store'])
-        ->middleware('throttle:6,1,mcp-consent')
+        ->middleware(['throttle:6,1,mcp-consent', DenyFraming::class])
         ->name('mcp.oauth.authorize.store');
 
     Route::get('/settings/ai-connections', [ConnectionsController::class, 'index'])

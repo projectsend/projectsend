@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Mcp\OAuth\Clients;
 
 use App\Modules\Platform\OfficialLinks;
+use GuzzleHttp\Exception\TransferException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -37,20 +38,24 @@ final class ClientMetadataFetcher
     public function fetch(string $url): array
     {
         $hops = 0;
+        $origin = self::origin($url);
 
         while (true) {
             $pin = $this->assertFetchable($url);
 
             try {
                 $response = Http::withoutRedirecting()
-                    ->withOptions(['curl' => [CURLOPT_RESOLVE => $pin]])
+                    // The size limit while the body arrives, not after: a
+                    // host that streams for the whole timeout is cut off at
+                    // the limit instead of being held in a temp file.
+                    ->withOptions(['curl' => [CURLOPT_RESOLVE => $pin, CURLOPT_MAXFILESIZE => self::MAX_BYTES]])
                     ->timeout(self::TIMEOUT_SECONDS)
                     ->connectTimeout(self::TIMEOUT_SECONDS)
                     ->accept('application/json')
                     // The edition's own front door, as everywhere else.
                     ->withUserAgent('ProjectSend MCP (+'.rtrim(app(OfficialLinks::class)->website(), '/').')')
                     ->get($url);
-            } catch (ConnectionException $e) {
+            } catch (ConnectionException|TransferException $e) {
                 throw new ClientMetadataUnavailable('The client metadata document could not be fetched: '.$e->getMessage());
             }
 
@@ -64,9 +69,29 @@ final class ClientMetadataFetcher
                 throw new ClientMetadataUnavailable('The client metadata document redirects too many times.');
             }
 
+            // Only to the same host. The document must name the URL it was
+            // asked for, so an open redirect on a trusted host would
+            // otherwise let a document anywhere borrow that host's name,
+            // shown on the consent screen as verified by it.
+            if (self::origin($location) !== $origin) {
+                throw new ClientMetadataUnavailable('The client metadata document redirects to another host.');
+            }
+
             $url = $location;
             $hops++;
         }
+    }
+
+    /** scheme://host:port, lower-cased, or null for anything not absolute. */
+    private static function origin(string $url): ?string
+    {
+        $parts = parse_url($url);
+
+        if ($parts === false || ! isset($parts['scheme'], $parts['host'])) {
+            return null;
+        }
+
+        return strtolower($parts['scheme']).'://'.strtolower(rtrim($parts['host'], '.')).':'.($parts['port'] ?? 443);
     }
 
     /**

@@ -103,7 +103,17 @@ final class Grants
         }
 
         return DB::transaction(function () use ($record, $client, $user): array {
-            $record->forceFill(['used_at' => now()])->save();
+            // Claimed in one statement, so of two exchanges of the same
+            // code at the same moment only one gets past here. A check of
+            // used_at above and a save here let both through.
+            $claimed = McpAuthorizationCode::query()
+                ->whereKey($record->getKey())
+                ->whereNull('used_at')
+                ->update(['used_at' => now()]);
+
+            if ($claimed === 0) {
+                throw new OAuthError('invalid_grant', 'The authorization code was already used.');
+            }
 
             $connection = new McpConnection([
                 'mcp_client_id' => $client->getKey(),
@@ -179,7 +189,18 @@ final class Grants
             throw new OAuthError('invalid_grant', 'The account behind this connection no longer exists.');
         }
 
-        return DB::transaction(function () use ($connection, $client, $user): array {
+        return DB::transaction(function () use ($connection, $client, $user, $hash): array {
+            // The same one-statement claim as a code: two refreshes with
+            // one token at the same moment would otherwise both rotate.
+            $claimed = McpConnection::query()
+                ->whereKey($connection->getKey())
+                ->where('refresh_token_hash', $hash)
+                ->update(['refresh_token_hash' => null]);
+
+            if ($claimed === 0) {
+                throw new OAuthError('invalid_grant', 'The refresh token was already used.');
+            }
+
             Tokens::delete($connection->access_token_id);
 
             return $this->mint($connection, $client, $user);

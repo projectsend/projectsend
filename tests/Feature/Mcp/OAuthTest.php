@@ -12,6 +12,7 @@ use App\Modules\Mcp\OAuth\Models\McpClient;
 use App\Modules\Mcp\OAuth\Models\McpConnection;
 use App\Modules\Mcp\OAuth\Pkce;
 use App\Modules\Mcp\Support\McpContext;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -754,4 +755,53 @@ it('ends it when the new password is given on the client form too', function ():
     ])->assertSessionHasNoErrors();
 
     oauthRefresh($tokens['refresh_token'])->assertJsonPath('error', 'invalid_grant');
+});
+
+it('follows a client document only to its own host, so an open redirect cannot lend it a name', function (): void {
+    // claude.ai/r?u=… redirecting elsewhere: the document there names the
+    // claude.ai URL as its client_id and would be shown as verified by it.
+    $start = 'https://claude.ai/r?u=attacker';
+    Http::fake([
+        $start => Http::response('', 302, ['Location' => 'https://attacker.example/client.json']),
+        'https://attacker.example/client.json' => Http::response([
+            'client_id' => $start, 'client_name' => 'Claude', 'redirect_uris' => ['https://attacker.example/cb'],
+        ], 200, ['Content-Type' => 'application/json']),
+    ]);
+    app()->instance(PublicAddress::class, new PublicAddress(fn (string $host): array => ['104.18.32.1']));
+    $staff = oauthStaff();
+
+    oauthAuthorize($staff, ['client_id' => $start, 'redirect_uri' => 'https://attacker.example/cb'])
+        ->assertStatus(400)
+        ->assertJsonMissingPath('props.request_id');
+
+    expect(McpClient::query()->count())->toBe(0);
+});
+
+it('lets only one of two exchanges of the same code at the same moment through', function (): void {
+    oauthDocument();
+    $staff = oauthStaff();
+    $code = oauthCode($staff);
+
+    // The other exchange wins in the moment between reading the code and
+    // using it.
+    $raced = false;
+    DB::listen(function ($query) use (&$raced): void {
+        if (! $raced && str_starts_with(strtolower($query->sql), 'select') && str_contains($query->sql, 'mcp_authorization_codes')) {
+            $raced = true;
+            DB::table('mcp_authorization_codes')->update(['used_at' => now()]);
+        }
+    });
+
+    oauthExchange($code)->assertJsonPath('error', 'invalid_grant');
+
+    expect(McpConnection::query()->count())->toBe(0);
+});
+
+it('cannot be framed by another site', function (): void {
+    oauthDocument();
+    $staff = oauthStaff();
+
+    oauthAuthorize($staff)->assertOk()
+        ->assertHeader('X-Frame-Options', 'DENY')
+        ->assertHeader('Content-Security-Policy', "frame-ancestors 'none'");
 });

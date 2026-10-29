@@ -10,6 +10,7 @@ use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Identity\Erasure\ErasureSchedule;
 use App\Modules\Identity\Models\Role;
+use App\Modules\Mcp\OAuth\Grants;
 use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Identity\Permissions\SystemRole;
@@ -349,6 +350,7 @@ class StaffAccounts
         // own password: both callers refuse that (ownCredentialChanges).
         if ($passwordReplaced) {
             $user->tokens()->delete();
+            app(Grants::class)->revokeAllFor($user, 'password replaced');
         }
 
         if ($assignedClients !== null) {

@@ -705,3 +705,53 @@ it('will not send anybody to such an address registered before it was refused', 
         ->assertJsonPath('component', 'mcp/authorize-error')
         ->assertJsonMissingPath('props.request_id');
 });
+
+it('ends an assistant connection when somebody else gives the account a new password', function (): void {
+    // Whoever connected it may be whoever the reset was meant to shut out.
+    oauthDocument();
+    $staff = oauthStaff();
+    $tokens = oauthExchange(oauthCode($staff))->json();
+
+    app(\App\Modules\Identity\StaffAccounts::class)->update($staff, ['password' => 'a brand new password 42']);
+
+    oauthRefresh($tokens['refresh_token'])->assertJsonPath('error', 'invalid_grant');
+    oauthMcp($tokens['access_token'], oauthToolsList())->assertStatus(401);
+});
+
+it('ends an assistant connection when the account is converted', function (): void {
+    oauthDocument();
+    $staff = oauthStaff();
+    $tokens = oauthExchange(oauthCode($staff))->json();
+
+    app(\App\Modules\Identity\AccountConversion::class)->toClient($staff);
+
+    oauthRefresh($tokens['refresh_token'])->assertJsonPath('error', 'invalid_grant');
+});
+
+it('ends a client\'s assistant connection when staff give the client a new password', function (): void {
+    oauthDocument();
+    $client = oauthClient(true);
+    $tokens = oauthExchange(oauthCode($client))->json();
+
+    $admin = User::factory()->create();
+    $plain = $admin->createToken('t', ['edit_clients'])->plainTextToken;
+    app('auth')->forgetGuards();
+    test()->withToken($plain)->patchJson("/api/v1/clients/{$client->id}", ['password' => 'a brand new password 42'])->assertOk();
+
+    oauthRefresh($tokens['refresh_token'])->assertJsonPath('error', 'invalid_grant');
+});
+
+it('ends it when the new password is given on the client form too', function (): void {
+    oauthDocument();
+    $client = oauthClient(true);
+    $tokens = oauthExchange(oauthCode($client))->json();
+
+    test()->flushSession();
+    app('auth')->forgetGuards();
+    test()->actingAs(User::factory()->create())->patch("/clients/{$client->id}", [
+        'name' => $client->name, 'email' => $client->email, 'active' => true,
+        'password' => 'a brand new password 42', 'password_confirmation' => 'a brand new password 42',
+    ])->assertSessionHasNoErrors();
+
+    oauthRefresh($tokens['refresh_token'])->assertJsonPath('error', 'invalid_grant');
+});

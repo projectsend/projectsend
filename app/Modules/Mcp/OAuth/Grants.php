@@ -219,6 +219,21 @@ final class Grants
         }
     }
 
+    /**
+     * Every live connection of this account, ended. For the moments its
+     * API tokens end too: somebody else replaced its password, or it
+     * changed between staff and client. Deleting the access token alone
+     * is not enough, because the refresh token mints another.
+     */
+    public function revokeAllFor(User $user, string $reason): void
+    {
+        McpConnection::query()
+            ->where('user_id', $user->id)
+            ->whereNull('revoked_at')
+            ->get()
+            ->each(fn (McpConnection $connection) => $this->revoke($connection, $reason));
+    }
+
     public function revoke(McpConnection $connection, string $reason): void
     {
         Tokens::delete($connection->access_token_id);

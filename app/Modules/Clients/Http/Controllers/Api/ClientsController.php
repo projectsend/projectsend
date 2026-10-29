@@ -13,6 +13,7 @@ use App\Modules\Clients\ClientAccounts;
 use App\Modules\Clients\ClientCustomFieldType;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Mcp\OAuth\Grants;
 use App\Modules\Platform\Localization\DateInput;
 use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Clients\Http\Resources\Api\ClientResource;
@@ -252,6 +253,9 @@ class ClientsController extends Controller
 
         if ($passwordChanged) {
             $client->password = $validated['password'];
+
+            // Whoever held the old one may have connected an assistant with it.
+            app(Grants::class)->revokeAllFor($client, 'password replaced');
         }
 
         $client->save();

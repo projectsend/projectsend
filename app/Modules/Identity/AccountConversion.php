@@ -9,6 +9,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Identity\Models\Role;
+use App\Modules\Mcp\OAuth\Grants;
 use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Identity\Permissions\SystemRole;
 use Illuminate\Support\Facades\DB;
@@ -184,6 +185,7 @@ class AccountConversion
             // the one thing per-request type checks cannot catch.
             $tokensRevoked = $target->tokens()->count();
             $target->tokens()->delete();
+            app(Grants::class)->revokeAllFor($target, 'account converted');
 
             // A client does not manage clients.
             $assignmentsCleared = $target->assignedClients()->count();
@@ -239,8 +241,10 @@ class AccountConversion
             // Normally a no-op — the token screens are staff-gated — but
             // the rule worth holding is "a conversion invalidates every
             // credential scoped to the old identity", which stays true the
-            // day client tokens exist.
+            // day client tokens exist -- and AI assistant connections are
+            // client tokens already.
             $target->tokens()->delete();
+            app(Grants::class)->revokeAllFor($target, 'account converted');
 
             // They are no longer somebody's assigned client; leaving the
             // rows would place a staff account inside another staff

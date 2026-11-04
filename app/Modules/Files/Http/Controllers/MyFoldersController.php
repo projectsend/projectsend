@@ -52,6 +52,17 @@ class MyFoldersController extends Controller
         $parent = null;
         if (($validated['parent_id'] ?? null) !== null) {
             $parent = Folder::query()->visibleToClient($client)->whereKey($validated['parent_id'])->firstOrFail();
+
+            // A folder made inside a public one is public too, and so is
+            // its name on the public listing. So inside public ground the
+            // client must be allowed to place content there. Elsewhere,
+            // being able to see the parent is still enough: a client may
+            // nest a folder in a private folder staff shared with them,
+            // even though they cannot upload into that folder itself
+            // (GHSA-65c7-3fpf-q89h).
+            if ($parent->isEffectivelyPublic()) {
+                abort_unless(Folder::uploadableBy($client, $parent), 403);
+            }
         }
 
         // No parent named means the top of what this client sees -- which,

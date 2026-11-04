@@ -217,8 +217,30 @@ class Folder extends Model
                 || $user->can('upload_to_public_folders');
         }
 
-        return $folder->isOwnedBy($user)
-            || ($folder->public && $folder->allow_client_uploads && $user->can('upload_to_public_folders'));
+        if (! $folder->isEffectivelyPublic()) {
+            return $folder->isOwnedBy($user);
+        }
+
+        // Owning the folder is not enough once it is public, and a client's
+        // own folder is public whenever it sits inside a public one: the
+        // flag is inherited. Owning it alone let a client create a folder
+        // inside a public folder that staff kept closed to client uploads,
+        // upload into it, and publish (GHSA-65c7-3fpf-q89h). So a client
+        // placing into anything public needs the permission, and every
+        // public folder on the way up must opt into client uploads.
+        if (! $user->can('upload_to_public_folders')) {
+            return false;
+        }
+
+        if (! $folder->isOwnedBy($user) && ! $folder->public) {
+            return false;
+        }
+
+        return ! self::query()
+            ->whereIn('id', [$folder->id, ...$folder->ancestorIds()])
+            ->where('public', true)
+            ->where('allow_client_uploads', false)
+            ->exists();
     }
 
     /**

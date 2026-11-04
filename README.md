@@ -14,6 +14,10 @@
   <img alt="Self-hosted" src="https://img.shields.io/badge/self--hosted-Docker%20or%20zip-0b7285">
 </p>
 
+<p align="center">
+  <a href="https://app.railyard.run/deploy?repo=https://github.com/projectsend/projectsend"><img src="https://app.railyard.run/deploy/badge" alt="Deploy to Railyard"></a>
+</p>
+
 ---
 
 ProjectSend is a self-hosted application for getting files to the people you work with. You upload

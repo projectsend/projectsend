@@ -100,15 +100,21 @@ class GetDownloadStatus extends ToolBase
             $query->where('subject_id', (int) $file->getAttribute('id'));
             $webUrl = Web::file($account, (int) $file->getAttribute('id'));
         } elseif (isset($validated['link_id'])) {
-            $link = ShareLink::query()->whereKey((int) $validated['link_id'])->first();
+            $link = ShareLink::query()->whereKey((int) $validated['link_id'])->where('shareable_type', $fileMorph)->first();
             $file = $link instanceof Model ? Files::find($account, (int) $link->getAttribute('shareable_id')) : null;
 
             if ($file === null) {
                 return ToolError::notFound('link');
             }
 
+            // This link's downloads, not every link's on the file. A download
+            // records its link from 2.8.1 on; one from before carries none,
+            // and is counted under the file rather than credited to a link
+            // it may not have come through.
             $linkId = (int) $validated['link_id'];
-            $query->where('subject_id', (int) $file->getAttribute('id'))->where('action', 'share_link.downloaded');
+            $query->where('subject_id', (int) $file->getAttribute('id'))
+                ->where('action', 'share_link.downloaded')
+                ->where('context->share_link_id', $linkId);
             $webUrl = Web::file($account, (int) $file->getAttribute('id'));
         } else {
             $client = ClientAccountsQuery::byId($account, (int) $validated['client_id']);
@@ -154,7 +160,7 @@ class GetDownloadStatus extends ToolBase
             $downloads[] = [
                 'at' => Presenter::iso($row->getAttribute('created_at')),
                 'via' => $via,
-                'link_id' => $via === 'link' ? $linkId : null,
+                'link_id' => $via === 'link' ? self::linkOf($row) : null,
                 // A client learns that their upload was downloaded and
                 // when, never by whom, as OwnFileDownloads tells them on the
                 // web. On the shared instance the downloader is as often
@@ -194,5 +200,14 @@ class GetDownloadStatus extends ToolBase
             'last_at' => $last !== null ? Presenter::iso($last->getAttribute('created_at')) : null,
             'distinct_clients' => $clients,
         ];
+    }
+
+    /** The link a download came through, where the entry records it. */
+    private static function linkOf(Model $row): ?int
+    {
+        $context = $row->getAttribute('context');
+        $id = is_array($context) ? ($context['share_link_id'] ?? null) : null;
+
+        return is_numeric($id) ? (int) $id : null;
     }
 }

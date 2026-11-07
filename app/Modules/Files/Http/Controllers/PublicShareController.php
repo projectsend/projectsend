@@ -131,7 +131,9 @@ class PublicShareController extends Controller
             return redirect()->route('share.show', $token);
         }
 
-        $this->activity->log(Action::ShareLinkDownloaded, subject: $file);
+        // Which link, so a link's own downloads can be told apart from the
+        // file's other links (the assistant's get_download_status asks).
+        $this->activity->log(Action::ShareLinkDownloaded, subject: $file, context: ['share_link_id' => $shareLink->id]);
 
         return $this->bytes->attachment($file);
     }

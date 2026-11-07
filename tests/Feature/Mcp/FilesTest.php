@@ -13,6 +13,7 @@ use App\Modules\Mcp\Tools\GetWebUploadLink;
 use App\Modules\Mcp\Tools\ListFiles;
 use App\Modules\Mcp\Tools\RevokeLink;
 use App\Modules\Mcp\Tools\ShareByLink;
+use Illuminate\Support\Facades\Storage;
 use Tests\Support\McpWorld;
 
 /*
@@ -269,4 +270,32 @@ it('hands a free account its own upload page, and staff the library\'s', functio
 
     expect(McpWorld::call(GetWebUploadLink::class, [], $client)['upload_url'])->toBe('https://acme.projectsend.site/my-files/upload')
         ->and(McpWorld::call(GetWebUploadLink::class, ['folder_id' => 4], $staff)['upload_url'])->toBe('https://acme.projectsend.site/files/upload?folder=4');
+});
+
+/*
+ * link_id answered every link's downloads on the file, and stamped the
+ * link asked about on each of them. A link download now records which
+ * link it came through, and link_id reads that.
+ */
+it('counts a link\'s own downloads, not every link\'s on the file', function (): void {
+    Storage::fake('files');
+    $staff = McpWorld::staff();
+    $file = McpWorld::file($staff, ['name' => 'two-links']);
+    $first = McpWorld::link($file, ['created_by' => $staff->id]);
+    $second = McpWorld::link($file, ['created_by' => $staff->id]);
+
+    app('auth')->forgetGuards();
+    $this->get("/s/{$first->token}/download")->assertOk();
+    $this->get("/s/{$second->token}/download")->assertOk();
+    $this->get("/s/{$second->token}/download")->assertOk();
+
+    $one = McpWorld::call(GetDownloadStatus::class, ['link_id' => $first->id], $staff);
+    $two = McpWorld::call(GetDownloadStatus::class, ['link_id' => $second->id], $staff);
+    $all = McpWorld::call(GetDownloadStatus::class, ['file_id' => $file->id], $staff);
+
+    expect($one['summary']['total'])->toBe(1)
+        ->and(array_column($one['downloads'], 'link_id'))->toBe([$first->id])
+        ->and($two['summary']['total'])->toBe(2)
+        ->and(array_unique(array_column($two['downloads'], 'link_id')))->toBe([$second->id])
+        ->and($all['summary']['total'])->toBe(3);
 });

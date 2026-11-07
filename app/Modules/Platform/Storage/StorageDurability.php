@@ -61,7 +61,7 @@ class StorageDurability
      */
     public function inspect(): ?array
     {
-        if (! $this->inContainer() || $this->externalStorage->defaultIsExternal()) {
+        if (! $this->inContainer() || $this->externalStorage->defaultDisk() !== 'files') {
             return null;
         }
 

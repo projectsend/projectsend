@@ -34,9 +34,11 @@ use Throwable;
  * them new uploads go to by default, and whether the client-upload email
  * says which one a file went to.
  *
- * Community-only (Capability::StorageConfigure, enforced by the route).
- * A bucket's credentials are written here and never sent back: the
- * screen is told only whether a secret or key file is stored.
+ * Community-only (Capability::StorageConfigure, enforced entirely via the
+ * `capability:storage.configure` route middleware — every field on this
+ * page is gated, unlike email settings' sender-identity fields, so there's
+ * no field-level split to do inside the controller). Cloud never reaches
+ * this controller at all.
  */
 class StorageLocationsController extends Controller
 {
@@ -66,16 +68,23 @@ class StorageLocationsController extends Controller
                 'accepts_uploads' => $location->accepts_uploads,
                 'configured' => $location->isConfigured(),
                 'location' => $location->location(),
-                'region' => $location->region ?? '',
                 'clients_count' => $location->clients_count,
                 'files_count' => (int) ($fileCounts[$location->disk] ?? 0),
-                // The bucket form's fields. Never the secret or key file
-                // themselves, only whether one is stored.
                 'use_instance_role' => $location->use_instance_role,
+                // Never name a top-level Inertia prop "key" — Inertia's React
+                // renderer spreads page props onto the component via
+                // `{ key: <internal-remount-key>, ...props }`, and a prop
+                // literally named "key" in that spread silently overrides
+                // React's own reconciliation key, so the value never reaches
+                // the component as an actual prop (React always strips `key`).
                 'access_key' => $location->key ?? '',
-                'has_secret' => is_string($location->secret) && $location->secret !== '',
-                'has_key_file' => is_string($location->key_file) && $location->key_file !== '',
+                'has_secret' => $location->secret !== null && $location->secret !== '',
+                // Same treatment as the secret: never round-tripped, only
+                // whether one is stored. A service account key file is more
+                // sensitive than an access key, not less.
+                'has_key_file' => $location->key_file !== null && $location->key_file !== '',
                 'bucket' => $location->bucket ?? '',
+                'region' => $location->region ?? '',
                 'endpoint' => $location->endpoint ?? '',
                 'use_path_style' => $location->use_path_style,
                 'root' => $location->root ?? '',
@@ -179,10 +188,117 @@ class StorageLocationsController extends Controller
         return $this->saved();
     }
 
+    private function fillBucket(StorageLocation $location, Request $request): void
+    {
+        $request->merge(['provider' => $request->input('provider', StorageProvider::S3->value)]);
+
+        $validated = $request->validate([
+            ...$this->descriptionRules(),
+            // 'sometimes', not 'required': absent means S3, which is what
+            // every payload written before this choice existed meant, and
+            // stops a browser holding a stale bundle from failing to save
+            // on a field it cannot see.
+            'provider' => ['sometimes', Rule::enum(StorageProvider::class)],
+            'bucket' => ['required', 'string', 'max:255'],
+            'root' => ['nullable', 'string', 'max:255'],
+
+            // 'sometimes' for the same reason as 'provider' above: absent
+            // means false, which is what every payload written before this
+            // choice existed meant.
+            'use_instance_role' => ['sometimes', 'boolean'],
+
+            // Required only for the provider that uses them, so switching
+            // to GCS does not demand an AWS region that means nothing.
+            'access_key' => [self::requiredForStaticS3($request), 'nullable', 'string', 'max:255'],
+            'secret' => ['nullable', 'string', 'max:255'],
+            // Still required when the machine's own role is doing the
+            // authenticating: the credential chain resolves credentials,
+            // not which region the bucket is in.
+            'region' => ['required_if:provider,s3', 'nullable', 'string', 'max:255'],
+            'endpoint' => ['nullable', 'string', 'max:255'],
+            'use_path_style' => ['required', 'boolean'],
+
+            // Checked for shape here rather than left to fail at the first
+            // upload: a key file is pasted, and a paste that lost its last
+            // line is the likeliest way this goes wrong.
+            'key_file' => ['nullable', 'string', self::serviceAccountKeyRule()],
+        ]);
+
+        $useInstanceRole = (bool) ($validated['use_instance_role'] ?? false);
+
+        $location->fill([
+            'name' => $validated['name'],
+            'client_note' => $validated['client_note'] ?? null,
+            'accepts_uploads' => (bool) $validated['accepts_uploads'],
+            'provider' => $validated['provider'],
+            'use_instance_role' => $useInstanceRole,
+            'key' => $useInstanceRole ? null : ($validated['access_key'] ?? null),
+            'bucket' => $validated['bucket'],
+            'region' => $validated['region'] ?? null,
+            'endpoint' => $validated['endpoint'] ?? null,
+            'use_path_style' => $validated['use_path_style'],
+            'root' => $validated['root'] ?? null,
+        ]);
+
+        // A blank credential keeps whatever is already stored — neither
+        // field is ever round-tripped to the browser (only the has_*
+        // flags are), so blank means "unchanged", not "cleared".
+        //
+        // Except when the machine's own role takes over, which is the one
+        // thing that does clear it. The whole point of the setting is that
+        // no long-lived AWS credential is kept here, and a secret left
+        // sitting in the row unused would still be in the next database
+        // dump — and would silently come back the moment the box is
+        // unticked.
+        if ($useInstanceRole) {
+            $location->secret = null;
+        } elseif (is_string($validated['secret'] ?? null) && $validated['secret'] !== '') {
+            $location->secret = $validated['secret'];
+        }
+
+        if (is_string($validated['key_file'] ?? null) && $validated['key_file'] !== '') {
+            $location->key_file = $validated['key_file'];
+        }
+
+        // A new bucket missing its credentials would be listed but never
+        // registered, which reads as "saved" and works as nothing.
+        if (! $location->isConfigured()) {
+            throw ValidationException::withMessages([
+                'secret' => __('Enter the credentials for this bucket.'),
+            ]);
+        }
+    }
+
+    /** @return array<string, list<string>> */
+    private function descriptionRules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:100'],
+            'client_note' => ['nullable', 'string', 'max:255'],
+            'accepts_uploads' => ['required', 'boolean'],
+        ];
+    }
+
+    private function saved(): RedirectResponse
+    {
+        $this->configApplier->flush();
+        $this->configApplier->apply();
+
+        // The long-running queue worker cached the old config at boot;
+        // BuildZipDownloadJob and future uploads need this to pick up the
+        // new backend without a manual container restart.
+        Artisan::call('queue:restart');
+
+        $this->activity->log(Action::SettingsUpdated, context: ['section' => 'storage']);
+
+        return back()->with('success', __('Storage settings saved.'));
+    }
+
     /**
-     * Probe a bucket with the details on the form, before saving them. A
-     * secret or key file left blank on the form means the one stored for
-     * `location_id`, the same "leave blank to keep" the form follows.
+     * Verifies the submitted (or, where a credential field was left
+     * blank, the already-stored) details can actually reach the bucket,
+     * mirroring v1's connection test — this exists specifically to catch
+     * a typo'd key/bucket/region before switching uploads over to it.
      */
     public function testConnection(Request $request): RedirectResponse
     {
@@ -208,92 +324,13 @@ class StorageLocationsController extends Controller
                 StorageProvider::S3 => $this->probeS3($validated, $stored),
                 StorageProvider::Gcs => $this->probeGcs($validated, $stored),
             };
+
             $result = __('Success: connected to bucket ":bucket".', ['bucket' => $validated['bucket']]);
         } catch (Throwable $e) {
             $result = __('Failed to connect: :error', ['error' => $e->getMessage()]);
         }
 
         return back()->with('storage_test_result', $result);
-    }
-
-    private function fillBucket(StorageLocation $location, Request $request): void
-    {
-        $request->merge(['provider' => $request->input('provider', StorageProvider::S3->value)]);
-
-        $validated = $request->validate([
-            ...$this->descriptionRules(),
-            'provider' => ['sometimes', Rule::enum(StorageProvider::class)],
-            'bucket' => ['required', 'string', 'max:255'],
-            'root' => ['nullable', 'string', 'max:255'],
-            'use_instance_role' => ['sometimes', 'boolean'],
-            'access_key' => [self::requiredForStaticS3($request), 'nullable', 'string', 'max:255'],
-            'secret' => ['nullable', 'string', 'max:255'],
-            'region' => ['required_if:provider,s3', 'nullable', 'string', 'max:255'],
-            'endpoint' => ['nullable', 'string', 'max:255'],
-            'use_path_style' => ['required', 'boolean'],
-            'key_file' => ['nullable', 'string', self::serviceAccountKeyRule()],
-        ]);
-
-        $useInstanceRole = (bool) ($validated['use_instance_role'] ?? false);
-
-        $location->fill([
-            'name' => $validated['name'],
-            'client_note' => $validated['client_note'] ?? null,
-            'accepts_uploads' => (bool) $validated['accepts_uploads'],
-            'provider' => $validated['provider'],
-            'use_instance_role' => $useInstanceRole,
-            'key' => $useInstanceRole ? null : ($validated['access_key'] ?? null),
-            'bucket' => $validated['bucket'],
-            'region' => $validated['region'] ?? null,
-            'endpoint' => $validated['endpoint'] ?? null,
-            'use_path_style' => $validated['use_path_style'],
-            'root' => $validated['root'] ?? null,
-        ]);
-
-        // A blank secret or key file keeps the stored one: the form never
-        // shows them, so an administrator changing the region should not
-        // have to paste the secret again. Switching to the machine's own
-        // role clears the secret, since nothing will read it.
-        if ($useInstanceRole) {
-            $location->secret = null;
-        } elseif (is_string($validated['secret'] ?? null) && $validated['secret'] !== '') {
-            $location->secret = $validated['secret'];
-        }
-
-        if (is_string($validated['key_file'] ?? null) && $validated['key_file'] !== '') {
-            $location->key_file = $validated['key_file'];
-        }
-
-        // A new bucket missing its credentials would be listed but never
-        // registered, which reads as "saved" and works as nothing.
-        if (! $location->isConfigured()) {
-            throw ValidationException::withMessages([
-                'secret' => __('Enter the credentials for this bucket.'),
-            ]);
-        }
-    }
-
-    /** @return array<string, list<mixed>> */
-    private function descriptionRules(): array
-    {
-        return [
-            'name' => ['required', 'string', 'max:100'],
-            'client_note' => ['nullable', 'string', 'max:255'],
-            'accepts_uploads' => ['required', 'boolean'],
-        ];
-    }
-
-    private function saved(): RedirectResponse
-    {
-        $this->configApplier->flush();
-        $this->configApplier->apply();
-        // Queue workers registered their disks when they booted; a restart
-        // is how they learn about a new or changed bucket.
-        Artisan::call('queue:restart');
-
-        $this->activity->log(Action::SettingsUpdated, context: ['section' => 'storage']);
-
-        return back()->with('success', __('Storage settings saved.'));
     }
 
     /**
@@ -307,8 +344,11 @@ class StorageLocationsController extends Controller
             'use_path_style_endpoint' => (bool) ($validated['use_path_style'] ?? false),
         ];
 
-        // Without credentials the SDK uses the machine's own role, which is
-        // what an upload will do — see ExternalStorageConfigApplier.
+        // Omitted entirely, not left blank: an S3Client handed a
+        // 'credentials' array is told to use it, so an empty one fails
+        // instead of falling through to the default credential provider
+        // chain. This is what makes the button test the same thing the
+        // uploads will do — see ExternalStorageConfigApplier::applyS3().
         if (! ($validated['use_instance_role'] ?? false)) {
             $config['credentials'] = [
                 'key' => $validated['access_key'],
@@ -334,14 +374,27 @@ class StorageLocationsController extends Controller
             throw new RuntimeException(__('No service account key has been saved yet.'));
         }
 
-        // Listing one object needs only read access, and proves both the
-        // key and the bucket name.
         $bucket = (new StorageClient(['keyFile' => $keyFile]))->bucket($validated['bucket']);
+
+        // Listing one object rather than asking whether the bucket exists.
+        // A least-privilege key — roles/storage.objectAdmin scoped to this
+        // bucket, which is what the whole design rests on — can read and
+        // write objects but cannot read the bucket's own metadata, so
+        // $bucket->exists() reports failure for a key that works perfectly.
+        // An empty bucket is a valid answer here, and returns no rows.
         iterator_to_array($bucket->objects(['maxResults' => 1]), false);
     }
 
+    /**
+     * An access key is only demanded of an S3 backend that is actually
+     * going to authenticate with one. Shared by both the save and the
+     * connection test so the two cannot disagree about what is required.
+     */
     private static function requiredForStaticS3(Request $request): RequiredIf
     {
+        // Rule::requiredIf(), not a closure rule: this has to fire when
+        // the field is missing from the payload altogether, and a closure
+        // rule is not implicit — it never runs on an absent attribute.
         return Rule::requiredIf(
             fn (): bool => $request->input('provider') === StorageProvider::S3->value
                 && ! $request->boolean('use_instance_role')
@@ -349,6 +402,11 @@ class StorageLocationsController extends Controller
     }
 
     /**
+     * A credential field left blank means "keep what is stored" on save,
+     * so the connection test has to read it the same way — otherwise
+     * testing an unchanged configuration would always fail. What is
+     * stored is the location's named by `location_id`, if any.
+     *
      * @param  array<string, mixed>  $validated
      */
     private function storedIfBlank(array $validated, string $field, ?StorageLocation $stored): ?string
@@ -363,8 +421,8 @@ class StorageLocationsController extends Controller
     }
 
     /**
-     * A key file has to be the JSON Google issues, with the two fields
-     * the client library cannot work without.
+     * A pasted service account key, checked for the parts that have to be
+     * there. Not a credential check — that is what Test connection is for.
      */
     private static function serviceAccountKeyRule(): Closure
     {

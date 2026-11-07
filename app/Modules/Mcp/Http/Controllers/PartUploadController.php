@@ -6,6 +6,7 @@ namespace App\Modules\Mcp\Http\Controllers;
 
 use App\Modules\Files\Http\Controllers\ChunkedUploadsController;
 use App\Modules\Files\Uploads\UploadSession;
+use App\Modules\Mcp\Http\Middleware\EnsureConnectorCapability;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -39,6 +40,20 @@ class PartUploadController
         }
 
         $owner = $model->user;
+
+        // A signed URL lives half an hour. What /mcp asks on every call is
+        // asked here too, of the session's owner, so the URL stops working
+        // the moment the connector is switched off, the account is
+        // deactivated, or its role loses upload — as the web's part route
+        // asks `can:upload`. Before this, the bytes kept landing in
+        // staging until the URL expired.
+        if (! EnsureConnectorCapability::granted()) {
+            abort(404);
+        }
+
+        if ($owner === null || ! $owner->maySignIn() || ! $owner->can('upload')) {
+            abort(403);
+        }
 
         // The person the session belongs to, for the ownership check the
         // store makes before it writes a byte.

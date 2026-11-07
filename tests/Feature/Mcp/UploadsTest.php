@@ -18,6 +18,7 @@ use App\Modules\Mcp\Tools\CreateUpload;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Testing\TestResponse;
 use Tests\Support\McpWorld;
 
 /*
@@ -277,4 +278,49 @@ it('still links a file for an account that may share it', function (): void {
 
     expect($answer['link'])->not->toBeNull()
         ->and(File::query()->first()?->shareLinks()->count())->toBe(1);
+});
+
+/*
+ * A signed part URL lives half an hour and carries no token, so nothing
+ * /mcp asks on each call was asked of it: bytes kept landing in staging
+ * after the connector was switched off, the account was deactivated, or
+ * its role lost upload.
+ */
+function mcpPutOverHttp(string $url, string $bytes): TestResponse
+{
+    app('auth')->forgetGuards();
+
+    return test()->call('PUT', $url, [], [], [], ['CONTENT_TYPE' => 'application/octet-stream'], $bytes);
+}
+
+it('stops taking a part once the account behind the upload may no longer upload', function (string $change, int $status): void {
+    app(Settings::class)->set(Setting::AiConnectorEnabled, true);
+    $staff = McpWorld::staff();
+    $opened = McpWorld::call(CreateUpload::class, ['filename' => 'subida.txt', 'size_bytes' => 4], $staff);
+    $url = (string) $opened['parts'][0]['put_url'];
+
+    match ($change) {
+        'deactivated' => $staff->forceFill(['active' => false])->save(),
+        'role lost upload' => RolePermission::query()->where('role_id', $staff->role_id)->where('permission', 'upload')->delete(),
+        'connector off' => app(Settings::class)->set(Setting::AiConnectorEnabled, false),
+    };
+    app()->forgetScopedInstances();
+
+    mcpPutOverHttp($url, 'abcd')->assertStatus($status);
+
+    expect(UploadSession::query()->findOrFail($opened['upload_id'])->staged_bytes)->toBe(0);
+})->with([
+    ['deactivated', 403],
+    ['role lost upload', 403],
+    ['connector off', 404],
+]);
+
+it('takes a part over the signed URL while everything still holds', function (): void {
+    app(Settings::class)->set(Setting::AiConnectorEnabled, true);
+    $staff = McpWorld::staff();
+    $opened = McpWorld::call(CreateUpload::class, ['filename' => 'subida.txt', 'size_bytes' => 4], $staff);
+
+    $response = mcpPutOverHttp((string) $opened['parts'][0]['put_url'], 'abcd');
+
+    expect($response->status())->toBeLessThan(300);
 });

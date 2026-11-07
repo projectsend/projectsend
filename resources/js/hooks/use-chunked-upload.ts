@@ -33,6 +33,8 @@ interface UseChunkedUploadOptions {
      * in a ref like description, for the same reason.
      */
     keepFolders?: boolean;
+    /** The client's chosen storage location — held in a ref, like description. */
+    storageLocationId?: number | null;
     onFileUploaded?: (fileId: number) => void;
     /** The server refused the version link, but the upload itself succeeded. */
     onVersionError?: (message: string) => void;
@@ -68,6 +70,11 @@ export function useChunkedUploadUppy(options: UseChunkedUploadOptions): { uppy: 
     useEffect(() => {
         previousFileIdRef.current = options.previousFileId;
     }, [options.previousFileId]);
+
+    const storageLocationIdRef = useRef(options.storageLocationId);
+    useEffect(() => {
+        storageLocationIdRef.current = options.storageLocationId;
+    }, [options.storageLocationId]);
 
     const maxFileSizeBytes =
         options.maxFileSizeMb > 0
@@ -112,6 +119,7 @@ export function useChunkedUploadUppy(options: UseChunkedUploadOptions): { uppy: 
                     description: descriptionRef.current || undefined,
                     folder_id: options.folderId ?? undefined,
                     previous_file_id: previousFileIdRef.current ?? undefined,
+                    storage_location_id: storageLocationIdRef.current ?? undefined,
                 });
             },
             async signPart(_file, { uploadId, partNumber }) {

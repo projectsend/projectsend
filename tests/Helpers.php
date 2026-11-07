@@ -15,8 +15,8 @@ use App\Modules\Identity\Models\RolePermission;
 use App\Modules\Identity\Permissions\EnsureSystemRoles;
 use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
-use App\Modules\Platform\Settings\ExternalStorageSettings;
 use App\Modules\Platform\Settings\Settings;
+use App\Modules\Platform\Settings\StorageLocation;
 use App\Modules\Platform\Updates\UpdateInstallation;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\UploadedFile;
@@ -207,13 +207,20 @@ function shareFileWithGroup(File $file, Group $group): void
 /** Activates external storage (Community-only) for the rest of the test. */
 function activateExternalStorage(): void
 {
-    ExternalStorageSettings::current()->fill([
-        'active' => true,
+    // The bucket as an upgraded installation has it: on 'files_external',
+    // and where new uploads go.
+    $location = new StorageLocation;
+    $location->disk = 'files_external';
+    $location->fill([
+        'name' => 'External storage',
+        'provider' => 's3',
         'key' => 'AKIAEXAMPLE',
         'secret' => 'shh',
         'bucket' => 'my-bucket',
         'region' => 'us-east-1',
     ])->save();
+    StorageLocation::query()->update(['is_default' => false]);
+    $location->forceFill(['is_default' => true])->save();
     app(ExternalStorageConfigApplier::class)->flush();
 }
 

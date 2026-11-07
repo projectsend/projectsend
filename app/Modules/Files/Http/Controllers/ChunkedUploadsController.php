@@ -15,6 +15,7 @@ use App\Modules\Files\Folders\ClientHomeFolders;
 use App\Modules\Files\Folders\UploadFolderPath;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Uploads\ClientUploadMail;
+use App\Modules\Files\Storage\UploadLocations;
 use App\Modules\Files\Uploads\LocalPartStore;
 use App\Modules\Files\Uploads\PartTooLargeException;
 use App\Modules\Files\Uploads\StoreUploadedFile;
@@ -62,6 +63,7 @@ class ChunkedUploadsController extends Controller
         private readonly ClientHomeFolders $homeFolders,
         private readonly FileVersions $versions,
         private readonly UploadFolderPath $folderPaths,
+        private readonly UploadLocations $uploadLocations,
     ) {}
 
     /**
@@ -86,6 +88,7 @@ class ChunkedUploadsController extends Controller
             // Creating a folder needs permission to create folders. Ignored
             // together with previous_file_id.
             'relative_path' => ['nullable', 'string', 'max:4096'],
+            'storage_location_id' => ['nullable', 'integer'],
         ]);
 
         $maxMb = (int) $this->settings->get(Setting::MaxFileSizeMb);
@@ -191,6 +194,20 @@ class ChunkedUploadsController extends Controller
                 }
             }
 
+            // Only one of the uploader's own locations: anything else would let
+            // a client write into a bucket nobody gave them. Checked here, while
+            // a 422 can still reach the screen, not when the bytes land.
+            $storageLocationId = null;
+            if (($validated['storage_location_id'] ?? null) !== null) {
+                $storageLocationId = (int) $validated['storage_location_id'];
+
+                if (! $this->uploadLocations->usableFor($user)->contains('id', $storageLocationId)) {
+                    throw ValidationException::withMessages([
+                        'storage_location_id' => __('That storage location is not available for your uploads.'),
+                    ]);
+                }
+            }
+
             // A file from inside a dropped folder goes into the matching
             // subfolder, made if it is not there yet, under the same rules
             // as the New folder button. Not for a new version of a file:
@@ -211,6 +228,7 @@ class ChunkedUploadsController extends Controller
 
             $session = UploadSession::query()->create([
                 'user_id' => $user->id,
+                'storage_location_id' => $storageLocationId,
                 'folder_id' => $folder?->id,
                 'previous_file_id' => $previousFileId,
                 'original_name' => $validated['filename'],

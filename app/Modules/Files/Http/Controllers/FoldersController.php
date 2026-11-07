@@ -26,6 +26,8 @@ use App\Modules\Files\Scanning\NotScannedReason;
 use App\Modules\Files\Scanning\ScanningConfig;
 use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Files\Versions\FileVersionLinks;
+use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
+use App\Modules\Platform\Settings\StorageLocation;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Identity\Models\Role;
 use App\Support\ConcatenatedPagination;
@@ -91,6 +93,7 @@ class FoldersController extends Controller
             'downloads' => $downloads,
             'roleId' => $roleId,
             'version' => $version,
+            'locationId' => $locationId,
             'expired' => $expired,
             'sort' => $sort,
             'direction' => $direction,
@@ -145,6 +148,7 @@ class FoldersController extends Controller
                 'downloads' => $downloads,
                 'role' => $roleId,
                 'version' => $version,
+                'location' => $locationId,
                 'expired' => $expired ? 'true' : null,
                 'sort' => $sortChosen ? $sort : null,
                 'direction' => $sortChosen ? $direction : null,
@@ -188,7 +192,10 @@ class FoldersController extends Controller
             'downloads' => $downloads,
             'role' => $roleId,
             'version' => $version,
+            'location' => $locationId,
             'expired' => $expired,
+            // Offered only where there is more than one place to look.
+            'location_options' => $this->storageLocationOptions(),
             'categories' => Category::query()->orderBy('name')->get(['id', 'name', 'color'])
                 ->map(fn (Category $category): array => ['id' => $category->id, 'name' => $category->name, 'color' => $category->color])->all(),
             // Narrowed like every other folder listing on this screen: an
@@ -252,7 +259,7 @@ class FoldersController extends Controller
      * none chosen (`sortChosen` false), that is the mode's own: by name
      * across a search or filter, newest first inside a folder.
      *
-     * @return array{search: string, flat: bool, current: Folder|null, categoryId: int|null, uploaderId: int|null, visibility: string|null, downloads: string|null, roleId: int|null, version: string|null, expired: bool, sort: string, direction: string, sortChosen: bool, folders: Builder<Folder>, files: Builder<File>}
+     * @return array{search: string, flat: bool, current: Folder|null, categoryId: int|null, uploaderId: int|null, visibility: string|null, downloads: string|null, roleId: int|null, version: string|null, locationId: int|null, expired: bool, sort: string, direction: string, sortChosen: bool, folders: Builder<Folder>, files: Builder<File>}
      */
     private function listing(Request $request, User $user): array
     {
@@ -271,6 +278,7 @@ class FoldersController extends Controller
             'version' => ['nullable', 'in:current,outdated'],
             'sort' => ['nullable', 'in:name,size,date'],
             'direction' => ['nullable', 'in:asc,desc'],
+            'location' => ['nullable', 'integer'],
             // Not a 'boolean' rule: that only accepts true/false/0/1/'0'/'1',
             // rejecting the literal "true"/"" the frontend checkbox sends.
             // $request->boolean() below coerces any of those safely, so
@@ -290,6 +298,10 @@ class FoldersController extends Controller
         $version = $validated['version'] ?? null;
         $expired = $request->boolean('expired');
         $sortChosen = isset($validated['sort']);
+        // A storage location, matched by the disk its files are stamped
+        // with. An id that names no location matches nothing.
+        $locationId = isset($validated['location']) ? (int) $validated['location'] : null;
+        $locationDisk = $locationId === null ? null : (StorageLocation::query()->whereKey($locationId)->value('disk') ?? '');
 
         // A search term or any filter switches to a flat view across the
         // whole visible library; otherwise it's folder browsing. Every
@@ -298,7 +310,8 @@ class FoldersController extends Controller
         // against -- which is what the existing branch below already does.
         $flat = $searching || $categoryId !== null || $expired
             || $uploaderId !== null || $visibility !== null
-            || $downloads !== null || $roleId !== null || $version !== null;
+            || $downloads !== null || $roleId !== null || $version !== null
+            || $locationDisk !== null;
 
         $sort = $validated['sort'] ?? ($flat ? 'name' : 'date');
         $direction = $validated['direction'] ?? ($sort === 'date' ? 'desc' : 'asc');
@@ -350,7 +363,8 @@ class FoldersController extends Controller
                 ->when($downloads === 'any', fn (Builder $q) => $q->whereHas('downloads'))
                 ->when($version === 'current', fn (Builder $q) => $q->whereDoesntHave('nextVersion'))
                 ->when($version === 'outdated', fn (Builder $q) => $q->whereHas('nextVersion'))
-                ->when($visibility !== null, fn (Builder $q) => $q->effectivelyPublic($visibility === 'public'));
+                ->when($visibility !== null, fn (Builder $q) => $q->effectivelyPublic($visibility === 'public'))
+                ->when($locationDisk !== null, fn (Builder $q) => $q->where('files.disk', $locationDisk));
         } else {
             $current = $request->integer('folder') > 0
                 ? $this->scope->folders($user)->find($request->integer('folder'))
@@ -384,6 +398,7 @@ class FoldersController extends Controller
             'downloads' => $downloads,
             'roleId' => $roleId,
             'version' => $version,
+            'locationId' => $locationId,
             'expired' => $expired,
             'sort' => $sort,
             'direction' => $direction,
@@ -391,6 +406,22 @@ class FoldersController extends Controller
             'folders' => $folders,
             'files' => $files,
         ];
+    }
+
+    /**
+     * @return list<array{id: int, name: string}>
+     */
+    private function storageLocationOptions(): array
+    {
+        if (! app(ExternalStorageConfigApplier::class)->permitted()) {
+            return [];
+        }
+
+        $options = array_values(StorageLocation::query()->orderByDesc('is_default')->orderBy('name')->get(['id', 'name'])
+            ->map(fn (StorageLocation $location): array => ['id' => $location->id, 'name' => $location->name])
+            ->all());
+
+        return count($options) > 1 ? $options : [];
     }
 
     /**

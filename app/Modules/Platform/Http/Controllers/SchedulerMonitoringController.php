@@ -23,7 +23,7 @@ use Inertia\Response;
 /**
  * Community-only (Capability::SchedulerMonitoring, enforced entirely by
  * route middleware — see routes/settings.php, same all-or-nothing shape as
- * ExternalStorageSettingsController): visibility into scheduled-command run
+ * StorageLocationsController): visibility into scheduled-command run
  * history and failed queue jobs, since neither has any in-app surface
  * otherwise — a failure only ever lands in the container's own logs.
  */

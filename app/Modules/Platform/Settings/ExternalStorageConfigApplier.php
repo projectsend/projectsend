@@ -97,7 +97,9 @@ class ExternalStorageConfigApplier
 
         match ($provider) {
             StorageProvider::S3 => $this->applyS3($disk, $resolved),
-            StorageProvider::Gcs => $this->applyGcs($disk, $resolved),
+            // Only the id: everything GCS needs from the row is the key
+            // file, and that is a credential the cache no longer holds.
+            StorageProvider::Gcs => $this->applyGcs($disk, $resolved['id']),
         };
 
         // One "folder inside the bucket" on the screen, two names in the
@@ -134,16 +136,13 @@ class ExternalStorageConfigApplier
         // Passing an empty string instead of nothing would be a
         // credential, and would fail rather than fall through.
         Config::set($disk.'.key', $resolved['use_instance_role'] ? null : $resolved['key']);
-        Config::set($disk.'.secret', $resolved['use_instance_role'] ? null : $this->credential($resolved, 'secret'));
+        Config::set($disk.'.secret', $resolved['use_instance_role'] ? null : $this->credential($resolved['id'], 'secret'));
         Config::set($disk.'.region', $resolved['region']);
         Config::set($disk.'.endpoint', $resolved['endpoint']);
         Config::set($disk.'.use_path_style_endpoint', $resolved['use_path_style']);
     }
 
-    /**
-     * @param  array<string, mixed>  $resolved
-     */
-    private function applyGcs(string $disk, array $resolved): void
+    private function applyGcs(string $disk, ?int $locationId): void
     {
         // Decoded here rather than stored decoded: the column holds the
         // key file verbatim, exactly as Google issued it, so that what an
@@ -152,7 +151,7 @@ class ExternalStorageConfigApplier
         //
         // Read from the row rather than from $resolved: it is a private
         // key, and the cached array no longer carries one.
-        $keyFile = json_decode((string) $this->credential($resolved, 'key_file'), true);
+        $keyFile = json_decode((string) $this->credential($locationId, 'key_file'), true);
 
         Config::set($disk.'.key_file', is_array($keyFile) ? $keyFile : null);
 
@@ -174,23 +173,23 @@ class ExternalStorageConfigApplier
      *
      * The same rule MailOAuthConnection states for tokens — "must never
      * travel through the boot-config cache" — applied to the two columns
-     * that are credentials: the S3 secret access key and the GCS service
-     * account key file. Reached only from the provider branch that uses
-     * one, for a bucket that is configured and permitted, so nothing is
-     * read on an installation that stores files locally.
+     * on this row that are credentials: the S3 secret access key and the
+     * GCS service account key file. Reached only from the provider branch
+     * that uses one, and only when isActive() has already said the disk is
+     * configured and permitted, so nothing is read on an installation that
+     * stores files locally.
      *
      * Guarded like the cached read beside it: resolve() can hand back a
      * warm "configured" from a database that has since stopped answering,
-     * and booting must survive that.
-     *
-     * @param  array<string, mixed>  $resolved
+     * and booting must survive that. A null id is the previous release's
+     * row, read before the storage locations migration has run.
      */
-    private function credential(array $resolved, string $column): ?string
+    private function credential(?int $locationId, string $column): ?string
     {
         return BootSettingsCache::read(
-            fn (): ?string => $resolved['id'] === null
+            fn (): ?string => $locationId === null
                 ? ExternalStorageSettings::current()->{$column}
-                : StorageLocation::query()->find($resolved['id'])?->{$column},
+                : StorageLocation::query()->find($locationId)?->{$column},
         );
     }
 

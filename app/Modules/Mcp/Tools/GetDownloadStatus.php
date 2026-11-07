@@ -155,8 +155,12 @@ class GetDownloadStatus extends ToolBase
                 'at' => Presenter::iso($row->getAttribute('created_at')),
                 'via' => $via,
                 'link_id' => $via === 'link' ? $linkId : null,
-                'who' => $via === 'client' && $row->getAttribute('actor_id') !== null
-                    ? ['type' => 'client', 'id' => (int) $row->getAttribute('actor_id'), 'name' => $row->getAttribute('actor_name')]
+                // A client learns that their upload was downloaded and
+                // when, never by whom, as OwnFileDownloads tells them on the
+                // web. On the shared instance the downloader is as often
+                // the operator's staff as anybody.
+                'who' => $via === 'client' && $row->getAttribute('actor_id') !== null && ! $account->isClient()
+                    ? ['type' => (string) ($row->getAttribute('actor_type') ?? 'client'), 'id' => (int) $row->getAttribute('actor_id'), 'name' => $row->getAttribute('actor_name')]
                     : null,
                 'file' => ['id' => (int) $row->getAttribute('subject_id'), 'name' => $row->getAttribute('subject_name')],
             ];

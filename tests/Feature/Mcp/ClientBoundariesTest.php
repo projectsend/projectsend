@@ -203,3 +203,31 @@ it('still gives a client the download numbers of their own upload', function ():
     expect($listed['files'][0]['downloads_count'])->toBe(1)
         ->and($got['downloads']['total'])->toBe(1);
 });
+
+/*
+ * OwnFileDownloads tells a client that their upload was downloaded and
+ * when, never by whom. get_download_status named each downloader — on the
+ * shared instance, as often the operator's staff as anybody.
+ */
+it('tells a client when their upload was downloaded but not by whom', function (): void {
+    $alice = McpWorld::client();
+    $file = McpWorld::file($alice, ['name' => 'mine']);
+    ActivityLog::query()->create(['actor_id' => $this->admin->id, 'actor_name' => 'Operator Staff', 'actor_type' => 'staff', 'action' => 'file.downloaded', 'origin' => 'ui', 'subject_type' => $file->getMorphClass(), 'subject_id' => $file->id, 'subject_name' => 'mine', 'created_at' => now()]);
+
+    $status = McpWorld::call(GetDownloadStatus::class, ['file_id' => $file->id], $alice);
+
+    expect(McpWorld::error($status))->toBeNull()
+        ->and($status['summary']['total'])->toBe(1)
+        ->and($status['downloads'][0]['who'])->toBeNull()
+        ->and(json_encode($status))->not->toContain('Operator Staff');
+});
+
+it('names a staff downloader as staff to staff who may read the log', function (): void {
+    $staff = McpWorld::staff();
+    $file = McpWorld::file($staff, ['name' => 'mine']);
+    ActivityLog::query()->create(['actor_id' => $this->admin->id, 'actor_name' => 'A colleague', 'actor_type' => 'staff', 'action' => 'file.downloaded', 'origin' => 'ui', 'subject_type' => $file->getMorphClass(), 'subject_id' => $file->id, 'subject_name' => 'mine', 'created_at' => now()]);
+
+    $status = McpWorld::call(GetDownloadStatus::class, ['file_id' => $file->id], $staff);
+
+    expect($status['downloads'][0]['who'])->toBe(['type' => 'staff', 'id' => $this->admin->id, 'name' => 'A colleague']);
+});

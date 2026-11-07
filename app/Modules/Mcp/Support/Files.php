@@ -85,6 +85,21 @@ final class Files
         }
     }
 
+    /**
+     * The same answer as requireUpdate, as a yes or no, for a caller that
+     * goes on without the edit rather than failing the whole call.
+     */
+    public static function mayUpdate(File $file, Account $account): bool
+    {
+        try {
+            self::requireUpdate($file, $account);
+
+            return true;
+        } catch (ToolFailure) {
+            return false;
+        }
+    }
+
     /** FilePolicy's `delete`, same shape. */
     public static function requireDelete(File $file, Account $account): void
     {

@@ -7,6 +7,7 @@ namespace App\Modules\Mcp\Tools;
 use App\Modules\Files\Models\File;
 use App\Modules\Mcp\Support\Account;
 use App\Modules\Mcp\Support\Envelope;
+use App\Modules\Mcp\Support\Files;
 use App\Modules\Mcp\Support\Links;
 use App\Modules\Mcp\Support\PlanGate;
 use App\Modules\Mcp\Support\Presenter;
@@ -119,11 +120,19 @@ class CompleteUpload extends ToolBase
         // gets that one. Staff get one only when they ask.
         $link = Links::plainActive($file, $account);
 
-        // A client only where they may publish, as share_by_link asks.
-        $mayMint = $account->isClient() ? $account->can('upload_public') : $share;
+        // A new link is making the file public, so it asks what
+        // share_by_link and the web's ShareLinksController ask: the right to
+        // edit this file, and for a client the right to publish. Uploading
+        // alone was enough here, so an uploader-only role, or an API token
+        // holding only `upload`, got a public link with every file.
+        $wantsLink = $account->isClient() || $share;
+        $mayMint = Files::mayUpdate($file, $account)
+            && (! $account->isClient() || $account->can('upload_public'));
 
-        if ($link === null && $mayMint) {
+        if ($link === null && $wantsLink && $mayMint) {
             $link = Links::mint($file, $account, $expiresAt, $maxDownloads, $warnings);
+        } elseif ($link === null && $share && ! $mayMint) {
+            $warnings[] = 'Saved without a link: this account may upload but not share files. Someone who can share it can make one.';
         }
 
         $fileId = (int) $file->getAttribute('id');

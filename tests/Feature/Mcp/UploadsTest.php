@@ -3,11 +3,13 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use App\Modules\Api\Auth\TokenAbilities;
 use App\Modules\Audit\ActivityLog;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Uploads\UploadSession;
 use App\Modules\Files\Uploads\UploadTypeRestriction;
 use App\Modules\Identity\Models\RolePermission;
+use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Mcp\Support\McpContext;
 use App\Modules\Mcp\Support\Uploads;
 use App\Modules\Mcp\Tools\CompleteUpload;
@@ -236,4 +238,43 @@ it('does not delete an upload that expired or never existed twice: it says to st
     expect($error['code'])->toBe('not_found')
         ->and($error['resource'])->toBe('upload')
         ->and($error['action'])->toContain('create_upload');
+});
+
+/*
+ * A new link makes the file public, so it asks what share_by_link and the
+ * web's ShareLinksController ask: the right to edit the file. Uploading
+ * alone used to be enough, and create_file_from_content shares by default.
+ */
+it('saves without a link for an account that may upload but not share', function (): void {
+    $uploader = McpWorld::staff(permissions: ['upload']);
+
+    $answer = McpWorld::call(CreateFileFromContent::class, ['filename' => 'notes.txt', 'content' => 'x'], $uploader);
+
+    expect(McpWorld::error($answer))->toBeNull()
+        ->and($answer['link'])->toBeNull()
+        ->and(File::query()->count())->toBe(1)
+        ->and(File::query()->first()?->shareLinks()->count())->toBe(0);
+});
+
+it('saves without a link through an API token that holds only upload', function (): void {
+    $staff = McpWorld::staff(tokenAbilities: ['upload'], tokenName: 'n8n');
+
+    // What the token-ceiling middleware does on a real /mcp request, which
+    // McpWorld::call does not pass through.
+    app(PermissionChecker::class)->limitTo($staff, $staff->currentAccessToken(), app(TokenAbilities::class)->inUse());
+
+    $answer = McpWorld::call(CreateFileFromContent::class, ['filename' => 'notes.txt', 'content' => 'x'], $staff);
+
+    expect(McpWorld::error($answer))->toBeNull()
+        ->and($answer['link'])->toBeNull()
+        ->and(File::query()->first()?->shareLinks()->count())->toBe(0);
+});
+
+it('still links a file for an account that may share it', function (): void {
+    $staff = McpWorld::staff();
+
+    $answer = McpWorld::call(CreateFileFromContent::class, ['filename' => 'notes.txt', 'content' => 'x'], $staff);
+
+    expect($answer['link'])->not->toBeNull()
+        ->and(File::query()->first()?->shareLinks()->count())->toBe(1);
 });

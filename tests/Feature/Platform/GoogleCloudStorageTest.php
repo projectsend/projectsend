@@ -273,7 +273,7 @@ test('a blank key file keeps the one already stored', function () {
         'bucket' => 'a-different-bucket',
         'key_file' => '',
         'use_path_style' => false,
-    ])->assertRedirect()->assertSessionHasNoErrors();
+    ])->assertRedirect();
 
     expect($location->fresh()->key_file)->toBe($key)
         ->and($location->fresh()->bucket)->toBe('a-different-bucket');

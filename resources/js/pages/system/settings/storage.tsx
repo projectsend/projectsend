@@ -29,7 +29,6 @@ interface StorageLocationRow {
     accepts_uploads: boolean;
     configured: boolean;
     location: string;
-    region: string;
     clients_count: number;
     files_count: number;
     use_instance_role: boolean;
@@ -37,6 +36,7 @@ interface StorageLocationRow {
     has_secret: boolean;
     has_key_file: boolean;
     bucket: string;
+    region: string;
     endpoint: string;
     use_path_style: boolean;
     root: string;

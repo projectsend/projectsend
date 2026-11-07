@@ -56,10 +56,17 @@ final class AuthorizationRequest
         $state = $request->query('state');
         $state = is_string($state) && $state !== '' ? Str::limit($state, 1024, '') : null;
 
+        // An error goes back to the client's own address only when that
+        // address is vouched for by a document the client publishes. Anybody
+        // may register a client with any https redirect, so sending its
+        // errors there with no click made this endpoint an open redirect
+        // (RFC 9700 §4.11.2). A registered client's error stays on screen.
         $refuse = static fn (string $error, string $description): AuthorizeRefused => new AuthorizeRefused(
             $error,
             $description,
-            self::withQuery($redirectUri, array_filter(['error' => $error, 'error_description' => $description, 'state' => $state])),
+            $client->isVerified()
+                ? self::withQuery($redirectUri, array_filter(['error' => $error, 'error_description' => $description, 'state' => $state]))
+                : null,
         );
 
         if ($request->query('response_type') !== 'code') {

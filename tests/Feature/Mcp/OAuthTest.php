@@ -342,6 +342,22 @@ it('names an unverified client by the redirect this request uses, not the first 
         ->assertJsonPath('props.client.redirect_host', 'evil.example');
 });
 
+/*
+ * Anybody may register a client with any https redirect. Sending its
+ * errors there with no click made authorize an open redirect (RFC 9700
+ * §4.11.2). Only a client a published document vouches for has its errors
+ * sent back to it.
+ */
+it('keeps a registered client\'s errors on screen rather than redirecting to it', function (): void {
+    $registered = withHostCapabilities(['ai.connector'], fn (): TestResponse => test()->postJson('/oauth/mcp/register', [
+        'client_name' => 'Anything', 'redirect_uris' => ['https://evil.example/'],
+    ]))->assertStatus(201);
+
+    oauthAuthorize(oauthStaff(), ['client_id' => $registered->json('client_id'), 'redirect_uri' => 'https://evil.example/', 'response_type' => 'token'])
+        ->assertStatus(400)
+        ->assertJsonPath('component', 'mcp/authorize-error');
+});
+
 // ── Client metadata documents ────────────────────────────────────────
 
 it('reads a client metadata document once and shows the client as verified by its host', function (): void {

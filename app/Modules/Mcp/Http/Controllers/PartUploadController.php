@@ -6,6 +6,7 @@ namespace App\Modules\Mcp\Http\Controllers;
 
 use App\Modules\Files\Http\Controllers\ChunkedUploadsController;
 use App\Modules\Files\Uploads\UploadSession;
+use App\Modules\Mcp\Http\Middleware\EnsureClientMayConnect;
 use App\Modules\Mcp\Http\Middleware\EnsureConnectorCapability;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,7 +52,7 @@ class PartUploadController
             abort(404);
         }
 
-        if ($owner === null || ! $owner->maySignIn() || ! $owner->can('upload')) {
+        if (! $owner->maySignIn() || ! $owner->can('upload') || ! EnsureClientMayConnect::allows($owner)) {
             abort(403);
         }
 

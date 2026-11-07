@@ -7,6 +7,7 @@ namespace App\Modules\Mcp;
 use App\Modules\Audit\ActivityOrigin;
 use App\Modules\Audit\Events\ResolvingActivityOrigin;
 use App\Modules\Mcp\Http\Controllers\PartUploadController;
+use App\Modules\Mcp\Http\Middleware\EnsureClientMayConnect;
 use App\Modules\Mcp\Http\Middleware\EnsureConnectorCapability;
 use App\Modules\Mcp\Http\Middleware\RequireBearerToken;
 use App\Modules\Mcp\OAuth\Clients\PublicAddress;
@@ -97,6 +98,7 @@ class McpServiceProvider extends ServiceProvider
                 // scopes, not permission keys); see LimitPermissionsToToken.
                 'token-ceiling',
                 EnsureConnectorCapability::class,
+                EnsureClientMayConnect::class,
                 // Its own named bucket, so it never shares an allowance with
                 // whatever else forgot to name theirs. Per token, because the
                 // limit is the plan's (decision 14) and a token is the unit.

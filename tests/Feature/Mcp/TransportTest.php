@@ -5,8 +5,10 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Audit\ActivityLog;
 use App\Modules\Files\Models\ShareLink;
+use App\Modules\Mcp\Events\ResolvingConnectorPlan;
 use App\Modules\Mcp\Support\McpContext;
 use App\Modules\Platform\Capabilities\Edition;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Testing\TestResponse;
 use Tests\Support\McpWorld;
 
@@ -186,4 +188,27 @@ it('does not hand a narrow API token the client list as a resource', function ()
     $read = mcpPost(['jsonrpc' => '2.0', 'id' => 6, 'method' => 'resources/read', 'params' => ['uri' => 'projectsend://clients']], $staff);
 
     expect((string) $read->getContent())->not->toContain('secret@acme.example');
+});
+
+/*
+ * The consent screen asks whether clients may connect before it grants a
+ * client anything, but a grant outlived the answer: nothing at /mcp asked
+ * again, so a client token kept working after the plan stopped letting
+ * clients connect.
+ */
+it('turns a client\'s token away once clients may no longer connect', function (): void {
+    $client = McpWorld::client();
+
+    mcpPost(mcpInitialize(), $client)->assertOk();
+
+    Event::forget(ResolvingConnectorPlan::class);
+    app()->forgetScopedInstances();
+
+    mcpPost(mcpInitialize(), $client)->assertStatus(403);
+});
+
+it('still lets staff in where clients may not connect', function (): void {
+    $staff = McpWorld::staff();
+
+    mcpPost(mcpInitialize(), $staff)->assertOk();
 });

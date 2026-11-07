@@ -153,7 +153,9 @@ test('new uploads stay on the local disk while it is the default, and go to a bu
 
     makeDefault($location);
 
-    expect(resolvedDiskFor($this->admin))->toBe($location->disk);
+    // A client with no locations of their own follows the default too.
+    expect(resolvedDiskFor($this->admin))->toBe($location->disk)
+        ->and(resolvedDiskFor(User::factory()->client()->create()))->toBe($location->disk);
 });
 
 test('a real upload lands on the external disk once the backend is active, and local uploads made before activation are unaffected', function () {
@@ -280,14 +282,6 @@ test('the migration carries the old row over on its own disk name, as the defaul
 
 // ---- Where a client's uploads go ---------------------------------------
 
-test('a client with no locations of their own follows the default', function () {
-    $client = User::factory()->client()->create();
-    $location = bucketLocation();
-    makeDefault($location);
-
-    expect(resolvedDiskFor($client))->toBe($location->disk);
-});
-
 test('a client uploads to their first location, or the one they asked for if it is theirs', function () {
     $client = User::factory()->client()->create();
     $eu = bucketLocation(['name' => 'EU']);
@@ -299,7 +293,9 @@ test('a client uploads to their first location, or the one they asked for if it 
     expect(resolvedDiskFor($client))->toBe($us->disk)
         ->and(resolvedDiskFor($client, $eu->id))->toBe($eu->disk)
         // Not theirs: their first, not the one asked for.
-        ->and(resolvedDiskFor($client, $other->id))->toBe($us->disk);
+        ->and(resolvedDiskFor($client, $other->id))->toBe($us->disk)
+        // Staff always use the default, whatever is assigned to clients.
+        ->and(resolvedDiskFor($this->admin, $eu->id))->toBe('files');
 });
 
 test('a location that stopped taking uploads is skipped for the next one', function () {
@@ -311,13 +307,6 @@ test('a location that stopped taking uploads is skipped for the next one', funct
 
     expect(resolvedDiskFor($client))->toBe('files')
         ->and(app(UploadLocations::class)->usableFor($client)->pluck('id')->all())->toBe([$local->id]);
-});
-
-test('staff always use the default, whatever is assigned to clients', function () {
-    $location = bucketLocation();
-    applyStorage();
-
-    expect(resolvedDiskFor($this->admin, $location->id))->toBe('files');
 });
 
 test('a client chooses one of their own locations when the upload starts, and the bytes go there', function () {
@@ -521,8 +510,14 @@ test('saving external storage settings signals the queue worker to restart', fun
     expect(Cache::get('illuminate:queue:restart'))->not->toBeNull();
 });
 
-test('the default can be moved to a bucket, and only one location is ever the default', function () {
+test('the default can be moved to a bucket taking uploads, and only one location is ever the default', function () {
     $location = bucketLocation();
+    $closed = bucketLocation(['accepts_uploads' => false]);
+
+    $this->actingAs($this->admin)->patch('/system/settings/storage', [
+        'default_location_id' => $closed->id,
+        'upload_notification_names_location' => false,
+    ])->assertSessionHasErrors(['default_location_id']);
 
     $this->actingAs($this->admin)->patch('/system/settings/storage', [
         'default_location_id' => $location->id,
@@ -530,15 +525,6 @@ test('the default can be moved to a bucket, and only one location is ever the de
     ])->assertSessionHasNoErrors();
 
     expect(StorageLocation::query()->where('is_default', true)->pluck('id')->all())->toBe([$location->id]);
-});
-
-test('a location that is not taking uploads cannot be the default', function () {
-    $location = bucketLocation(['accepts_uploads' => false]);
-
-    $this->actingAs($this->admin)->patch('/system/settings/storage', [
-        'default_location_id' => $location->id,
-        'upload_notification_names_location' => false,
-    ])->assertSessionHasErrors(['default_location_id']);
 });
 
 test('the default cannot stop taking uploads', function () {
@@ -812,8 +798,7 @@ function resetStorageLocationsMigration(Closure $before): void
 
 /**
  * An external storage row exactly as 2.0/2.1 wrote it: S3 credentials in
- * place, and none of the columns added since. Also from before the
- * storage locations, so it is the row the applier reads.
+ * place, and none of the columns added since.
  *
  * Written with the query builder and then stripped back, rather than
  * hand-rolled SQL, so it stays honest if the table changes shape again.

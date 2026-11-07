@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Modules\Audit\ActivityLog;
 use App\Modules\Files\Models\FileAssignment;
+use App\Modules\Groups\Models\Group;
 use App\Modules\Mcp\ProjectSendServer;
 use App\Modules\Mcp\Resources\ActivityRecent;
 use App\Modules\Mcp\Resources\Clients;
@@ -114,4 +115,77 @@ it('refuses an address another account holds without naming that account', funct
             ->and(json_encode($answer))->not->toContain((string) $globex->id.',')
             ->and(json_encode($answer))->not->toContain('Globex');
     }
+});
+
+/*
+ * GHSA-9rch-3cmp-whh4. Being able to read a file and being told who a
+ * client is are two questions. get_file answered the first and skipped
+ * the second, so a file shared with a manager's own client named the
+ * stranger who uploaded it and every off-roster co-recipient.
+ */
+it('does not name an off-roster client who uploaded a file a scoped staff member can open', function (): void {
+    $staff = McpWorld::staff();
+    $acme = McpWorld::clientAccount();
+    $globex = McpWorld::clientAccount('it@globex.example', 'Globex');
+    $file = McpWorld::file($globex, ['name' => 'from-globex']);
+    shareFileWith($file, $acme);
+
+    McpWorld::scopeTo($staff, $acme);
+
+    $got = McpWorld::call(GetFile::class, ['file_id' => $file->id], $staff);
+
+    expect(McpWorld::error($got))->toBeNull()
+        ->and($got['file']['uploaded_by'])->toBeNull()
+        ->and(json_encode($got))->not->toContain('Globex');
+});
+
+it('names an on-roster client who uploaded a file', function (): void {
+    $staff = McpWorld::staff();
+    $acme = McpWorld::clientAccount();
+    $file = McpWorld::file($acme, ['name' => 'from-acme']);
+    shareFileWith($file, $acme);
+
+    McpWorld::scopeTo($staff, $acme);
+
+    $got = McpWorld::call(GetFile::class, ['file_id' => $file->id], $staff);
+
+    expect($got['file']['uploaded_by'])->toBe(['name' => 'Acme Ltd']);
+});
+
+it('leaves off-roster clients and groups out of who a file is shared with', function (): void {
+    $staff = McpWorld::staff();
+    $acme = McpWorld::clientAccount();
+    $globex = McpWorld::clientAccount('it@globex.example', 'Globex');
+    $ours = Group::query()->create(['name' => 'Acme team']);
+    $ours->members()->attach($acme->id);
+    $theirs = Group::query()->create(['name' => 'Globex team']);
+    $theirs->members()->attach($globex->id);
+
+    $file = McpWorld::file($staff, ['name' => 'shared-with-both']);
+    shareFileWith($file, $acme);
+    shareFileWith($file, $globex);
+    shareFileWithGroup($file, $ours);
+    shareFileWithGroup($file, $theirs);
+
+    McpWorld::scopeTo($staff, $acme);
+
+    $got = McpWorld::call(GetFile::class, ['file_id' => $file->id], $staff);
+
+    expect($got['shared_with']['clients'])->toBe([['id' => $acme->id, 'name' => 'Acme Ltd']])
+        ->and($got['shared_with']['groups'])->toBe([['id' => $ours->id, 'name' => 'Acme team']])
+        ->and(json_encode($got))->not->toContain('Globex');
+});
+
+it('still names every recipient for unscoped staff', function (): void {
+    $staff = McpWorld::staff();
+    $acme = McpWorld::clientAccount();
+    $globex = McpWorld::clientAccount('it@globex.example', 'Globex');
+    $file = McpWorld::file($globex);
+    shareFileWith($file, $acme);
+    shareFileWith($file, $globex);
+
+    $got = McpWorld::call(GetFile::class, ['file_id' => $file->id], $staff);
+
+    expect($got['file']['uploaded_by'])->toBe(['name' => 'Globex'])
+        ->and(array_column($got['shared_with']['clients'], 'name'))->toEqualCanonicalizing(['Acme Ltd', 'Globex']);
 });

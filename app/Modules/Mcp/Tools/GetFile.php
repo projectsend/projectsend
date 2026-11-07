@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Mcp\Tools;
 
 use App\Models\User;
+use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Models\ShareLink;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Mcp\Support\Account;
@@ -52,14 +53,20 @@ class GetFile extends ToolBase
         $links = array_values(array_filter(Files::links($file, $account), fn (ShareLink $link): bool => $link->isActive()));
         $downloads = self::downloads($file);
 
-        $uploader = $file->uploader;
+        // Reading the file and being told who a client is are two
+        // questions (GHSA-9rch-3cmp-whh4). A client-scoped staff member
+        // can open a file shared with one of their clients and still not
+        // be told the name of a stranger who uploaded it or also has it.
+        // The REST FileResource asks ClientIdentityScope the same way.
+        $identity = app(ClientIdentityScope::class);
+        $uploaderName = $identity->nameOf($account->user, $file->uploader);
         $rootId = $file->getAttribute('version_root_id');
 
         // The folder comes with Presenter::file, for staff only.
         $detail = Presenter::file($file, $account) + [
             'original_name' => $file->getAttribute('original_name'),
             'checksum' => $file->getAttribute('checksum') === null ? null : 'sha256:'.$file->getAttribute('checksum'),
-            'uploaded_by' => $uploader !== null ? ['name' => $uploader->name] : null,
+            'uploaded_by' => $uploaderName !== null ? ['name' => $uploaderName] : null,
             'is_revision' => $rootId !== null,
             'sharing_root_id' => $rootId === null ? null : (int) $rootId,
             'previous_version' => self::version($file, 'previousVersion'),
@@ -74,7 +81,7 @@ class GetFile extends ToolBase
             [
                 'file' => $detail,
                 'links' => array_map(fn (Model $link): array => Presenter::link($link), $links),
-                'shared_with' => $account->isClient() ? null : self::sharedWith($file),
+                'shared_with' => $account->isClient() ? null : $identity->filterShares($account->user, self::sharedWith($file)),
                 'downloads' => $downloads,
             ],
             Web::file($account, $id),
@@ -116,7 +123,8 @@ class GetFile extends ToolBase
     }
 
     /**
-     * Client accounts and groups the file is assigned to, by name.
+     * Client accounts and groups the file is assigned to, by name. Every
+     * one of them: the caller filters this through ClientIdentityScope.
      *
      * @return array{clients: list<array{id: int, name: string}>, groups: list<array{id: int, name: string}>}
      */

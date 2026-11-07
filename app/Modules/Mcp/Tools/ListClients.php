@@ -90,7 +90,7 @@ class ListClients extends ToolBase
                 'clients' => $clients,
                 'next_cursor' => $page->nextCursor()?->encode(),
                 'total' => $total,
-                'seats' => $seats === null ? null : ['clients_used' => $seats['clients_used'], 'clients_limit' => $seats['clients_limit']],
+                'seats' => $seats === null || $seats['clients_used'] === null ? null : ['clients_used' => $seats['clients_used'], 'clients_limit' => $seats['clients_limit']],
             ],
             Web::clients(),
             "Use a client's id with send_file_to_client or get_client. If someone is missing, create_client adds them.",

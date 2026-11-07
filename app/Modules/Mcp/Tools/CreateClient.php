@@ -19,6 +19,7 @@ use App\Modules\Mcp\Support\ToolError;
 use App\Modules\Mcp\Support\ToolFailure;
 use App\Modules\Mcp\Support\Uploads;
 use App\Modules\Mcp\Support\Web;
+use App\Modules\Platform\Seats\SeatAllowance;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
@@ -136,10 +137,12 @@ class CreateClient extends ToolBase
             throw new ToolFailure(ToolError::validationFailed($errors));
         }
 
-        $seats = $account->seats();
+        // The cap itself, not what this account may be shown of it: the web
+        // refuses a full site to anybody who may create a client, and says so.
+        $state = app(SeatAllowance::class)->clientState();
 
-        if ($seats !== null && $seats['clients_limit'] !== null && $seats['clients_used'] >= $seats['clients_limit']) {
-            throw new ToolFailure(ToolError::seatsFull($seats['clients_used'], $seats['clients_limit'], Web::portal()));
+        if ($state !== null && $state['full']) {
+            throw new ToolFailure(ToolError::seatsFull((int) $state['used'], (int) $state['limit'], Web::portal()));
         }
 
         $generated = ! isset($validated['password']);
@@ -180,7 +183,7 @@ class CreateClient extends ToolBase
                 'client' => Presenter::client($client),
                 'password_once' => $generated ? $password : null,
                 'notified' => $notify,
-                'seats' => $after === null ? null : ['clients_used' => $after['clients_used'], 'clients_limit' => $after['clients_limit']],
+                'seats' => $after === null || $after['clients_used'] === null ? null : ['clients_used' => $after['clients_used'], 'clients_limit' => $after['clients_limit']],
             ],
             Web::client($id),
             $generated

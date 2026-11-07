@@ -221,10 +221,17 @@ final class Account
     }
 
     /**
-     * Client and staff seats, for staff accounts, from the app's own
-     * allowance. Null on a client account or when the app has no cap.
+     * Client and staff seats, as far as this account may be told them, the
+     * way the web tells them: the client count on the clients page, behind
+     * manage_clients; the staff count on the users page, behind
+     * manage_users; and either only where there is a cap to count against
+     * (SeatAllowance::clientState and staffState answer null without one).
+     * Every staff connection used to read both counts, capped or not.
      *
-     * @return array{clients_used: int, clients_limit: int|null, staff_used: int, staff_limit: int|null}|null
+     * Null on a client account, or when there is nothing this account may
+     * be told. A half it may not be told is null.
+     *
+     * @return array{clients_used: int|null, clients_limit: int|null, staff_used: int|null, staff_limit: int|null}|null
      */
     public function seats(): ?array
     {
@@ -235,14 +242,21 @@ final class Account
         $seats = app(SeatAllowance::class);
 
         try {
-            return [
-                'clients_used' => (int) $seats->clientUsed(),
-                'clients_limit' => $seats->clientLimit() === null ? null : (int) $seats->clientLimit(),
-                'staff_used' => (int) $seats->staffUsed(),
-                'staff_limit' => $seats->staffLimit() === null ? null : (int) $seats->staffLimit(),
-            ];
+            $clients = $this->can('manage_clients') ? $seats->clientState() : null;
+            $staff = $this->can('manage_users') ? $seats->staffState() : null;
         } catch (Throwable) {
             return null;
         }
+
+        if ($clients === null && $staff === null) {
+            return null;
+        }
+
+        return [
+            'clients_used' => $clients === null ? null : (int) $clients['used'],
+            'clients_limit' => $clients === null ? null : (int) $clients['limit'],
+            'staff_used' => $staff === null ? null : (int) $staff['used'],
+            'staff_limit' => $staff === null ? null : (int) $staff['limit'],
+        ];
     }
 }

@@ -77,9 +77,9 @@ TEXT;
 
         $plan = $account->plan();
         $seats = $account->seats();
-        $seatsText = $seats === null
+        $seatsText = $seats === null || $seats['clients_used'] === null
             ? ''
-            : sprintf(' — %d of %s client accounts', $seats['clients_used'], $seats['clients_limit'] === null ? 'unlimited' : (string) $seats['clients_limit']);
+            : sprintf(' — %d of %d client accounts', $seats['clients_used'], $seats['clients_limit']);
 
         return sprintf(
             'This account: %s on %s%s%s.',

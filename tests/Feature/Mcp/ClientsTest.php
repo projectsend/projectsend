@@ -12,6 +12,7 @@ use App\Modules\Identity\UserType;
 use App\Modules\Mcp\Support\McpContext;
 use App\Modules\Mcp\Tools\CreateClient;
 use App\Modules\Mcp\Tools\GetClient;
+use App\Modules\Mcp\Tools\GetUsage;
 use App\Modules\Mcp\Tools\ListClients;
 use App\Modules\Mcp\Tools\SendFileToClient;
 use App\Modules\Notifications\InAppNotification;
@@ -191,4 +192,32 @@ it('requires the custom fields the site requires, and stores what it is given', 
 
     expect(McpWorld::error($made))->toBeNull()
         ->and(ClientCustomFieldValue::query()->where('client_custom_field_id', $vat->id)->value('value'))->toBe('ES-123');
+});
+
+/*
+ * The web shows seat counts on the clients page (manage_clients) and the
+ * users page (manage_users), and only against a cap. Every staff
+ * connection read both counts, capped or not, through get_usage and the
+ * connection's own instructions.
+ */
+it('tells an uploader nothing about how many accounts the site has', function (): void {
+    $uploader = McpWorld::staff(permissions: ['upload']);
+    McpWorld::clientAccount();
+
+    $usage = McpWorld::call(GetUsage::class, [], $uploader);
+
+    expect($usage['seats'])->toBeNull();
+});
+
+it('shows seat counts only against a cap, and only to who manages them', function (): void {
+    $manager = McpWorld::staff(permissions: ['manage_clients']);
+    McpWorld::clientAccount();
+
+    expect(McpWorld::call(GetUsage::class, [], $manager)['seats'])->toBeNull();
+
+    config()->set('projectsend.platform.max_clients', 5);
+    app()->forgetScopedInstances();
+
+    expect(McpWorld::call(GetUsage::class, [], $manager)['seats'])
+        ->toBe(['clients_used' => 1, 'clients_limit' => 5, 'staff_used' => null, 'staff_limit' => null]);
 });

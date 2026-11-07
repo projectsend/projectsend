@@ -65,7 +65,7 @@ class Clients extends Resource
         return Response::json([
             'clients' => $clients,
             'total' => $total,
-            'seats' => $seats === null ? null : ['clients_used' => $seats['clients_used'], 'clients_limit' => $seats['clients_limit']],
+            'seats' => $seats === null || $seats['clients_used'] === null ? null : ['clients_used' => $seats['clients_used'], 'clients_limit' => $seats['clients_limit']],
         ]);
     }
 }

@@ -23,12 +23,12 @@ use App\Modules\Platform\Http\Controllers\CaptchaSettingsController;
 use App\Modules\Platform\Http\Controllers\EmailOAuthController;
 use App\Modules\Platform\Http\Controllers\EmailSettingsController;
 use App\Modules\Platform\Http\Controllers\EmailTemplatesController;
+use App\Modules\Platform\Http\Controllers\ExternalStorageSettingsController;
 use App\Modules\Platform\Http\Controllers\GettingStartedController;
 use App\Modules\Platform\Http\Controllers\LanguageSettingsController;
 use App\Modules\Platform\Http\Controllers\PrivacySettingsController;
 use App\Modules\Platform\Http\Controllers\PublicListingSettingsController;
 use App\Modules\Platform\Http\Controllers\SchedulerMonitoringController;
-use App\Modules\Platform\Http\Controllers\StorageLocationsController;
 use App\Modules\Platform\Http\Controllers\SystemSettingsController;
 use App\Modules\Platform\Http\Controllers\ThemingSettingsController;
 use App\Modules\Platform\Http\Controllers\WhatsNewController;
@@ -324,16 +324,16 @@ Route::middleware('auth')->group(function () {
         // everybody, and the test dials whatever endpoint it is given.
         // edit_settings is not the administrator.
         Route::middleware(['capability:storage.configure', 'can:administer'])->group(function () {
-            Route::get('system/settings/storage', [StorageLocationsController::class, 'edit'])->name('system-settings.storage.edit');
-            Route::patch('system/settings/storage', [StorageLocationsController::class, 'update'])
+            Route::get('system/settings/storage', [ExternalStorageSettingsController::class, 'edit'])->name('system-settings.storage.edit');
+            Route::patch('system/settings/storage', [ExternalStorageSettingsController::class, 'update'])
                 ->middleware('password.confirm')->name('system-settings.storage.update');
-            Route::post('system/settings/storage/test', [StorageLocationsController::class, 'testConnection'])
+            Route::post('system/settings/storage/test', [ExternalStorageSettingsController::class, 'testConnection'])
                 ->middleware('password.confirm')->name('system-settings.storage.test');
-            Route::post('system/settings/storage/locations', [StorageLocationsController::class, 'store'])
+            Route::post('system/settings/storage/locations', [ExternalStorageSettingsController::class, 'store'])
                 ->middleware('password.confirm')->name('system-settings.storage.locations.store');
-            Route::patch('system/settings/storage/locations/{location}', [StorageLocationsController::class, 'updateLocation'])
+            Route::patch('system/settings/storage/locations/{location}', [ExternalStorageSettingsController::class, 'updateLocation'])
                 ->middleware('password.confirm')->name('system-settings.storage.locations.update');
-            Route::delete('system/settings/storage/locations/{location}', [StorageLocationsController::class, 'destroy'])
+            Route::delete('system/settings/storage/locations/{location}', [ExternalStorageSettingsController::class, 'destroy'])
                 ->middleware('password.confirm')->name('system-settings.storage.locations.destroy');
         });
 

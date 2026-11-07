@@ -90,7 +90,7 @@ test('apply() still configures the secret it no longer caches', function () {
     expect(config("filesystems.disks.{$location->disk}.secret"))->toBe('super-secret-access-key');
 });
 
-test('apply() is a no-op when not fully configured', function () {
+test('apply() leaves a bucket that is not fully configured unregistered', function () {
     $location = bucketLocation();
     DB::table('storage_locations')->where('id', $location->id)->update(['secret' => null]);
 
@@ -158,7 +158,7 @@ test('new uploads stay on the local disk while it is the default, and go to a bu
         ->and(resolvedDiskFor(User::factory()->client()->create()))->toBe($location->disk);
 });
 
-test('a real upload lands on the external disk once the backend is active, and local uploads made before activation are unaffected', function () {
+test('a real upload lands on the bucket once it is the default, and local uploads made before are unaffected', function () {
     Storage::fake('files');
 
     uploadImageFile($this->admin);
@@ -178,8 +178,8 @@ test('a real upload lands on the external disk once the backend is active, and l
         ->and($externalFile->disk)->toBe($location->disk);
     Storage::disk($location->disk)->assertExists($externalFile->path);
 
-    // The first file, uploaded before activation, still resolves to local
-    // disk and is unaffected by the backend switch (no migration tool).
+    // The first file, uploaded before the switch, still resolves to local
+    // disk and is unaffected by it (no migration tool).
     Storage::disk('files')->assertExists($localFile->refresh()->path);
     expect($localFile->disk)->toBe('files');
 });
@@ -254,6 +254,27 @@ test('an upload still reaches the external disk while the schema is mid-upgrade'
     expect(resolvedDiskFor($this->admin))->toBe('files_external');
 });
 
+test('before the storage locations migration, the old external storage row is read as before', function () {
+    // Boot happens before `artisan migrate`, so every upgrade passes
+    // through a window where this code meets the previous schema. Files
+    // already in the bucket must keep resolving, and new uploads must not
+    // quietly start landing on the local disk.
+    withoutStorageLocationsTable();
+    ExternalStorageSettings::query()->create([
+        'active' => true,
+        'key' => 'AKIAEXAMPLE',
+        'secret' => 'shh',
+        'bucket' => 'my-bucket',
+        'region' => 'us-east-1',
+    ]);
+
+    applyStorage();
+
+    expect(config('filesystems.disks.files_external.bucket'))->toBe('my-bucket')
+        ->and(config('filesystems.disks.files_external.secret'))->toBe('shh')
+        ->and(resolvedDiskFor($this->admin))->toBe('files_external');
+});
+
 test('the migration carries the old row over on its own disk name, as the default only if it was switched on', function (bool $active) {
     resetStorageLocationsMigration(function () use ($active): void {
         ExternalStorageSettings::query()->create([
@@ -279,6 +300,29 @@ test('the migration carries the old row over on its own disk name, as the defaul
         ->and($bucket->is_default)->toBe($active)
         ->and($local->is_default)->toBe(! $active);
 })->with(['switched on' => true, 'switched off' => false]);
+
+test('the migration does not leave the pre-migration picture in the boot cache', function () {
+    // The real upgrade: the `migrate` process boots first, against the old
+    // schema, and caches what it sees there. Nobody flushes afterwards.
+    withoutStorageLocationsTable();
+    ExternalStorageSettings::query()->create([
+        'active' => false,
+        'key' => 'AKIAEXAMPLE',
+        'secret' => 'shh',
+        'bucket' => 'my-bucket',
+        'region' => 'us-east-1',
+    ]);
+    app(ExternalStorageConfigApplier::class)->apply();
+
+    $migration = require database_path('migrations/2026_10_09_090000_create_storage_locations_tables.php');
+    $migration->up();
+
+    // The next process boots on whatever the cache now holds.
+    app(ExternalStorageConfigApplier::class)->apply();
+
+    expect(array_column(app(ExternalStorageConfigApplier::class)->externalLocations(), 'disk'))->toContain('files_external')
+        ->and(config('filesystems.disks.files_external.bucket'))->toBe('my-bucket');
+});
 
 // ---- Where a client's uploads go ---------------------------------------
 

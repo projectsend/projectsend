@@ -28,14 +28,6 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 
-/*
- * Storage locations (Settings → Storage): the server's own disk plus any
- * number of buckets, which of them new uploads go to by default, and the
- * ones a client's uploads go to instead. Carried over from the single
- * external storage row this replaced, whose guarantees all still hold
- * per location.
- */
-
 beforeEach(function () {
     $this->admin = User::factory()->create();
 });
@@ -59,9 +51,9 @@ test('the secret is encrypted at rest', function () {
 });
 
 test('the secret never reaches the cache store', function () {
-    // The column above is only half the promise: the applier caches the
-    // locations forever on every process boot, and a cache store encrypts
-    // nothing. See the same pair in MailProviderSettingsTest.
+    // The column above is only half the promise: this class caches its
+    // resolved settings forever on every process boot, and a cache store
+    // encrypts nothing. See the same pair in MailProviderSettingsTest.
     bucketLocation(['secret' => 'super-secret-access-key']);
 
     Cache::flush();
@@ -89,6 +81,8 @@ test('the secret never reaches the database cache store either', function () {
 });
 
 test('apply() still configures the secret it no longer caches', function () {
+    // The other half: keeping the credential out of the cache must not
+    // stop the disk from being configured with it.
     $location = bucketLocation(['secret' => 'super-secret-access-key']);
 
     applyStorage();
@@ -96,7 +90,7 @@ test('apply() still configures the secret it no longer caches', function () {
     expect(config("filesystems.disks.{$location->disk}.secret"))->toBe('super-secret-access-key');
 });
 
-test('a bucket missing its credentials is not registered', function () {
+test('apply() is a no-op when not fully configured', function () {
     $location = bucketLocation();
     DB::table('storage_locations')->where('id', $location->id)->update(['secret' => null]);
 
@@ -115,7 +109,8 @@ test('apply() registers a disk for every configured bucket', function () {
         'use_path_style' => true,
         'root' => 'projectsend',
     ]);
-    $aws = bucketLocation(['bucket' => 'other-bucket', 'region' => 'eu-central-1']);
+    // Registered even while it takes no uploads, so its files keep downloading.
+    $aws = bucketLocation(['bucket' => 'other-bucket', 'region' => 'eu-central-1', 'accepts_uploads' => false]);
 
     applyStorage();
 
@@ -128,14 +123,6 @@ test('apply() registers a disk for every configured bucket', function () {
         ->and(config("filesystems.disks.{$minio->disk}.root"))->toBe('projectsend')
         ->and(config("filesystems.disks.{$minio->disk}.throw"))->toBeFalse()
         ->and(config("filesystems.disks.{$aws->disk}.bucket"))->toBe('other-bucket');
-});
-
-test('a bucket that stopped taking uploads is still registered, so its files keep downloading', function () {
-    $location = bucketLocation(['accepts_uploads' => false]);
-
-    applyStorage();
-
-    expect(config("filesystems.disks.{$location->disk}.bucket"))->toBe('my-bucket');
 });
 
 test('a folder inside the bucket does not break the disk it belongs to', function () {
@@ -159,21 +146,17 @@ test('a folder inside the bucket does not break the disk it belongs to', functio
     expect(Storage::disk($location->disk)->path('report.pdf'))->toBeString();
 });
 
-test('new uploads stay on the local disk while it is the default', function () {
-    bucketLocation();
-    app(ExternalStorageConfigApplier::class)->flush();
+test('new uploads stay on the local disk while it is the default, and go to a bucket once that is', function () {
+    $location = bucketLocation();
 
     expect(resolvedDiskFor($this->admin))->toBe('files');
-});
 
-test('new uploads go to the default bucket once it is the default', function () {
-    $location = bucketLocation();
     makeDefault($location);
 
     expect(resolvedDiskFor($this->admin))->toBe($location->disk);
 });
 
-test('a real upload lands on the default bucket, and files uploaded before stay where they are', function () {
+test('a real upload lands on the external disk once the backend is active, and local uploads made before activation are unaffected', function () {
     Storage::fake('files');
 
     uploadImageFile($this->admin);
@@ -193,8 +176,8 @@ test('a real upload lands on the default bucket, and files uploaded before stay 
         ->and($externalFile->disk)->toBe($location->disk);
     Storage::disk($location->disk)->assertExists($externalFile->path);
 
-    // The first file still resolves to local disk: there is no migration
-    // tool between locations.
+    // The first file, uploaded before activation, still resolves to local
+    // disk and is unaffected by the backend switch (no migration tool).
     Storage::disk('files')->assertExists($localFile->refresh()->path);
     expect($localFile->disk)->toBe('files');
 });
@@ -216,9 +199,9 @@ test('apply() supplies no credentials at all when authenticating as the server r
 });
 
 test('a leftover stored secret is never applied once the server role is authenticating', function () {
-    // Written straight here, bypassing the controller that clears the
-    // credential — the runtime must not fall back to a secret it was told
-    // to stop using.
+    // The row is written straight here, bypassing the controller that
+    // clears the credential — the runtime must not fall back to a secret
+    // it was told to stop using.
     $location = bucketLocation(['use_instance_role' => true, 'key' => 'AKIALEFTOVER', 'secret' => 'leftover-secret']);
 
     applyStorage();
@@ -227,42 +210,20 @@ test('a leftover stored secret is never applied once the server role is authenti
         ->and(config("filesystems.disks.{$location->disk}.secret"))->toBeNull();
 });
 
-test('new uploads go to a server-role bucket with no stored credentials', function () {
-    // The silent failure this guards: isConfigured() demanding a key and a
-    // secret would leave the bucket "unconfigured" forever, and every upload
-    // would keep landing on the local disk without saying so.
+test('new uploads go to the external disk with no stored credentials when the server role is authenticating', function () {
+    // The silent failure this guards: isConfigured() demanding a key and
+    // a secret would leave the disk "unconfigured" forever, and every
+    // upload would keep landing on the local disk without saying so.
     $location = bucketLocation(['use_instance_role' => true, 'key' => null, 'secret' => null]);
     makeDefault($location);
 
     expect(resolvedDiskFor($this->admin))->toBe($location->disk);
 });
 
-test('before the storage locations migration, the old external storage row is read as before', function () {
-    // Boot happens before `artisan migrate`, so every upgrade passes
-    // through a window where this code meets the previous schema. Files
-    // already in the bucket must keep resolving, and new uploads must not
-    // quietly start landing on the local disk.
-    withoutStorageLocationsTable();
-    ExternalStorageSettings::query()->create([
-        'active' => true,
-        'key' => 'AKIAEXAMPLE',
-        'secret' => 'shh',
-        'bucket' => 'my-bucket',
-        'region' => 'us-east-1',
-    ]);
-
-    applyStorage();
-
-    expect(config('filesystems.disks.files_external.bucket'))->toBe('my-bucket')
-        ->and(config('filesystems.disks.files_external.secret'))->toBe('shh')
-        ->and(resolvedDiskFor($this->admin))->toBe('files_external');
-});
-
 test('booting against a row older than the provider column does not throw', function () {
     // #1770. The exact shape of a 2.0/2.1 install with S3 configured,
-    // upgrading straight to this release: the code is new, the schema is
-    // two migrations old, and boot happens before `artisan migrate` gets a
-    // chance to run.
+    // upgrading to 2.2 or later: the code is new, the schema is still old,
+    // and boot happens before `artisan migrate` gets a chance to run.
     //
     // The failure this pins was not a wrong answer but a fatal one — an
     // UnhandledMatchError on a null provider, thrown during
@@ -270,7 +231,6 @@ test('booting against a row older than the provider column does not throw', func
     // command including the one that would have added the column. The
     // official image reported it as "database unreachable" and
     // restart-looped.
-    withoutStorageLocationsTable();
     legacyStorageRow();
 
     applyStorage();
@@ -279,14 +239,23 @@ test('booting against a row older than the provider column does not throw', func
     // have been — and is what the migration's own default says.
     expect(config('filesystems.disks.files_external.bucket'))->toBe('my-bucket')
         ->and(config('filesystems.disks.files_external.key'))->toBe('AKIAEXAMPLE')
-        ->and(config('filesystems.disks.files_external.driver'))->toBe('s3')
-        ->and(resolvedDiskFor($this->admin))->toBe('files_external');
+        ->and(config('filesystems.disks.files_external.secret'))->toBe('shh')
+        ->and(config('filesystems.disks.files_external.driver'))->toBe('s3');
 });
 
-test('the migration carries the old row over on its own disk name, as the default when it was switched on', function () {
-    resetStorageLocationsMigration(function (): void {
+test('an upload still reaches the external disk while the schema is mid-upgrade', function () {
+    // The other half: not throwing is not the same as behaving. An
+    // installation that was storing files in a bucket before the upgrade
+    // must not quietly start writing them to local disk during it.
+    legacyStorageRow();
+
+    expect(resolvedDiskFor($this->admin))->toBe('files_external');
+});
+
+test('the migration carries the old row over on its own disk name, as the default only if it was switched on', function (bool $active) {
+    resetStorageLocationsMigration(function () use ($active): void {
         ExternalStorageSettings::query()->create([
-            'active' => true,
+            'active' => $active,
             'provider' => 's3',
             'key' => 'AKIAEXAMPLE',
             'secret' => 'shh',
@@ -296,6 +265,8 @@ test('the migration carries the old row over on its own disk name, as the defaul
         ]);
     });
 
+    // Carried over even when it was off: files can be in it from when it
+    // last was on.
     $bucket = StorageLocation::query()->where('disk', 'files_external')->firstOrFail();
     $local = StorageLocation::query()->where('disk', 'files')->firstOrFail();
 
@@ -303,25 +274,9 @@ test('the migration carries the old row over on its own disk name, as the defaul
         ->and($bucket->root)->toBe('clients')
         // Copied as stored, and still readable with the same key.
         ->and($bucket->secret)->toBe('shh')
-        ->and($bucket->is_default)->toBeTrue()
-        ->and($local->is_default)->toBeFalse();
-});
-
-test('the migration keeps the server disk as the default when the old bucket was switched off', function () {
-    resetStorageLocationsMigration(function (): void {
-        ExternalStorageSettings::query()->create([
-            'active' => false,
-            'key' => 'AKIAEXAMPLE',
-            'secret' => 'shh',
-            'bucket' => 'my-bucket',
-            'region' => 'us-east-1',
-        ]);
-    });
-
-    // Carried over anyway: files can be in it from when it last was on.
-    expect(StorageLocation::query()->where('disk', 'files_external')->value('is_default'))->toBeFalse()
-        ->and(StorageLocation::query()->where('disk', 'files')->value('is_default'))->toBeTrue();
-});
+        ->and($bucket->is_default)->toBe($active)
+        ->and($local->is_default)->toBe(! $active);
+})->with(['switched on' => true, 'switched off' => false]);
 
 // ---- Where a client's uploads go ---------------------------------------
 
@@ -367,8 +322,7 @@ test('staff always use the default, whatever is assigned to clients', function (
 
 test('a client chooses one of their own locations when the upload starts, and the bytes go there', function () {
     Storage::fake('files');
-    $client = User::factory()->client()->create();
-    grantStorageClientUpload($client);
+    $client = uploadingClient();
     $first = bucketLocation(['name' => 'First']);
     $second = bucketLocation(['name' => 'Second']);
     assignLocations($client, [$first, $second]);
@@ -385,8 +339,7 @@ test('a client chooses one of their own locations when the upload starts, and th
 });
 
 test('a client cannot choose a location that is not theirs', function () {
-    $client = User::factory()->client()->create();
-    grantStorageClientUpload($client);
+    $client = uploadingClient();
     $theirs = bucketLocation();
     $notTheirs = bucketLocation();
     assignLocations($client, [$theirs]);
@@ -401,8 +354,7 @@ test('a client cannot choose a location that is not theirs', function () {
 });
 
 test('the client upload page lists their usable locations, the preferred first, without the bucket', function () {
-    $client = User::factory()->client()->create();
-    grantStorageClientUpload($client);
+    $client = uploadingClient();
     $eu = bucketLocation(['name' => 'Client archive (EU)', 'client_note' => 'Kept in Frankfurt']);
     $local = StorageLocation::query()->where('disk', 'files')->firstOrFail();
     assignLocations($client, [$eu, $local]);
@@ -456,8 +408,8 @@ test('saving a client without the list leaves their locations alone', function (
 
 // ---- Settings → Storage --------------------------------------------------
 
-test('an administrator adds a bucket, which gets a disk of its own', function () {
-    $this->actingAs($this->admin)->post(route('system-settings.storage.locations.store'), validLocationPayload([
+test('staff can add a bucket, which gets a disk of its own', function () {
+    $this->actingAs($this->admin)->post('/system/settings/storage/locations', validStorageSettingsPayload([
         'name' => 'Media vault',
         'access_key' => 'AKIANEW',
         'bucket' => 'media',
@@ -471,10 +423,10 @@ test('an administrator adds a bucket, which gets a disk of its own', function ()
         ->and(config("filesystems.disks.{$location->disk}.bucket"))->toBe('media');
 });
 
-test('saving a bucket with a blank secret keeps the stored one', function () {
+test('saving with a blank secret keeps the previously stored secret', function () {
     $location = bucketLocation(['secret' => 'first-secret']);
 
-    $this->actingAs($this->admin)->patch(route('system-settings.storage.locations.update', $location), validLocationPayload([
+    $this->actingAs($this->admin)->patch("/system/settings/storage/locations/{$location->id}", validStorageSettingsPayload([
         'secret' => '',
         'bucket' => 'renamed-bucket',
     ]))->assertSessionHasNoErrors();
@@ -487,45 +439,37 @@ test('saving a bucket with a blank secret keeps the stored one', function () {
 test('saving with the server role asked for needs no access key, and deletes the stored credentials', function () {
     $location = bucketLocation();
 
-    $payload = validLocationPayload(['use_instance_role' => true]);
+    $payload = validStorageSettingsPayload(['use_instance_role' => true]);
     unset($payload['access_key'], $payload['secret']);
 
-    $this->actingAs($this->admin)->patch(route('system-settings.storage.locations.update', $location), $payload)
+    $this->actingAs($this->admin)->patch("/system/settings/storage/locations/{$location->id}", $payload)
         ->assertSessionHasNoErrors();
 
     $location->refresh();
     expect($location->use_instance_role)->toBeTrue()
         ->and($location->key)->toBeNull()
         ->and($location->secret)->toBeNull()
-        ->and($location->isConfigured())->toBeTrue()
-        // And nothing is left in the row for a database dump to carry.
-        ->and(DB::table('storage_locations')->where('id', $location->id)->value('secret'))->toBeNull();
+        ->and($location->isConfigured())->toBeTrue();
+
+    // And nothing is left in the row for a database dump to carry.
+    expect(DB::table('storage_locations')->where('id', $location->id)->value('secret'))->toBeNull();
 });
 
 test('an access key is still required when it is missing rather than blank', function () {
     // Not the same case as an empty string: a validation rule that only
     // runs on a present attribute would let this through.
-    $payload = validLocationPayload();
+    $payload = validStorageSettingsPayload();
     unset($payload['access_key']);
 
-    $this->actingAs($this->admin)->post(route('system-settings.storage.locations.store'), $payload)
+    $this->actingAs($this->admin)->post('/system/settings/storage/locations', $payload)
         ->assertSessionHasErrors(['access_key']);
 });
 
 test('a new bucket without a secret is refused rather than saved unusable', function () {
-    $this->actingAs($this->admin)->post(route('system-settings.storage.locations.store'), validLocationPayload(['secret' => '']))
+    $this->actingAs($this->admin)->post('/system/settings/storage/locations', validStorageSettingsPayload(['secret' => '']))
         ->assertSessionHasErrors(['secret']);
 
     expect(StorageLocation::query()->count())->toBe(1);
-});
-
-test('saving a location rejects invalid input', function () {
-    $this->actingAs($this->admin)->post(route('system-settings.storage.locations.store'), validLocationPayload([
-        'name' => '',
-        'access_key' => '',
-        'bucket' => '',
-        'region' => '',
-    ]))->assertSessionHasErrors(['name', 'access_key', 'bucket', 'region']);
 });
 
 test('the connection test runs without an access key when the server role is authenticating', function () {
@@ -542,7 +486,7 @@ test('the connection test runs without an access key when the server role is aut
     putenv('AWS_SECRET_ACCESS_KEY=env-secret');
 
     try {
-        $response = $this->actingAs($this->admin)->post(route('system-settings.storage.test'), [
+        $response = $this->actingAs($this->admin)->post('/system/settings/storage/test', [
             'provider' => 's3',
             'use_instance_role' => true,
             'bucket' => 'my-bucket',
@@ -560,10 +504,19 @@ test('the connection test runs without an access key when the server role is aut
     }
 });
 
-test('saving a location signals the queue worker to restart', function () {
+test('saving external storage settings rejects invalid input', function () {
+    $this->actingAs($this->admin)->post('/system/settings/storage/locations', validStorageSettingsPayload([
+        'name' => '',
+        'access_key' => '',
+        'bucket' => '',
+        'region' => '',
+    ]))->assertSessionHasErrors(['name', 'access_key', 'bucket', 'region']);
+});
+
+test('saving external storage settings signals the queue worker to restart', function () {
     Cache::forget('illuminate:queue:restart');
 
-    $this->actingAs($this->admin)->post(route('system-settings.storage.locations.store'), validLocationPayload());
+    $this->actingAs($this->admin)->post('/system/settings/storage/locations', validStorageSettingsPayload());
 
     expect(Cache::get('illuminate:queue:restart'))->not->toBeNull();
 });
@@ -571,7 +524,7 @@ test('saving a location signals the queue worker to restart', function () {
 test('the default can be moved to a bucket, and only one location is ever the default', function () {
     $location = bucketLocation();
 
-    $this->actingAs($this->admin)->patch(route('system-settings.storage.update'), [
+    $this->actingAs($this->admin)->patch('/system/settings/storage', [
         'default_location_id' => $location->id,
         'upload_notification_names_location' => false,
     ])->assertSessionHasNoErrors();
@@ -582,7 +535,7 @@ test('the default can be moved to a bucket, and only one location is ever the de
 test('a location that is not taking uploads cannot be the default', function () {
     $location = bucketLocation(['accepts_uploads' => false]);
 
-    $this->actingAs($this->admin)->patch(route('system-settings.storage.update'), [
+    $this->actingAs($this->admin)->patch('/system/settings/storage', [
         'default_location_id' => $location->id,
         'upload_notification_names_location' => false,
     ])->assertSessionHasErrors(['default_location_id']);
@@ -592,47 +545,43 @@ test('the default cannot stop taking uploads', function () {
     $location = bucketLocation();
     makeDefault($location);
 
-    $this->actingAs($this->admin)->patch(route('system-settings.storage.locations.update', $location), validLocationPayload([
+    $this->actingAs($this->admin)->patch("/system/settings/storage/locations/{$location->id}", validStorageSettingsPayload([
         'accepts_uploads' => false,
     ]))->assertSessionHasErrors(['accepts_uploads']);
 
     expect($location->fresh()->accepts_uploads)->toBeTrue();
 });
 
-test('a location still holding files cannot be removed, an empty one can', function () {
+test('a location still holding files cannot be removed, an empty one can, the server disk never', function () {
     $full = bucketLocation();
     $empty = bucketLocation();
     File::factory()->create(['disk' => $full->disk, 'uploaded_by' => $this->admin->id]);
+    $local = StorageLocation::query()->where('disk', 'files')->firstOrFail();
 
-    $this->actingAs($this->admin)->delete(route('system-settings.storage.locations.destroy', $full))
+    $this->actingAs($this->admin)->delete("/system/settings/storage/locations/{$full->id}")
         ->assertSessionHasErrors(['location']);
-    $this->actingAs($this->admin)->delete(route('system-settings.storage.locations.destroy', $empty))
+    $this->actingAs($this->admin)->delete("/system/settings/storage/locations/{$empty->id}")
         ->assertSessionHasNoErrors();
+    $this->actingAs($this->admin)->delete("/system/settings/storage/locations/{$local->id}")
+        ->assertStatus(422);
 
     expect(StorageLocation::query()->find($full->id))->not->toBeNull()
         ->and(StorageLocation::query()->find($empty->id))->toBeNull();
 });
 
-test('the server disk cannot be removed', function () {
-    $local = StorageLocation::query()->where('disk', 'files')->firstOrFail();
-
-    $this->actingAs($this->admin)->delete(route('system-settings.storage.locations.destroy', $local))
-        ->assertStatus(422);
-});
-
-test('the storage screen never hands back a secret or key file', function () {
+test('the storage screen never hands back a secret', function () {
     bucketLocation(['secret' => 'super-secret-access-key']);
 
-    $this->actingAs($this->admin)->get(route('system-settings.storage.edit'))
+    $this->actingAs($this->admin)->get('/system/settings/storage')
         ->assertInertia(fn ($page) => $page
             ->where('locations.1.has_secret', true)
             ->missing('locations.1.secret'))
         ->assertDontSee('super-secret-access-key');
 });
 
-test('clients cannot change storage locations', function () {
+test('clients cannot save external storage settings', function () {
     $this->actingAs(User::factory()->client()->create())
-        ->post(route('system-settings.storage.locations.store'), validLocationPayload())
+        ->post('/system/settings/storage/locations', validStorageSettingsPayload())
         ->assertForbidden();
 });
 
@@ -641,12 +590,14 @@ test('the entire storage settings surface is unavailable in the cloud edition', 
     $this->actingAs($this->admin);
 
     $this->get('/system/settings/storage')->assertNotFound();
-    $this->post('/system/settings/storage/locations', validLocationPayload())->assertNotFound();
+    $this->post('/system/settings/storage/locations', validStorageSettingsPayload())->assertNotFound();
 });
 
-test('cloud edition never honors a stored bucket, even one written outside the form', function () {
+test('cloud edition never honors a stored external storage backend, even one written outside the form', function () {
     config()->set('projectsend.edition', Edition::Cloud);
 
+    // Simulate a stray/legacy row, bypassing the controller entirely —
+    // the runtime gate must hold regardless of how it got there.
     $client = User::factory()->client()->create();
     $location = bucketLocation(['key' => 'AKIASTRAY', 'secret' => 'stray-secret', 'bucket' => 'stray-bucket']);
     makeDefault($location);
@@ -657,15 +608,14 @@ test('cloud edition never honors a stored bucket, even one written outside the f
 });
 
 test('a value cached while running as Community cannot leak into Cloud without an explicit flush', function () {
-    // Warm the cache while Community is active and the bucket is the
-    // default — nothing besides saving the storage screen ever calls
-    // flush(), so switching editions alone must not be enough to keep the
-    // old behavior alive.
+    // Warm the cache while Community is active and the backend is fully
+    // configured — this is the exact scenario found manually: nothing
+    // besides saving the settings form ever calls flush(), so switching
+    // editions alone must not be enough to keep the old behavior alive.
     config()->set('projectsend.edition', Edition::Community);
 
     $location = bucketLocation();
     makeDefault($location);
-    app(ExternalStorageConfigApplier::class)->apply();
 
     expect(config("filesystems.disks.{$location->disk}.bucket"))->toBe('my-bucket');
 
@@ -689,8 +639,7 @@ test('the client upload email names the location only when the setting is on', f
     app(Settings::class)->set(Setting::AdminNotificationEmails, ['ops@example.com']);
     app(Settings::class)->set(Setting::UploadNotificationNamesLocation, $on);
 
-    $client = User::factory()->client()->create();
-    grantStorageClientUpload($client);
+    $client = uploadingClient();
     $eu = bucketLocation(['name' => 'Client archive (EU)']);
     assignLocations($client, [$eu]);
     applyStorage();
@@ -733,8 +682,6 @@ test('the orphan scanner looks in every bucket, under the name it was given', fu
         ->and($disks[$a->disk])->toBe(['label' => 'Archive', 'location' => 's3://archive'])
         ->and($disks[$b->disk]['location'])->toBe('s3://media');
 });
-
-// ---- Helpers -------------------------------------------------------------
 
 /**
  * A configured S3 bucket location, saved and flushed into the applier's
@@ -795,23 +742,26 @@ function resolvedDiskFor(User $uploader, ?int $requestedLocationId = null): stri
     return $event->disk;
 }
 
-function grantStorageClientUpload(User $client): void
+function uploadingClient(): User
 {
+    $client = User::factory()->client()->create();
     RolePermission::query()->firstOrCreate(['role_id' => $client->role_id, 'permission' => Permission::Upload->value]);
+
+    return $client;
 }
 
 /** @param  array<string, mixed>  $session */
-function uploadChunkedAsClient(array $session = [], string $content = 'hello-world'): TestResponse
+function uploadChunkedAsClient(array $session = []): TestResponse
 {
     $id = test()->postJson('/uploads', [
         'filename' => 'statement.pdf',
-        'size' => strlen($content),
+        'size' => 11,
         'type' => 'application/pdf',
         ...$session,
     ])->assertOk()->json('uploadId');
 
     $sign = test()->getJson("/uploads/{$id}/parts/1/sign")->assertOk()->json('url');
-    test()->call('PUT', $sign, [], [], [], ['CONTENT_TYPE' => 'application/octet-stream'], $content);
+    test()->call('PUT', $sign, [], [], [], ['CONTENT_TYPE' => 'application/octet-stream'], 'hello-world');
 
     return test()->postJson("/uploads/{$id}/complete");
 }
@@ -829,27 +779,6 @@ function clientUpdatePayload(User $client, array $overrides = []): array
         'storage_quota_mb' => null,
         ...$overrides,
     ];
-}
-
-/**
- * @param  array<string, mixed>  $overrides
- * @return array<string, mixed>
- */
-function validLocationPayload(array $overrides = []): array
-{
-    return array_merge([
-        'name' => 'Client archive (EU)',
-        'client_note' => null,
-        'accepts_uploads' => true,
-        'provider' => 's3',
-        'access_key' => 'AKIAEXAMPLE',
-        'secret' => 'shh',
-        'bucket' => 'my-bucket',
-        'region' => 'us-east-1',
-        'endpoint' => null,
-        'use_path_style' => false,
-        'root' => null,
-    ], $overrides);
 }
 
 /** The schema as it was before the storage locations migration. */
@@ -883,13 +812,16 @@ function resetStorageLocationsMigration(Closure $before): void
 
 /**
  * An external storage row exactly as 2.0/2.1 wrote it: S3 credentials in
- * place, and none of the columns added since.
+ * place, and none of the columns added since. Also from before the
+ * storage locations, so it is the row the applier reads.
  *
  * Written with the query builder and then stripped back, rather than
  * hand-rolled SQL, so it stays honest if the table changes shape again.
  */
 function legacyStorageRow(): void
 {
+    withoutStorageLocationsTable();
+
     DB::table('external_storage_settings')->insert([
         'active' => true,
         'key' => 'AKIAEXAMPLE',
@@ -902,4 +834,23 @@ function legacyStorageRow(): void
     Schema::table('external_storage_settings', function (Blueprint $table) {
         $table->dropColumn(['provider', 'key_file', 'use_instance_role']);
     });
+}
+
+/**
+ * @param  array<string, mixed>  $overrides
+ * @return array<string, mixed>
+ */
+function validStorageSettingsPayload(array $overrides = []): array
+{
+    return array_merge([
+        'name' => 'Client archive (EU)',
+        'accepts_uploads' => true,
+        'access_key' => 'AKIAEXAMPLE',
+        'secret' => 'shh',
+        'bucket' => 'my-bucket',
+        'region' => 'us-east-1',
+        'endpoint' => null,
+        'use_path_style' => false,
+        'root' => null,
+    ], $overrides);
 }

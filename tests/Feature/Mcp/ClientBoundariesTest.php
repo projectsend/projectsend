@@ -171,3 +171,35 @@ it('still lets a client that can upload store a file', function (): void {
     expect(McpWorld::error($answer))->toBeNull()
         ->and(File::query()->count())->toBe(1);
 });
+
+/*
+ * OwnFileDownloads: a client is told the downloads of their own uploads
+ * only. On a file shared with several clients the count is the others'
+ * activity. list_files and get_file told it anyway.
+ */
+it('gives a client no download numbers on a file only shared with them', function (): void {
+    $alice = McpWorld::client();
+    $bob = McpWorld::clientAccount('bob@example.test', 'Bob');
+    $file = McpWorld::file($this->admin, ['name' => 'for-both']);
+    boundaryShare($file, $alice);
+    boundaryShare($file, $bob);
+    ActivityLog::query()->create(['actor_id' => $bob->id, 'actor_name' => 'Bob', 'action' => 'file.downloaded', 'origin' => 'ui', 'subject_type' => $file->getMorphClass(), 'subject_id' => $file->id, 'subject_name' => 'for-both', 'created_at' => now()]);
+
+    $listed = McpWorld::call(ListFiles::class, [], $alice);
+    $got = McpWorld::call(GetFile::class, ['file_id' => $file->id], $alice);
+
+    expect($listed['files'][0]['downloads_count'])->toBeNull()
+        ->and($got['downloads'])->toBeNull();
+});
+
+it('still gives a client the download numbers of their own upload', function (): void {
+    $alice = McpWorld::client();
+    $file = McpWorld::file($alice, ['name' => 'mine']);
+    ActivityLog::query()->create(['actor_id' => null, 'actor_name' => null, 'action' => 'share_link.downloaded', 'origin' => 'ui', 'subject_type' => $file->getMorphClass(), 'subject_id' => $file->id, 'subject_name' => 'mine', 'created_at' => now()]);
+
+    $listed = McpWorld::call(ListFiles::class, [], $alice);
+    $got = McpWorld::call(GetFile::class, ['file_id' => $file->id], $alice);
+
+    expect($listed['files'][0]['downloads_count'])->toBe(1)
+        ->and($got['downloads']['total'])->toBe(1);
+});

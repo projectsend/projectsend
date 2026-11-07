@@ -100,7 +100,10 @@ class ListFiles extends ToolBase
 
             $files[] = Presenter::file($file, $account) + [
                 'link' => $link === null ? null : Presenter::link($link),
-                'downloads_count' => Files::downloadsCount($file),
+                // A client is told the downloads of their own uploads only,
+                // as OwnFileDownloads tells them on the web: on a file shared
+                // with several clients the count is the others' activity.
+                'downloads_count' => $account->isClient() && ! Files::isOwnedBy($file, $account) ? null : Files::downloadsCount($file),
                 'shared_with_count' => $account->isClient() ? 0 : (int) ($file->getAttribute('assignments_count') ?? 0),
             ];
         }

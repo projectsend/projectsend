@@ -51,7 +51,8 @@ class GetFile extends ToolBase
 
         $id = (int) $file->getAttribute('id');
         $links = array_values(array_filter(Files::links($file, $account), fn (ShareLink $link): bool => $link->isActive()));
-        $downloads = self::downloads($file);
+        // Own uploads only for a client, as list_files and OwnFileDownloads.
+        $downloads = $account->isClient() && ! Files::isOwnedBy($file, $account) ? null : self::downloads($file);
 
         // Reading the file and being told who a client is are two
         // questions (GHSA-9rch-3cmp-whh4). A client-scoped staff member

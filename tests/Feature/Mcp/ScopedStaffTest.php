@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Models\User;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\FileAssignment;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Mcp\ProjectSendServer;
@@ -188,4 +190,68 @@ it('still names every recipient for unscoped staff', function (): void {
 
     expect($got['file']['uploaded_by'])->toBe(['name' => 'Globex'])
         ->and(array_column($got['shared_with']['clients'], 'name'))->toEqualCanonicalizing(['Acme Ltd', 'Globex']);
+});
+
+/*
+ * Sign-in times and downloads come from the activity log. The web's client
+ * screens show neither, and reading the log needs view_actions_log. The
+ * client tools used to read it with edit_clients or manage_clients alone,
+ * and without the log page's scope.
+ */
+function clientActivity(User $client, ?File $file = null): void
+{
+    ActivityLog::query()->create(['actor_id' => $client->id, 'actor_name' => $client->name, 'actor_type' => 'client', 'action' => 'auth.login', 'origin' => 'ui', 'subject_type' => $client->getMorphClass(), 'subject_id' => $client->id, 'subject_name' => $client->name, 'created_at' => now()]);
+
+    if ($file !== null) {
+        ActivityLog::query()->create(['actor_id' => $client->id, 'actor_name' => $client->name, 'actor_type' => 'client', 'action' => 'file.downloaded', 'origin' => 'ui', 'subject_type' => $file->getMorphClass(), 'subject_id' => $file->id, 'subject_name' => $file->name, 'created_at' => now()]);
+    }
+}
+
+it('tells staff without the log permission nothing from the activity log about a client', function (): void {
+    $staff = McpWorld::staff(permissions: ['manage_clients', 'edit_clients', 'upload']);
+    $acme = McpWorld::clientAccount();
+    $file = McpWorld::file($staff, ['name' => 'for-acme']);
+    shareFileWith($file, $acme);
+    clientActivity($acme, $file);
+
+    $got = McpWorld::call(GetClient::class, ['client_id' => $acme->id], $staff);
+    $listed = McpWorld::call(ListClients::class, [], $staff);
+
+    expect(McpWorld::error($got))->toBeNull()
+        ->and($got['recent_activity'])->toBe([])
+        ->and($got['files_shared']['latest'][0]['downloaded'])->toBeNull()
+        ->and($listed['clients'][0]['last_sign_in_at'])->toBeNull();
+
+    ProjectSendServer::actingAs($staff)->resource(Clients::class)
+        ->assertSee('Acme Ltd')
+        ->assertDontSee((string) now()->year.'-');
+});
+
+it('reads a scoped staff member only the client activity the log page shows them', function (): void {
+    $staff = McpWorld::staff();
+    $other = McpWorld::staff();
+    $acme = McpWorld::clientAccount();
+    McpWorld::scopeTo($staff, $acme);
+    $elsewhere = McpWorld::file($other, ['name' => 'outside-their-library']);
+    clientActivity($acme, $elsewhere);
+
+    $got = McpWorld::call(GetClient::class, ['client_id' => $acme->id], $staff);
+
+    expect(array_column($got['recent_activity'], 'action'))->toBe(['auth.login'])
+        ->and(json_encode($got))->not->toContain('outside-their-library');
+});
+
+it('still shows client activity to staff who may read the log', function (): void {
+    $staff = McpWorld::staff();
+    $acme = McpWorld::clientAccount();
+    $file = McpWorld::file($staff, ['name' => 'for-acme']);
+    shareFileWith($file, $acme);
+    clientActivity($acme, $file);
+
+    $got = McpWorld::call(GetClient::class, ['client_id' => $acme->id], $staff);
+    $listed = McpWorld::call(ListClients::class, [], $staff);
+
+    expect(array_column($got['recent_activity'], 'action'))->toEqualCanonicalizing(['auth.login', 'file.downloaded'])
+        ->and($got['files_shared']['latest'][0]['downloaded'])->toBeTrue()
+        ->and($listed['clients'][0]['last_sign_in_at'])->not->toBeNull();
 });

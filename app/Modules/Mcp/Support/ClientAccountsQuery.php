@@ -6,6 +6,7 @@ namespace App\Modules\Mcp\Support;
 
 use App\Models\User;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Audit\ActivityLogScope;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\FileAssignment;
 use Illuminate\Database\Eloquent\Builder;
@@ -44,16 +45,21 @@ final class ClientAccountsQuery
      * When each client last signed in, from the activity log, in one
      * query for the page rather than one per row.
      *
+     * A sign-in time comes from the activity log, so it is told only to
+     * somebody who may read the log (`view_actions_log`), through the log
+     * page's own scope. The web's client screens show no sign-in times at
+     * all; without this, `manage_clients` alone was enough.
+     *
      * @param  list<int>  $ids
      * @return array<int, string|null>
      */
-    public static function lastSignIns(array $ids): array
+    public static function lastSignIns(Account $account, array $ids): array
     {
-        if ($ids === []) {
+        if ($ids === [] || ! $account->can('view_actions_log')) {
             return [];
         }
 
-        $rows = ActivityLog::query()
+        $rows = app(ActivityLogScope::class)->apply(ActivityLog::query(), $account->user)
             ->where('action', 'auth.login')
             ->whereIn('actor_id', $ids)
             ->selectRaw('actor_id, max(created_at) as last_at')

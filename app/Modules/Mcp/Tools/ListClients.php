@@ -69,7 +69,7 @@ class ListClients extends ToolBase
         /** @var list<User> $rows */
         $rows = array_values($page->items());
         $ids = array_map(fn (User $c): int => (int) $c->getAttribute('id'), $rows);
-        $signIns = ClientAccountsQuery::lastSignIns($ids);
+        $signIns = ClientAccountsQuery::lastSignIns($account, $ids);
         $shared = ClientAccountsQuery::sharedCounts($ids);
 
         $clients = [];

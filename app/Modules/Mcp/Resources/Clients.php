@@ -45,7 +45,7 @@ class Clients extends Resource
 
         /** @var list<Model> $rows */
         $rows = array_values($query->limit(200)->get()->all());
-        $signIns = ClientAccountsQuery::lastSignIns(array_map(fn (Model $c): int => (int) $c->getAttribute('id'), $rows));
+        $signIns = ClientAccountsQuery::lastSignIns($account, array_map(fn (Model $c): int => (int) $c->getAttribute('id'), $rows));
 
         $clients = [];
 

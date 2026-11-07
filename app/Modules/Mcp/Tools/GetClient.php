@@ -6,6 +6,7 @@ namespace App\Modules\Mcp\Tools;
 
 use App\Models\User;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Audit\ActivityLogScope;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\FileAssignment;
@@ -81,8 +82,8 @@ class GetClient extends ToolBase
                     'expires_at' => Presenter::iso($client->getAttribute('expires_at')),
                 ],
                 'storage' => self::storage($client),
-                'files_shared' => self::filesShared($id),
-                'recent_activity' => self::recentActivity($id),
+                'files_shared' => self::filesShared($account, $id),
+                'recent_activity' => self::recentActivity($account, $id),
             ],
             Web::client($id),
             "send_file_to_client with client_id {$id} puts something in this account; get_download_status with client_id {$id} shows what they downloaded.",
@@ -108,10 +109,14 @@ class GetClient extends ToolBase
     }
 
     /**
-     * @return array{count: int, latest: list<array{id: int, name: string, shared_at: string|null, downloaded: bool}>}
+     * Whether each file was downloaded comes from the activity log, so it
+     * is null for somebody who may not read the log.
+     *
+     * @return array{count: int, latest: list<array{id: int, name: string, shared_at: string|null, downloaded: bool|null}>}
      */
-    private static function filesShared(int $clientId): array
+    private static function filesShared(Account $account, int $clientId): array
     {
+        $readsLog = $account->can('view_actions_log');
         $assignments = FileAssignment::query()
             ->where('assignable_type', ClientAccountsQuery::userMorph())
             ->where('assignable_id', $clientId)
@@ -129,11 +134,11 @@ class GetClient extends ToolBase
             }
 
             $fileId = (int) $file->getAttribute('id');
-            $downloaded = ActivityLog::query()
+            $downloaded = $readsLog ? ActivityLog::query()
                 ->where('action', 'file.downloaded')
                 ->where('actor_id', $clientId)
                 ->where('subject_id', $fileId)
-                ->exists();
+                ->exists() : null;
 
             $latest[] = [
                 'id' => $fileId,
@@ -149,9 +154,17 @@ class GetClient extends ToolBase
     /**
      * @return list<array{at: string|null, action: string, file: array{id: int, name: string|null}|null}>
      */
-    private static function recentActivity(int $clientId): array
+    private static function recentActivity(Account $account, int $clientId): array
     {
-        $rows = ActivityLog::query()
+        // The activity log, so only for somebody who may read it, and only
+        // what the log page would show them: a scoped staff member does not
+        // see a download of a file outside their library there, and is not
+        // told its name here. edit_clients alone used to be enough.
+        if (! $account->can('view_actions_log')) {
+            return [];
+        }
+
+        $rows = app(ActivityLogScope::class)->apply(ActivityLog::query(), $account->user)
             ->where('actor_id', $clientId)
             ->whereIn('action', ['auth.login', 'file.downloaded', 'file.previewed'])
             ->orderByDesc('created_at')

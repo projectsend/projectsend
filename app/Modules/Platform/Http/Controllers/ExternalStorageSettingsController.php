@@ -40,7 +40,7 @@ use Throwable;
  * no field-level split to do inside the controller). Cloud never reaches
  * this controller at all.
  */
-class StorageLocationsController extends Controller
+class ExternalStorageSettingsController extends Controller
 {
     public function __construct(
         private readonly ActivityLogger $activity,

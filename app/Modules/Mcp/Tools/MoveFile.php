@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Mcp\Tools;
 
 use App\Modules\Audit\Action;
-use App\Modules\Files\Models\Folder;
 use App\Modules\Mcp\Support\Account;
 use App\Modules\Mcp\Support\Audit;
 use App\Modules\Mcp\Support\Envelope;
@@ -91,7 +90,9 @@ class MoveFile extends ToolBase
 
         $fromId = $file->getAttribute('folder_id') === null ? null : (int) $file->getAttribute('folder_id');
         $toId = $destination === null ? null : (int) $destination->getAttribute('id');
-        $from = $fromId === null ? null : Folder::query()->whereKey($fromId)->first();
+        // Through the account's scope: the file is theirs to see, the folder
+        // it sat in need not be.
+        $from = $fromId === null ? null : Folders::find($account, $fromId);
         $moved = $fromId !== $toId;
 
         if ($moved) {
@@ -107,7 +108,7 @@ class MoveFile extends ToolBase
             Audit::log(Action::FileUpdated, $account, $file);
         }
 
-        $paths = Folders::paths(array_values(array_filter([$from, $destination], fn (?Model $folder): bool => $folder !== null)));
+        $paths = Folders::paths(array_values(array_filter([$from, $destination], fn (?Model $folder): bool => $folder !== null)), $account);
         $where = $destination === null ? 'the top level of the library' : '"'.(string) $destination->getAttribute('name').'"';
 
         return Envelope::success(

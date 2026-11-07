@@ -92,7 +92,7 @@ class ListFolders extends ToolBase
 
         /** @var list<Folder> $items */
         $items = array_values($page->items());
-        $paths = Folders::paths($parent === null ? $items : [...$items, $parent]);
+        $paths = Folders::paths($parent === null ? $items : [...$items, $parent], $account);
 
         $folders = array_map(fn (Folder $folder): array => Presenter::folder($folder, $paths) + [
             'folders_count' => (int) ($folder->getAttribute('children_count') ?? 0),

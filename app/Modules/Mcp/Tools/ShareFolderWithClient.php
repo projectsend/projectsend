@@ -102,7 +102,7 @@ class ShareFolderWithClient extends ToolBase
 
         return Envelope::success(
             [
-                'folder' => Presenter::folder($folder, Folders::paths([$folder])),
+                'folder' => Presenter::folder($folder, Folders::paths([$folder], $account)),
                 'client' => Presenter::client($client),
                 'already_shared' => ! $shared,
                 'notified' => $shared,

@@ -113,7 +113,7 @@ class CreateFolder extends ToolBase
 
         return Envelope::success(
             [
-                'folder' => Presenter::folder($folder, Folders::paths([$folder])),
+                'folder' => Presenter::folder($folder, Folders::paths([$folder], $account)),
                 'created' => $created,
             ],
             Web::staffFolder($id),

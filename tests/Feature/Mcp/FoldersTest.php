@@ -363,3 +363,25 @@ it('tells a read-only connection how to reconnect before any folder is touched',
 
     expect(Folder::query()->count())->toBe(0);
 });
+
+/*
+ * The web's breadcrumb (FolderTrails) starts at the first folder a viewer
+ * can reach. The assistant's paths named every ancestor, so a scoped
+ * manager who sees "2026" only because it is shared with their client
+ * was told the folder above it — here another client's home folder.
+ */
+it('starts a scoped staff member\'s folder path at the first folder they can reach', function (): void {
+    $staff = McpWorld::staff();
+    $other = McpWorld::staff();
+    $acme = McpWorld::clientAccount();
+    $home = McpWorld::folder('Globex Corporation', creator: $other);
+    $year = McpWorld::folder('2026', $home, $other);
+    FolderAssignment::query()->create(['folder_id' => $year->getKey(), 'assignable_type' => $acme->getMorphClass(), 'assignable_id' => $acme->getKey()]);
+    McpWorld::scopeTo($staff, $acme);
+
+    $found = McpWorld::call(ListFolders::class, ['query' => '2026'], $staff);
+
+    expect(McpWorld::error($found))->toBeNull()
+        ->and($found['folders'][0]['path'] ?? null)->toBe('2026')
+        ->and(json_encode($found))->not->toContain('Globex');
+});

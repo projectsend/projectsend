@@ -6,6 +6,7 @@ namespace App\Modules\Mcp\Support;
 
 use App\Models\User;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Files\Folders\FolderTrails;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Models\FolderAssignment;
@@ -88,50 +89,28 @@ final class Folders
      * @param  iterable<int, Folder>  $folders
      * @return array<int, string> folder id => its path, itself included
      */
-    public static function paths(iterable $folders): array
+    public static function paths(iterable $folders, Account $account): array
     {
-        $chains = [];
-        $ancestorIds = [];
+        $folders = is_array($folders) ? $folders : iterator_to_array($folders, false);
 
-        foreach ($folders as $folder) {
-            $ids = self::ancestorIds($folder);
-            $chains[(int) $folder->getAttribute('id')] = [$ids, (string) $folder->getAttribute('name')];
-            array_push($ancestorIds, ...$ids);
-        }
-
-        $names = $ancestorIds === []
-            ? []
-            : Folder::query()->whereIn('id', array_unique($ancestorIds))->pluck('name', 'id')->all();
-
+        // The web's own trail: it starts at the first ancestor this viewer
+        // can reach, so a client-scoped staff member who sees "2026" only
+        // because it is shared with their client is not told the names of
+        // the folders above it — one of which may be another client's
+        // home folder, named after that client.
+        $trails = app(FolderTrails::class)->ancestors($folders, $account->user);
         $out = [];
 
-        foreach ($chains as $id => [$ids, $name]) {
-            $parts = [];
-
-            foreach ($ids as $ancestorId) {
-                if (isset($names[$ancestorId])) {
-                    $parts[] = (string) $names[$ancestorId];
-                }
-            }
-
-            $parts[] = $name;
+        foreach ($folders as $folder) {
+            $id = (int) $folder->getAttribute('id');
+            $parts = array_column($trails[$id] ?? [], 'name');
+            $parts[] = (string) $folder->getAttribute('name');
             $out[$id] = implode(' / ', $parts);
         }
 
         return $out;
     }
 
-    /**
-     * Ancestor ids, root first, from the materialized path.
-     *
-     * @return list<int>
-     */
-    public static function ancestorIds(Folder $folder): array
-    {
-        $path = trim((string) ($folder->getAttribute('path') ?? '/'), '/');
-
-        return $path === '' ? [] : array_map('intval', explode('/', $path));
-    }
 
     /**
      * Share the folder with a client account through FolderSharing, as

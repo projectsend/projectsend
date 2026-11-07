@@ -10,9 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Somewhere uploaded files can be kept: the server's own disk (exactly one
- * row, disk 'files') or a bucket. Replaces the single
- * ExternalStorageSettings row; see the 2026_10_09 migration for how that
- * row was carried over.
+ * row, disk 'files') or a bucket.
  *
  * `disk` is the name files on this location are stamped with
  * (files.disk). It is fixed once the row exists, because changing it

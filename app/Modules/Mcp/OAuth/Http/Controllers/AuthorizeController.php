@@ -55,16 +55,21 @@ final class AuthorizeController
 
         $client = $authorization->client;
         $site = app(Settings::class)->get(Setting::SiteName);
+        $redirectHost = RedirectUris::host($authorization->redirectUri) ?? $authorization->redirectUri;
 
         return Inertia::render('mcp/consent', [
             'request_id' => $authorization->stash($request),
             'client' => [
                 'name' => $client->name,
-                'identity' => $client->identity(),
+                // An unregistered-by-document client is only as trustworthy
+                // as where this request sends the code. Its stored identity
+                // is its first redirect, and a client can register a
+                // respectable one beside the one it actually uses.
+                'identity' => $client->isVerified() ? $client->identity() : $redirectHost,
                 'verified' => $client->isVerified(),
                 'logo_uri' => $client->logo_uri,
                 'client_uri' => $client->client_uri,
-                'redirect_host' => RedirectUris::host($authorization->redirectUri) ?? $authorization->redirectUri,
+                'redirect_host' => $redirectHost,
                 'loopback' => RedirectUris::isLoopback($authorization->redirectUri),
             ],
             'actor' => [

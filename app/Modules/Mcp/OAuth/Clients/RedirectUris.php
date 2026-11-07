@@ -27,9 +27,20 @@ final class RedirectUris
             return false;
         }
 
+        // PHP and a browser must agree on the host, because the consent
+        // screen shows PHP's answer and the browser goes to its own. They
+        // disagree on a backslash: `https://evil.com\@claude.ai/cb` is
+        // claude.ai to parse_url and evil.com to a browser. A user:pass
+        // part has no use in a redirect and is the other half of that
+        // trick, so neither is accepted, encoded or not. Nor is anything a
+        // browser would strip before reading the URL.
+        if (preg_match('/[\\\\\x00-\x20\x7f]|%5c/i', $uri) === 1) {
+            return false;
+        }
+
         $parts = parse_url($uri);
 
-        if ($parts === false || ! isset($parts['scheme'])) {
+        if ($parts === false || ! isset($parts['scheme']) || isset($parts['user']) || isset($parts['pass'])) {
             return false;
         }
 

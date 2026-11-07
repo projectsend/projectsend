@@ -293,6 +293,55 @@ it('refuses a confidential client, a plain-http redirect and a redirect with a f
     expect(McpClient::query()->count())->toBe(1);
 });
 
+/*
+ * PHP and a browser disagree about where `https://evil.com\@claude.ai/cb`
+ * goes: parse_url says claude.ai, a browser says evil.com. The consent
+ * screen showed PHP's answer while the browser carried the code to the
+ * other one.
+ */
+it('refuses a redirect whose host PHP and a browser would read differently', function (): void {
+    $register = fn (array $body): TestResponse => withHostCapabilities(['ai.connector'], fn (): TestResponse => test()->postJson('/oauth/mcp/register', $body));
+
+    foreach ([
+        'https://evil.com\@claude.ai/cb',
+        'https://evil.com%5c@claude.ai/cb',
+        'https://evil.com%5C@claude.ai/cb',
+        'https://evil.com@claude.ai/cb',
+        'https://user:pass@claude.ai/cb',
+        "https://claude.ai/c\tb",
+        'https://claude.ai/c b',
+        'cursor://evil.com\@anysphere.cursor-mcp/cb',
+    ] as $uri) {
+        $register(['client_name' => 'Claude', 'redirect_uris' => [$uri]])
+            ->assertStatus(400)->assertJsonPath('error', 'invalid_redirect_uri');
+    }
+
+    expect(McpClient::query()->count())->toBe(0);
+});
+
+it('refuses such a redirect at authorize too, for a client registered before the rule', function (): void {
+    $registered = withHostCapabilities(['ai.connector'], fn (): TestResponse => test()->postJson('/oauth/mcp/register', [
+        'client_name' => 'Claude', 'redirect_uris' => ['https://claude.ai/cb'],
+    ]))->assertStatus(201);
+    $sneaky = 'https://evil.com\@claude.ai/cb';
+    McpClient::query()->update(['redirect_uris' => json_encode([$sneaky])]);
+
+    oauthAuthorize(oauthStaff(), ['client_id' => $registered->json('client_id'), 'redirect_uri' => $sneaky])
+        ->assertStatus(400)->assertJsonPath('component', 'mcp/authorize-error');
+});
+
+it('names an unverified client by the redirect this request uses, not the first one it registered', function (): void {
+    $registered = withHostCapabilities(['ai.connector'], fn (): TestResponse => test()->postJson('/oauth/mcp/register', [
+        'client_name' => 'Claude', 'redirect_uris' => ['https://claude.ai/cb', 'https://evil.example/cb'],
+    ]))->assertStatus(201);
+
+    oauthAuthorize(oauthStaff(), ['client_id' => $registered->json('client_id'), 'redirect_uri' => 'https://evil.example/cb'])
+        ->assertOk()
+        ->assertJsonPath('props.client.verified', false)
+        ->assertJsonPath('props.client.identity', 'evil.example')
+        ->assertJsonPath('props.client.redirect_host', 'evil.example');
+});
+
 // ── Client metadata documents ────────────────────────────────────────
 
 it('reads a client metadata document once and shows the client as verified by its host', function (): void {

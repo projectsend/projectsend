@@ -255,3 +255,33 @@ it('still shows client activity to staff who may read the log', function (): voi
         ->and($got['files_shared']['latest'][0]['downloaded'])->toBeTrue()
         ->and($listed['clients'][0]['last_sign_in_at'])->not->toBeNull();
 });
+
+/*
+ * The REST FileResource names a neighbouring version only when the caller
+ * can see it. get_file read the bare relation, so a revision in somebody's
+ * library named the version before it, wherever that was.
+ */
+it('does not name a version a scoped staff member cannot see', function (): void {
+    $staff = McpWorld::staff();
+    $other = McpWorld::staff();
+    McpWorld::scopeTo($staff, McpWorld::clientAccount());
+    $before = McpWorld::file($other, ['name' => 'outside-their-library']);
+    $mine = McpWorld::file($staff, ['name' => 'mine v2', 'previous_file_id' => $before->id, 'version_root_id' => $before->id]);
+
+    $got = McpWorld::call(GetFile::class, ['file_id' => $mine->id], $staff);
+
+    expect(McpWorld::error($got))->toBeNull()
+        ->and($got['file']['previous_version'])->toBeNull()
+        ->and(json_encode($got))->not->toContain('outside-their-library');
+});
+
+it('names a version a scoped staff member can see', function (): void {
+    $staff = McpWorld::staff();
+    McpWorld::scopeTo($staff, McpWorld::clientAccount());
+    $before = McpWorld::file($staff, ['name' => 'mine v1']);
+    $mine = McpWorld::file($staff, ['name' => 'mine v2', 'previous_file_id' => $before->id, 'version_root_id' => $before->id]);
+
+    $got = McpWorld::call(GetFile::class, ['file_id' => $mine->id], $staff);
+
+    expect($got['file']['previous_version'])->toBe(['id' => $before->id, 'name' => 'mine v1']);
+});

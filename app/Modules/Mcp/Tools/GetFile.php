@@ -70,8 +70,8 @@ class GetFile extends ToolBase
             'uploaded_by' => $uploaderName !== null ? ['name' => $uploaderName] : null,
             'is_revision' => $rootId !== null,
             'sharing_root_id' => $rootId === null ? null : (int) $rootId,
-            'previous_version' => self::version($file, 'previousVersion'),
-            'next_version' => self::version($file, 'nextVersion'),
+            'previous_version' => self::version($file, 'previousVersion', $account),
+            'next_version' => self::version($file, 'nextVersion', $account),
         ];
 
         $nextSteps = $links === []
@@ -91,9 +91,14 @@ class GetFile extends ToolBase
     }
 
     /**
+     * The neighbouring version, or null when there is none or this account
+     * cannot see it, as the REST FileResource answers. A revision can sit
+     * in somebody's library while the version before it does not, and a
+     * client does not see a revision still being scanned.
+     *
      * @return array{id: int, name: string}|null
      */
-    private static function version(Model $file, string $relation): ?array
+    private static function version(Model $file, string $relation, Account $account): ?array
     {
         if (! method_exists($file, $relation)) {
             return null;
@@ -101,9 +106,11 @@ class GetFile extends ToolBase
 
         $related = $file->getRelationValue($relation);
 
-        return $related instanceof Model
-            ? ['id' => (int) $related->getAttribute('id'), 'name' => (string) $related->getAttribute('name')]
-            : null;
+        if (! $related instanceof Model || Files::find($account, (int) $related->getAttribute('id')) === null) {
+            return null;
+        }
+
+        return ['id' => (int) $related->getAttribute('id'), 'name' => (string) $related->getAttribute('name')];
     }
 
     /**

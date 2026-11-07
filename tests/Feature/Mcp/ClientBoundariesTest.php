@@ -9,8 +9,11 @@ use App\Modules\Files\Models\ShareLink;
 use App\Modules\Identity\Models\RolePermission;
 use App\Modules\Mcp\Support\McpContext;
 use App\Modules\Mcp\Tools\CreateClient;
+use App\Modules\Mcp\Tools\CreateFileFromContent;
+use App\Modules\Mcp\Tools\CreateUpload;
 use App\Modules\Mcp\Tools\GetDownloadStatus;
 use App\Modules\Mcp\Tools\GetFile;
+use App\Modules\Mcp\Tools\GetWebUploadLink;
 use App\Modules\Mcp\Tools\ListFiles;
 use App\Modules\Mcp\Tools\RevokeLink;
 use App\Modules\Mcp\Tools\SendFileToClient;
@@ -133,4 +136,38 @@ it('keeps a new client\'s password in the cache only encrypted, for a retry to r
         ->and(json_encode($cached))->not->toContain((string) $password)
         // The retry still gets it: the first answer may never have arrived.
         ->and($again['password_once'] ?? null)->toBe($password);
+});
+
+/*
+ * Uploading is a permission of the account, asked at the web's route
+ * (`can:upload`). requirePermission() used to skip clients altogether, on
+ * the reasoning that policies answer per file, which is true of editing
+ * and deleting and not of uploading.
+ */
+it('refuses every upload tool to a client whose role cannot upload', function (): void {
+    $client = McpWorld::client();
+    RolePermission::query()->where('role_id', $client->role_id)->where('permission', 'upload')->delete();
+    $client->unsetRelation('role');
+    app()->forgetScopedInstances();
+
+    foreach ([
+        [CreateFileFromContent::class, ['filename' => 'a.txt', 'content' => 'x']],
+        [CreateUpload::class, ['filename' => 'a.txt', 'size_bytes' => 500]],
+        [GetWebUploadLink::class, []],
+    ] as [$tool, $arguments]) {
+        $error = McpWorld::error(McpWorld::call($tool, $arguments, $client));
+
+        expect($error['code'] ?? null)->toBe('permission_missing', $tool);
+    }
+
+    expect(File::query()->count())->toBe(0);
+});
+
+it('still lets a client that can upload store a file', function (): void {
+    $client = McpWorld::client();
+
+    $answer = McpWorld::call(CreateFileFromContent::class, ['filename' => 'a.txt', 'content' => 'x'], $client);
+
+    expect(McpWorld::error($answer))->toBeNull()
+        ->and(File::query()->count())->toBe(1);
 });

@@ -122,13 +122,15 @@ abstract class ToolBase extends Tool
     }
 
     /**
-     * The person's live permission, as the ceiling under any scope. On a
-     * client account the app's policies do the same job per file, so
-     * this is asked only of staff.
+     * The person's live permission, as the ceiling under any scope. Asked
+     * of clients too: the policies answer per file for editing and
+     * deleting, but uploading is a permission of the account, and the web
+     * asks it at the route (`can:upload`). A client whose role lost it
+     * could otherwise still store files through the assistant.
      */
     protected function requirePermission(Account $account, string $permission): void
     {
-        if ($account->isClient() || $account->can($permission)) {
+        if ($account->can($permission)) {
             return;
         }
 

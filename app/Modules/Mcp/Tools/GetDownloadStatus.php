@@ -76,7 +76,11 @@ class GetDownloadStatus extends ToolBase
             ]);
         }
 
-        $this->requirePermission($account, 'view_actions_log');
+        // A client reads their own uploads' downloads without the log
+        // permission, as OwnFileDownloads lets them on the web.
+        if (! $account->isClient()) {
+            $this->requirePermission($account, 'view_actions_log');
+        }
 
         $query = app(ActivityLogScope::class)->apply(ActivityLog::query(), $account->user)
             ->whereIn('action', array_keys(self::VIA));

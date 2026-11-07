@@ -52,14 +52,16 @@ class StorageDurability
     /**
      * Null when the question does not apply: not running in a container
      * (a plain server's disk layout is the operator's own business, and
-     * nothing here would be news), or uploads no longer go to the local
-     * disk at all because external object storage is switched on.
+     * nothing here would be news), or the default storage location is a
+     * bucket. A client given the server's disk as a location of their own
+     * still writes there; that is a choice somebody made on purpose, and
+     * this warning is about the default.
      *
      * @return array{level: string, volume: string|null, source: string|null}|null
      */
     public function inspect(): ?array
     {
-        if (! $this->inContainer() || $this->externalStorage->isActive()) {
+        if (! $this->inContainer() || $this->externalStorage->defaultIsExternal()) {
             return null;
         }
 

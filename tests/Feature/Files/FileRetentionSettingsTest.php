@@ -6,8 +6,6 @@ use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
 use App\Modules\Identity\Models\Role;
-use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
-use App\Modules\Platform\Settings\ExternalStorageSettings;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Inertia\Testing\AssertableInertia;
@@ -78,14 +76,7 @@ test('staff without edit_settings cannot access file retention settings', functi
 });
 
 test('once external storage is active, orphan auto-delete fields are reported inactive and reject changes', function () {
-    ExternalStorageSettings::current()->fill([
-        'active' => true,
-        'key' => 'AKIAEXAMPLE',
-        'secret' => 'shh',
-        'bucket' => 'my-bucket',
-        'region' => 'us-east-1',
-    ])->save();
-    app(ExternalStorageConfigApplier::class)->flush();
+    activateExternalStorage();
 
     app(Settings::class)->set(Setting::OrphanFilesAutoDeleteEnabled, false);
     app(Settings::class)->set(Setting::OrphanFilesDeleteAfterDays, 30);

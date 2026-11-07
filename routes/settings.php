@@ -23,12 +23,12 @@ use App\Modules\Platform\Http\Controllers\CaptchaSettingsController;
 use App\Modules\Platform\Http\Controllers\EmailOAuthController;
 use App\Modules\Platform\Http\Controllers\EmailSettingsController;
 use App\Modules\Platform\Http\Controllers\EmailTemplatesController;
-use App\Modules\Platform\Http\Controllers\ExternalStorageSettingsController;
 use App\Modules\Platform\Http\Controllers\GettingStartedController;
 use App\Modules\Platform\Http\Controllers\LanguageSettingsController;
 use App\Modules\Platform\Http\Controllers\PrivacySettingsController;
 use App\Modules\Platform\Http\Controllers\PublicListingSettingsController;
 use App\Modules\Platform\Http\Controllers\SchedulerMonitoringController;
+use App\Modules\Platform\Http\Controllers\StorageLocationsController;
 use App\Modules\Platform\Http\Controllers\SystemSettingsController;
 use App\Modules\Platform\Http\Controllers\ThemingSettingsController;
 use App\Modules\Platform\Http\Controllers\WhatsNewController;
@@ -308,9 +308,12 @@ Route::middleware('auth')->group(function () {
         // sub-field to keep serving in Cloud, so the whole surface is
         // gated at the route level instead of per-field in the controller.
         Route::middleware('capability:storage.configure')->group(function () {
-            Route::get('system/settings/storage', [ExternalStorageSettingsController::class, 'edit'])->name('system-settings.storage.edit');
-            Route::patch('system/settings/storage', [ExternalStorageSettingsController::class, 'update'])->name('system-settings.storage.update');
-            Route::post('system/settings/storage/test', [ExternalStorageSettingsController::class, 'testConnection'])->name('system-settings.storage.test');
+            Route::get('system/settings/storage', [StorageLocationsController::class, 'edit'])->name('system-settings.storage.edit');
+            Route::patch('system/settings/storage', [StorageLocationsController::class, 'update'])->name('system-settings.storage.update');
+            Route::post('system/settings/storage/test', [StorageLocationsController::class, 'testConnection'])->name('system-settings.storage.test');
+            Route::post('system/settings/storage/locations', [StorageLocationsController::class, 'store'])->name('system-settings.storage.locations.store');
+            Route::patch('system/settings/storage/locations/{location}', [StorageLocationsController::class, 'updateLocation'])->name('system-settings.storage.locations.update');
+            Route::delete('system/settings/storage/locations/{location}', [StorageLocationsController::class, 'destroy'])->name('system-settings.storage.locations.destroy');
         });
 
         // Both editions since 2026-08-28, and gated all-or-nothing like

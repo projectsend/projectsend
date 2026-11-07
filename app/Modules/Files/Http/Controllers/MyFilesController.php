@@ -24,12 +24,14 @@ use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Models\ShareLink;
 use App\Modules\Files\Sharing\ClientShareLinks;
+use App\Modules\Files\Storage\UploadLocations;
 use App\Modules\Files\Uploads\UploadExtensionPolicy;
 use App\Modules\Files\Versions\FileVersionLinks;
 use App\Modules\Files\Versions\FileVersions;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use App\Modules\Platform\Settings\StorageLocation;
 use App\Modules\Platform\Theming\PublicThemeRegistry;
 use App\Support\ConcatenatedPagination;
 use App\Support\Pagination;
@@ -81,6 +83,7 @@ class MyFilesController extends Controller
         private readonly FileVersionLinks $versionLinks,
         private readonly ClientShareLinks $shareLinks,
         private readonly OwnFileDownloads $ownDownloads,
+        private readonly UploadLocations $uploadLocations,
         private readonly ApplyFileEdits $fileEdits,
         private readonly FileExpiry $expiry,
         private readonly ActivityLogger $activity,
@@ -398,6 +401,15 @@ class MyFilesController extends Controller
             // Upload time is the only place a client can set this: there is
             // no per-file editor in the portal, and none is being added.
             'version_candidates_url' => route('my-files.version-candidates', [], false),
+            // Where their uploads can go, the preferred first. The page
+            // offers a choice only with two or more. Names and notes the
+            // administrator wrote for clients, never a bucket.
+            'storage_locations' => $this->uploadLocations->usableFor($client)
+                ->map(fn (StorageLocation $location): array => [
+                    'id' => $location->id,
+                    'name' => $location->name,
+                    'note' => $location->client_note,
+                ])->values()->all(),
         ]);
     }
 

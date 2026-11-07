@@ -20,12 +20,15 @@ use App\Modules\Clients\Models\ClientCustomFieldValue;
 use App\Modules\Clients\Notifications\ClientAccountEditedNotification;
 use App\Modules\Clients\Notifications\ClientWelcomeNotification;
 use App\Modules\Files\DeletedAccountContent;
+use App\Modules\Files\Models\File;
 use App\Modules\Identity\AccountContentDeletion;
 use App\Modules\Identity\Erasure\AvailableEmailRule;
 use App\Modules\Identity\Erasure\ErasureSchedule;
 use App\Modules\Identity\TwoFactor\TwoFactorAdministration;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
+use App\Modules\Platform\Settings\StorageLocation;
 use App\Support\Pagination;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -54,6 +57,7 @@ class ClientsController extends Controller
         private readonly ClientAccounts $clients,
         private readonly ErasureSchedule $erasure,
         private readonly DateInput $dates,
+        private readonly ExternalStorageConfigApplier $storageLocations,
     ) {}
 
     public function index(Request $request): Response
@@ -258,10 +262,70 @@ class ClientsController extends Controller
                 ->where('user_id', $client->id)
                 ->pluck('value', 'client_custom_field_id'),
             'content' => $this->accountContent->summarize($client),
+            'storage' => $this->storageProps($request->user(), $client),
             'reassign_candidates' => $request->user()?->can('delete_clients') === true
                 ? $this->accountDeletion->candidates($request->user(), $client->id)
                 : [],
         ]);
+    }
+
+    /**
+     * The client's storage locations card. Null where this edition has no
+     * storage locations to give. Only someone who may change the
+     * installation's settings may change them: they decide which bucket a
+     * client's files are written to.
+     *
+     * @return array{can_assign: bool, options: list<array{id: int, name: string, local: bool, location: string, accepts_uploads: bool, is_default: bool}>, assigned_ids: list<int>, files_count: int}|null
+     */
+    private function storageProps(?User $viewer, User $client): ?array
+    {
+        if (! $this->storageLocations->permitted()) {
+            return null;
+        }
+
+        return [
+            'can_assign' => $this->canAssignStorage($viewer),
+            'options' => array_values(StorageLocation::query()->orderByDesc('is_default')->orderBy('name')->get()
+                ->map(fn (StorageLocation $location): array => [
+                    'id' => $location->id,
+                    'name' => $location->name,
+                    'local' => $location->isLocal(),
+                    'location' => $location->location(),
+                    'accepts_uploads' => $location->accepts_uploads,
+                    'is_default' => $location->is_default,
+                ])->values()->all()),
+            'assigned_ids' => array_values(array_map(intval(...), $client->storageLocations()->pluck('storage_locations.id')->all())),
+            'files_count' => File::withTrashed()->where('uploaded_by', $client->id)->count(),
+        ];
+    }
+
+    private function canAssignStorage(?User $editor): bool
+    {
+        return $editor !== null && $this->storageLocations->permitted() && $editor->can('edit_settings');
+    }
+
+    /**
+     * Replaces the client's locations with the posted ones, in the posted
+     * order. Left alone when the form did not send the list, which is what
+     * a form without the card (or an editor who may not change it) does.
+     */
+    private function saveStorageLocations(Request $request, User $editor, User $client): void
+    {
+        if (! $request->has('storage_location_ids') || ! $this->canAssignStorage($editor)) {
+            return;
+        }
+
+        $validated = $request->validate([
+            'storage_location_ids' => ['present', 'array'],
+            'storage_location_ids.*' => ['integer', 'distinct', Rule::exists('storage_locations', 'id')],
+        ]);
+
+        $priorities = [];
+        foreach (array_values($validated['storage_location_ids']) as $index => $id) {
+            $priorities[(int) $id] = ['priority' => $index + 1];
+        }
+
+        $client->storageLocations()->sync($priorities);
     }
 
     public function update(Request $request, User $client): RedirectResponse
@@ -333,6 +397,8 @@ class ClientsController extends Controller
         $client->save();
 
         app(ClientCustomFieldInput::class)->writeAll($client, $validated['custom_field_values'] ?? []);
+
+        $this->saveStorageLocations($request, $editor, $client);
 
         $this->activity->log(Action::UserUpdated, subject: $client);
 

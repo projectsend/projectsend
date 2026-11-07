@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
  * @property int $user_id
  * @property int|null $folder_id
  * @property int|null $previous_file_id
+ * @property int|null $storage_location_id
  * @property string $original_name
  * @property int $size
  * @property int $staged_bytes

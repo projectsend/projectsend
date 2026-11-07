@@ -233,6 +233,12 @@
                                             "integer",
                                             "null"
                                         ]
+                                    },
+                                    "storage_location_id": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ]
                                     }
                                 },
                                 "required": [

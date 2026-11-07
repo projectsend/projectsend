@@ -22,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon $expires_at
  * @property Carbon|null $used_at
  * @property int|null $issued_token_id
+ * @property int|null $mcp_connection_id
  * @property-read McpClient $client
  */
 final class McpAuthorizationCode extends Model

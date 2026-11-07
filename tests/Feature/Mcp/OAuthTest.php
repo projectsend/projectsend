@@ -605,6 +605,24 @@ it('refuses an exchange whose verifier, redirect, client or resource does not ma
     expect(PersonalAccessToken::query()->count())->toBe(0);
 });
 
+/*
+ * A reused code found its connection by the first access token, which the
+ * first refresh replaces. So whoever redeemed a stolen code and refreshed
+ * at once kept the connection when the real client's attempt came in.
+ */
+it('ends the connection a code started when the code comes back, even after a refresh', function (): void {
+    oauthDocument();
+    $staff = oauthStaff();
+    $code = oauthCode($staff);
+    $first = oauthExchange($code)->assertOk()->json();
+    $refreshed = oauthRefresh($first['refresh_token'])->assertOk();
+
+    oauthExchange($code)->assertStatus(400)->assertJsonPath('error', 'invalid_grant');
+
+    expect(McpConnection::query()->first()?->revoked_at)->not->toBeNull();
+    oauthMcp($refreshed->json('access_token'), oauthToolsList())->assertStatus(401);
+});
+
 it('rotates on refresh, and ends the whole connection when an old refresh token is reused', function (): void {
     oauthDocument();
     $staff = oauthStaff();

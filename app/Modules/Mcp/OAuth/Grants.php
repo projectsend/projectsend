@@ -124,7 +124,7 @@ final class Grants
 
             $response = $this->mint($connection, $client, $user);
 
-            $record->forceFill(['issued_token_id' => $connection->access_token_id])->save();
+            $record->forceFill(['issued_token_id' => $connection->access_token_id, 'mcp_connection_id' => $connection->getKey()])->save();
 
             return $response;
         });
@@ -310,6 +310,19 @@ final class Grants
 
     private function revokeIssuedBy(McpAuthorizationCode $record, string $reason): void
     {
+        // By the connection the code started, which outlives refreshes.
+        // The access token it first issued is replaced by the first
+        // refresh, so finding the connection by it found nothing after one.
+        $connection = $record->mcp_connection_id !== null
+            ? McpConnection::query()->find($record->mcp_connection_id)
+            : null;
+
+        if ($connection !== null) {
+            $this->revoke($connection, $reason);
+
+            return;
+        }
+
         if ($record->issued_token_id === null) {
             return;
         }

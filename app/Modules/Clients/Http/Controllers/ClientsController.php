@@ -8,8 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Clients\ClientCustomFieldInput;
 use App\Modules\Clients\ClientAccounts;
-use App\Modules\Clients\ClientCustomFieldType;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Mcp\OAuth\Grants;
@@ -156,7 +156,7 @@ class ClientsController extends Controller
             'password' => ['required', 'confirmed', Password::defaults()],
             'storage_quota_mb' => ['nullable', 'integer', 'min:0'],
             'expires_at' => ['nullable', 'string', 'date'],
-        ], $this->customFieldRules()));
+        ], app(ClientCustomFieldInput::class)->rules()));
 
         $creator = $request->user();
         assert($creator !== null);
@@ -193,7 +193,7 @@ class ClientsController extends Controller
             $creator->assignedClients()->attach($client->id);
         }
 
-        $this->saveCustomFieldValues($client, $validated['custom_field_values'] ?? []);
+        app(ClientCustomFieldInput::class)->writeAll($client, $validated['custom_field_values'] ?? []);
 
         if ($this->settings->get(Setting::EmailNotificationsEnabled) === true) {
             $client->notify(new ClientWelcomeNotification);
@@ -276,7 +276,7 @@ class ClientsController extends Controller
             'password' => ['nullable', 'confirmed', Password::defaults()],
             'storage_quota_mb' => ['nullable', 'integer', 'min:0'],
             'expires_at' => ['nullable', 'string', 'date'],
-        ], $this->customFieldRules()));
+        ], app(ClientCustomFieldInput::class)->rules()));
 
         $editor = $request->user();
         assert($editor !== null);
@@ -332,7 +332,7 @@ class ClientsController extends Controller
 
         $client->save();
 
-        $this->saveCustomFieldValues($client, $validated['custom_field_values'] ?? []);
+        app(ClientCustomFieldInput::class)->writeAll($client, $validated['custom_field_values'] ?? []);
 
         $this->activity->log(Action::UserUpdated, subject: $client);
 
@@ -411,51 +411,5 @@ class ClientsController extends Controller
                 'required' => $field->required,
             ])
             ->all());
-    }
-
-    /**
-     * @return array<string, array<int, mixed>>
-     */
-    private function customFieldRules(): array
-    {
-        $rules = [];
-
-        foreach (ClientCustomField::query()->get() as $field) {
-            $key = "custom_field_values.{$field->id}";
-
-            // Checkboxes are never hard-required here — "required" only
-            // drives the asterisk shown on the form, not a forced check.
-            if ($field->type === ClientCustomFieldType::Checkbox) {
-                $rules[$key] = ['nullable', 'boolean'];
-
-                continue;
-            }
-
-            $rules[$key] = [$field->required ? 'required' : 'nullable', 'string', 'max:2000'];
-
-            if ($field->type === ClientCustomFieldType::Select && is_array($field->options)) {
-                $rules[$key][] = Rule::in($field->options);
-            }
-        }
-
-        return $rules;
-    }
-
-    /**
-     * @param  array<int, mixed>  $values  field id => submitted value
-     */
-    private function saveCustomFieldValues(User $client, array $values): void
-    {
-        foreach (ClientCustomField::query()->get() as $field) {
-            $submitted = $values[$field->id] ?? null;
-            $value = $field->type === ClientCustomFieldType::Checkbox
-                ? ($submitted ? '1' : '0')
-                : (is_string($submitted) ? $submitted : null);
-
-            ClientCustomFieldValue::query()->updateOrCreate(
-                ['client_custom_field_id' => $field->id, 'user_id' => $client->id],
-                ['value' => $value === '' ? null : $value],
-            );
-        }
     }
 }

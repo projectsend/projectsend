@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Modules\Mcp\Tools;
 
 use App\Modules\Clients\ClientAccounts;
+use App\Modules\Clients\ClientCustomFieldInput;
+use App\Modules\Clients\Models\ClientCustomField;
 use App\Modules\Identity\Erasure\AvailableEmailRule;
+use App\Modules\Identity\Passwords\PasswordPolicy;
 use App\Modules\Mcp\Support\Account;
 use App\Modules\Mcp\Support\ClientAccountsQuery;
 use App\Modules\Mcp\Support\Envelope;
@@ -20,6 +23,7 @@ use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
@@ -45,8 +49,9 @@ class CreateClient extends ToolBase
         return [
             'name' => $schema->string()->max(120)->required()->description("The person's or company's name, as they should see it."),
             'email' => $schema->string()->max(255)->required()->description('Their sign-in address. One account per address.'),
-            'password' => $schema->string()->min(12)->max(255)->description('Leave it out to have a strong one generated and returned once in the response.'),
+            'password' => $schema->string()->max(255)->description("Leave it out to have a strong one generated and returned once in the response. A given one must meet this site's password rules."),
             'storage_quota_mb' => $schema->integer()->min(0)->description("Space this client may upload, in MB. Omit for the site's default."),
+            'custom_fields' => $schema->object()->description('Values for the site\'s custom client fields, keyed by field id. If the site requires one, the error names each missing field by id and label: ask the person for those values and call again.'),
             'notify' => $schema->boolean()->default(true)->description('Email the client that their account exists, as the web does.'),
             'idempotency_key' => $schema->string()->max(64)->description('Use the email address as the key when creating several clients from a list, so a retry never creates two.'),
         ];
@@ -57,13 +62,19 @@ class CreateClient extends ToolBase
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['nullable', 'string', 'min:12', 'max:255'],
+            // The site's own rule, as the staff form and the API ask it:
+            // a minimum length an admin may raise, and optionally a check
+            // against known breaches.
+            'password' => ['nullable', 'string', 'max:255', Password::defaults()],
+            'custom_fields' => ['nullable', 'array'],
             'storage_quota_mb' => ['nullable', 'integer', 'min:0'],
             'notify' => ['nullable', 'boolean'],
             'idempotency_key' => ['nullable', 'string', 'max:64'],
         ]);
 
         $this->requirePermission($account, 'create_clients');
+
+        $validated['custom_fields'] = self::customFields($validated['custom_fields'] ?? []);
 
         $email = strtolower(trim((string) $validated['email']));
         $key = isset($validated['idempotency_key']) ? (string) $validated['idempotency_key'] : null;
@@ -86,7 +97,7 @@ class CreateClient extends ToolBase
             return $payload;
         };
 
-        $fingerprint = Uploads::fingerprint(['name' => $validated['name'], 'email' => $email, 'storage_quota_mb' => $validated['storage_quota_mb'] ?? null]);
+        $fingerprint = Uploads::fingerprint(['name' => $validated['name'], 'email' => $email, 'storage_quota_mb' => $validated['storage_quota_mb'] ?? null, 'custom_fields' => $validated['custom_fields']]);
 
         try {
             [$payload] = app(Idempotency::class)->remember('mcp', 'mcp:'.$account->id().':create_client:'.$key, $fingerprint, $create);
@@ -132,7 +143,7 @@ class CreateClient extends ToolBase
         }
 
         $generated = ! isset($validated['password']);
-        $password = $generated ? Str::password(20) : (string) $validated['password'];
+        $password = $generated ? Str::password(max(20, app(PasswordPolicy::class)->minLength())) : (string) $validated['password'];
         $notify = (bool) ($validated['notify'] ?? true);
 
         try {
@@ -152,6 +163,8 @@ class CreateClient extends ToolBase
 
             throw new ToolFailure(ToolError::validationFailed($errors));
         }
+
+        app(ClientCustomFieldInput::class)->writeAll($client, $validated['custom_fields']);
 
         // As the web does: a client-scoped creator keeps the client they
         // made, rather than creating one they can then never reach.
@@ -178,5 +191,46 @@ class CreateClient extends ToolBase
         $structured = $factory->getStructuredContent();
 
         return is_array($structured) ? $structured : [];
+    }
+
+    /**
+     * The custom field values, held to the rules the staff form and the API
+     * hold them to: a field the admin marked required must be given. The
+     * error names each field by its label, so the assistant can ask for it.
+     *
+     * @param  array<mixed>  $given
+     * @return array<int, mixed> field id => value
+     */
+    private static function customFields(array $given): array
+    {
+        $rules = [];
+        $labels = [];
+
+        foreach (app(ClientCustomFieldInput::class)->rules() as $key => $rule) {
+            $id = (int) substr($key, strlen('custom_field_values.'));
+            $rules["custom_fields.{$id}"] = $rule;
+        }
+
+        if ($rules === []) {
+            return [];
+        }
+
+        foreach (ClientCustomField::query()->get(['id', 'label']) as $field) {
+            $labels["custom_fields.{$field->id}"] = "\"{$field->label}\" (custom field {$field->id})";
+        }
+
+        $validator = Validator::make(['custom_fields' => $given], $rules, [], $labels);
+
+        if ($validator->fails()) {
+            /** @var array<string, list<string>> $errors */
+            $errors = $validator->errors()->toArray();
+
+            throw new ToolFailure(ToolError::validationFailed($errors));
+        }
+
+        /** @var array<int, mixed> $values */
+        $values = $validator->validated()['custom_fields'] ?? [];
+
+        return $values;
     }
 }

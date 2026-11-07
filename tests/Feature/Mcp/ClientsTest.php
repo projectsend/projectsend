@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 use App\Models\User;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Clients\ClientCustomFieldType;
+use App\Modules\Clients\Models\ClientCustomField;
+use App\Modules\Clients\Models\ClientCustomFieldValue;
 use App\Modules\Files\Models\FileAssignment;
 use App\Modules\Identity\UserType;
 use App\Modules\Mcp\Support\McpContext;
@@ -12,6 +15,8 @@ use App\Modules\Mcp\Tools\GetClient;
 use App\Modules\Mcp\Tools\ListClients;
 use App\Modules\Mcp\Tools\SendFileToClient;
 use App\Modules\Notifications\InAppNotification;
+use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Settings\Settings;
 use Illuminate\Support\Facades\Notification;
 use Tests\Support\McpWorld;
 
@@ -147,4 +152,43 @@ it('saves content and sends it in the same call', function (): void {
     expect(McpWorld::error($answer))->toBeNull(json_encode($answer))
         ->and($answer['file']['name'])->toBe('brief')
         ->and(FileAssignment::query()->count())->toBe(1);
+});
+
+/*
+ * The staff form and the API hold a new client's password to the site's
+ * policy and require the custom fields an admin marked required. The
+ * assistant's create_client asked only for 12 characters, and had no
+ * custom fields at all.
+ */
+it('holds a given password to the site\'s policy, and generates one long enough for it', function (): void {
+    app(Settings::class)->set(Setting::PasswordMinLength, 24);
+    $staff = McpWorld::staff();
+
+    $refused = McpWorld::error(McpWorld::call(CreateClient::class, ['name' => 'Initech', 'email' => 'bill@initech.example', 'password' => 'only-sixteen-chr', 'notify' => false], $staff));
+
+    expect($refused['code'] ?? null)->toBe('validation_failed')
+        ->and($refused['errors'])->toHaveKey('password')
+        ->and(User::query()->where('email', 'bill@initech.example')->exists())->toBeFalse();
+
+    $made = McpWorld::call(CreateClient::class, ['name' => 'Initech', 'email' => 'bill@initech.example', 'notify' => false], $staff);
+
+    expect(McpWorld::error($made))->toBeNull()
+        ->and(strlen((string) $made['password_once']))->toBeGreaterThanOrEqual(24);
+});
+
+it('requires the custom fields the site requires, and stores what it is given', function (): void {
+    $vat = ClientCustomField::query()->create(['name' => 'vat', 'label' => 'VAT number', 'type' => ClientCustomFieldType::Text, 'required' => true, 'sort_order' => 1]);
+    $staff = McpWorld::staff();
+
+    $refused = McpWorld::error(McpWorld::call(CreateClient::class, ['name' => 'Initech', 'email' => 'bill@initech.example', 'notify' => false], $staff));
+
+    expect($refused['code'] ?? null)->toBe('validation_failed')
+        ->and($refused['errors'])->toHaveKey("custom_fields.{$vat->id}")
+        ->and(json_encode($refused))->toContain('VAT number')
+        ->and(User::query()->where('email', 'bill@initech.example')->exists())->toBeFalse();
+
+    $made = McpWorld::call(CreateClient::class, ['name' => 'Initech', 'email' => 'bill@initech.example', 'notify' => false, 'custom_fields' => [(string) $vat->id => 'ES-123']], $staff);
+
+    expect(McpWorld::error($made))->toBeNull()
+        ->and(ClientCustomFieldValue::query()->where('client_custom_field_id', $vat->id)->value('value'))->toBe('ES-123');
 });

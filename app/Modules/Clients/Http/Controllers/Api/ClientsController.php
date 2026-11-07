@@ -10,14 +10,13 @@ use App\Modules\Api\Support\PollingQuery;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientAccounts;
-use App\Modules\Clients\ClientCustomFieldType;
+use App\Modules\Clients\ClientCustomFieldInput;
 use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Mcp\OAuth\Grants;
 use App\Modules\Platform\Localization\DateInput;
 use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Clients\Http\Resources\Api\ClientResource;
-use App\Modules\Clients\Models\ClientCustomField;
 use App\Modules\Clients\Models\ClientCustomFieldValue;
 use App\Modules\Clients\Notifications\ClientAccountEditedNotification;
 use App\Modules\Clients\Notifications\ClientWelcomeNotification;
@@ -29,7 +28,6 @@ use App\Modules\Identity\TwoFactor\TwoFactorAdministration;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -176,7 +174,7 @@ class ClientsController extends Controller
             $creator->assignedClients()->attach($client->id);
         }
 
-        $this->saveCustomFieldValues($client, $validated['custom_field_values'] ?? []);
+        app(ClientCustomFieldInput::class)->writeAll($client, $validated['custom_field_values'] ?? []);
 
         // Sent here rather than inside ClientAccounts so the custom fields
         // are already saved when it goes: a welcome that arrives before
@@ -261,7 +259,7 @@ class ClientsController extends Controller
         $client->save();
 
         if (array_key_exists('custom_field_values', $validated)) {
-            $this->patchCustomFieldValues($client, $validated['custom_field_values']);
+            app(ClientCustomFieldInput::class)->writeNamed($client, $validated['custom_field_values']);
         }
 
         $this->activity->log(Action::UserUpdated, subject: $client);
@@ -379,92 +377,12 @@ class ClientsController extends Controller
      */
     private function validateCustomFieldValues(Request $request, bool $required = true): array
     {
-        $rules = $this->customFieldRules($required);
+        $rules = app(ClientCustomFieldInput::class)->rules($required);
 
         if ($rules === []) {
             return $request->input('custom_field_values', []);
         }
 
         return Validator::make($request->all(), $rules)->validate()['custom_field_values'] ?? [];
-    }
-
-    /**
-     * Mirrors ClientsController::customFieldRules(). On update the required
-     * flag is dropped, since PATCH may legitimately omit a field it is not
-     * changing — the value already stored satisfies the requirement.
-     *
-     * @return array<string, array<int, mixed>>
-     */
-    private function customFieldRules(bool $required = true): array
-    {
-        $rules = [];
-
-        foreach (ClientCustomField::query()->get() as $field) {
-            $key = "custom_field_values.{$field->id}";
-
-            if ($field->type === ClientCustomFieldType::Checkbox) {
-                $rules[$key] = ['nullable', 'boolean'];
-
-                continue;
-            }
-
-            $rules[$key] = [$required && $field->required ? 'required' : 'nullable', 'string', 'max:2000'];
-
-            if ($field->type === ClientCustomFieldType::Select && is_array($field->options)) {
-                $rules[$key][] = Rule::in($field->options);
-            }
-        }
-
-        return $rules;
-    }
-
-    /**
-     * Every field, whether or not the request named it — a new client has
-     * no values yet, and create() is not a partial update.
-     *
-     * @param  array<int, mixed>  $values  field id => submitted value
-     */
-    private function saveCustomFieldValues(User $client, array $values): void
-    {
-        $this->writeCustomFieldValues($client, ClientCustomField::query()->get(), $values);
-    }
-
-    /**
-     * Only the fields the request actually named.
-     *
-     * PATCH semantics, the same rule update() applies to every other
-     * column: an absent key means "leave alone", not "clear". Sharing
-     * create()'s "write every field" pass here emptied every custom field
-     * the caller had not mentioned, which is silent data loss on a request
-     * that looked like it changed one thing.
-     *
-     * @param  array<int, mixed>  $values  field id => submitted value
-     */
-    private function patchCustomFieldValues(User $client, array $values): void
-    {
-        $this->writeCustomFieldValues(
-            $client,
-            ClientCustomField::query()->whereIn('id', array_keys($values))->get(),
-            $values,
-        );
-    }
-
-    /**
-     * @param  Collection<int, ClientCustomField>  $fields
-     * @param  array<int, mixed>  $values  field id => submitted value
-     */
-    private function writeCustomFieldValues(User $client, Collection $fields, array $values): void
-    {
-        foreach ($fields as $field) {
-            $submitted = $values[$field->id] ?? null;
-            $value = $field->type === ClientCustomFieldType::Checkbox
-                ? ($submitted ? '1' : '0')
-                : (is_string($submitted) ? $submitted : null);
-
-            ClientCustomFieldValue::query()->updateOrCreate(
-                ['client_custom_field_id' => $field->id, 'user_id' => $client->id],
-                ['value' => $value === '' ? null : $value],
-            );
-        }
     }
 }

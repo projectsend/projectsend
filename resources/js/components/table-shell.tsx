@@ -35,14 +35,14 @@ export function TableShell({ columns, emptyMessage, isEmpty, children }: TableSh
 
                             if (typeof column === 'object') {
                                 return (
-                                    <th key={index} className="px-4 py-2.5">
+                                    <th key={index} scope="col" className="px-4 py-2.5">
                                         <span className="sr-only">{column.label}</span>
                                     </th>
                                 );
                             }
 
                             return (
-                                <th key={index} className="px-4 py-2.5 font-medium">
+                                <th key={index} scope="col" className="px-4 py-2.5 font-medium">
                                     {column}
                                 </th>
                             );

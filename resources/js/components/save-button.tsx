@@ -24,7 +24,7 @@ export function SavedIndicator({ recentlySuccessful }: { recentlySuccessful: boo
 
     return (
         <Transition show={recentlySuccessful} enter="transition ease-in-out" enterFrom="opacity-0" leave="transition ease-in-out" leaveTo="opacity-0">
-            <p className="text-sm text-neutral-600">{t('Saved')}</p>
+            <p className="text-muted-foreground text-sm">{t('Saved')}</p>
         </Transition>
     );
 }

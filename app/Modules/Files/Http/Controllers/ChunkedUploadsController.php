@@ -188,15 +188,11 @@ class ChunkedUploadsController extends Controller
             // Only one of the uploader's own locations: anything else would let
             // a client write into a bucket nobody gave them. Checked here, while
             // a 422 can still reach the screen, not when the bytes land.
-            $storageLocationId = null;
-            if (($validated['storage_location_id'] ?? null) !== null) {
-                $storageLocationId = (int) $validated['storage_location_id'];
-
-                if (! $this->uploadLocations->usableFor($user)->contains('id', $storageLocationId)) {
-                    throw ValidationException::withMessages([
-                        'storage_location_id' => __('That storage location is not available for your uploads.'),
-                    ]);
-                }
+            $storageLocationId = isset($validated['storage_location_id']) ? (int) $validated['storage_location_id'] : null;
+            if ($storageLocationId !== null && ! $this->uploadLocations->usableFor($user)->contains('id', $storageLocationId)) {
+                throw ValidationException::withMessages([
+                    'storage_location_id' => __('That storage location is not available for your uploads.'),
+                ]);
             }
 
             $session = UploadSession::query()->create([

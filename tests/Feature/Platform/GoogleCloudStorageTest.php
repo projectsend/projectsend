@@ -244,7 +244,7 @@ test('staff can save a Google Cloud Storage backend through the settings form', 
 
     $location = StorageLocation::query()->where('provider', 'gcs')->firstOrFail();
 
-    expect($location->externalProvider())->toBe(StorageProvider::Gcs)
+    expect($location->provider)->toBe(StorageProvider::Gcs->value)
         ->and($location->key_file)->toBe($key)
         ->and($location->isConfigured())->toBeTrue();
 });

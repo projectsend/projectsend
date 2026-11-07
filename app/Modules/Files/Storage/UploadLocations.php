@@ -36,10 +36,10 @@ class UploadLocations
             return collect();
         }
 
-        $writable = $this->storage->writableDisks();
+        $buckets = array_column($this->storage->externalLocations(), 'disk');
 
         return $uploader->storageLocations()->get()
-            ->filter(fn (StorageLocation $location): bool => $location->accepts_uploads && in_array($location->disk, $writable, true))
+            ->filter(fn (StorageLocation $location): bool => $location->accepts_uploads && ($location->isLocal() || in_array($location->disk, $buckets, true)))
             ->values();
     }
 

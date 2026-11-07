@@ -25,9 +25,9 @@ use App\Modules\Identity\AccountContentDeletion;
 use App\Modules\Identity\Erasure\AvailableEmailRule;
 use App\Modules\Identity\Erasure\ErasureSchedule;
 use App\Modules\Identity\TwoFactor\TwoFactorAdministration;
+use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
-use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
 use App\Modules\Platform\Settings\StorageLocation;
 use App\Support\Pagination;
 use Illuminate\Database\Eloquent\Builder;
@@ -293,7 +293,7 @@ class ClientsController extends Controller
                     'location' => $location->location(),
                     'accepts_uploads' => $location->accepts_uploads,
                     'is_default' => $location->is_default,
-                ])->values()->all()),
+                ])->all()),
             'assigned_ids' => array_values(array_map(intval(...), $client->storageLocations()->pluck('storage_locations.id')->all())),
             'files_count' => File::withTrashed()->where('uploaded_by', $client->id)->count(),
         ];

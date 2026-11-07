@@ -55,9 +55,7 @@ return new class extends Migration
         });
 
         $now = now();
-        $legacy = Schema::hasTable('external_storage_settings')
-            ? DB::table('external_storage_settings')->orderBy('id')->first()
-            : null;
+        $legacy = DB::table('external_storage_settings')->orderBy('id')->first();
         $legacyHasBucket = $legacy !== null && is_string($legacy->bucket) && $legacy->bucket !== '';
         // The old screen's "Use external storage for new uploads" made the
         // bucket where every new upload went: that is the default now.
@@ -82,13 +80,13 @@ return new class extends Migration
             DB::table('storage_locations')->insert([
                 'name' => 'External storage',
                 'disk' => 'files_external',
-                'provider' => $legacy->provider ?? 's3',
+                'provider' => $legacy->provider,
                 'accepts_uploads' => true,
                 'is_default' => $legacyWasDefault,
-                'use_instance_role' => (bool) ($legacy->use_instance_role ?? false),
+                'use_instance_role' => (bool) $legacy->use_instance_role,
                 'key' => $legacy->key,
                 'secret' => $legacy->secret,
-                'key_file' => $legacy->key_file ?? null,
+                'key_file' => $legacy->key_file,
                 'bucket' => $legacy->bucket,
                 'region' => $legacy->region,
                 'endpoint' => $legacy->endpoint,

@@ -48,22 +48,17 @@ interface StorageSettingsProps {
     test_result: string | null;
 }
 
-/** Which location the sheet is editing: a row, a new bucket, or nothing (closed). */
-type SheetTarget = StorageLocationRow | 'new' | null;
-
 export default function StorageSettings({ locations, upload_notification_names_location, test_result }: StorageSettingsProps) {
     const { t } = useTranslation();
-    const [sheet, setSheet] = useState<SheetTarget>(null);
+    const [sheet, setSheet] = useState<StorageLocationRow | 'new' | null>(null);
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: t('Settings'), href: '/system/settings' },
         { title: t('Storage'), href: '/system/settings/storage' },
     ];
 
-    const defaultLocation = locations.find((location) => location.is_default);
-
     const general = useForm({
-        default_location_id: String(defaultLocation?.id ?? ''),
+        default_location_id: String(locations.find((location) => location.is_default)?.id ?? ''),
         upload_notification_names_location: upload_notification_names_location,
     });
 
@@ -148,8 +143,8 @@ export default function StorageSettings({ locations, upload_notification_names_l
 
                 <TableShell
                     columns={[t('Location'), t('Clients'), t('Files'), t('New uploads'), { label: t('Actions'), srOnly: true }]}
-                    emptyMessage={t('No storage locations.')}
-                    isEmpty={locations.length === 0}
+                    emptyMessage={null}
+                    isEmpty={false}
                 >
                     {locations.map((location) => (
                         <tr key={location.id} className="border-b last:border-0">
@@ -498,7 +493,7 @@ function LocationForm({ location, testResult, onDone }: { location: StorageLocat
                     {t('Cancel')}
                 </Button>
                 <Button type="submit" disabled={processing}>
-                    {t('Save location')}
+                    {t('Save')}
                 </Button>
             </div>
         </form>

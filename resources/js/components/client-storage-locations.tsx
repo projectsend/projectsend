@@ -73,7 +73,7 @@ export function ClientStorageLocations({
 
             {assigned.length === 0 ? (
                 <p className="text-muted-foreground rounded-md border border-dashed px-3 py-4 text-center text-sm">
-                    {t('No locations. Their uploads use the default, :name.', { name: defaultLocation?.name ?? t('Server storage') })}
+                    {t('No locations. Their uploads use the default, :name.', { name: defaultLocation?.name ?? '' })}
                 </p>
             ) : (
                 <ol className="grid min-w-0 gap-2">

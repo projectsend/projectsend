@@ -16,9 +16,9 @@ use Throwable;
 /**
  * Finds files sitting on disk with no corresponding File row — v1
  * parity for the import_orphans permission. Scans the local 'files'
- * disk, and every registered storage location bucket too
- * (ExternalStorageConfigApplier::externalLocations()) — an upload can
- * land on any of them, so an orphan can too. See docs/unused-permissions-audit.md.
+ * disk, and every bucket too once external storage is active
+ * (ExternalStorageConfigApplier::isActive()) — an upload can land on
+ * any, so an orphan can too. See docs/unused-permissions-audit.md.
  */
 class OrphanFileScanner
 {

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Platform\Settings;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -87,21 +86,9 @@ class StorageLocation extends Model
         return $this->belongsToMany(User::class, 'client_storage_location')->withPivot('priority');
     }
 
-    /** @param Builder<self> $query */
-    public function scopeAcceptingUploads(Builder $query): void
-    {
-        $query->where('accepts_uploads', true);
-    }
-
     public function isLocal(): bool
     {
         return $this->disk === self::LOCAL_DISK;
-    }
-
-    /** Null for the server's own disk. */
-    public function externalProvider(): ?StorageProvider
-    {
-        return $this->isLocal() ? null : StorageProvider::from($this->provider);
     }
 
     /**
@@ -112,9 +99,7 @@ class StorageLocation extends Model
      */
     public function isConfigured(): bool
     {
-        $provider = $this->externalProvider();
-
-        if ($provider === null) {
+        if ($this->isLocal()) {
             return true;
         }
 
@@ -122,7 +107,7 @@ class StorageLocation extends Model
             return false;
         }
 
-        return match ($provider) {
+        return match (StorageProvider::from($this->provider)) {
             StorageProvider::S3 => $this->use_instance_role || ($this->filled('key') && $this->filled('secret')),
             StorageProvider::Gcs => $this->filled('key_file'),
         };
@@ -136,7 +121,7 @@ class StorageLocation extends Model
         }
 
         $root = $this->root !== null && $this->root !== '' ? '/'.trim($this->root, '/') : '';
-        $scheme = $this->externalProvider() === StorageProvider::Gcs ? 'gs' : 's3';
+        $scheme = $this->provider === StorageProvider::Gcs->value ? 'gs' : 's3';
 
         return $scheme.'://'.$this->bucket.$root;
     }

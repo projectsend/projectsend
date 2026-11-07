@@ -44,7 +44,7 @@ class ExternalStorageConfigApplier
 {
     // Bumped on any shape change to the resolved array below — a stale
     // rememberForever value under an old key would otherwise crash every
-    // boot with "Undefined array key" (apply() calls resolve() unconditionally).
+    // boot with "Undefined array key" (every permitted boot reads resolve()).
     // v3: the S3 secret and the GCS key file left the shape. The cache
     // store encrypts nothing and rememberForever never expires, so on the
     // documented CACHE_STORE=database they sat in clear — the service

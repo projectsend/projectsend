@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -99,6 +100,11 @@ return new class extends Migration
 
         // external_storage_settings stays: an install rolled back to the
         // previous release reads it, and nothing writes it any more.
+
+        // This process booted before the tables above existed and cached
+        // the old row's picture under the storage locations key. Drop it so
+        // the next boot reads the rows just written.
+        Cache::forget('platform.storage_locations.v5');
     }
 
     public function down(): void

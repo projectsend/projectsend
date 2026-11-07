@@ -7,6 +7,7 @@ namespace App\Modules\Platform\Storage;
 use App\Modules\Platform\Installation\Installation;
 use App\Modules\Platform\Installation\InstallationKind;
 use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
+use App\Modules\Platform\Settings\StorageLocation;
 
 /**
  * Where the uploads directory really lives when ProjectSend runs in a
@@ -61,7 +62,7 @@ class StorageDurability
      */
     public function inspect(): ?array
     {
-        if (! $this->inContainer() || $this->externalStorage->defaultDisk() !== 'files') {
+        if (! $this->inContainer() || $this->externalStorage->defaultDisk() !== StorageLocation::LOCAL_DISK) {
             return null;
         }
 

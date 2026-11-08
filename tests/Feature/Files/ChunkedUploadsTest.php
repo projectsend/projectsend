@@ -798,3 +798,21 @@ test('finalization refuses contiguous but truncated legacy parts without deletin
     putPart($sessionId, 1, 'hello-world')->assertOk();
     $this->postJson("/uploads/{$sessionId}/complete")->assertOk();
 });
+
+test('a file type restricted while the upload was open is refused when it completes', function () {
+    $settings = app(Settings::class);
+    $settings->set(Setting::UploadTypeRestriction, 'none');
+    $this->actingAs($this->admin);
+    $sessionId = createSession(5, 'payload.exe');
+    putPart($sessionId, 1, 'hello');
+
+    // The administrator restricts file types before it finishes.
+    $settings->set(Setting::UploadTypeRestriction, 'all');
+    $settings->set(Setting::AllowedUploadExtensions, ['pdf']);
+
+    $this->postJson("/uploads/{$sessionId}/complete")->assertStatus(422)->assertJsonValidationErrors('filename');
+
+    expect(File::query()->where('original_name', 'payload.exe')->exists())->toBeFalse()
+        ->and(UploadSession::query()->find($sessionId))->toBeNull()
+        ->and(is_dir(partsRoot().'/'.$sessionId))->toBeFalse();
+});

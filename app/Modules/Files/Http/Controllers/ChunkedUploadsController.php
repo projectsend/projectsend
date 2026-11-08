@@ -421,6 +421,19 @@ class ChunkedUploadsController extends Controller
      */
     private function finalise(UploadSession $session, User $user): JsonResponse
     {
+        // Asked again here, not only in store(): an upload can stay open
+        // for a day, and an administrator who restricts file types in the
+        // meantime meant it for uploads not yet finished too. Nothing has
+        // been assembled yet, so the parts are all there is to discard.
+        if (! $this->extensionPolicy->isAllowed($user, $session->original_name)) {
+            $this->parts->abort($session);
+            $session->delete();
+
+            throw ValidationException::withMessages([
+                'filename' => __('This file type is not allowed for upload.'),
+            ]);
+        }
+
         $extension = strtolower(pathinfo($session->original_name, PATHINFO_EXTENSION));
         $targetPath = now()->format('Y/m').'/'.Str::uuid()->toString().($extension !== '' ? '.'.$extension : '');
 

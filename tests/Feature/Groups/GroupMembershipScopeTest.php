@@ -80,7 +80,8 @@ test('a scoped staff member cannot hand somebody else client the files of their 
 
     $this->actingAs($this->rep)
         ->post("/groups/{$ours->id}/members", ['user_id' => $this->stranger->id])
-        ->assertForbidden();
+        // Refused as if the id did not exist: see the test at the end.
+        ->assertSessionHasErrors('user_id');
 
     expect($ours->members()->pluck('users.id')->all())->toBe([$this->mine->id]);
 });
@@ -659,4 +660,20 @@ test('an unscoped viewer keeps the whole roster and every member', function () {
         ->and(array_column($props['available_clients'], 'name'))->toBe(['Not Mine']);
 
     $this->actingAs($this->admin)->get("/groups/{$this->strangerGroup->id}")->assertOk();
+});
+
+// An id off the roster gets the same answer whether it is a client, a
+// staff account or nobody, so the form is not a way to list accounts.
+test('adding a member does not tell a scoped staff member which ids are accounts', function () {
+    $group = Group::query()->create(['name' => 'Ours', 'slug' => 'ours', 'public' => false]);
+    $staffer = User::factory()->create();
+    $answers = [];
+
+    foreach ([$this->stranger->id, $staffer->id, 999999] as $id) {
+        $response = $this->actingAs($this->rep)->post("/groups/{$group->id}/members", ['user_id' => $id]);
+        $answers[] = [$response->status(), session('errors')?->first('user_id')];
+    }
+
+    expect(array_unique($answers, SORT_REGULAR))->toHaveCount(1)
+        ->and($group->members()->count())->toBe(0);
 });

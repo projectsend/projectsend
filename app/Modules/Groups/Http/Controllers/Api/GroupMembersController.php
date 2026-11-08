@@ -13,6 +13,7 @@ use App\Modules\Groups\Http\Resources\Api\GroupResource;
 use App\Modules\Groups\Models\Group;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class GroupMembersController extends Controller
@@ -24,8 +25,17 @@ class GroupMembersController extends Controller
 
     public function store(Request $request, Group $group): GroupResource
     {
+        $actor = $request->user();
+        assert($actor instanceof User);
+
+        // For a client-scoped actor, an id off their roster is refused the
+        // same way as one that does not exist. Asking exists:users first,
+        // then "only clients", then the roster, told them which ids were
+        // accounts and which of those were staff.
+        $reach = $this->scope->assignableClientIds($actor);
+
         $validated = $request->validate([
-            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'user_id' => ['required', 'integer', $reach === null ? 'exists:users,id' : Rule::in($reach)],
         ]);
 
         $client = User::query()->findOrFail((int) $validated['user_id']);
@@ -39,9 +49,6 @@ class GroupMembersController extends Controller
                 'user_id' => __('Only clients can be group members.'),
             ]);
         }
-
-        $actor = $request->user();
-        assert($actor instanceof User);
 
         // Membership is a library boundary, not just a list: joining a
         // group hands the new member everything shared with it, and if

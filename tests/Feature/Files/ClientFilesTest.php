@@ -91,6 +91,7 @@ test('a client-scoped staff member may only view files for their assigned client
     // page at all".
     $role = Role::query()->create(['name' => 'Scoped Client Editor', 'is_administrator' => false, 'is_system' => false, 'client_scoped' => true]);
     RolePermission::query()->create(['role_id' => $role->id, 'permission' => 'edit_clients']);
+    RolePermission::query()->create(['role_id' => $role->id, 'permission' => 'upload']);
     $manager = User::factory()->create(['role_id' => $role->id]);
 
     $assigned = User::factory()->client()->create();
@@ -101,21 +102,15 @@ test('a client-scoped staff member may only view files for their assigned client
     test()->actingAs($manager)->get("/clients/{$unassigned->id}/files")->assertNotFound();
 });
 
-test('download is only offered when the viewer has file permissions', function () {
+test('a role that may edit clients but read no file cannot list a client\'s files', function () {
     $client = User::factory()->client()->create();
     $direct = uploadNamedFile($this->admin, 'direct');
     test()->actingAs($this->admin)->post("/files/{$direct->id}/assignments", ['type' => 'client', 'id' => $client->id]);
 
-    // A role that can manage clients but holds no file permissions at all.
-    $role = Role::query()->create(['name' => 'Files-Blind Manager', 'is_administrator' => false, 'is_system' => false, 'client_scoped' => false]);
-    RolePermission::query()->create(['role_id' => $role->id, 'permission' => 'edit_clients']);
-    $blindManager = User::factory()->create(['role_id' => $role->id]);
-
-    $response = test()->actingAs($blindManager)->get("/clients/{$client->id}/files");
-    $response->assertOk();
-
-    $row = collect(clientFilesProps($response)['files'])->firstWhere('id', $direct->id);
-    expect($row['can_download'])->toBeFalse();
+    // edit_clients is about the account. Listing the client's files needs
+    // what reading any file needs, as on every other surface.
+    $blindManager = staffWithPermissions(['edit_clients']);
+    test()->actingAs($blindManager)->get("/clients/{$client->id}/files")->assertForbidden();
 
     $adminResponse = test()->actingAs($this->admin)->get("/clients/{$client->id}/files");
     $adminRow = collect(clientFilesProps($adminResponse)['files'])->firstWhere('id', $direct->id);

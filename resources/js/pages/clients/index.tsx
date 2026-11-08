@@ -146,7 +146,8 @@ export default function ClientsIndex({ clients, pagination, filters, reassign_ca
                             <td className="px-4 py-2.5">{statusBadge(client)}</td>
                             <td className="px-4 py-2.5 text-right">
                                 <div className="flex justify-end gap-1">
-                                    {can('edit_clients') && (
+                                    {/* Listing files also needs a file key (ClientFilesController). */}
+                                    {can('edit_clients') && (can('upload') || can('edit_files') || can('edit_others_files')) && (
                                         <Button variant="outline" size="sm" asChild>
                                             <Link href={route('clients.files', client.id)}>{t('Files')}</Link>
                                         </Button>

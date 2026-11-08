@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
 use App\Support\Pagination;
@@ -30,6 +31,7 @@ class ClientFilesController extends Controller
     public function __construct(
         private readonly StaffLibraryScope $scope,
         private readonly ClientIdentityScope $identity,
+        private readonly ViewableFileScope $viewable,
     ) {}
 
     public function index(Request $request, User $client): Response
@@ -37,6 +39,11 @@ class ClientFilesController extends Controller
         $viewer = $request->user();
         assert($viewer !== null);
         abort_unless($client->isClient(), 404);
+
+        // The route asks edit_clients, which is about the account. This
+        // page lists the client's files, so it also needs what reading any
+        // file needs: one of the three file keys (FilePolicy::view).
+        abort_unless($this->viewable->permitsAnyFile($viewer), 403);
 
         // A client-scoped staff member may only browse this for clients
         // assigned to them — the same boundary StaffLibraryScope enforces

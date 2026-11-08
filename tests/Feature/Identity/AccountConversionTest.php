@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Models\Folder;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Identity\AccountConversion;
 use App\Modules\Identity\AuthSource;
@@ -223,6 +224,29 @@ test('demoting keeps the files they uploaded', function () {
     $this->actingAs($this->admin)->post("/users/convert/{$staff->id}", ['direction' => 'to_client']);
 
     expect(File::query()->where('uploaded_by', $staff->id)->count())->toBe(1);
+});
+
+/*
+ * A client sees every folder they created, and every file directly in it.
+ * Folders a staff member made hold other people's files, so after a
+ * conversion the new client saw those, other clients' files included.
+ */
+test('demoting hands the folders they made as staff to whoever converted them', function () {
+    $staff = User::factory()->role(SystemRole::Uploader)->create();
+    $folder = makeFolder('Client deliveries');
+    $folder->forceFill(['created_by' => $staff->id])->save();
+    $someoneElses = File::factory()->create([
+        'uploaded_by' => $this->admin->id, 'folder_id' => $folder->id, 'name' => 'for-another-client',
+        'original_name' => 'x.pdf', 'mime_type' => 'application/pdf', 'size' => 10,
+    ]);
+
+    $this->actingAs($this->admin)->post("/users/convert/{$staff->id}", ['direction' => 'to_client']);
+
+    $staff->refresh();
+
+    expect($folder->refresh()->created_by)->toBe($this->admin->id)
+        ->and(Folder::query()->visibleToClient($staff)->whereKey($folder->id)->exists())->toBeFalse()
+        ->and(File::query()->visibleToClient($staff)->whereKey($someoneElses->id)->exists())->toBeFalse();
 });
 
 /*

@@ -154,7 +154,7 @@ class AccountConversionController extends Controller
             abort_unless($user->isStaff(), 404);
 
             $this->conversion->guardToClient($actor, $user);
-            $this->conversion->toClient($user);
+            $this->conversion->toClient($user, $actor);
 
             return back()->with('success', __('Account converted to a client.'));
         }

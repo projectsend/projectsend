@@ -807,7 +807,7 @@ it('ends an assistant connection when the account is converted', function (): vo
     $staff = oauthStaff();
     $tokens = oauthExchange(oauthCode($staff))->json();
 
-    app(\App\Modules\Identity\AccountConversion::class)->toClient($staff);
+    app(\App\Modules\Identity\AccountConversion::class)->toClient($staff, User::factory()->create());
 
     oauthRefresh($tokens['refresh_token'])->assertJsonPath('error', 'invalid_grant');
 });

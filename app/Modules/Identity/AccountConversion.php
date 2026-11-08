@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Files\Models\Folder;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Mcp\OAuth\Grants;
 use App\Modules\Platform\Seats\SeatAllowance;
@@ -172,13 +173,15 @@ class AccountConversion
     }
 
     /**
-     * @return array{api_tokens_revoked: int, assigned_clients_cleared: int}
+     * @param  User  $handFoldersTo  who takes over the folders the account
+     *                               created as staff
+     * @return array{api_tokens_revoked: int, assigned_clients_cleared: int, folders_handed_over: int}
      */
-    public function toClient(User $target): array
+    public function toClient(User $target, User $handFoldersTo): array
     {
         $oldRoleName = $target->role?->name;
 
-        return DB::transaction(function () use ($target, $oldRoleName): array {
+        return DB::transaction(function () use ($target, $oldRoleName, $handFoldersTo): array {
             // The API is staff-only (EnsureStaffToken), so a demoted
             // account holding a live bearer token would keep staff-level
             // API access that no screen in the app would ever show. This is
@@ -190,6 +193,16 @@ class AccountConversion
             // A client does not manage clients.
             $assignmentsCleared = $target->assignedClients()->count();
             $target->assignedClients()->detach();
+
+            // A client sees every folder they created (Folder::
+            // scopeVisibleToClient reads created_by as "a folder I made in
+            // the portal"), and every file directly inside it. Folders made
+            // as staff hold other people's files, other clients' among
+            // them, so they go to the staff member doing the conversion,
+            // as an account's content does when it is deleted with
+            // "reassign". The files this person uploaded stay theirs.
+            $foldersHandedOver = Folder::query()->where('created_by', $target->id)
+                ->update(['created_by' => $handFoldersTo->id]);
 
             // The role has to move with the type. PermissionChecker reads
             // only the role and never the type, and several routes are
@@ -208,11 +221,13 @@ class AccountConversion
                 'from_role' => $oldRoleName,
                 'api_tokens_revoked' => $tokensRevoked,
                 'assigned_clients_cleared' => $assignmentsCleared,
+                'folders_handed_over' => $foldersHandedOver,
             ]);
 
             return [
                 'api_tokens_revoked' => $tokensRevoked,
                 'assigned_clients_cleared' => $assignmentsCleared,
+                'folders_handed_over' => $foldersHandedOver,
             ];
         });
     }

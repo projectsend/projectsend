@@ -122,3 +122,22 @@ test('the manager still reads the names of their own clients and groups', functi
 
     expect($activity)->toContain('Both');
 });
+
+test('the API usage page reads the same entries without the off-roster client in them', function () {
+    ActivityLog::query()->create([
+        'action' => Action::FileAssigned,
+        'subject_type' => $this->file->getMorphClass(),
+        'subject_id' => $this->file->id,
+        'subject_name' => $this->file->name,
+        'actor_id' => $this->admin->id,
+        'actor_name' => $this->admin->name,
+        'actor_type' => 'staff',
+        'origin' => \App\Modules\Audit\ActivityOrigin::Api,
+        'context' => ['target' => 'Stranger Corp', 'target_type' => 'client', 'target_id' => $this->stranger->id],
+        'created_at' => now(),
+    ]);
+
+    $body = redactionBody($this->actingAs($this->manager)->get('/api?all=1'));
+
+    expect($body)->toContain('shared-report')->not->toContain('Stranger Corp');
+});

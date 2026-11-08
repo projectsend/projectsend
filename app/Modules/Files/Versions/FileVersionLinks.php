@@ -88,7 +88,7 @@ class FileVersionLinks
         // than failing anywhere near here.
         $successors = File::query()
             ->whereIn('previous_file_id', array_keys($rows))
-            ->get(['id', 'name', 'slug', 'previous_file_id', 'public', 'expires_at', 'folder_id', 'scan_status']);
+            ->get(['id', 'name', 'slug', 'previous_file_id', 'public', 'expires_at', 'folder_id', 'scan_status', 'uploaded_by']);
 
         /** @var array<int, File> $candidates */
         $candidates = [];
@@ -99,7 +99,7 @@ class FileVersionLinks
         if ($previousIds !== []) {
             $previous = File::query()
                 ->whereIn('id', array_keys($previousIds))
-                ->get(['id', 'name', 'slug', 'previous_file_id', 'public', 'expires_at', 'folder_id', 'scan_status']);
+                ->get(['id', 'name', 'slug', 'previous_file_id', 'public', 'expires_at', 'folder_id', 'scan_status', 'uploaded_by']);
 
             foreach ($previous as $file) {
                 $candidates[$file->id] = $file;
@@ -151,7 +151,7 @@ class FileVersionLinks
         if ($viewer === null) {
             $ids = [];
             foreach ($candidates as $candidate) {
-                if ($candidate->isEffectivelyPublic() && ! $candidate->isExpired() && $candidate->scan_status->isAvailable()) {
+                if ($candidate->isEffectivelyPublic() && ! $candidate->isExpired() && $candidate->scan_status->isAvailable() && ! $candidate->isWithdrawn()) {
                     $ids[] = $candidate->id;
                 }
             }

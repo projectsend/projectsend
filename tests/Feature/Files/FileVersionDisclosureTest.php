@@ -184,3 +184,19 @@ test('a guest is not told about a public version that is not available', functio
 
     expect($links->for($original->refresh(), null)['next'])->toBeNull();
 });
+
+test('a guest is not told about a version whose uploader is leaving', function () {
+    app(Settings::class)->set(Setting::AccountSelfDeleteScope, 'all');
+    $leaving = User::factory()->client()->create();
+    $original = File::factory()->public()->create(['uploaded_by' => $this->admin->id, 'name' => 'Rev E']);
+    $revision = File::factory()->public()->create(['uploaded_by' => $leaving->id, 'name' => 'Rev F']);
+    $this->versions->link($revision, $original, $this->admin);
+
+    $links = app(FileVersionLinks::class);
+    expect($links->for($original, null)['next']['name'] ?? null)->toBe('Rev F');
+
+    // In the erasure grace period: every public page for it already 404s.
+    $leaving->delete();
+
+    expect($links->for($original->refresh(), null)['next'])->toBeNull();
+});

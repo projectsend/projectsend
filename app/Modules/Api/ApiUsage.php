@@ -173,6 +173,9 @@ class ApiUsage
             ->orderByDesc('id')
             ->limit($limit)
             ->get()
+            // The same names the activity page hides from this viewer stay
+            // hidden here: replacements() copies the whole context.
+            ->map(fn (ActivityLog $entry): ActivityLog => $this->activityLog->redact($viewer, $entry))
             ->map(fn (ActivityLog $entry): array => [
                 'id' => $entry->id,
                 'created_at' => $entry->created_at->toIso8601String(),

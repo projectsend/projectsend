@@ -166,23 +166,33 @@ class FileComments
      */
     private function announce(FileComment $comment): void
     {
-        $recipients = $this->scope->recipientsFor($comment);
+        // Sent once per name, not once for everybody: a client-scoped
+        // staff member may be told about a comment from a client off their
+        // roster (an Everyone comment on a public file reaches every staff
+        // member who can see the file), and that client's name is not
+        // theirs to know. They read "A client", like on the comments panel.
+        $byName = $this->scope->recipientsFor($comment)
+            ->groupBy(fn (User $recipient): string => $comment->authorNameFor($recipient));
 
-        $this->notifier->send('file_comment.posted', $recipients, $comment->file, [
-            'fileId' => $comment->file_id,
-            'fileName' => $comment->file->name,
-            'authorName' => $comment->authorName(),
-        ]);
+        foreach ($byName as $authorName => $recipients) {
+            $recipients = $recipients->values();
 
-        // The same already-permission-checked list, buffered so a burst of
-        // replies becomes one email instead of one each. The digester
-        // applies the email gates (master switch, per-recipient
-        // preference) — this list is about who may *see* the comment,
-        // which is a different question.
-        $this->digester->queue('file_comment.posted', $recipients, $comment->file->name, [
-            'file_id' => $comment->file_id,
-            'author_name' => $comment->authorName(),
-        ]);
+            $this->notifier->send('file_comment.posted', $recipients, $comment->file, [
+                'fileId' => $comment->file_id,
+                'fileName' => $comment->file->name,
+                'authorName' => (string) $authorName,
+            ]);
+
+            // The same already-permission-checked list, buffered so a burst
+            // of replies becomes one email instead of one each. The digester
+            // applies the email gates (master switch, per-recipient
+            // preference) — this list is about who may *see* the comment,
+            // which is a different question.
+            $this->digester->queue('file_comment.posted', $recipients, $comment->file->name, [
+                'file_id' => $comment->file_id,
+                'author_name' => (string) $authorName,
+            ]);
+        }
     }
 
     /**

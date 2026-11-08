@@ -71,7 +71,9 @@ class SendNotificationDigest implements ShouldQueue
 
         $user = User::query()->find($this->userId);
 
-        if ($user === null) {
+        // Asked again at send time: the account may have been deactivated
+        // during the debounce window.
+        if ($user === null || ! $user->maySignIn()) {
             return;
         }
 

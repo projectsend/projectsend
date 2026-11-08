@@ -61,7 +61,9 @@ class NotificationDigester
         }
 
         foreach ($recipients as $recipient) {
-            if (! $this->preferences->emailEnabledFor($recipient, $type)) {
+            // Same rule as Notifier::send(), asked again when the digest
+            // goes out (SendNotificationDigest).
+            if (! $recipient->maySignIn() || ! $this->preferences->emailEnabledFor($recipient, $type)) {
                 continue;
             }
 

@@ -47,6 +47,18 @@ class Notifier
         $type = $this->types->get($typeKey) ?? throw new InvalidArgumentException("Unknown notification type: {$typeKey}");
 
         foreach ($recipients as $recipient) {
+            // Not a question of who may see the subject, which stays the
+            // caller's: whether the account is one anybody uses. A
+            // deactivated, expired or not-yet-approved account reads
+            // nothing here, and an email to it put file and folder names
+            // in front of somebody the administrator turned away or never
+            // let in (a self-registered stranger waiting for approval is
+            // already in the auto-join group). Asked once, here, rather
+            // than by each of a dozen callers.
+            if (! $recipient->maySignIn()) {
+                continue;
+            }
+
             InAppNotification::query()->create([
                 'user_id' => $recipient->getKey(),
                 'type' => $type->key,

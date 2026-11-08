@@ -170,3 +170,34 @@ test('roles management is present in the cloud edition too', function () {
 
     $this->get('/roles')->assertOk();
 });
+
+/*
+ * Editing a role checked only the permissions being added. A
+ * non-administrator with manage_users could strip a stronger role down to
+ * their own level, rename it or change its scope, and guardTarget() then
+ * let them reset the password of everybody holding it.
+ */
+test('a staff member cannot edit or delete a role stronger than their own', function () {
+    $manager = staffWithPermissions(['manage_users', 'edit_users']);
+    $stronger = Role::query()->create(['name' => 'Stronger']);
+    foreach (['manage_users', 'edit_users', 'edit_settings', 'delete_others_files'] as $permission) {
+        RolePermission::query()->create(['role_id' => $stronger->id, 'permission' => $permission]);
+    }
+
+    $this->actingAs($manager)->get("/roles/{$stronger->id}")->assertForbidden();
+    $this->actingAs($manager)->patch("/roles/{$stronger->id}", ['name' => 'Stronger', 'permissions' => ['manage_users']])->assertForbidden();
+    $this->actingAs($manager)->delete("/roles/{$stronger->id}")->assertForbidden();
+
+    expect($stronger->permissions()->pluck('permission')->sort()->values()->all())
+        ->toBe(['delete_others_files', 'edit_settings', 'edit_users', 'manage_users']);
+});
+
+test('a staff member still edits a role within their own permissions', function () {
+    $manager = staffWithPermissions(['manage_users', 'edit_users', 'upload']);
+    $weaker = Role::query()->create(['name' => 'Uploader']);
+    RolePermission::query()->create(['role_id' => $weaker->id, 'permission' => 'upload']);
+
+    $this->actingAs($manager)->patch("/roles/{$weaker->id}", ['name' => 'Uploaders', 'permissions' => ['upload']])->assertSessionHasNoErrors();
+
+    expect($weaker->refresh()->name)->toBe('Uploaders');
+});

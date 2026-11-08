@@ -13,6 +13,7 @@ use App\Modules\Identity\Permissions\Permission;
 use App\Modules\Identity\Permissions\PermissionCategory;
 use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Identity\Permissions\SystemRole;
+use App\Modules\Identity\StaffAccounts;
 use App\Modules\Identity\StartPage;
 use App\Modules\Identity\StartPages;
 use App\Modules\Identity\UserType;
@@ -35,6 +36,7 @@ class RolesController extends Controller
         private readonly ActivityLogger $activity,
         private readonly PermissionChecker $permissions,
         private readonly StartPages $startPages,
+        private readonly StaffAccounts $accounts,
     ) {}
 
     public function index(Request $request): Response
@@ -114,8 +116,10 @@ class RolesController extends Controller
         return redirect()->route('roles.edit', $role)->with('success', __('Role created.'));
     }
 
-    public function edit(Role $role): Response
+    public function edit(Request $request, Role $role): Response
     {
+        $this->guardEditable($request, $role);
+
         return Inertia::render('roles/edit', [
             'role' => [
                 'id' => $role->id,
@@ -134,6 +138,8 @@ class RolesController extends Controller
 
     public function update(Request $request, Role $role): RedirectResponse
     {
+        $this->guardEditable($request, $role);
+
         $type = StartPages::typeOf($role);
 
         // The one thing about the administrator role that is not
@@ -202,8 +208,10 @@ class RolesController extends Controller
         return back()->with('success', __('Role updated.'));
     }
 
-    public function destroy(Role $role): RedirectResponse
+    public function destroy(Request $request, Role $role): RedirectResponse
     {
+        $this->guardEditable($request, $role);
+
         if ($role->is_system) {
             throw ValidationException::withMessages([
                 'role' => __('Built-in roles cannot be deleted.'),
@@ -223,6 +231,22 @@ class RolesController extends Controller
         $this->activity->log(Action::RoleDeleted, context: ['name' => $name]);
 
         return redirect()->route('roles.index')->with('success', __('Role deleted.'));
+    }
+
+    /**
+     * Only a role this actor could grant may be edited or deleted by them —
+     * StaffAccounts::mayGrant, the rule the user screens already apply to
+     * the people holding it. Checking only the permissions being added let
+     * a non-administrator with manage_users strip a stronger role down to
+     * their own level, after which guardTarget() let them reset the
+     * password of everybody who held it.
+     */
+    private function guardEditable(Request $request, Role $role): void
+    {
+        $actor = $request->user();
+        assert($actor !== null);
+
+        abort_unless($this->accounts->mayGrant($actor, $role), 403);
     }
 
     /**

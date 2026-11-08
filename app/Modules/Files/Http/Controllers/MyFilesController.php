@@ -481,8 +481,12 @@ class MyFilesController extends Controller
             // Somewhere this client could have uploaded it in the first
             // place — the same rule update() enforces, so the picker cannot
             // offer a destination the save would refuse.
-            'folders' => Folder::query()->visibleToClient($client)->orderBy('name')->get()
-                ->filter(fn (Folder $folder): bool => Folder::uploadableBy($client, $folder))
+            'folders' => ($visible = Folder::query()->visibleToClient($client)->orderBy('name')->get())
+                ->filter(fn (Folder $folder): bool => Folder::uploadableBy(
+                    $client,
+                    $folder,
+                    array_values(array_map(intval(...), $visible->modelKeys())),
+                ))
                 ->map(fn (Folder $folder): array => [
                     'id' => $folder->id,
                     'name' => $folder->name,

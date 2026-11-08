@@ -20,13 +20,17 @@ use App\Modules\Identity\StaffSignInPolicy;
  * an identity of their own, and signing in through it again after the
  * owner changed the password was the whole of taking the account back.
  *
- * The owner's own link comes back by itself: signing in through a provider
- * that vouches for the account's confirmed address links it again
- * (SocialAuthenticator). Two links are never ended, because each is the
- * way in itself: the provider staff are required to sign in with
- * (StaffSignInPolicy), and every link of an account that has no password
- * of its own (AuthSource::Social), the same rule the Connected accounts
- * screen applies to removing the last one.
+ * The owner signs in with the password just set, and connects their
+ * provider again from Connected accounts. A provider identity that
+ * vouches for the account's own confirmed address links itself again at
+ * sign-in (SocialAuthenticator); one under another address does not.
+ *
+ * Two links are never ended, because each is the way in itself: the
+ * provider staff are required to sign in with (StaffSignInPolicy), and
+ * every link of an account that has no password of its own
+ * (AuthSource::Social), the same rule the Connected accounts screen
+ * applies to removing the last one. Whoever sets a password on such an
+ * account makes it Local first, as NewPasswordController does.
  */
 final class ProviderLinks
 {
@@ -44,7 +48,10 @@ final class ProviderLinks
             return 0;
         }
 
-        $required = $this->signIn->providerFor($user);
+        // As configured, not only while usable: a provider down for a
+        // moment is still the one staff will be made to use when it is
+        // back, and passwords are refused again then.
+        $required = $user->isStaff() ? $this->signIn->configuredProvider() : null;
 
         $links = SocialAccount::query()
             ->where('user_id', $user->getKey())

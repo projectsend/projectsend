@@ -370,3 +370,19 @@ test('a client cannot delete their own folder while it holds a folder staff made
     expect(Folder::query()->find($home->id))->not->toBeNull()
         ->and(Folder::query()->find($staffMade->id))->not->toBeNull();
 });
+
+test('the move picker asks about every folder without a query for each', function () {
+    $client = User::factory()->client()->create();
+    RolePermission::query()->firstOrCreate(['role_id' => $client->role_id, 'permission' => 'edit_files']);
+    foreach (range(1, 12) as $i) {
+        $this->actingAs($client)->post('/my-folders', ['name' => "Own {$i}"]);
+    }
+    $file = File::factory()->create(['uploaded_by' => $client->id]);
+
+    \Illuminate\Support\Facades\DB::enableQueryLog();
+    $this->actingAs($client)->get("/my-files/{$file->id}/edit")->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page->has('folders', 12));
+    $queries = count(\Illuminate\Support\Facades\DB::getQueryLog());
+
+    expect($queries)->toBeLessThan(60);
+});

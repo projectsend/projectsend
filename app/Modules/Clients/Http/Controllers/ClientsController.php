@@ -37,6 +37,7 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Modules\Identity\Social\ProviderLinks;
+use App\Modules\Identity\AuthSource;
 
 /**
  * Client management — the recipients files are shared with. Available
@@ -334,6 +335,13 @@ class ClientsController extends Controller
 
         if ($passwordChanged) {
             $client->password = $validated['password'];
+
+            // A password now signs this account in, so it no longer rests
+            // on a provider: the same moment NewPasswordController records,
+            // and what lets ProviderLinks end the links below.
+            if ($client->auth_source === AuthSource::Social) {
+                $client->auth_source = AuthSource::Local;
+            }
 
             // Whoever held the old one may have connected an assistant with it.
             app(Grants::class)->revokeAllFor($client, 'password replaced');

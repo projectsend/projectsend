@@ -18,6 +18,7 @@ use App\Modules\Identity\Permissions\SystemRole;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 use App\Modules\Identity\Social\ProviderLinks;
+use App\Modules\Identity\AuthSource;
 
 /**
  * Creating, changing and deleting staff accounts — the rules and the side
@@ -362,6 +363,13 @@ class StaffAccounts
 
         if ($passwordReplaced) {
             $user->password = $attributes['password'];
+
+            // A password now signs this account in, so it no longer rests
+            // on a provider: the same moment NewPasswordController records,
+            // and what lets ProviderLinks end the links below.
+            if ($user->auth_source === AuthSource::Social) {
+                $user->auth_source = AuthSource::Local;
+            }
         }
 
         $user->save();

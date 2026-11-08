@@ -185,7 +185,13 @@ class Folder extends Model
      * client uploads and their role permits uploading into public folders
      * at all.
      */
-    public static function uploadableBy(User $user, ?self $folder): bool
+    /**
+     * @param  list<int>|null  $visibleIds  for a caller asking about a whole
+     *                                       list it already read through
+     *                                       visibleToClient(), so the client
+     *                                       half does not ask again per folder
+     */
+    public static function uploadableBy(User $user, ?self $folder, ?array $visibleIds = null): bool
     {
         if ($folder === null) {
             return true;
@@ -234,7 +240,9 @@ class Folder extends Model
         // whatever they put in it would reach whoever it is shared with
         // next.
         $owns = $folder->isOwnedBy($user)
-            && self::query()->visibleToClient($user)->whereKey($folder->id)->exists();
+            && ($visibleIds !== null
+                ? in_array($folder->id, $visibleIds, true)
+                : self::query()->visibleToClient($user)->whereKey($folder->id)->exists());
 
         if (! $folder->isEffectivelyPublic()) {
             // Their own folder, and one only they can see. A client's folder

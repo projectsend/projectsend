@@ -74,11 +74,23 @@ test('an account with no password of its own keeps the links that are its way in
 });
 
 test('the provider staff are required to sign in with is kept', function () {
-    $required = SocialProvider::cases()[0];
-    $this->mock(\App\Modules\Identity\StaffSignInPolicy::class, fn ($mock) => $mock->shouldReceive('providerFor')->andReturn($required));
+    // Configured but not set up, so not usable yet: still kept, because
+    // passwords are refused again the moment it is.
+    app(\App\Modules\Platform\Settings\Settings::class)->set(\App\Modules\Platform\Settings\Setting::StaffSignInProvider, SocialProvider::cases()[0]->value);
     $staff = User::factory()->role(SystemRole::Uploader)->create();
     linkProvider($staff);
 
     expect(app(ProviderLinks::class)->endAllFor($staff))->toBe(0)
         ->and(SocialAccount::query()->where('user_id', $staff->id)->count())->toBe(1);
+});
+
+test('a password staff set on an account a provider created ends the other links too', function () {
+    $client = User::factory()->client()->create(['auth_source' => AuthSource::Social]);
+    linkProvider($client);
+
+    $token = $this->admin->createToken('t', app(\App\Modules\Api\Auth\TokenAbilities::class)->availableFor($this->admin))->plainTextToken;
+    $this->withToken($token)->patchJson("/api/v1/clients/{$client->id}", ['password' => 'Reset-by-admin-9!'])->assertOk();
+
+    expect($client->refresh()->auth_source)->toBe(AuthSource::Local)
+        ->and(SocialAccount::query()->where('user_id', $client->id)->count())->toBe(0);
 });

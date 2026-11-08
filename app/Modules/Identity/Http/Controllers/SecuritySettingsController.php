@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace App\Modules\Identity\Http\Controllers;
 
+use App\Models\User;
+use App\Modules\Identity\UserType;
+use App\Modules\Mcp\OAuth\Grants;
+use App\Modules\Mcp\OAuth\Models\McpConnection;
 use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
@@ -60,7 +64,13 @@ class SecuritySettingsController extends Controller
             'password_reject_breached' => ['required', 'boolean'],
         ]);
 
+        $current = $this->settings->get(Setting::TwoFactorEnforcement);
+        $before = (is_string($current) ? TwoFactorEnforcement::tryFrom($current) : null) ?? TwoFactorEnforcement::None;
+        $after = TwoFactorEnforcement::from($validated['two_factor_enforcement']);
+
         $this->settings->set(Setting::TwoFactorEnforcement, $validated['two_factor_enforcement']);
+
+        $revoked = $this->endCredentialsBeyondEnforcement($before, $after);
         $this->settings->set(Setting::PasswordMinLength, $validated['password_min_length']);
         $this->settings->set(Setting::PasswordRejectBreached, $validated['password_reject_breached']);
 
@@ -69,8 +79,49 @@ class SecuritySettingsController extends Controller
             'two_factor_enforcement' => $validated['two_factor_enforcement'],
             'password_min_length' => $validated['password_min_length'],
             'password_reject_breached' => $validated['password_reject_breached'],
+            'credentials_revoked_for' => $revoked,
         ]);
 
         return back();
+    }
+
+    /**
+     * Requiring two-factor is enforced at the browser (EnforceTwoFactor),
+     * and an API token or an assistant connection never passes through it:
+     * one made before the requirement kept working for an account that
+     * never enrolled. So when the requirement starts to cover somebody it
+     * did not, and they have no second factor, what they hold outside the
+     * browser ends now. A new one is made from a web session, which asks
+     * them to enrol first.
+     *
+     * Returns how many accounts lost something.
+     */
+    private function endCredentialsBeyondEnforcement(TwoFactorEnforcement $before, TwoFactorEnforcement $after): int
+    {
+        $types = array_values(array_filter(
+            UserType::cases(),
+            fn (UserType $type): bool => $after->appliesTo($type) && ! $before->appliesTo($type),
+        ));
+
+        if ($types === []) {
+            return 0;
+        }
+
+        $grants = app(Grants::class);
+        $count = 0;
+
+        User::query()
+            ->whereIn('type', array_map(fn (UserType $type): string => $type->value, $types))
+            ->whereNull('two_factor_confirmed_at')
+            ->where(fn ($holders) => $holders
+                ->whereHas('tokens')
+                ->orWhereIn('id', McpConnection::query()->whereNull('revoked_at')->select('user_id')))
+            ->each(function (User $user) use ($grants, &$count): void {
+                $user->tokens()->delete();
+                $grants->revokeAllFor($user, 'two-factor required');
+                $count++;
+            });
+
+        return $count;
     }
 }

@@ -150,3 +150,34 @@ test('enrolment can actually be started under enforcement', function () {
         fn (AssertableInertia $page) => $page->where('pending', true)
     );
 });
+
+test('requiring two-factor ends the API tokens of accounts it newly covers without it', function () {
+    $admin = User::factory()->create();
+    $without = User::factory()->client()->create();
+    $enrolled = User::factory()->client()->create(['two_factor_confirmed_at' => now()]);
+    $staff = User::factory()->create();
+
+    $without->createToken('zap');
+    $enrolled->createToken('zap');
+    $staff->createToken('zap');
+
+    $this->actingAs($admin)->patch('/system/settings/security', [
+        'two_factor_enforcement' => 'clients',
+        'password_min_length' => 12,
+        'password_reject_breached' => true,
+    ])->assertRedirect();
+
+    expect($without->tokens()->count())->toBe(0)
+        ->and($enrolled->tokens()->count())->toBe(1)
+        // Not covered by "clients".
+        ->and($staff->tokens()->count())->toBe(1);
+
+    // Saving again with the same requirement ends nothing new.
+    $later = $without->createToken('again');
+    $this->actingAs($admin)->patch('/system/settings/security', [
+        'two_factor_enforcement' => 'clients',
+        'password_min_length' => 12,
+        'password_reject_breached' => true,
+    ])->assertRedirect();
+    expect($without->tokens()->count())->toBe(1);
+});

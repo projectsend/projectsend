@@ -930,3 +930,22 @@ it('ends assistant connections and API tokens when the holder changes or resets 
     oauthRefresh($connected['refresh_token'])->assertJsonPath('error', 'invalid_grant');
     test()->withToken($apiToken)->getJson('/api/v1/files')->assertUnauthorized();
 })->with(['change', 'reset']);
+
+it('ends an assistant connection when two-factor becomes required for an account without it', function (): void {
+    oauthDocument();
+    $staff = oauthStaff();
+    $connected = oauthExchange(oauthCode($staff))->json();
+    $admin = User::factory()->create();
+
+    // The consent screen left $staff's password hash in the session, which
+    // AuthenticateSession would read as somebody else's.
+    test()->flushSession();
+    test()->actingAs($admin)->patch('/system/settings/security', [
+        'two_factor_enforcement' => 'staff',
+        'password_min_length' => 12,
+        'password_reject_breached' => true,
+    ])->assertRedirect();
+
+    expect(McpConnection::query()->first()?->revoked_reason)->toBe('two-factor required');
+    oauthRefresh($connected['refresh_token'])->assertJsonPath('error', 'invalid_grant');
+});

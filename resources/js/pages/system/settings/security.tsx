@@ -86,6 +86,9 @@ export default function SecuritySettings({
                         <p className="text-muted-foreground text-sm">
                             {t(
                                 'Accounts covered by this requirement must set up two-factor authentication before they can continue using the application.',
+                            )}{' '}
+                            {t(
+                                'When the requirement starts to cover an account without it, that account\'s API tokens and AI assistant connections stop working.',
                             )}
                         </p>
 

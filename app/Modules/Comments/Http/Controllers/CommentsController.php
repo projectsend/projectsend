@@ -125,7 +125,7 @@ class CommentsController extends Controller
         return [
             'id' => $comment->id,
             'body' => $comment->body,
-            'author_name' => $comment->authorName(),
+            'author_name' => $comment->authorNameFor($viewer),
             'author_type' => $this->authorType($comment),
             'visibility' => $comment->visibility->value,
             'visibility_label' => $comment->visibility->label(forStaff: true),

@@ -231,3 +231,30 @@ test('a comment notification sends staff and clients to different places', funct
     $this->actingAs($client)->get("/comments/go/{$file->id}")
         ->assertRedirect(route('my-files.index', ['comments' => $file->id]));
 });
+
+/*
+ * A Client Manager reads comments on any file in their library, including
+ * an `everyone` comment a client off their roster left while the file was
+ * public. That client's name is not theirs to read, and both the web and
+ * the API printed it.
+ */
+test('a client-scoped staff member is not told the name of a commenting client off their roster', function () {
+    $mine = User::factory()->client()->create(['name' => 'Mine']);
+    $stranger = User::factory()->client()->create(['name' => 'Stranger Corp']);
+    $manager = User::factory()->role(SystemRole::ClientManager)->create();
+    $manager->assignedClients()->sync([$mine->id]);
+
+    $file = File::factory()->create(['uploaded_by' => $this->admin->id]);
+    shareFileWith($file, $mine);
+    FileComment::factory()->for($file)->everyone()->create(['author_id' => $stranger->id, 'body' => 'Left while it was public']);
+    app()->forgetScopedInstances();
+
+    $web = $this->actingAs($manager)->getJson("/files/{$file->id}/comments")->assertOk();
+    expect($web->json('comments.0.author_name'))->toBe('A client')
+        ->and($web->getContent())->not->toContain('Stranger Corp');
+
+    $token = $manager->createToken('t', ['upload'])->plainTextToken;
+    $api = $this->withToken($token)->getJson("/api/v1/files/{$file->id}/comments")->assertOk();
+    expect($api->json('data.0.author'))->toBe(['id' => null, 'name' => 'A client', 'type' => 'client'])
+        ->and($api->getContent())->not->toContain('Stranger Corp');
+});

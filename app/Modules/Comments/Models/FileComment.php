@@ -6,6 +6,7 @@ namespace App\Modules\Comments\Models;
 
 use App\Models\User;
 use App\Modules\Comments\CommentVisibility;
+use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Models\File;
 use Database\Factories\FileCommentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -159,5 +160,30 @@ class FileComment extends Model
         $name = $this->author()->withTrashed()->value('name');
 
         return is_string($name) ? $name : (string) __('Anonymous');
+    }
+
+    /**
+     * The author's name as $viewer may be told it. A client-scoped staff
+     * member reads comments on any file in their library, including one a
+     * client off their roster commented on (an `everyone` comment from
+     * when the file was public, say). That client's name is not theirs to
+     * read (ClientIdentityScope), so it reads "A client". Clients and
+     * guests are answered as before: what they may see is already decided
+     * by which comments reach them.
+     */
+    public function authorNameFor(?User $viewer): string
+    {
+        return $this->authorHiddenFrom($viewer) ? (string) __('A client') : $this->authorName();
+    }
+
+    public function authorHiddenFrom(?User $viewer): bool
+    {
+        if ($viewer === null || ! $viewer->isStaff() || $this->author_id === null) {
+            return false;
+        }
+
+        $author = $this->author ?? $this->author()->withTrashed()->first();
+
+        return $author !== null && ! app(ClientIdentityScope::class)->permits($viewer, $author);
     }
 }

@@ -108,7 +108,7 @@ class CommentPresenter
         return [
             'id' => $comment->id,
             'body' => $comment->body,
-            'author_name' => $comment->authorName(),
+            'author_name' => $comment->authorNameFor($viewer),
             'author_type' => $this->authorType($comment),
             'is_mine' => $viewer !== null && $comment->author_id === $viewer->id,
             'visibility' => $comment->visibility->value,

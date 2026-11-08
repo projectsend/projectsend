@@ -38,8 +38,10 @@ class FileCommentResource extends JsonResource
             'body' => $this->body,
             'visibility' => $this->visibility->value,
             'author' => [
-                'id' => $this->author_id,
-                'name' => $this->authorName(),
+                // A client the caller may not be told about is "A client",
+                // with no id.
+                'id' => $this->authorHiddenFrom($viewer) ? null : $this->author_id,
+                'name' => $this->authorNameFor($viewer),
                 'type' => $this->author_id === null ? 'guest' : ($this->author?->isStaff() === true ? 'staff' : 'client'),
             ],
             // Whose conversation this is, when it is one client's rather

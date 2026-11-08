@@ -4639,7 +4639,8 @@
                                 "type": [
                                     "integer",
                                     "null"
-                                ]
+                                ],
+                                "description": "A client the caller may not be told about is \"A client\",\nwith no id."
                             },
                             "name": {
                                 "type": "string"

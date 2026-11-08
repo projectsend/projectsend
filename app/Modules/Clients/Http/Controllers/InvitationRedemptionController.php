@@ -208,18 +208,20 @@ class InvitationRedemptionController extends Controller
      * the account is what the person holding the link came for, and it is
      * theirs either way.
      *
-     * An invitation whose sender is gone (the account was deleted and the
-     * column nulls out) keeps its group: there is no longer a reach to
-     * exceed, and dropping it would quietly undo what an administrator
-     * arranged.
+     * An invitation whose sender is gone never gets this far: findUsable()
+     * refuses it.
      */
     private function mayJoin(Invitation $invitation, User $client): bool
     {
         $inviter = $invitation->invitedBy;
         $group = $invitation->group;
 
-        if ($inviter === null || $group === null) {
+        if ($group === null) {
             return true;
+        }
+
+        if ($inviter === null) {
+            return false;
         }
 
         if ($this->scope->allowsGroupMembership($inviter, $group, $client)) {
@@ -246,6 +248,27 @@ class InvitationRedemptionController extends Controller
             return null;
         }
 
+        // An invitation is its sender's grant, landing days later when
+        // they are not there to be asked. It lands only while they could
+        // still make it: an active staff account that may create clients.
+        // Deactivated, deleted, converted to a client, or stripped of the
+        // permission, and the link answers like an expired one, the same
+        // sentence on every door here, so nothing is told about the sender.
+        // Staff who still may can send a new one.
+        if (! $this->senderStillMay($invitation)) {
+            return null;
+        }
+
         return $invitation;
+    }
+
+    private function senderStillMay(Invitation $invitation): bool
+    {
+        $sender = $invitation->invitedBy;
+
+        return $sender !== null
+            && $sender->isStaff()
+            && $sender->maySignIn()
+            && $sender->can('create_clients');
     }
 }

@@ -627,3 +627,32 @@ test('an invitation from an administrator still joins the group it named', funct
 
     expect($group->members()->where('users.id', $client->id)->exists())->toBeTrue();
 });
+
+test('an invitation ends with its sender\'s authority to send it', function (string $change) {
+    $role = Role::query()->create(['name' => 'Inviter', 'is_administrator' => false, 'is_system' => false]);
+    RolePermission::query()->create(['role_id' => $role->id, 'permission' => 'create_clients']);
+    $sender = User::factory()->create(['role_id' => $role->id]);
+    $group = Group::query()->create(['name' => 'Board', 'public' => false]);
+    $invitation = Invitation::issue('invited@example.com', null, $group, $sender, now()->addDay());
+
+    match ($change) {
+        'deactivated' => $sender->forceFill(['active' => false])->save(),
+        'deleted' => $sender->delete(),
+        'converted to a client' => $sender->forceFill(['type' => UserType::Client, 'role_id' => null])->save(),
+        'permission removed' => RolePermission::query()->where('role_id', $role->id)->delete(),
+    };
+
+    // Answers like an expired link, on every door.
+    $this->get("/invite/{$invitation->token}")->assertInertia(
+        fn (AssertableInertia $page) => $page->where('expired', true)
+    );
+    $this->post("/invite/{$invitation->token}", [
+        'token' => $invitation->token,
+        'name' => 'Invited Person',
+        'password' => 'super-secret-password',
+        'password_confirmation' => 'super-secret-password',
+    ]);
+
+    expect(User::query()->where('email', 'invited@example.com')->exists())->toBeFalse()
+        ->and($group->members()->count())->toBe(0);
+})->with(['deactivated', 'deleted', 'converted to a client', 'permission removed']);

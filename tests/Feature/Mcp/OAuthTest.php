@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Testing\TestResponse;
 use Laravel\Sanctum\PersonalAccessToken;
 use Tests\Support\McpWorld;
@@ -898,3 +899,34 @@ it('names the resource once when the site is still called ProjectSend', function
     withHostCapabilities(['ai.connector'], fn () => test()->getJson('/.well-known/oauth-protected-resource/mcp'))
         ->assertJsonPath('resource_name', 'ProjectSend — Acme Files');
 });
+
+it('ends assistant connections and API tokens when the holder changes or resets their own password', function (string $how): void {
+    oauthDocument();
+    $staff = oauthStaff();
+    $connected = oauthExchange(oauthCode($staff))->json();
+    $apiToken = $staff->createToken('Zapier', ['files:read'])->plainTextToken;
+
+    // Whoever had the old password made both; changing it is how the
+    // owner takes the account back.
+    if ($how === 'change') {
+        test()->actingAs($staff)->put('/settings/password', [
+            'current_password' => OAUTH_PASSWORD,
+            'password' => 'A-new-password-1234',
+            'password_confirmation' => 'A-new-password-1234',
+        ])->assertSessionHasNoErrors();
+    } else {
+        test()->post('/reset-password', [
+            'token' => Password::createToken($staff),
+            'email' => $staff->email,
+            'password' => 'A-new-password-1234',
+            'password_confirmation' => 'A-new-password-1234',
+        ])->assertSessionHasNoErrors();
+    }
+
+    expect(McpConnection::query()->first()?->revoked_at)->not->toBeNull()
+        ->and(PersonalAccessToken::query()->count())->toBe(0);
+
+    oauthMcp($connected['access_token'], oauthToolsList())->assertStatus(401);
+    oauthRefresh($connected['refresh_token'])->assertJsonPath('error', 'invalid_grant');
+    test()->withToken($apiToken)->getJson('/api/v1/files')->assertUnauthorized();
+})->with(['change', 'reset']);

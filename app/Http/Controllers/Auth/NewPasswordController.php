@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Identity\AuthSource;
 use App\Modules\Identity\Ldap\LdapAuthenticator;
 use App\Modules\Identity\StaffSignInPolicy;
+use App\Modules\Mcp\OAuth\Grants;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -163,6 +164,14 @@ class NewPasswordController extends Controller
                 }
 
                 $user->forceFill($attributes)->save();
+
+                // A reset is how somebody takes an account back. Browser
+                // sessions end on their own (AuthenticateSession reads the
+                // hash), but API tokens and assistant connections do not,
+                // and whoever held the old password may have made one.
+                // Same as when staff replace a password (StaffAccounts).
+                $user->tokens()->delete();
+                app(Grants::class)->revokeAllFor($user, 'password reset');
 
                 event(new PasswordReset($user));
             }

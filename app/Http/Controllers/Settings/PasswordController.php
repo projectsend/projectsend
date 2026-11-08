@@ -7,6 +7,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Identity\AuthSource;
 use App\Modules\Identity\StaffSignInPolicy;
+use App\Modules\Mcp\OAuth\Grants;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -90,6 +91,13 @@ class PasswordController extends Controller
         // stays signed in while every other session falls over on its next
         // request.
         Auth::logoutOtherDevices($validated['password']);
+
+        // The same reaction has to reach what is not a session: an API
+        // token or an assistant connection made by whoever had the old
+        // password keeps working otherwise, and an assistant connection
+        // renews itself for good.
+        $user->tokens()->delete();
+        app(Grants::class)->revokeAllFor($user, 'password changed');
 
         app(ActivityLogger::class)->log(Action::PasswordUpdated, $user);
 

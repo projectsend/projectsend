@@ -232,7 +232,7 @@ export function AppSidebar() {
 
             // Files: where they land, how long they stay, who can see them.
             { title: t('Uploads'), url: '/system/settings/uploads', when: settings },
-            { title: t('Storage'), url: '/system/settings/storage', when: settings && capabilities.includes('storage.configure') },
+            { title: t('Storage'), url: '/system/settings/storage', when: settings && auth.is_administrator && capabilities.includes('storage.configure') },
             { title: t('Downloads'), url: '/system/settings/downloads', when: settings },
             { title: t('File retention'), url: '/system/settings/file-retention', when: settings },
             { title: t('Virus scanning'), url: '/system/settings/virus-scanning', when: settings },

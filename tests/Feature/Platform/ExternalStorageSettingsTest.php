@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
     $this->admin = User::factory()->create();
+    // Storage settings ask for the password again before a change.
+    confirmPassword($this->admin);
 });
 
 test('the secret is encrypted at rest', function () {

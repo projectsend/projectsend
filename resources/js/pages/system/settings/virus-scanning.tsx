@@ -26,6 +26,7 @@ interface VirusScanningProps {
     enabled: boolean;
     /** The scanner is supplied by the platform: no address to set, and no switch. */
     managed: boolean;
+    connection_locked: boolean;
     /** Whether this installation connects its own scanner, and so has one to test. */
     can_test: boolean;
     address: string;
@@ -51,6 +52,7 @@ export default function VirusScanningSettings({
     test_result,
     enabled,
     managed,
+    connection_locked,
     can_test,
     address,
     max_size_mb,
@@ -177,6 +179,16 @@ export default function VirusScanningSettings({
                                     <AlertDescription>
                                         {t(
                                             'Every upload on this site is scanned. The scanner itself is run for you, so there is nothing to connect here.',
+                                        )}
+                                    </AlertDescription>
+                                </Alert>
+                            ) : connection_locked ? (
+                                <Alert>
+                                    <ShieldAlert className="size-4" />
+                                    <AlertTitle>{t('Only an administrator can connect the scanner')}</AlertTitle>
+                                    <AlertDescription>
+                                        {t(
+                                            'The scanner receives every upload, so only an administrator can choose it or switch scanning on and off. You can still change the options.',
                                         )}
                                     </AlertDescription>
                                 </Alert>

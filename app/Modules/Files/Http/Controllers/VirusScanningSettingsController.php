@@ -21,6 +21,7 @@ use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Queue;
@@ -88,8 +89,11 @@ class VirusScanningSettingsController extends Controller
             // has a scanner worth testing; one that does not connect
             // scanners at all has nothing to test, and the endpoint says
             // so with a 403.
-            'can_test' => $this->canConnect(),
-            'address' => $this->config->isManaged() ? '' : $this->settings->get(Setting::VirusScannerAddress),
+            'can_test' => $this->canConnect() && $this->mayConnect($request),
+            // The connection is the administrator's even where this
+            // edition connects scanners: see mayConnect().
+            'connection_locked' => $this->canConnect() && ! $this->config->isManaged() && ! $this->mayConnect($request),
+            'address' => $this->config->isManaged() || ! $this->mayConnect($request) ? '' : $this->settings->get(Setting::VirusScannerAddress),
             'max_size_mb' => $this->settings->get(Setting::VirusScanMaxSizeMb),
             'unscannable_policy' => $this->settings->get(Setting::VirusUnscannablePolicy),
             'scanner_down_policy' => $this->settings->get(Setting::VirusScannerDownPolicy),
@@ -114,7 +118,7 @@ class VirusScanningSettingsController extends Controller
         // A managed installation may still choose its policies. The
         // connection and the switch are not on the screen there, and a
         // request that sends them anyway changes nothing.
-        if (! $this->config->isManaged() && $this->canConnect()) {
+        if (! $this->config->isManaged() && $this->canConnect() && $this->mayConnect($request)) {
             $address = trim((string) ($validated['address'] ?? ''));
 
             // Refused rather than saved and quietly inert: switching this
@@ -167,6 +171,7 @@ class VirusScanningSettingsController extends Controller
         // Nothing to test where the connection is not this installation's
         // to make.
         abort_unless($this->canConnect(), 403);
+        abort_unless($this->mayConnect($request), 403);
 
         $typed = trim((string) $request->input('address', ''));
 
@@ -354,6 +359,24 @@ class VirusScanningSettingsController extends Controller
     private function canConnect(): bool
     {
         return $this->capabilities->has(Capability::VirusScanningConnect);
+    }
+
+    /**
+     * Whether this person may choose where uploads are sent to be scanned,
+     * or switch scanning on and off.
+     *
+     * The administrator's, not edit_settings': the scanner is handed the
+     * bytes of every upload from everybody, and the address accepts any
+     * host and port, so whoever picks it can send every new file to a
+     * server of their own, or point it at a service inside the network
+     * (the cache, the queue) and have uploads speak to it. The Test button
+     * dials whatever it is given and reports what answered. Same reasoning
+     * as the mail and storage screens. The options below the connection
+     * stay with edit_settings.
+     */
+    private function mayConnect(Request $request): bool
+    {
+        return Gate::forUser($request->user())->allows('administer');
     }
 
     private function noteFor(File $file): ?string

@@ -317,10 +317,18 @@ Route::middleware('auth')->group(function () {
         // — unlike email settings, there's no capability-independent
         // sub-field to keep serving in Cloud, so the whole surface is
         // gated at the route level instead of per-field in the controller.
-        Route::middleware('capability:storage.configure')->group(function () {
+        //
+        // And the administrator's alone, with the password asked again
+        // before anything changes, like the mail screen: whoever chooses
+        // the bucket receives every file uploaded after that, from
+        // everybody, and the test dials whatever endpoint it is given.
+        // edit_settings is not the administrator.
+        Route::middleware(['capability:storage.configure', 'can:administer'])->group(function () {
             Route::get('system/settings/storage', [ExternalStorageSettingsController::class, 'edit'])->name('system-settings.storage.edit');
-            Route::patch('system/settings/storage', [ExternalStorageSettingsController::class, 'update'])->name('system-settings.storage.update');
-            Route::post('system/settings/storage/test', [ExternalStorageSettingsController::class, 'testConnection'])->name('system-settings.storage.test');
+            Route::patch('system/settings/storage', [ExternalStorageSettingsController::class, 'update'])
+                ->middleware('password.confirm')->name('system-settings.storage.update');
+            Route::post('system/settings/storage/test', [ExternalStorageSettingsController::class, 'testConnection'])
+                ->middleware('password.confirm')->name('system-settings.storage.test');
         });
 
         // Both editions since 2026-08-28, and gated all-or-nothing like

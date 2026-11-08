@@ -16,6 +16,8 @@ use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
     $this->admin = User::factory()->create();
+    // Storage settings ask for the password again before a change.
+    confirmPassword($this->admin);
 });
 
 /**

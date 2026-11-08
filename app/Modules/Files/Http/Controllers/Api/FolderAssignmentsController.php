@@ -6,6 +6,7 @@ namespace App\Modules\Files\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Files\Folders\FilesBeyondAuthority;
 use App\Modules\Files\Folders\FolderTrails;
 use App\Modules\Files\Http\Controllers\Concerns\ResolvesShareTargets;
 use App\Modules\Files\Http\Resources\Api\FolderResource;
@@ -43,6 +44,13 @@ class FolderAssignmentsController extends Controller
     public function store(Request $request, Folder $folder): FolderResource
     {
         Gate::authorize('update', $folder);
+
+        // Sharing a folder shares every file in it, so it needs the right to
+        // share each of them.
+        $actor = $request->user();
+        assert($actor !== null);
+        $refusal = app(FilesBeyondAuthority::class)->refusal($actor, $folder, 'share');
+        abort_if($refusal !== null, 403, (string) $refusal);
 
         [$assignable, $targetName] = $this->resolveRequestedTarget(
             $request,

@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Files\Folders;
 
 use App\Models\User;
-use App\Modules\Files\Access\StaffLibraryScope;
-use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
  * How many files in a folder's subtree a staff member may not delete.
@@ -21,7 +18,8 @@ use Illuminate\Database\Eloquent\Builder;
  * FolderPolicy. Every staff path that deletes a folder asks this first, so
  * the web screen and the API cannot disagree about what a cascade may take.
  *
- * Asked as one count rather than FilePolicy::delete per file: a folder can
+ * The query is FilesBeyondAuthority's, shared with sharing, publishing
+ * and moving a folder. Asked as one count rather than FilePolicy::delete per file: a folder can
  * hold thousands, Gate resolves a fresh policy for every check, and a
  * per-row policy check on a listing is the cost 0a8b609e went to some
  * trouble to remove. The two halves of FilePolicy::delete are expressible
@@ -37,35 +35,11 @@ use Illuminate\Database\Eloquent\Builder;
 class UndeletableFiles
 {
     public function __construct(
-        private readonly StaffLibraryScope $scope,
+        private readonly FilesBeyondAuthority $beyond,
     ) {}
 
     public function count(User $viewer, Folder $folder): int
     {
-        $mayDeleteOwn = $viewer->can('delete_files');
-        $mayDeleteOthers = $viewer->can('delete_others_files');
-        $scoped = $viewer->isClientScoped();
-
-        if ($mayDeleteOwn && $mayDeleteOthers && ! $scoped) {
-            return 0;
-        }
-
-        return File::query()
-            ->whereIn('folder_id', $folder->subtreeFolderIds())
-            ->where(function (Builder $outer) use ($viewer, $mayDeleteOwn, $mayDeleteOthers, $scoped): void {
-                if (! $mayDeleteOwn) {
-                    $outer->orWhere('uploaded_by', $viewer->id);
-                }
-
-                if (! $mayDeleteOthers) {
-                    $outer->orWhere(fn (Builder $others): Builder => $others
-                        ->whereNull('uploaded_by')->orWhere('uploaded_by', '!=', $viewer->id));
-                }
-
-                if ($scoped) {
-                    $outer->orWhereNotIn('id', $this->scope->files($viewer)->select('id'));
-                }
-            })
-            ->count();
+        return $this->beyond->count($viewer, $folder, 'delete_files', 'delete_others_files');
     }
 }

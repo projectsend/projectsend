@@ -130,3 +130,54 @@ test('a client still makes and fills folders in their own space and in a folder 
     $made = Folder::query()->where('name', 'Mine inside')->sole();
     expect(Folder::uploadableBy($alice, $made))->toBeTrue();
 });
+
+/*
+ * Acting on a folder acts on everything in it, and only deleting one
+ * asked about the files inside. A folder owner without edit_others_files
+ * could share, publish or move under a shared parent a folder full of a
+ * colleague's files, each of which they could not have shared alone.
+ */
+test('sharing, publishing or exposing a folder needs the right to share every file in it', function () {
+    $owner = staffWithPermissions(['upload', 'edit_files', 'upload_public', 'create_own_folders']);
+    $colleague = User::factory()->create();
+    $projects = makeFolder('Projects');
+    $projects->forceFill(['created_by' => $owner->id])->save();
+    File::factory()->create([
+        'uploaded_by' => $colleague->id, 'folder_id' => $projects->id, 'name' => 'colleague-file',
+        'original_name' => 'c.pdf', 'mime_type' => 'application/pdf', 'size' => 10,
+    ]);
+    $sharedParent = reachFolder('Client area', $this->mine);
+    $privateParent = reachFolder('Archive');
+
+    $this->actingAs($owner)->post("/folders/{$projects->id}/assignments", ['type' => 'client', 'id' => $this->mine->id])
+        ->assertSessionHas('error');
+    $this->actingAs($owner)->patch("/folders/{$projects->id}", ['name' => 'Projects', 'public' => true, 'slug' => 'projects'])
+        ->assertSessionHas('error');
+    $this->actingAs($owner)->patch("/folders/{$projects->id}/move", ['parent_id' => $sharedParent->id])
+        ->assertSessionHas('error');
+
+    $projects->refresh();
+    expect(FolderAssignment::query()->where('folder_id', $projects->id)->exists())->toBeFalse()
+        ->and($projects->public)->toBeFalse()
+        ->and($projects->parent_id)->toBeNull();
+
+    // Filing it under a folder that hands nothing out is still fine.
+    $this->actingAs($owner)->patch("/folders/{$projects->id}/move", ['parent_id' => $privateParent->id])
+        ->assertSessionMissing('error');
+    expect($projects->refresh()->parent_id)->toBe($privateParent->id);
+});
+
+test('a folder of the sharer\'s own files, or anyone\'s for somebody who may edit them, still shares', function () {
+    $owner = staffWithPermissions(['upload', 'edit_files', 'create_own_folders']);
+    $mineOnly = makeFolder('Mine only');
+    $mineOnly->forceFill(['created_by' => $owner->id])->save();
+    File::factory()->create([
+        'uploaded_by' => $owner->id, 'folder_id' => $mineOnly->id, 'name' => 'own-file',
+        'original_name' => 'o.pdf', 'mime_type' => 'application/pdf', 'size' => 10,
+    ]);
+
+    $this->actingAs($owner)->post("/folders/{$mineOnly->id}/assignments", ['type' => 'client', 'id' => $this->mine->id])
+        ->assertSessionMissing('error');
+
+    expect(FolderAssignment::query()->where('folder_id', $mineOnly->id)->count())->toBe(1);
+});

@@ -15,6 +15,7 @@ use App\Modules\Files\Access\DownloadAllowance;
 use App\Modules\Files\Access\ShareTargets;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Folders\BreadcrumbBuilder;
+use App\Modules\Files\Folders\FilesBeyondAuthority;
 use App\Modules\Files\Folders\FolderService;
 use App\Modules\Files\Folders\UndeletableFiles;
 use App\Modules\Files\Models\Category;
@@ -577,6 +578,16 @@ class FoldersController extends Controller
         // public state exactly as it was.
         if ($user?->can('upload_public') === true) {
             $public = $validated['public'] ?? $folder->public;
+
+            // Making a folder public publishes every file in it.
+            if ($public && ! $wasPublic) {
+                $refusal = app(FilesBeyondAuthority::class)->refusal($user, $folder, 'publish');
+
+                if ($refusal !== null) {
+                    return back()->with('error', $refusal);
+                }
+            }
+
             $attributes['public'] = $public;
             $attributes['slug'] = $public ? (($validated['slug'] ?? '') ?: ($folder->slug ?: Folder::uniqueSlugFrom($validated['name'], $folder->id))) : $folder->slug;
             $attributes['allow_client_uploads'] = $public && ($validated['allow_client_uploads'] ?? false);
@@ -619,6 +630,15 @@ class FoldersController extends Controller
         // (GHSA-rxf8-wh8v-jm9j).
         if ($user !== null) {
             abort_unless(Folder::uploadableBy($user, $newParent), 403);
+
+            // Under a shared or public parent, every file in the folder is
+            // handed out with it.
+            $beyond = app(FilesBeyondAuthority::class);
+            $refusal = $beyond->exposes($newParent) ? $beyond->refusal($user, $folder, 'move') : null;
+
+            if ($refusal !== null) {
+                return back()->with('error', $refusal);
+            }
         }
 
         $this->folders->move($folder, $newParent);

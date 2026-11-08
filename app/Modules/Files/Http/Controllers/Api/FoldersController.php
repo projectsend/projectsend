@@ -10,6 +10,7 @@ use App\Modules\Api\Support\PollingQuery;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Files\Folders\FilesBeyondAuthority;
 use App\Modules\Files\Folders\FolderService;
 use App\Modules\Files\Folders\FolderTrails;
 use App\Modules\Files\Folders\UndeletableFiles;
@@ -180,6 +181,12 @@ class FoldersController extends Controller
                 // subtree, the act FoldersController::move refuses without
                 // `upload_public` (GHSA-rxf8-wh8v-jm9j).
                 abort_unless(Folder::uploadableBy($user, $newParent), 403);
+
+                // Under a shared or public parent, every file in the folder
+                // is handed out with it.
+                $beyond = app(FilesBeyondAuthority::class);
+                $refusal = $beyond->exposes($newParent) ? $beyond->refusal($user, $folder, 'move') : null;
+                abort_if($refusal !== null, 403, (string) $refusal);
 
                 $this->folders->move($folder, $newParent);
                 $this->activity->log(Action::FolderMoved, subject: $folder);

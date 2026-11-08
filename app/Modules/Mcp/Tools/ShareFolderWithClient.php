@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Mcp\Tools;
 
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Files\Folders\FilesBeyondAuthority;
 use App\Modules\Mcp\Support\Account;
 use App\Modules\Mcp\Support\ClientAccountsQuery;
 use App\Modules\Mcp\Support\Envelope;
@@ -91,6 +92,13 @@ class ShareFolderWithClient extends ToolBase
         // as ResolvesShareTargets::guardAssignable holds them on the web.
         if (! app(StaffLibraryScope::class)->canAssignClient($account->user, $client)) {
             return ToolError::validationFailed(['client_id' => ['This account can only share with the clients assigned to it.']]);
+        }
+
+        // Sharing a folder shares every file in it, as on the web.
+        $refusal = app(FilesBeyondAuthority::class)->refusal($account->user, $folder, 'share');
+
+        if ($refusal !== null) {
+            return ToolError::validationFailed(['folder_id' => [$refusal]]);
         }
 
         $shared = Folders::shareWith($folder, $client);

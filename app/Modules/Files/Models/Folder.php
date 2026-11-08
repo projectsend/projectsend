@@ -6,6 +6,7 @@ namespace App\Modules\Files\Models;
 
 use App\Models\User;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Files\Folders\FolderReach;
 use App\Modules\Groups\Models\Group;
 use App\Support\Concerns\HasUniqueSlug;
 use Illuminate\Database\Eloquent\Builder;
@@ -192,6 +193,16 @@ class Folder extends Model
 
         if ($user->isStaff()) {
             if (! app(StaffLibraryScope::class)->allowsFolder($user, $folder)) {
+                return false;
+            }
+
+            // Reaching the folder is not the same as being allowed to share
+            // with everybody it reaches. A folder shared with one of this
+            // staff member's clients and with somebody else's is in their
+            // library, and putting a file there shared it with both. A
+            // client-scoped staff member shares only with their own clients,
+            // so they may place only where every recipient is theirs.
+            if (! app(FolderReach::class)->withinRosterOf($user, $folder)) {
                 return false;
             }
 

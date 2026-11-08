@@ -200,7 +200,7 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                         />
                                     )}
                                     <FilePreviewDialog
-                                        previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                        previewUrl={preview_enabled && file.download_limit.limit === null ? route('files.preview', file.id) : null}
                                         mimeType={file.mime_type}
                                         fileName={file.original_name}
                                         className="shrink-0"
@@ -256,7 +256,7 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                         </div>
                                     )}
                                     <PreviewAction
-                                        previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                        previewUrl={preview_enabled && file.download_limit.limit === null ? route('files.preview', file.id) : null}
                                         mimeType={file.mime_type}
                                         fileName={file.original_name}
                                         variant="ghost"
@@ -317,7 +317,7 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                     />
                                 )}
 
-                                {preview_enabled && isPreviewable(file.mime_type) ? (
+                                {preview_enabled && file.download_limit.limit === null && isPreviewable(file.mime_type) ? (
                                     <FilePreviewDialog
                                         previewUrl={route('files.preview', file.id)}
                                         mimeType={file.mime_type}
@@ -393,7 +393,7 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                             />
                                         )}
                                         <PreviewAction
-                                            previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                            previewUrl={preview_enabled && file.download_limit.limit === null ? route('files.preview', file.id) : null}
                                             mimeType={file.mime_type}
                                             fileName={file.original_name}
                                             variant="ghost"

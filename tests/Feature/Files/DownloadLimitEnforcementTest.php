@@ -117,22 +117,27 @@ test('the API keeps the uploader exempt from their own file\'s limit', function 
     expect($file->downloads()->count())->toBe(3);
 });
 
-test('preview is refused once the limit is spent, but never spends it', function () {
-    // preview() serves the original bytes for images unless something
-    // asks for a rendering, so an unguarded preview would be a way
-    // around every limit on the install.
+test('a capped file is never served whole through the preview', function () {
+    // preview() serves the original bytes unless something asks for a
+    // rendering, and a preview is not counted as a download. Refusing only
+    // once the cap was spent left it never spent: a file limited to two
+    // downloads could be taken whole through the preview any number of
+    // times. So a capped file is downloaded, which counts.
     $file = limitedFile(['mime_type' => 'image/jpeg', 'original_name' => 'photo.jpg', 'download_limit' => 2]);
     shareFileWith($file, $this->client);
 
-    $this->actingAs($this->client)->get("/files/{$file->id}/preview")->assertOk();
-    $this->actingAs($this->client)->get("/files/{$file->id}/preview")->assertOk();
-
-    // Two previews, and the allowance is untouched.
-    $this->actingAs($this->client)->get("/files/{$file->id}/download")->assertOk();
-    $this->actingAs($this->client)->get("/files/{$file->id}/download")->assertOk();
-
-    // Now it is spent — and the preview closes with it.
     $this->actingAs($this->client)->get("/files/{$file->id}/preview")->assertForbidden();
+
+    // The downloads themselves still work, and still count.
+    $this->actingAs($this->client)->get("/files/{$file->id}/download")->assertOk();
+    expect($file->downloads()->count())->toBe(1);
+});
+
+test('an uncapped file still previews', function () {
+    $file = limitedFile(['mime_type' => 'image/jpeg', 'original_name' => 'photo.jpg', 'download_limit' => null]);
+    shareFileWith($file, $this->client);
+
+    $this->actingAs($this->client)->get("/files/{$file->id}/preview")->assertOk();
 });
 
 test('a share link refuses a file whose own limit is spent, without spending the link', function () {

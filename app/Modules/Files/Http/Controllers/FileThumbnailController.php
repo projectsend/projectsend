@@ -174,6 +174,13 @@ class FileThumbnailController extends Controller
             }
         }
 
+        // What is left is the original bytes, and a preview is not counted
+        // as a download: refusing only once the cap is spent left it never
+        // spent, so a file limited to one download could be taken whole
+        // through this URL any number of times. A file with a cap for this
+        // viewer is downloaded, which counts; a rendition above is fine.
+        abort_if($this->allowance->remaining($file, $request->user()) !== null, 403);
+
         return $this->bytes->inline($file);
     }
 

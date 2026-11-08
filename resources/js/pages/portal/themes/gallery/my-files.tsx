@@ -202,7 +202,7 @@ export default function MyFilesGallery(props: MyFilesFolderManagementProps) {
                                 badge truncates it to nothing. */}
                             <VersionBadge version={file.version} variant="gallery" className="absolute top-3 right-3 z-10" />
 
-                            {preview_enabled && isPreviewable(file.mime_type) ? (
+                            {preview_enabled && file.download_limit.limit === null && isPreviewable(file.mime_type) ? (
                                 <FilePreviewDialog
                                     previewUrl={route('files.preview', file.id)}
                                     mimeType={file.mime_type}
@@ -286,7 +286,7 @@ export default function MyFilesGallery(props: MyFilesFolderManagementProps) {
                                         />
                                     )}
                                     <PreviewAction
-                                        previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                        previewUrl={preview_enabled && file.download_limit.limit === null ? route('files.preview', file.id) : null}
                                         mimeType={file.mime_type}
                                         fileName={file.original_name}
                                         variant="ghost"

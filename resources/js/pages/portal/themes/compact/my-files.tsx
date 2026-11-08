@@ -213,7 +213,7 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
                                     <td className="px-2 py-1">
                                         <div className="flex items-start gap-1.5">
                                             <FilePreviewDialog
-                                                previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                                previewUrl={preview_enabled && file.download_limit.limit === null ? route('files.preview', file.id) : null}
                                                 mimeType={file.mime_type}
                                                 fileName={file.original_name}
                                                 className="shrink-0"
@@ -268,7 +268,7 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
                                                 />
                                             )}
                                             <PreviewAction
-                                                previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                                previewUrl={preview_enabled && file.download_limit.limit === null ? route('files.preview', file.id) : null}
                                                 mimeType={file.mime_type}
                                                 fileName={file.original_name}
                                                 variant="ghost"

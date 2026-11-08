@@ -117,6 +117,17 @@ test('a spent download limit closes the preview too', function () {
     $this->get(route('public.preview', ['public', $file->slug]))->assertForbidden();
 });
 
+// A preview serves the whole file and is not counted, so a capped file
+// previewed here never spent its cap: one download allowed, any number of
+// full copies through the preview.
+test('a capped file is never previewed whole, even before its limit is spent', function () {
+    $file = publicListingFile(['download_limit' => 3]);
+
+    $this->get(route('public.preview', ['public', $file->slug]))->assertForbidden();
+    $this->get(route('public.file', ['public', $file->slug]))
+        ->assertInertia(fn ($page) => $page->where('preview_url', null));
+});
+
 test('the public file page carries a preview url only when a visitor may use one', function () {
     $file = publicListingFile();
 

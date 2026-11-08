@@ -219,7 +219,7 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
                                 )}
                                 <div className="flex min-w-0 flex-1 items-center gap-4">
                                     <FilePreviewDialog
-                                        previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                        previewUrl={preview_enabled && file.download_limit.limit === null ? route('files.preview', file.id) : null}
                                         mimeType={file.mime_type}
                                         fileName={file.original_name}
                                         className="shrink-0"
@@ -275,7 +275,7 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
                                     </div>
                                 )}
                                 <PreviewAction
-                                    previewUrl={preview_enabled ? route('files.preview', file.id) : null}
+                                    previewUrl={preview_enabled && file.download_limit.limit === null ? route('files.preview', file.id) : null}
                                     mimeType={file.mime_type}
                                     fileName={file.original_name}
                                     variant="ghost"

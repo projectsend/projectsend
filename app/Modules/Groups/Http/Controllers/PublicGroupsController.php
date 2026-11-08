@@ -318,6 +318,12 @@ class PublicGroupsController extends Controller
         // nothing.
         abort_unless($this->allowance->allows($file, null), 403);
 
+        // This route only ever serves the whole file, and a preview is not
+        // counted as a download, so a capped file previewed here never used
+        // up its cap: one download allowed, unlimited full copies through
+        // the preview. A file with a cap is downloaded, which counts.
+        abort_if($this->allowance->remaining($file, null) !== null, 403);
+
         // Debounced exactly as the signed-in twin is, and for the same
         // reason: a single visitor watching one video arrives here dozens
         // of times. Without a viewer to key on, PreviewLog keys on the
@@ -343,7 +349,9 @@ class PublicGroupsController extends Controller
             return null;
         }
 
-        if (! $this->allowance->allows($file, null)) {
+        // A capped file is never previewed here (see preview()), spent or
+        // not, so the page does not offer a button that can only say 403.
+        if ($this->allowance->remaining($file, null) !== null) {
             return null;
         }
 

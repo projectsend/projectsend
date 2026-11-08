@@ -49,7 +49,10 @@ class FolderPolicy
                 return false;
             }
 
-            return $folder->isOwnedBy($user) && $user->can('create_own_folders');
+            // Owning it is not enough once it is out of their sight: a
+            // folder they made inside a share that has since ended is no
+            // longer theirs to rename (scopeVisibleToClient).
+            return $folder->isOwnedBy($user) && $user->can('create_own_folders') && $this->view($user, $folder);
         }
 
         $permitted = $folder->isOwnedBy($user) ? $user->can('edit_files') : $user->can('edit_others_files');
@@ -70,7 +73,7 @@ class FolderPolicy
         }
 
         if (! $user->isStaff()) {
-            return $folder->isOwnedBy($user) && $user->can('create_own_folders');
+            return $folder->isOwnedBy($user) && $user->can('create_own_folders') && $this->view($user, $folder);
         }
 
         $permitted = $folder->isOwnedBy($user) ? $user->can('delete_files') : $user->can('delete_others_files');

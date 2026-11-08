@@ -43,13 +43,59 @@ class FolderReach
     ) {}
 
     /**
+     * Everybody the folder reaches, as assignment rows.
+     *
+     * Shares are rows already. The one reach that is not a row is a
+     * client's own tree: Folder::scopeVisibleToClient shows a client the
+     * folders they created under a top-level folder they created (their
+     * home, typically), and every file in those. That client is added
+     * here as an unsaved row, so every question below counts them like
+     * anybody a folder is shared with.
+     *
      * @return Collection<int, FolderAssignment>
      */
     public function assignments(Folder $folder): Collection
     {
-        return FolderAssignment::query()
+        $assignments = FolderAssignment::query()
             ->whereIn('folder_id', [$folder->id, ...$folder->ancestorIds()])
             ->get();
+
+        $owner = $this->treeOwner($folder);
+
+        if ($owner !== null) {
+            $assignments->push(new FolderAssignment([
+                'folder_id' => $folder->id,
+                'assignable_type' => $owner->getMorphClass(),
+                'assignable_id' => $owner->id,
+            ]));
+        }
+
+        return $assignments;
+    }
+
+    /**
+     * The client who sees this folder because it is in a tree of their
+     * own, if any: they created it, and they created its top-level
+     * folder.
+     */
+    private function treeOwner(Folder $folder): ?User
+    {
+        if ($folder->created_by === null) {
+            return null;
+        }
+
+        $rootId = $folder->ancestorIds()[0] ?? $folder->id;
+        $rootCreator = $rootId === $folder->id
+            ? $folder->created_by
+            : Folder::query()->whereKey($rootId)->value('created_by');
+
+        if ((int) $rootCreator !== (int) $folder->created_by) {
+            return null;
+        }
+
+        $creator = User::query()->find($folder->created_by);
+
+        return $creator instanceof User && $creator->isClient() ? $creator : null;
     }
 
     /**

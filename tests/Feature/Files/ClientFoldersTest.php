@@ -285,3 +285,61 @@ test('a client browsing their own folder still sees the subfolders they may ente
         fn (AssertableInertia $page) => $page->has('folders', 1)->where('folders.0.name', 'Child'),
     );
 });
+
+test('a folder a client made inside a share goes with the share', function () {
+    $client = User::factory()->client()->create();
+    $other = User::factory()->client()->create();
+    $shared = makeStaffFolder('Project');
+    $this->actingAs($this->admin)->post("/folders/{$shared->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+    $this->actingAs($client)->post('/my-folders', ['name' => 'Drafts', 'parent_id' => $shared->id])->assertRedirect();
+    $drafts = Folder::query()->where('name', 'Drafts')->sole();
+
+    // Staff hand the project to somebody else, and file into it for them.
+    $this->actingAs($this->admin)->delete("/folders/{$shared->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+    $this->actingAs($this->admin)->post("/folders/{$shared->id}/assignments", ['type' => 'client', 'id' => $other->id]);
+    $forOther = File::factory()->create(['uploaded_by' => $this->admin->id, 'folder_id' => $drafts->id]);
+
+    expect(Folder::query()->visibleToClient($client)->pluck('id'))->not->toContain($drafts->id)
+        ->and(File::query()->visibleToClient($client)->pluck('id'))->not->toContain($forOther->id)
+        ->and(File::query()->visibleToClient($other)->pluck('id'))->toContain($forOther->id);
+
+    expect($this->actingAs($client)->get('/my-files?folder='.$drafts->id)->status())->not->toBe(200);
+    $this->actingAs($client)->patch("/my-folders/{$drafts->id}", ['name' => 'Mine now'])->assertForbidden();
+    expect($drafts->fresh()->name)->toBe('Drafts');
+});
+
+test('a client keeps the folders in a tree of their own', function () {
+    $client = User::factory()->client()->create();
+    $this->actingAs($client)->post('/my-folders', ['name' => 'Top'])->assertRedirect();
+    $top = Folder::query()->where('name', 'Top')->sole();
+    $this->actingAs($client)->post('/my-folders', ['name' => 'Inner', 'parent_id' => $top->id])->assertRedirect();
+    $inner = Folder::query()->where('name', 'Inner')->sole();
+
+    expect(Folder::query()->visibleToClient($client)->pluck('id')->all())->toContain($top->id, $inner->id);
+
+    // Staff filing into the client's own tree still reaches the client.
+    $filed = File::factory()->create(['uploaded_by' => $this->admin->id, 'folder_id' => $inner->id]);
+    expect(File::query()->visibleToClient($client)->pluck('id'))->toContain($filed->id);
+});
+
+test('a client-scoped staff member cannot file into the tree of a client off their roster', function () {
+    $role = Role::query()->create(['name' => 'Scoped filer', 'client_scoped' => true]);
+    foreach (['upload', 'edit_files', 'edit_others_files'] as $permission) {
+        RolePermission::query()->create(['role_id' => $role->id, 'permission' => $permission]);
+    }
+    $rep = User::factory()->create(['role_id' => $role->id]);
+    $mine = User::factory()->client()->create();
+    $stranger = User::factory()->client()->create();
+    $rep->assignedClients()->sync([$mine->id]);
+
+    // The stranger's own top-level folder, which staff also shared with
+    // the rep's client: the rep can reach it, and it reaches the stranger.
+    $this->actingAs($stranger)->post('/my-folders', ['name' => 'Stranger tree'])->assertRedirect();
+    $tree = Folder::query()->where('name', 'Stranger tree')->sole();
+    $this->actingAs($this->admin)->post("/folders/{$tree->id}/assignments", ['type' => 'client', 'id' => $mine->id]);
+
+    $file = File::factory()->create(['uploaded_by' => $rep->id, 'folder_id' => null]);
+    $this->actingAs($rep)->patch("/files/{$file->id}/move", ['folder_id' => $tree->id]);
+
+    expect($file->fresh()->folder_id)->toBeNull();
+});

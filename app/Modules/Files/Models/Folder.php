@@ -286,19 +286,41 @@ class Folder extends Model
 
     /**
      * Folders visible to a client: any folder shared with them or their
-     * groups (plus every descendant of such a folder, live subtree), or
-     * any folder they created themselves, anywhere in that visible tree
-     * (see MyFoldersController::store's parent_id validation, which only
-     * ever lets a client nest a new folder inside this same set).
+     * groups (plus every descendant of such a folder, live subtree), and
+     * the folders they created in a tree of their own.
+     *
+     * "A tree of their own" is one whose top-level folder they created:
+     * their home folder, or a folder they made at the top of the library
+     * where there are no homes. A folder they created inside a folder
+     * staff shared with them is visible through that share and only while
+     * it lasts. Owning the folder used to be enough wherever it sat, so
+     * unsharing the parent, or moving the folder, left the client with it
+     * and with every file staff later filed there, for whoever it was
+     * meant for. Visibility follows the share.
      *
      * @param  Builder<Folder>  $query
      */
     public function scopeVisibleToClient(Builder $query, User $client): void
     {
         $sharedIds = self::sharedFolderIds($client);
+        $ownRootIds = self::ownRootIds($client);
 
-        $query->where(function (Builder $inner) use ($sharedIds, $client): void {
-            $inner->where('created_by', $client->id);
+        $query->where(function (Builder $inner) use ($sharedIds, $ownRootIds, $client): void {
+            if ($ownRootIds !== []) {
+                $inner->where(function (Builder $own) use ($ownRootIds, $client): void {
+                    $own->where('created_by', $client->id)->where(function (Builder $tree) use ($ownRootIds): void {
+                        $tree->whereIn('id', $ownRootIds);
+
+                        foreach ($ownRootIds as $rootId) {
+                            $tree->orWhere('path', 'like', '/'.$rootId.'/%');
+                        }
+                    });
+                });
+            } else {
+                // Nothing of their own: start from an empty match so the
+                // shares below are or'ed onto something false.
+                $inner->whereRaw('1 = 0');
+            }
 
             if ($sharedIds !== []) {
                 $inner->orWhereIn('id', $sharedIds);
@@ -335,6 +357,22 @@ class Folder extends Model
                 $inner->orWhere('path', 'like', $public->subtreePathPrefix().'%');
             }
         });
+    }
+
+    /**
+     * Top-level folders the client created: the roots of the trees that
+     * are theirs by creation rather than by a share.
+     *
+     * @return list<int>
+     */
+    public static function ownRootIds(User $client): array
+    {
+        return self::query()
+            ->whereNull('parent_id')
+            ->where('created_by', $client->id)
+            ->pluck('id')
+            ->map(fn ($id): int => (int) $id)
+            ->all();
     }
 
     /**

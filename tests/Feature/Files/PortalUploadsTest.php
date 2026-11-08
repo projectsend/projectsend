@@ -179,3 +179,24 @@ test('a client upload notifies staff who can see uploads, in-app', function () {
 
     expect(InAppNotification::query()->where('user_id', $unrelatedStaff->id)->exists())->toBeFalse();
 });
+
+/*
+ * The notifier authorizes nothing, so the recipient list is the whole of
+ * the decision. Every staff member who could upload was told, so a Client
+ * Manager learned the name of every client who uploaded and what, roster
+ * or not.
+ */
+test('a client upload notifies a client-scoped staff member only when the client is theirs', function () {
+    $client = User::factory()->client()->create();
+    grantUploadToClient($client);
+    $theirs = User::factory()->role(SystemRole::ClientManager)->create();
+    $theirs->assignedClients()->sync([$client->id]);
+    $someoneElses = User::factory()->role(SystemRole::ClientManager)->create();
+    $someoneElses->assignedClients()->sync([User::factory()->client()->create()->id]);
+
+    $this->actingAs($client);
+    uploadAsClient()->assertOk();
+
+    expect(InAppNotification::query()->where('user_id', $theirs->id)->where('type', 'client_uploaded')->exists())->toBeTrue()
+        ->and(InAppNotification::query()->where('user_id', $someoneElses->id)->exists())->toBeFalse();
+});

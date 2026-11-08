@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Clients\ClientStorageUsage;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Folders\ClientHomeFolders;
 use App\Modules\Files\Models\Folder;
@@ -524,7 +525,7 @@ class ChunkedUploadsController extends Controller
                 }
             }
 
-            $this->notifier->send('client_uploaded', $this->staffWhoCanSeeUploads(), subject: $file, data: [
+            $this->notifier->send('client_uploaded', $this->staffWhoCanSeeUploads($user), subject: $file, data: [
                 'clientName' => $user->name,
                 'itemName' => $file->name,
                 'fileId' => $file->id,
@@ -583,16 +584,27 @@ class ChunkedUploadsController extends Controller
      * Staff who could already open this file via the activity log's own
      * link-resolution rule (upload, edit_files, or edit_others_files) —
      * the same permission set, just evaluated per-candidate instead of
-     * per-viewer.
+     * per-viewer — and whose client scope reaches the client who uploaded
+     * it. The notifier authorizes nothing, so the recipients are the whole
+     * of the decision: without the scope, every Client Manager was told
+     * the name of every client who uploaded and what they uploaded,
+     * roster or not. QuarantineNotifier asks the same question.
      *
      * @return list<User>
      */
-    private function staffWhoCanSeeUploads(): array
+    private function staffWhoCanSeeUploads(User $uploader): array
     {
-        return array_values(User::query()->where('type', UserType::Staff)->get()
+        $scope = app(StaffLibraryScope::class);
+
+        return array_values(User::query()->where('type', UserType::Staff)->where('active', true)->get()
             ->filter(fn (User $staff): bool => $this->permissions->allows($staff, Permission::Upload)
                 || $this->permissions->allows($staff, Permission::EditFiles)
                 || $this->permissions->allows($staff, Permission::EditOthersFiles))
+            ->filter(function (User $staff) use ($scope, $uploader): bool {
+                $uploaders = $scope->uploaderIds($staff);
+
+                return $uploaders === null || in_array($uploader->id, $uploaders, true);
+            })
             ->all());
     }
 

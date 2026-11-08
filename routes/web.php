@@ -348,7 +348,8 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('groups/{group}', [GroupsController::class, 'update'])->middleware(['staff', 'can:edit_groups'])->name('groups.update');
     Route::delete('groups/{group}', [GroupsController::class, 'destroy'])->middleware(['staff', 'can:delete_groups'])->name('groups.destroy');
     Route::post('groups/{group}/members', [GroupMembersController::class, 'store'])->middleware(['staff', 'can:edit_groups'])->name('groups.members.store');
-    Route::delete('groups/{group}/members/{member}', [GroupMembersController::class, 'destroy'])->middleware(['staff', 'can:edit_groups'])->name('groups.members.destroy');
+    Route::delete('groups/{group}/members/{member}', [GroupMembersController::class, 'destroy'])->middleware(['staff', 'can:edit_groups'])->name('groups.members.destroy')
+            ->whereNumber('member');
 
     Route::middleware(['staff', 'can:approve_groups_memberships_requests'])->group(function () {
         Route::get('membership-requests', [MembershipRequestsController::class, 'index'])->name('membership-requests.index');

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Files\Http\Controllers\Concerns;
 
 use App\Models\User;
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Groups\Models\Group;
@@ -41,6 +42,8 @@ trait ResolvesShareTargets
             'type' => ['required', Rule::in(['client', 'group'])],
             'id' => ['required', 'integer'],
         ]);
+
+        $this->guardRosterFirst($request->user(), $validated['type'], (int) $validated['id']);
 
         [$assignable, $targetName] = $this->resolveTarget($validated['type'], (int) $validated['id'], $rejection);
         $this->guardAssignable($request->user(), $assignable);
@@ -116,6 +119,28 @@ trait ResolvesShareTargets
             : $this->scope->canAssignClient($user, $assignable);
 
         if (! $allowed) {
+            throw ValidationException::withMessages(['id' => __('You can only share with the clients assigned to you.')]);
+        }
+    }
+
+    /**
+     * For a client-scoped staff member, the roster is asked before the id
+     * is looked up. The other way round, an id that was nobody (or a staff
+     * account) got "can only be assigned to clients or groups" and an
+     * off-roster client got "only the clients assigned to you", so two
+     * messages sorted every id on the installation into clients and the
+     * rest. Now anything off the roster gets the one answer.
+     */
+    private function guardRosterFirst(?User $user, string $type, int $id): void
+    {
+        if ($user === null) {
+            return;
+        }
+
+        $library = app(StaffLibraryScope::class);
+        $reach = $type === 'group' ? $library->assignableGroupIds($user) : $library->assignableClientIds($user);
+
+        if ($reach !== null && ! in_array($id, $reach, true)) {
             throw ValidationException::withMessages(['id' => __('You can only share with the clients assigned to you.')]);
         }
     }

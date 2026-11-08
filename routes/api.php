@@ -314,7 +314,8 @@ Route::middleware(['auth:sanctum', 'api-active', 'staff-token', 'token-ceiling']
         Route::post('groups/{group}/members', [GroupMembersController::class, 'store'])
             ->name('api.groups.members.store');
         Route::delete('groups/{group}/members/{member}', [GroupMembersController::class, 'destroy'])
-            ->name('api.groups.members.destroy');
+            ->name('api.groups.members.destroy')
+            ->whereNumber('member');
     });
 
     /*

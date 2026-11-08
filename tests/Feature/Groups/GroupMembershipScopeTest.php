@@ -677,3 +677,38 @@ test('adding a member does not tell a scoped staff member which ids are accounts
     expect(array_unique($answers, SORT_REGULAR))->toHaveCount(1)
         ->and($group->members()->count())->toBe(0);
 });
+
+test('removing a member answers the same for an id that is nobody and one off the roster', function () {
+    $mineGroup = Group::query()->create(['name' => 'Ours', 'slug' => 'ours', 'public' => false]);
+    $mineGroup->members()->syncWithoutDetaching([$this->mine->id]);
+    $missing = User::query()->max('id') + 100;
+
+    $nobody = $this->actingAs($this->rep)->delete("/groups/{$mineGroup->id}/members/{$missing}");
+    $offRoster = $this->actingAs($this->rep)->delete("/groups/{$mineGroup->id}/members/{$this->stranger->id}");
+    $staff = $this->actingAs($this->rep)->delete("/groups/{$mineGroup->id}/members/{$this->admin->id}");
+
+    expect([$nobody->status(), $offRoster->status(), $staff->status()])->toBe([403, 403, 403]);
+
+    // Their own client still comes out.
+    $this->actingAs($this->rep)->delete("/groups/{$mineGroup->id}/members/{$this->mine->id}")->assertRedirect();
+    expect($mineGroup->members()->count())->toBe(0);
+
+    $token = $this->rep->createToken('t', ['edit_groups'])->plainTextToken;
+    expect($this->withToken($token)->deleteJson("/api/v1/groups/{$mineGroup->id}/members/{$missing}")->status())
+        ->toBe($this->withToken($token)->deleteJson("/api/v1/groups/{$mineGroup->id}/members/{$this->stranger->id}")->status());
+});
+
+test('the share endpoints answer the same for an id that is nobody and one off the roster', function () {
+    $own = uploadNamedFile($this->rep, 'mine-to-share');
+    $missing = User::query()->max('id') + 100;
+    $missingGroup = Group::query()->max('id') + 100;
+
+    $messages = [];
+    foreach ([['client', $missing], ['client', $this->stranger->id], ['client', $this->admin->id], ['group', $missingGroup], ['group', $this->strangerGroup->id]] as [$type, $id]) {
+        $response = $this->actingAs($this->rep)->delete("/files/{$own->id}/assignments", ['type' => $type, 'id' => $id]);
+        $messages[] = session('errors')?->first('id');
+    }
+
+    expect(array_unique($messages))->toHaveCount(1)
+        ->and($messages[0])->toBe('You can only share with the clients assigned to you.');
+});

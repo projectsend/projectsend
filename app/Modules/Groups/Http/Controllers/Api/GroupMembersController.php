@@ -67,10 +67,21 @@ class GroupMembersController extends Controller
         return $this->response($group, $actor);
     }
 
-    public function destroy(Request $request, Group $group, User $member): GroupResource
+    /**
+     * @param  int  $member  The member ID
+     */
+    public function destroy(Request $request, Group $group, int $member): GroupResource
     {
         $actor = $request->user();
         assert($actor instanceof User);
+
+        // Looked up only once the actor may name the account at all.
+        // Bound by the route, an id that was nobody answered 404 and an
+        // off-roster account 403, which told a client-scoped staff member
+        // which ids are accounts; the add form already stopped saying so.
+        $reach = $this->scope->assignableClientIds($actor);
+        abort_if($reach !== null && ! in_array($member, $reach, true), 403);
+        $member = User::query()->findOrFail($member);
 
         // The same boundary as store(): taking somebody out of a group
         // is a decision about their access, and about a group.

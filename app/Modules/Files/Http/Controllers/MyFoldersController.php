@@ -128,6 +128,18 @@ class MyFoldersController extends Controller
             ));
         }
 
+        // The same goes for folders inside it that somebody else made:
+        // staff organise a client's folder too, and a folder carries its
+        // own sharing and public settings even while it is empty.
+        $foreignFolders = Folder::query()
+            ->whereIn('id', $folder->subtreeFolderIds())
+            ->where(fn ($query) => $query->whereNull('created_by')->orWhere('created_by', '!=', $client->id))
+            ->exists();
+
+        if ($foreignFolders) {
+            return back()->with('error', __('This folder cannot be deleted: it holds folders you did not create.'));
+        }
+
         // Their own uploads go with the folder too, so deleting one that
         // holds any is deleting files, and needs the permission that
         // deleting a file one at a time needs (MyFilesController::destroy).

@@ -343,3 +343,30 @@ test('a client-scoped staff member cannot file into the tree of a client off the
 
     expect($file->fresh()->folder_id)->toBeNull();
 });
+
+test('a client cannot upload into a folder they made inside a share that ended', function () {
+    $client = User::factory()->client()->create();
+    $shared = makeStaffFolder('Project');
+    $this->actingAs($this->admin)->post("/folders/{$shared->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+    $this->actingAs($client)->post('/my-folders', ['name' => 'Drafts', 'parent_id' => $shared->id])->assertRedirect();
+    $drafts = Folder::query()->where('name', 'Drafts')->sole();
+
+    expect(Folder::uploadableBy($client, $drafts))->toBeTrue();
+
+    $this->actingAs($this->admin)->delete("/folders/{$shared->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+
+    expect(Folder::uploadableBy($client->fresh(), $drafts->fresh()))->toBeFalse();
+});
+
+test('a client cannot delete their own folder while it holds a folder staff made', function () {
+    $client = User::factory()->client()->create();
+    $this->actingAs($client)->post('/my-folders', ['name' => 'Home'])->assertRedirect();
+    $home = Folder::query()->where('name', 'Home')->sole();
+    $this->actingAs($this->admin);
+    $staffMade = makeStaffFolder('Contracts', $home);
+
+    $this->actingAs($client)->delete("/my-folders/{$home->id}")->assertRedirect()->assertSessionHas('error');
+
+    expect(Folder::query()->find($home->id))->not->toBeNull()
+        ->and(Folder::query()->find($staffMade->id))->not->toBeNull();
+});

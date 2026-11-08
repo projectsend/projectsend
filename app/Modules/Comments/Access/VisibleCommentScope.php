@@ -434,12 +434,17 @@ class VisibleCommentScope
      * for approval, which is not the same audience as the comment itself
      * (it has none yet).
      *
+     * Only those whose moderation screen lists this comment: the file
+     * being in a client-scoped moderator's library is not enough when the
+     * comment is a client's off their roster, and the notification names
+     * its author. FileCommentPolicy::moderate is that rule.
+     *
      * @return Collection<int, User>
      */
-    public function moderators(File $file): Collection
+    public function moderators(FileComment $comment): Collection
     {
-        return $this->staffWhoCanSee($file)
-            ->filter(fn (User $staff): bool => $staff->can('moderate_comments'))
+        return $this->staffWhoCanSee($comment->file)
+            ->filter(fn (User $staff): bool => Gate::forUser($staff)->allows('moderate', $comment))
             ->values();
     }
 

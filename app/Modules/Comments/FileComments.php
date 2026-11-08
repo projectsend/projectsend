@@ -103,7 +103,7 @@ class FileComments
         if ($pending) {
             // Nobody can see the comment yet, so the only people to tell
             // are the ones who can act on that.
-            $this->notifier->send('file_comment.pending', $this->scope->moderators($file), $file, [
+            $this->notifier->send('file_comment.pending', $this->scope->moderators($comment), $file, [
                 'fileId' => $file->id,
                 'fileName' => $file->name,
                 'authorName' => $comment->authorName(),

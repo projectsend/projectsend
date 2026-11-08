@@ -228,11 +228,19 @@ class Folder extends Model
                 || $user->can('upload_to_public_folders');
         }
 
+        // Owning a folder counts only while it is in their sight: a folder a
+        // client made inside one staff shared and then unshared is no
+        // longer theirs to see, rename or delete (FolderPolicy), and
+        // whatever they put in it would reach whoever it is shared with
+        // next.
+        $owns = $folder->isOwnedBy($user)
+            && self::query()->visibleToClient($user)->whereKey($folder->id)->exists();
+
         if (! $folder->isEffectivelyPublic()) {
             // Their own folder, and one only they can see. A client's folder
             // inside a folder staff shared with a group, or with several
             // clients, showed everything they put in it to all of them.
-            return $folder->isOwnedBy($user) && ! app(FolderReach::class)->reachesOthersThan($user, $folder);
+            return $owns && ! app(FolderReach::class)->reachesOthersThan($user, $folder);
         }
 
         // Owning the folder is not enough once it is public, and a client's
@@ -246,7 +254,7 @@ class Folder extends Model
             return false;
         }
 
-        if (! $folder->isOwnedBy($user) && ! $folder->public) {
+        if (! $owns && ! $folder->public) {
             return false;
         }
 

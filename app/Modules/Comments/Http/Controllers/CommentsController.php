@@ -11,6 +11,8 @@ use App\Modules\Comments\CommentPresenter;
 use App\Modules\Comments\CommentVisibility;
 use App\Modules\Comments\FileComments;
 use App\Modules\Comments\Models\FileComment;
+use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Identity\UserType;
 use App\Modules\Platform\Localization\LocalDay;
 use App\Modules\Platform\Localization\TimezoneRegistry;
 use Carbon\Carbon;
@@ -194,6 +196,12 @@ class CommentsController extends Controller
     {
         $timezone = $this->timezones->resolve($viewer);
 
+        // Whose names the search may match: a narrowed moderator sees an
+        // off-roster client's comment as "A client" (authorNameFor), so
+        // matching that client's real name would spell it out one letter
+        // at a time.
+        $nameable = app(StaffLibraryScope::class)->assignableClientIds($viewer);
+
         return $this->scope->across($viewer)
             ->when($filters['status'], fn (Builder $query, string $status) => $status === 'pending'
                 ? $query->whereNull('approved_at')
@@ -211,7 +219,11 @@ class CommentsController extends Controller
             ->when($filters['search'], fn (Builder $query, string $search) => $query->where(fn (Builder $any) => $any
                 ->where('body', 'like', "%{$search}%")
                 ->orWhere('guest_name', 'like', "%{$search}%")
-                ->orWhereHas('author', fn (Builder $author) => $author->where('name', 'like', "%{$search}%"))))
+                ->orWhereHas('author', fn (Builder $author) => $author
+                    ->where('name', 'like', "%{$search}%")
+                    ->when($nameable !== null, fn (Builder $named) => $named->where(fn (Builder $who) => $who
+                        ->where('type', '!=', UserType::Client->value)
+                        ->orWhereIn('id', [$viewer->id, ...($nameable ?? [])]))))))
             ->when($filters['file'], fn (Builder $query, string $file) => $query
                 ->whereHas('file', fn (Builder $on) => $on->where('name', 'like', "%{$file}%")))
             // The viewer's calendar day, not the server's — see LocalDay.

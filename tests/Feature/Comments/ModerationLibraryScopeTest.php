@@ -160,3 +160,24 @@ test('no moderator can delete somebody else\'s only-me note', function () {
     $this->actingAs($this->admin)->delete("/comments/{$note->id}/moderate")->assertForbidden();
     expect(FileComment::query()->whereKey($note->id)->exists())->toBeTrue();
 });
+
+test('a scoped moderator cannot search a hidden author\'s name out of the moderation list', function () {
+    $mine = User::factory()->client()->create(['name' => 'Roster Person']);
+    $stranger = User::factory()->client()->create(['name' => 'Zebediah Stranger']);
+    $file = File::factory()->public()->create(['uploaded_by' => $this->admin->id]);
+    shareFileWith($file, $mine);
+    shareFileWith($file, $stranger);
+    FileComment::factory()->for($file)->everyone()->create(['author_id' => $stranger->id, 'body' => 'hello']);
+    FileComment::factory()->for($file)->everyone()->create(['author_id' => $mine->id, 'body' => 'hi there']);
+    $moderator = commentModeratorScopedTo($mine);
+
+    $count = fn (string $search): int => count(json_decode((string) json_encode(
+        $this->actingAs($moderator)->get('/comments?search='.urlencode($search))->viewData('page')
+    ), true)['props']['entries']);
+
+    // The comment is listed (as "A client"), but its author's name does
+    // not find it.
+    expect($count('hello'))->toBe(1)
+        ->and($count('Zebediah'))->toBe(0)
+        ->and($count('Roster'))->toBe(1);
+});

@@ -10,6 +10,7 @@ use App\Modules\Api\Auth\ApiTokens;
 use App\Modules\Api\Auth\TokenAbilities;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Mcp\Support\Scope;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -216,7 +217,7 @@ class ApiTokensController extends Controller
 
         $accessToken = $user->tokens()->whereKey($token)->first();
 
-        if ($accessToken instanceof PersonalAccessToken) {
+        if ($accessToken instanceof PersonalAccessToken && ! Scope::isConnectorToken($accessToken)) {
             $this->activity->log(Action::ApiTokenRevoked, $user, context: [
                 'token_name' => $accessToken->name,
             ]);
@@ -233,12 +234,17 @@ class ApiTokensController extends Controller
      * bare PersonalAccessToken::find() would let any staff member rename,
      * re-scope or revoke anyone's integration by guessing an id. A miss is
      * a 404 rather than a 403, so ids cannot be probed for existence.
+     *
+     * An AI assistant connection's token lives in the same table but is not
+     * one of these: editing its abilities here turned the secret the AI
+     * vendor holds into a non-expiring /api/v1 token, outside the
+     * connection's own bookkeeping. Settings → AI connections manages it.
      */
     private function findOwnToken(User $user, string $token): PersonalAccessToken
     {
         $accessToken = $user->tokens()->whereKey($token)->first();
 
-        abort_unless($accessToken instanceof PersonalAccessToken, 404);
+        abort_unless($accessToken instanceof PersonalAccessToken && ! Scope::isConnectorToken($accessToken), 404);
 
         return $accessToken;
     }
@@ -251,6 +257,7 @@ class ApiTokensController extends Controller
         return array_values($user->tokens()
             ->orderByDesc('created_at')
             ->get()
+            ->reject(fn (PersonalAccessToken $token): bool => Scope::isConnectorToken($token))
             ->map(fn (PersonalAccessToken $token): array => [
                 'id' => (string) $token->getKey(),
                 'name' => $token->name,

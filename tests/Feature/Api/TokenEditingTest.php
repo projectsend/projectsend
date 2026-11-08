@@ -143,3 +143,25 @@ test('abilities that no longer apply are surfaced before they are dropped', func
             ->where('token.retired_abilities', ['view_news'])
             ->where('token.abilities', [Permission::Upload->value]));
 });
+
+/*
+ * An AI assistant connection's token sits in the same table. The tokens
+ * screen listed it and would edit it: re-scoping it to permission keys
+ * turned the secret the AI vendor holds into a non-expiring /api/v1 token,
+ * outside the connection's own bookkeeping.
+ */
+test('the tokens screen neither lists nor edits an assistant connection\'s token', function () {
+    $connector = $this->admin->createToken('AI assistant · Claude', ['mcp:write'], now()->addHour());
+
+    $this->actingAs($this->admin)->get('/settings/api-tokens')
+        ->assertInertia(fn ($page) => $page->has('tokens', 0));
+
+    $this->actingAs($this->admin)->get("/settings/api-tokens/{$connector->accessToken->getKey()}/edit")->assertNotFound();
+    $this->actingAs($this->admin)->patch("/settings/api-tokens/{$connector->accessToken->getKey()}", [
+        'name' => 'Now an API token',
+        'abilities' => [Permission::Upload->value],
+        'never_expires' => true,
+    ])->assertNotFound();
+
+    expect($connector->accessToken->refresh()->abilities)->toBe(['mcp:write']);
+});

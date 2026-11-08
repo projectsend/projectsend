@@ -7,6 +7,7 @@ namespace App\Modules\Files\Versions;
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
+use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\Models\File;
@@ -329,9 +330,12 @@ class FileVersions
     }
 
     /**
-     * The recipients link() would move from $file onto $previous's root.
+     * The recipients link() would move from $file onto $previous's root,
+     * as far as $viewer may be told who they are. A client-scoped staff
+     * member is not told the name of a client or group off their roster
+     * (ClientIdentityScope); link() refuses to move those anyway.
      */
-    public function previewLink(File $file, File $previous): LinkPreview
+    public function previewLink(File $file, File $previous, User $viewer): LinkPreview
     {
         $rootId = $previous->version_root_id ?? $previous->id;
 
@@ -347,6 +351,7 @@ class FileVersions
 
         $clients = [];
         $groups = [];
+        $identity = app(ClientIdentityScope::class);
 
         foreach ($moving as $assignment) {
             if (in_array($assignment->assignable_type.':'.$assignment->assignable_id, $existing, true)) {
@@ -355,9 +360,9 @@ class FileVersions
 
             $target = $assignment->assignable;
 
-            if ($target instanceof User) {
+            if ($target instanceof User && $identity->permits($viewer, $target)) {
                 $clients[] = $target->name;
-            } elseif ($target instanceof Group) {
+            } elseif ($target instanceof Group && $identity->permitsGroupId($viewer, $target->id)) {
                 $groups[] = $target->name;
             }
         }

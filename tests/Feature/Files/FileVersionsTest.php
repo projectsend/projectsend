@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
 use App\Modules\Files\Models\File;
+use App\Modules\Identity\Permissions\SystemRole;
 use App\Modules\Files\Models\FileAssignment;
 use App\Modules\Files\Versions\FileVersions;
 use App\Modules\Groups\Models\Group;
@@ -178,7 +179,7 @@ test('the link preview names the recipients that would move', function () {
     shareFileWith($revision, $client);
     shareFileWithGroup($revision, $group);
 
-    $preview = $this->versions->previewLink($revision, $original);
+    $preview = $this->versions->previewLink($revision, $original, $this->admin);
 
     expect($preview->isEmpty())->toBeFalse()
         ->and($preview->clientNames)->toBe(['Acme Ltd'])
@@ -194,7 +195,7 @@ test('the link preview omits recipients the original already has', function () {
     shareFileWith($original, $client);
     shareFileWith($revision, $client);
 
-    expect($this->versions->previewLink($revision, $original)->isEmpty())->toBeTrue();
+    expect($this->versions->previewLink($revision, $original, $this->admin)->isEmpty())->toBeTrue();
 });
 
 test('unlinking copies the original\'s recipients onto the freed file', function () {
@@ -265,4 +266,31 @@ test('the chain lists the whole lineage oldest first', function () {
 
     expect($this->versions->chain($v2->fresh(), $this->admin)->pluck('name')->all())
         ->toBe(['A', 'B', 'C']);
+});
+
+/*
+ * The confirmation before linking a version lists who would gain access.
+ * It listed every recipient by name, so a Client Manager read the names of
+ * clients and groups off their roster; link() refuses to move those, but
+ * the preview had already told.
+ */
+test('the link preview names only recipients the viewer may be told about', function () {
+    $mine = User::factory()->client()->create(['name' => 'Mine']);
+    $stranger = User::factory()->client()->create(['name' => 'Stranger Corp']);
+    $manager = User::factory()->role(SystemRole::ClientManager)->create();
+    $manager->assignedClients()->sync([$mine->id]);
+
+    $original = File::factory()->create(['uploaded_by' => $manager->id]);
+    $revision = File::factory()->create(['uploaded_by' => $manager->id]);
+    shareFileWith($revision, $mine);
+    shareFileWith($revision, $stranger);
+    app()->forgetScopedInstances();
+
+    $preview = $this->versions->previewLink($revision, $original, $manager);
+
+    expect($preview->clientNames)->toBe(['Mine']);
+
+    $response = $this->actingAs($manager)->getJson("/files/{$revision->id}/version-preview?previous_file_id={$original->id}")->assertOk();
+
+    expect($response->getContent())->toContain('Mine')->not->toContain('Stranger Corp');
 });

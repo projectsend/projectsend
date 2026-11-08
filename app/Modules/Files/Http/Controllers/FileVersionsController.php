@@ -73,8 +73,10 @@ class FileVersionsController extends Controller
         ]);
 
         $previous = $this->resolvePrevious($request, (int) $validated['previous_file_id']);
+        $viewer = $request->user();
+        assert($viewer !== null);
 
-        return response()->json($this->versions->previewLink($file, $previous)->toArray());
+        return response()->json($this->versions->previewLink($file, $previous, $viewer)->toArray());
     }
 
     public function store(Request $request, File $file): RedirectResponse

@@ -31,12 +31,38 @@ use ProjectSend\CommunityModules\Modules\CustomAssets\Rendering\CustomAssetRende
  *    development, so the layout must not break the day that dependency is
  *    dropped — hence the class_exists() guard rather than a direct call.
  *
+ * 3. No output where a password or a code is typed. The root view serves
+ *    every page, the sign-in screens included, and nobody is signed in on
+ *    those, so they count as the public surface. A public asset needs only
+ *    create_assets, not the settings permission, and it would otherwise run
+ *    on the administrator's own sign-in form and read the password and the
+ *    two-factor code as they are typed. Analytics or a banner has no
+ *    business there.
+ *
  * Content is echoed raw by the caller ({!! !!}), which is the whole point
  * of the feature; the trust boundary is the staff-only, permission-gated
  * authoring screen, not this class.
  */
 class CustomAssetsBridge
 {
+    /**
+     * Route names of the pages where somebody types a password, a
+     * two-factor code, or sets a password for the first time.
+     */
+    private const CREDENTIAL_ROUTES = [
+        'login',
+        'register',
+        'password.*',
+        'two-factor.*',
+        'verification.*',
+        'invitations.*',
+        'setup',
+        'setup.*',
+        'mcp.oauth.authorize',
+        'mcp.oauth.authorize.*',
+        'profile.delete-account',
+    ];
+
     public function __construct(
         private readonly CapabilityRegistry $capabilities,
     ) {}
@@ -60,7 +86,13 @@ class CustomAssetsBridge
             return '';
         }
 
-        $user = ($request ?? request())->user();
+        $request ??= request();
+
+        if ($request->routeIs(...self::CREDENTIAL_ROUTES)) {
+            return '';
+        }
+
+        $user = $request->user();
 
         return app(CustomAssetRenderer::class)->render(
             $slot,

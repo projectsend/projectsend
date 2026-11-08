@@ -201,15 +201,18 @@ class HandleInertiaRequests extends Middleware
         }
 
         if ($checker->allows($user, Permission::ReleaseQuarantinedFiles)) {
-            // Deliberately not library-scoped, unlike the comments count
-            // above: a quarantined file is not a file anybody is working
-            // with, it is one somebody has to decide about, and the
-            // permission is already narrow enough that whoever holds it
-            // is meant to see all of them.
-            $counts['quarantine'] = File::query()->whereIn('scan_status', [
-                ScanStatus::Infected->value,
-                ScanStatus::UnscannableBlocked->value,
-            ])->count();
+            // What the quarantine screen lists, and no more: for a
+            // client-scoped holder, files uploaded by themselves or their
+            // own clients (QuarantineController::quarantined). The badge
+            // once counted the whole installation on the grounds that the
+            // permission meant all of them; the screen was narrowed since,
+            // and a number the list never explains is a count of other
+            // clients' files.
+            $uploaders = app(StaffLibraryScope::class)->uploaderIds($user);
+            $counts['quarantine'] = File::query()
+                ->whereIn('scan_status', [ScanStatus::Infected->value, ScanStatus::UnscannableBlocked->value])
+                ->when($uploaders !== null, fn ($query) => $query->whereIn('uploaded_by', $uploaders))
+                ->count();
         }
 
         // Unlike the counts above, every authenticated user (staff or

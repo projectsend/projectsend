@@ -181,3 +181,16 @@ test('a scoped moderator cannot search a hidden author\'s name out of the modera
         ->and($count('Zebediah'))->toBe(0)
         ->and($count('Roster'))->toBe(1);
 });
+
+test('the pending badge counts only what the moderator may decide about', function () {
+    $mine = User::factory()->client()->create();
+    $stranger = User::factory()->client()->create();
+    $file = File::factory()->create(['uploaded_by' => $this->admin->id]);
+    shareFileWith($file, $mine);
+    shareFileWith($file, $stranger);
+    FileComment::factory()->for($file)->inThreadOf($stranger)->pending()->create(['author_id' => $stranger->id]);
+    FileComment::factory()->for($file)->inThreadOf($mine)->pending()->create(['author_id' => $mine->id]);
+    $moderator = commentModeratorScopedTo($mine);
+
+    expect(app(App\Modules\Comments\Access\VisibleCommentScope::class)->pendingTotal($moderator))->toBe(1);
+});

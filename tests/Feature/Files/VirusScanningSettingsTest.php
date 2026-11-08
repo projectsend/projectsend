@@ -662,3 +662,25 @@ test('"let through" counts files that can still be downloaded unchecked, once ea
     expect(scanningStatus()['let_through_24h'])->toBe(1);
 });
 
+
+test('a client-scoped holder is shown the count of what their quarantine screen lists', function () {
+    $role = App\Modules\Identity\Models\Role::query()->create(['name' => 'Scoped releaser', 'client_scoped' => true]);
+    foreach (['release_quarantined_files', 'upload'] as $permission) {
+        App\Modules\Identity\Models\RolePermission::query()->create(['role_id' => $role->id, 'permission' => $permission]);
+    }
+    $releaser = User::factory()->create(['role_id' => $role->id]);
+    $mine = User::factory()->client()->create();
+    $releaser->assignedClients()->sync([$mine->id]);
+    $stranger = User::factory()->client()->create();
+
+    File::factory()->create(['scan_status' => ScanStatus::Infected, 'scan_note' => 'X', 'uploaded_by' => $mine->id]);
+    File::factory()->create(['scan_status' => ScanStatus::Infected, 'scan_note' => 'X', 'uploaded_by' => $stranger->id]);
+    File::factory()->create(['scan_status' => ScanStatus::Infected, 'scan_note' => 'X', 'uploaded_by' => $stranger->id]);
+
+    $this->actingAs($releaser)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('pending.quarantine', 1),
+    );
+    $this->actingAs($this->admin)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page->where('pending.quarantine', 3),
+    );
+});

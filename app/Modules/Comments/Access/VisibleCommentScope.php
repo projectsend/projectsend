@@ -160,17 +160,13 @@ class VisibleCommentScope
      * How many comments are waiting for a decision anywhere in this
      * viewer's library — the sidebar badge.
      *
-     * Deliberately not derived from across(): a held comment is invisible
-     * to everyone but a moderator, so the number is about the queue rather
-     * than about what this viewer may read, and a moderator who cannot see
-     * a particular client's thread must still be told the file has
-     * something waiting.
-     *
-     * The file boundary is still the same one, though. ViewableFileScope
-     * rather than StaffLibraryScope: which files is the part that varies
-     * per client, whether any is the part that does not, and a badge
-     * counting the whole installation for somebody who may open none of it
-     * is a number about other people's files.
+     * The comments across() gives them, which is what the moderation
+     * screen lists and what FileCommentPolicy::moderate lets them decide
+     * about. It once counted every held comment on a file they could
+     * open, including other clients' threads, on the grounds that a
+     * moderator must hear something is waiting; since a moderator may only
+     * decide about comments they can read, that was a count of comments
+     * they could neither see nor act on, from clients off their roster.
      */
     public function pendingTotal(User $viewer): int
     {
@@ -178,10 +174,7 @@ class VisibleCommentScope
             return 0;
         }
 
-        return FileComment::query()
-            ->whereNull('approved_at')
-            ->whereIn('file_id', $this->viewable->for($viewer)->select('files.id'))
-            ->count();
+        return $this->across($viewer)->whereNull('approved_at')->count();
     }
 
     /**

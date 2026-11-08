@@ -47,9 +47,12 @@ class TokenAbilities
      * expiry, its download limit, its categories, and uploading into a
      * public folder. They are still a token's to hold or not. Left to the
      * owner's role, a token granted only "Edit files" made files public
-     * whenever its owner could (GHSA-q84h-845v-9p26).
+     * whenever its owner could (GHSA-q84h-845v-9p26). Approving an account
+     * request is one too: it is setting `active` on a client that is still
+     * a request.
      */
     private const REFINEMENTS = [
+        'approve_account_requests',
         'upload_public',
         'upload_to_public_folders',
         'set_file_expiration_date',

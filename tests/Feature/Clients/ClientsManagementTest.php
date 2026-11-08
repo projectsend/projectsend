@@ -115,6 +115,26 @@ test('activating a pending client through the edit screen clears the request fla
         ->and($pending->account_requested)->toBeFalse();
 });
 
+// Approval has its own permission; editing the account is not it.
+test('activating a pending client through edit needs approve_account_requests, on web and API', function () {
+    $pending = User::factory()->pendingClient()->create();
+    $editor = staffWithPermissions(['manage_clients', 'edit_clients']);
+
+    $this->actingAs($editor)->patch("/clients/{$pending->id}", [
+        'name' => $pending->name,
+        'email' => $pending->email,
+        'active' => true,
+    ])->assertSessionHasErrors('active');
+
+    $token = $editor->createToken('t', ['edit_clients'])->plainTextToken;
+    $this->withToken($token)->patchJson("/api/v1/clients/{$pending->id}", ['active' => true])
+        ->assertUnprocessable()->assertJsonValidationErrors('active');
+
+    $pending->refresh();
+    expect($pending->active)->toBeFalse()
+        ->and($pending->account_requested)->toBeTrue();
+});
+
 test('an account manager can manage clients but an uploader cannot', function () {
     // Account Manager holds create/edit/delete_clients + approve_account_requests.
     $manager = User::factory()->role(SystemRole::AccountManager)->create();

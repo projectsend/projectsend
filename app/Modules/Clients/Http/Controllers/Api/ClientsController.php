@@ -35,6 +35,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Client accounts over the API.
@@ -245,6 +246,11 @@ class ClientsController extends Controller
         // web edit screen and approve() answer to. Inside the branch, so a
         // capped installation can still edit a client it already holds.
         if (($validated['active'] ?? false) && $client->account_requested) {
+            // Approval has its own permission (see the web edit screen).
+            if (! $request->user()?->can('approve_account_requests')) {
+                throw ValidationException::withMessages(['active' => __('Approving an account request needs the permission to approve them.')]);
+            }
+
             $this->seats->guardClient('active');
             $client->account_requested = false;
         }

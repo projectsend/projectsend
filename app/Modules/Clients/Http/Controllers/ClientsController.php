@@ -33,6 +33,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -319,6 +320,13 @@ class ClientsController extends Controller
         // Inside the branch, not above it: an installation at its cap must
         // still be able to rename a client it already has.
         if ($client->account_requested && $validated['active']) {
+            // Approval has its own permission. Without this, edit_clients
+            // alone approved requests and approve_account_requests decided
+            // nothing for anybody who could edit clients.
+            if (! $editor->can('approve_account_requests')) {
+                throw ValidationException::withMessages(['active' => __('Approving an account request needs the permission to approve them.')]);
+            }
+
             $this->seats->guardClient('active');
             $client->account_requested = false;
         }

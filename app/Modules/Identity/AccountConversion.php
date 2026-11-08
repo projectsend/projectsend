@@ -49,6 +49,11 @@ class AccountConversion
      */
     public function guardToClient(User $actor, User $target): void
     {
+        // A conversion makes an account of the other kind, so it needs what
+        // making one needs. The route asks edit_users and edit_clients,
+        // which are about changing accounts that exist.
+        abort_unless($actor->can('create_clients'), 403);
+
         // The mirror of the promotion above: a demotion takes a client
         // seat and frees a staff one.
         $this->seats->guardClient();
@@ -92,6 +97,9 @@ class AccountConversion
      */
     public function guardToStaff(User $actor, User $target): void
     {
+        // See guardToClient(): promoting a client makes a staff account.
+        abort_unless($actor->can('create_users'), 403);
+
         $this->guardSelf($actor, $target);
 
         // A promotion takes a staff seat. It frees a client one at the same

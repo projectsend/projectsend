@@ -33,11 +33,11 @@ function convertRoleId(SystemRole $role): int
  * administrator — the only way to exercise the authority guards, since an
  * administrator passes `mayGrant` unconditionally.
  */
-function accountManager(): User
+function accountManager(array $without = []): User
 {
     $role = Role::query()->create(['name' => 'User Manager '.uniqid()]);
 
-    foreach (['manage_users', 'edit_users', 'edit_clients'] as $permission) {
+    foreach (array_diff(['manage_users', 'edit_users', 'edit_clients', 'create_users', 'create_clients'], $without) as $permission) {
         RolePermission::query()->create(['role_id' => $role->id, 'permission' => $permission]);
     }
 
@@ -501,4 +501,21 @@ test('promoting a provider-created client with a password moves it to local sign
     expect($client->isStaff())->toBeTrue()
         ->and($client->auth_source)->toBe(AuthSource::Local)
         ->and(Hash::check('correct-horse-battery-staple', $client->password))->toBeTrue();
+});
+
+// A conversion makes an account of the other kind, so it needs the
+// permission that making one needs, not only the two edit permissions.
+test('promoting a client needs create_users and demoting staff needs create_clients', function () {
+    $client = User::factory()->client()->create();
+    $staff = User::factory()->create(['role_id' => convertRoleId(SystemRole::Uploader)]);
+
+    $this->actingAs(accountManager(without: ['create_users']))
+        ->post("/users/convert/{$client->id}", ['direction' => 'to_staff', 'role_id' => convertRoleId(SystemRole::Uploader)])
+        ->assertForbidden();
+    expect($client->fresh()->isClient())->toBeTrue();
+
+    $this->actingAs(accountManager(without: ['create_clients']))
+        ->post("/users/convert/{$staff->id}", ['direction' => 'to_client'])
+        ->assertForbidden();
+    expect($staff->fresh()->isStaff())->toBeTrue();
 });

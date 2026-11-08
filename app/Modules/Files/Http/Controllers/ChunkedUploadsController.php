@@ -108,79 +108,91 @@ class ChunkedUploadsController extends Controller
 
         abort_unless(Folder::uploadableBy($user, $folder), 403);
 
-        // One session per file, and a person uploads a handful at a time.
-        // A cap is here because nothing else counts sessions: for anyone
-        // without a quota to spend — staff, and clients on an installation
-        // that sets no quotas — the number of sessions is the only thing
-        // standing between a declared size and any multiple of it.
-        $openSessions = UploadSession::query()->where('user_id', $user->id)->count();
-        $maxOpen = max(1, (int) config('projectsend.uploads.max_open_sessions'));
+        // The session cap and the quota below are both "count what is open,
+        // then open one more", so two requests starting together each saw
+        // room for themselves: a quota could be overshot by as many uploads
+        // as a client started at once. One lock per person, held from the
+        // count to the new session, makes each reservation see the last.
+        $lock = Cache::lock('upload-reserve:'.$user->id, 10);
+        $lock->block(5);
 
-        if ($openSessions >= $maxOpen) {
-            throw ValidationException::withMessages([
-                'filename' => __('Too many uploads are already in progress. Finish or cancel one and try again.'),
-            ]);
-        }
+        try {
+            // One session per file, and a person uploads a handful at a time.
+            // A cap is here because nothing else counts sessions: for anyone
+            // without a quota to spend — staff, and clients on an installation
+            // that sets no quotas — the number of sessions is the only thing
+            // standing between a declared size and any multiple of it.
+            $openSessions = UploadSession::query()->where('user_id', $user->id)->count();
+            $maxOpen = max(1, (int) config('projectsend.uploads.max_open_sessions'));
 
-        // The declared size here is client-supplied and unverified until
-        // complete()'s real assembled byte count — re-checked there too.
-        if ($user->isClient()) {
-            $quotaBytes = $this->storageUsage->quotaBytes($user);
-
-            // Sessions already open count too, at the size they declared.
-            // A quota measured against stored files alone is spent twice
-            // over by opening the sessions one after another: each one is
-            // told there is room, because the ones before it had not
-            // finished and so had not become files. putPart() holds each
-            // session to its declaration, so reserving the declarations
-            // here is what puts bytes waiting on the temporary volume
-            // under the same ceiling as bytes that landed.
-            $pendingBytes = (int) UploadSession::query()->where('user_id', $user->id)->sum('size');
-
-            if ($quotaBytes > 0 && $this->storageUsage->usedBytes($user) + $pendingBytes + (int) $validated['size'] > $quotaBytes) {
+            if ($openSessions >= $maxOpen) {
                 throw ValidationException::withMessages([
-                    'size' => __('This upload would exceed your storage quota of :quota MB.', [
-                        // The resolved quota, not the column: a client who
-                        // was never given one of their own carries 0 there
-                        // and inherits the site default, so printing the
-                        // column reads "your storage quota of 0 MB" at the
-                        // moment somebody is asking what their limit is.
-                        'quota' => (string) $this->storageUsage->quotaMb($user),
-                    ]),
+                    'filename' => __('Too many uploads are already in progress. Finish or cancel one and try again.'),
                 ]);
             }
-        }
 
-        if (! $this->extensionPolicy->isAllowed($user, $validated['filename'])) {
-            throw ValidationException::withMessages([
-                'filename' => __('This file type is not allowed for upload.'),
-            ]);
-        }
+            // The declared size here is client-supplied and unverified until
+            // complete()'s real assembled byte count — re-checked there too.
+            if ($user->isClient()) {
+                $quotaBytes = $this->storageUsage->quotaBytes($user);
 
-        // Checked here, before a single byte is sent, so a rejected pick
-        // costs nothing. FileVersions::link() re-checks it at complete()
-        // through FilePolicy::setVersion — that is the boundary; this is
-        // the courtesy.
-        $previousFileId = null;
-        if (($validated['previous_file_id'] ?? null) !== null) {
-            $previousFileId = $this->resolvableOriginal($user, (int) $validated['previous_file_id'])?->id;
+                // Sessions already open count too, at the size they declared.
+                // A quota measured against stored files alone is spent twice
+                // over by opening the sessions one after another: each one is
+                // told there is room, because the ones before it had not
+                // finished and so had not become files. putPart() holds each
+                // session to its declaration, so reserving the declarations
+                // here is what puts bytes waiting on the temporary volume
+                // under the same ceiling as bytes that landed.
+                $pendingBytes = (int) UploadSession::query()->where('user_id', $user->id)->sum('size');
 
-            if ($previousFileId === null) {
+                if ($quotaBytes > 0 && $this->storageUsage->usedBytes($user) + $pendingBytes + (int) $validated['size'] > $quotaBytes) {
+                    throw ValidationException::withMessages([
+                        'size' => __('This upload would exceed your storage quota of :quota MB.', [
+                            // The resolved quota, not the column: a client who
+                            // was never given one of their own carries 0 there
+                            // and inherits the site default, so printing the
+                            // column reads "your storage quota of 0 MB" at the
+                            // moment somebody is asking what their limit is.
+                            'quota' => (string) $this->storageUsage->quotaMb($user),
+                        ]),
+                    ]);
+                }
+            }
+
+            if (! $this->extensionPolicy->isAllowed($user, $validated['filename'])) {
                 throw ValidationException::withMessages([
-                    'previous_file_id' => __('That file can\'t be used as the previous version.'),
+                    'filename' => __('This file type is not allowed for upload.'),
                 ]);
             }
-        }
 
-        $session = UploadSession::query()->create([
-            'user_id' => $user->id,
-            'folder_id' => $folder?->id,
-            'previous_file_id' => $previousFileId,
-            'original_name' => $validated['filename'],
-            'size' => (int) $validated['size'],
-            'mime_type' => $validated['type'] ?? null,
-            'description' => $validated['description'] ?? null,
-        ]);
+            // Checked here, before a single byte is sent, so a rejected pick
+            // costs nothing. FileVersions::link() re-checks it at complete()
+            // through FilePolicy::setVersion — that is the boundary; this is
+            // the courtesy.
+            $previousFileId = null;
+            if (($validated['previous_file_id'] ?? null) !== null) {
+                $previousFileId = $this->resolvableOriginal($user, (int) $validated['previous_file_id'])?->id;
+
+                if ($previousFileId === null) {
+                    throw ValidationException::withMessages([
+                        'previous_file_id' => __('That file can\'t be used as the previous version.'),
+                    ]);
+                }
+            }
+
+            $session = UploadSession::query()->create([
+                'user_id' => $user->id,
+                'folder_id' => $folder?->id,
+                'previous_file_id' => $previousFileId,
+                'original_name' => $validated['filename'],
+                'size' => (int) $validated['size'],
+                'mime_type' => $validated['type'] ?? null,
+                'description' => $validated['description'] ?? null,
+            ]);
+        } finally {
+            $lock->release();
+        }
 
         return response()->json([
             'uploadId' => $session->id,

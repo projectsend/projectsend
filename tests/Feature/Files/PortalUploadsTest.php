@@ -7,6 +7,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Uploads\UploadSession;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Models\RolePermission;
 use App\Modules\Identity\Permissions\Permission;
@@ -15,6 +16,7 @@ use App\Modules\Identity\UserType;
 use App\Modules\Notifications\InAppNotification;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
 use Inertia\Testing\AssertableInertia;
@@ -199,4 +201,25 @@ test('a client upload notifies a client-scoped staff member only when the client
 
     expect(InAppNotification::query()->where('user_id', $theirs->id)->where('type', 'client_uploaded')->exists())->toBeTrue()
         ->and(InAppNotification::query()->where('user_id', $someoneElses->id)->exists())->toBeFalse();
+});
+
+/*
+ * The quota check counted what was open and then opened one more, so
+ * uploads started together each saw room for themselves and a quota could
+ * be overshot by as many as a client started at once. The count and the
+ * new session now happen under one lock per person.
+ */
+test('a client\'s upload is reserved against their quota under a lock', function () {
+    $client = User::factory()->client()->create();
+    grantUploadToClient($client);
+    $heldWhileCreating = null;
+
+    UploadSession::creating(function () use ($client, &$heldWhileCreating): void {
+        $heldWhileCreating = ! Cache::lock('upload-reserve:'.$client->id, 1)->get();
+    });
+
+    $this->actingAs($client)->postJson('/uploads', ['filename' => 'a.pdf', 'size' => 10, 'type' => 'application/pdf'])->assertOk();
+
+    expect($heldWhileCreating)->toBeTrue()
+        ->and(Cache::lock('upload-reserve:'.$client->id, 1)->get())->toBeTrue();
 });

@@ -208,3 +208,42 @@ test('an unscoped role clears the roster as before', function () {
 
     expect($this->rep->refresh()->assignedClients()->count())->toBe(0);
 });
+
+/*
+ * guardTarget() asked only whether the actor could grant the colleague's
+ * role. Two scoped staff on the same role passed it whoever covered more
+ * clients, so one could set the other's password or email, reset their
+ * two-factor or delete them and take their files, and so reach clients
+ * that were never theirs.
+ */
+test('a scoped staff member cannot act on a colleague who holds clients they do not', function () {
+    $colleague = User::factory()->create(['role_id' => $this->role->id]);
+    $colleague->assignedClients()->sync([$this->mine->id, $this->stranger->id]);
+    $before = $colleague->password;
+
+    $this->actingAs($this->rep)->get("/users/{$colleague->id}")->assertForbidden();
+    $this->actingAs($this->rep)->patch("/users/{$colleague->id}", [
+        'name' => $colleague->name,
+        'email' => 'rep-controls-this@example.test',
+        'password' => 'a-brand-new-password-123',
+        'password_confirmation' => 'a-brand-new-password-123',
+        'role_id' => $this->role->id,
+        'active' => true,
+        'assigned_clients' => [$this->mine->id],
+    ])->assertForbidden();
+
+    $token = $this->rep->createToken('t', ['manage_users', 'edit_users'])->plainTextToken;
+    $this->withToken($token)->patchJson("/api/v1/users/{$colleague->id}", ['password' => 'a-brand-new-password-123'])->assertForbidden();
+
+    $colleague->refresh();
+    expect($colleague->email)->not->toBe('rep-controls-this@example.test')
+        ->and($colleague->password)->toBe($before)
+        ->and($colleague->assignedClients()->pluck('users.id')->sort()->values()->all())->toBe(collect([$this->mine->id, $this->stranger->id])->sort()->values()->all());
+});
+
+test('a scoped staff member still manages a colleague whose clients are all theirs', function () {
+    $colleague = User::factory()->create(['role_id' => $this->role->id]);
+    $colleague->assignedClients()->sync([$this->mine->id]);
+
+    $this->actingAs($this->rep)->get("/users/{$colleague->id}")->assertOk();
+});

@@ -158,7 +158,8 @@ class StaffAccounts
      * that account either. Without this, a non-administrator holding
      * manage_users could still rename, deactivate or delete an
      * administrator — the role picker would refuse the role, but everything
-     * around it would go through.
+     * around it would go through. A client-scoped actor is held to reach as
+     * well as authority: see the second half.
      */
     public function guardTarget(User $actor, User $target): void
     {
@@ -169,6 +170,19 @@ class StaffAccounts
         $role = $target->role;
 
         abort_unless($role === null || $this->mayGrant($actor, $role), 403);
+
+        // The same rule for reach. A colleague's clients are everything
+        // those clients can see, and whoever can set that colleague's
+        // password, email or two-factor, convert them or delete them and
+        // take their files, can reach all of it. So a client-scoped actor
+        // may act on a colleague only when every client the colleague holds
+        // is one the actor holds too. Two scoped staff on the same role
+        // passed mayGrant() whoever covered more.
+        $reach = $this->library->assignableClientIds($actor);
+
+        if ($reach !== null) {
+            abort_if($target->assignedClients()->whereNotIn('users.id', $reach)->exists(), 403);
+        }
     }
 
     /**

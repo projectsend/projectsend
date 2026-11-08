@@ -248,6 +248,14 @@ final class Grants
      */
     public function revokeAllFor(User $user, string $reason): void
     {
+        // An approval not yet exchanged would otherwise become a fresh
+        // connection after this: the code lives a minute, and the exchange
+        // only asks whether the account still exists.
+        McpAuthorizationCode::query()
+            ->where('user_id', $user->id)
+            ->whereNull('used_at')
+            ->delete();
+
         McpConnection::query()
             ->where('user_id', $user->id)
             ->whereNull('revoked_at')

@@ -949,3 +949,16 @@ it('ends an assistant connection when two-factor becomes required for an account
     expect(McpConnection::query()->first()?->revoked_reason)->toBe('two-factor required');
     oauthRefresh($connected['refresh_token'])->assertJsonPath('error', 'invalid_grant');
 });
+
+it('turns away an approval not yet exchanged when the account\'s connections are all ended', function (): void {
+    oauthDocument();
+    $staff = oauthStaff();
+    $code = oauthCode($staff);
+
+    // A password replaced, an account converted, two-factor required: in
+    // the minute the code lives, it must not become a connection after.
+    app(\App\Modules\Mcp\OAuth\Grants::class)->revokeAllFor($staff, 'password replaced');
+
+    oauthExchange($code)->assertJsonPath('error', 'invalid_grant');
+    expect(McpConnection::query()->count())->toBe(0);
+});

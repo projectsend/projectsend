@@ -181,3 +181,28 @@ test('requiring two-factor ends the API tokens of accounts it newly covers witho
     ])->assertRedirect();
     expect($without->tokens()->count())->toBe(1);
 });
+
+test('turning off or resetting a required second factor ends the API tokens it was guarding', function () {
+    app(Settings::class)->set(Setting::TwoFactorEnforcement, 'staff');
+    $admin = User::factory()->create(['two_factor_confirmed_at' => now()]);
+
+    $self = User::factory()->create(['two_factor_confirmed_at' => now(), 'two_factor_secret' => 'x']);
+    $self->createToken('zap');
+    $this->actingAs($self)
+        ->withSession(['auth.password_confirmed_at' => time()])
+        ->delete('/settings/two-factor')
+        ->assertRedirect();
+    expect($self->fresh()->hasTwoFactorEnabled())->toBeFalse()
+        ->and($self->tokens()->count())->toBe(0);
+
+    $reset = User::factory()->create(['two_factor_confirmed_at' => now()]);
+    $reset->createToken('zap');
+    app(\App\Modules\Identity\TwoFactor\TwoFactorAdministration::class)->reset($reset);
+    expect($reset->tokens()->count())->toBe(0);
+
+    // Nothing requires it for clients, so a client's reset ends nothing.
+    $client = User::factory()->client()->create(['two_factor_confirmed_at' => now()]);
+    $client->createToken('zap');
+    app(\App\Modules\Identity\TwoFactor\TwoFactorAdministration::class)->reset($client);
+    expect($client->tokens()->count())->toBe(1);
+});

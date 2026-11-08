@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Identity\TwoFactor;
 
 use App\Models\User;
+use App\Modules\Mcp\OAuth\Grants;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use BaconQrCode\Renderer\Color\Rgb;
@@ -45,6 +46,20 @@ class TwoFactorService
             'two_factor_recovery_codes' => null,
             'two_factor_confirmed_at' => null,
         ])->save();
+
+        // Under a requirement that covers this account, the browser walks
+        // it back into enrolment; an API token or an assistant connection
+        // never passes that way, and kept working for an account that now
+        // has no second factor. The same rule as turning the requirement
+        // on (SecuritySettingsController): what it holds outside the
+        // browser ends, and a new one is made after enrolling.
+        $value = $this->settings->get(Setting::TwoFactorEnforcement);
+        $enforcement = (is_string($value) ? TwoFactorEnforcement::tryFrom($value) : null) ?? TwoFactorEnforcement::None;
+
+        if ($wasEnabled && $enforcement->appliesTo($user->type)) {
+            $user->tokens()->delete();
+            app(Grants::class)->revokeAllFor($user, 'two-factor removed');
+        }
 
         return $wasEnabled;
     }

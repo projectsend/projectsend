@@ -7,7 +7,6 @@ namespace App\Modules\Comments;
 use App\Models\User;
 use App\Modules\Comments\Access\VisibleCommentScope;
 use App\Modules\Comments\Models\FileComment;
-use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Identity\Permissions\PermissionChecker;
 use Illuminate\Support\Facades\Gate;
@@ -23,7 +22,6 @@ class FileCommentPolicy
     public function __construct(
         private readonly VisibleCommentScope $scope,
         private readonly CommentingRules $rules,
-        private readonly StaffLibraryScope $library,
         private readonly ViewableFileScope $viewable,
         private readonly PermissionChecker $permissions,
     ) {}
@@ -87,15 +85,21 @@ class FileCommentPolicy
             return false;
         }
 
-        if ($comment === null || ! $user->isClientScoped()) {
+        if ($comment === null) {
             return true;
         }
 
-        // By file id rather than through the relation: a file soft-deleted
-        // out from under its comments resolves to null there, and the
-        // answer for a scoped moderator is the same either way — it is not
-        // in their library. Unscoped staff never reach this line.
-        return $this->library->files($user)->whereKey($comment->file_id)->exists();
+        // The comment itself, not only its file: the moderation screen is
+        // across(), and a comment it would not list is not this moderator's
+        // to decide about. Asking only whether the file was in their
+        // library let a client-scoped moderator delete, by id, a
+        // conversation with a client off their roster on a shared file, and
+        // any moderator delete somebody's "only me" note, which says
+        // nobody else can read it, staff included. From the role, for the
+        // reason given above.
+        return $this->permissions->asRole(
+            fn (): bool => $this->scope->across($user)->whereKey($comment->getKey())->exists(),
+        );
     }
 
     private function withinEditWindow(FileComment $comment): bool

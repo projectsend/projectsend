@@ -131,3 +131,32 @@ test('the library boundary does not follow an author onto their own comment', fu
 
     expect(FileComment::query()->whereKey($comment->id)->exists())->toBeFalse();
 });
+
+test('a scoped moderator cannot delete another client\'s thread on a file shared with their own client', function () {
+    $mine = User::factory()->client()->create();
+    $stranger = User::factory()->client()->create();
+    $file = File::factory()->create(['uploaded_by' => $this->admin->id]);
+    shareFileWith($file, $mine);
+    shareFileWith($file, $stranger);
+
+    $private = FileComment::factory()->for($file)->inThreadOf($stranger)->create(['author_id' => $stranger->id]);
+    $ours = FileComment::factory()->for($file)->inThreadOf($mine)->create(['author_id' => $mine->id]);
+    $moderator = commentModeratorScopedTo($mine);
+
+    $this->actingAs($moderator)->delete("/comments/{$private->id}/moderate")->assertForbidden();
+    $this->actingAs($moderator)->deleteJson("/comments/{$private->id}")->assertForbidden();
+    expect(FileComment::query()->whereKey($private->id)->exists())->toBeTrue();
+
+    // Their own client's thread is still theirs to moderate.
+    $this->actingAs($moderator)->delete("/comments/{$ours->id}/moderate")->assertRedirect();
+    expect(FileComment::query()->whereKey($ours->id)->exists())->toBeFalse();
+});
+
+test('no moderator can delete somebody else\'s only-me note', function () {
+    $colleague = User::factory()->create();
+    $file = File::factory()->create(['uploaded_by' => $this->admin->id]);
+    $note = FileComment::factory()->for($file)->onlyMe()->create(['author_id' => $colleague->id]);
+
+    $this->actingAs($this->admin)->delete("/comments/{$note->id}/moderate")->assertForbidden();
+    expect(FileComment::query()->whereKey($note->id)->exists())->toBeTrue();
+});

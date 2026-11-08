@@ -14,6 +14,8 @@ use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
     $this->admin = User::factory()->create();
+    // Sign-in settings ask for the password again before a change.
+    confirmPassword($this->admin);
 });
 
 /**
@@ -282,4 +284,33 @@ test('changing the skip-two-factor choice is written to the activity log', funct
 
     expect($entry)->not->toBeNull()
         ->and($entry->context['skip_two_factor'])->toBeTrue();
+});
+
+/*
+ * Whoever can point sign-in at a provider they run can sign in as anybody:
+ * a provider that vouches for the administrator's address gets linked to
+ * the administrator's account, and with "skip two-factor" on, the next
+ * sign-in skips their second factor too. edit_settings alone was enough.
+ */
+test('only an administrator reaches the sign-in provider and LDAP settings', function () {
+    $settingsEditor = staffWithPermissions(['edit_settings']);
+    confirmPassword($settingsEditor);
+
+    $this->actingAs($settingsEditor)->get('/system/settings/social-login')->assertForbidden();
+    $this->actingAs($settingsEditor)->patch('/system/settings/social-login/oidc', ['enabled' => true, 'skip_two_factor' => true])->assertForbidden();
+    $this->actingAs($settingsEditor)->get('/system/settings/ldap')->assertForbidden();
+    $this->actingAs($settingsEditor)->patch('/system/settings/ldap', ['active' => true, 'host' => 'ldap.attacker.test'])->assertForbidden();
+    $this->actingAs($settingsEditor)->post('/system/settings/ldap/test')->assertForbidden();
+
+    $this->actingAs($this->admin)->get('/system/settings/social-login')->assertOk();
+    $this->actingAs($this->admin)->get('/system/settings/ldap')->assertOk();
+});
+
+test('an administrator confirms their password before changing a sign-in provider', function () {
+    // A session of its own: the one beforeEach confirmed would carry over.
+    $this->flushSession();
+    $admin = User::factory()->create();
+
+    $this->actingAs($admin)->patch('/system/settings/social-login/google', ['enabled' => true])
+        ->assertRedirect(route('password.confirm'));
 });

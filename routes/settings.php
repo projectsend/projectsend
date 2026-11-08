@@ -239,20 +239,33 @@ Route::middleware('auth')->group(function () {
         // Deliberately outside any capability: group. LDAP is an
         // administrator's setting, available in every edition, not an
         // edition difference.
-        Route::get('system/settings/ldap', [LdapSettingsController::class, 'edit'])->name('system-settings.ldap.edit');
-        Route::patch('system/settings/ldap', [LdapSettingsController::class, 'update'])->name('system-settings.ldap.update');
-        Route::post('system/settings/ldap/test', [LdapSettingsController::class, 'test'])->name('system-settings.ldap.test');
+        //
+        // LDAP and social login decide who may sign in as whom: a directory
+        // or a provider somebody runs answers "yes, this is them" for any
+        // address they like, and an account is linked or matched on that
+        // answer. So they are the administrator's alone (`can:administer`),
+        // not every holder of edit_settings, and a change asks for the
+        // password again. A custom role with edit_settings could otherwise
+        // sign in as the administrator with their two-factor skipped.
+        Route::middleware('can:administer')->group(function () {
+            Route::get('system/settings/ldap', [LdapSettingsController::class, 'edit'])->name('system-settings.ldap.edit');
+            Route::middleware('password.confirm')->group(function () {
+                Route::patch('system/settings/ldap', [LdapSettingsController::class, 'update'])->name('system-settings.ldap.update');
+                Route::post('system/settings/ldap/test', [LdapSettingsController::class, 'test'])->name('system-settings.ldap.test');
+            });
 
-        // Outside any capability: group for the same reason as LDAP above.
-        Route::get('system/settings/social-login', [SocialLoginSettingsController::class, 'edit'])
-            ->name('system-settings.social-login.edit');
-        Route::patch('system/settings/social-login/{provider}', [SocialLoginSettingsController::class, 'update'])
-            ->name('system-settings.social-login.update');
-        // Its own path: under social-login/ it would be read as {provider}.
-        // password.confirm, because it decides how every staff member signs in.
-        Route::patch('system/settings/staff-sign-in', [SocialLoginSettingsController::class, 'updateStaffSignIn'])
-            ->middleware('password.confirm')
-            ->name('system-settings.staff-sign-in.update');
+            // Outside any capability: group for the same reason as LDAP above.
+            Route::get('system/settings/social-login', [SocialLoginSettingsController::class, 'edit'])
+                ->name('system-settings.social-login.edit');
+            Route::patch('system/settings/social-login/{provider}', [SocialLoginSettingsController::class, 'update'])
+                ->middleware('password.confirm')
+                ->name('system-settings.social-login.update');
+            // Its own path: under social-login/ it would be read as {provider}.
+            // password.confirm, because it decides how every staff member signs in.
+            Route::patch('system/settings/staff-sign-in', [SocialLoginSettingsController::class, 'updateStaffSignIn'])
+                ->middleware('password.confirm')
+                ->name('system-settings.staff-sign-in.update');
+        });
 
         // Unlike LDAP and social login above, this one does get a
         // capability: group — present in both editions, so a self-hosted

@@ -7,6 +7,7 @@ export interface Auth {
     permissions: string[];
     /** False when this account has no password to type here; it confirms through its connected provider instead. */
     has_password: boolean;
+    is_administrator: boolean;
 }
 
 /** The provider an account with no password confirms through, from Reauthentication. */

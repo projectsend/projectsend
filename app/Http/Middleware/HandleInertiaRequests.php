@@ -81,6 +81,9 @@ class HandleInertiaRequests extends Middleware
                 // leave it out and the confirmation dialog offers the
                 // connected provider instead (Reauthentication).
                 'has_password' => $user === null || app(Reauthentication::class)->hasPassword($user),
+                // For hiding the few administrator-only screens (sign-in
+                // providers, LDAP); the routes' can:administer enforces it.
+                'is_administrator' => $user !== null && $user->can('administer'),
             ],
             'edition' => $capabilities->edition()->value,
             'noindex' => app(Settings::class)->get(Setting::DiscourageSearchIndexing),

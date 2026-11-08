@@ -21,6 +21,8 @@ use App\Models\User;
  */
 beforeEach(function () {
     $this->admin = User::factory()->create();
+    // Sign-in settings ask for the password again before a change.
+    confirmPassword($this->admin);
 });
 
 test('a rejected storage form does not flash the secret access key', function () {

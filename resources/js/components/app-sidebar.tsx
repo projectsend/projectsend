@@ -226,8 +226,8 @@ export function AppSidebar() {
             // Who gets an account, and how they prove who they are.
             { title: t('Clients'), url: '/system/settings/clients', when: settings },
             { title: t('Security'), url: '/system/settings/security', when: settings },
-            { title: t('LDAP'), url: '/system/settings/ldap', when: settings },
-            { title: t('Social login'), url: '/system/settings/social-login', when: settings },
+            { title: t('LDAP'), url: '/system/settings/ldap', when: settings && auth.is_administrator },
+            { title: t('Social login'), url: '/system/settings/social-login', when: settings && auth.is_administrator },
             { title: t('CAPTCHA'), url: '/system/settings/captcha', when: settings && capabilities.includes('captcha.configure') },
 
             // Files: where they land, how long they stay, who can see them.

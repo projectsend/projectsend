@@ -53,6 +53,13 @@ class IdentityServiceProvider extends ServiceProvider
             );
         }
 
+        // Administrators only, whatever else a role holds. For the few
+        // settings that decide how people prove who they are: whoever can
+        // point sign-in at a provider or a directory they run can sign in
+        // as anybody, the administrator included, so holding edit_settings
+        // must not be enough to change them.
+        Gate::define('administer', fn (User $user): bool => $user->isStaff() && $user->role?->is_administrator === true);
+
         if ($this->app->runningInConsole()) {
             $this->commands([
                 CreateAdminCommand::class,

@@ -90,3 +90,43 @@ test('an unscoped staff member places files in any folder', function () {
 
     expect($file->refresh()->folder_id)->toBe($both->id);
 });
+
+/*
+ * A client's folder inside a folder staff shared with a group showed
+ * everything the client put in it to every member. Clients do not see
+ * each other.
+ */
+test('a client cannot make a folder, or fill one, inside a folder shared with a group', function () {
+    $alice = User::factory()->client()->create();
+    $bob = User::factory()->client()->create();
+    foreach ([$alice, $bob] as $client) {
+        foreach (['upload', 'create_own_folders'] as $permission) {
+            RolePermission::query()->firstOrCreate(['role_id' => $client->role_id, 'permission' => $permission]);
+        }
+    }
+    $group = Group::query()->create(['name' => 'Everyone']);
+    $group->members()->sync([$alice->id, $bob->id]);
+    $shared = reachFolder('Group folder');
+    FolderAssignment::query()->create(['folder_id' => $shared->id, 'assignable_type' => $group->getMorphClass(), 'assignable_id' => $group->id]);
+
+    $this->actingAs($alice)->post('/my-folders', ['name' => 'Alice private', 'parent_id' => $shared->id])->assertForbidden();
+    expect(Folder::query()->where('name', 'Alice private')->exists())->toBeFalse();
+
+    // One made before the rule is still not a place to upload into.
+    $old = makeFolder('Made earlier', $shared);
+    $old->forceFill(['created_by' => $alice->id])->save();
+    expect(Folder::uploadableBy($alice, $old->refresh()))->toBeFalse();
+});
+
+test('a client still makes and fills folders in their own space and in a folder shared with them alone', function () {
+    $alice = User::factory()->client()->create();
+    foreach (['upload', 'create_own_folders'] as $permission) {
+        RolePermission::query()->firstOrCreate(['role_id' => $alice->role_id, 'permission' => $permission]);
+    }
+    $justAlice = reachFolder('Just Alice', $alice);
+
+    $this->actingAs($alice)->post('/my-folders', ['name' => 'Mine inside', 'parent_id' => $justAlice->id])->assertRedirect();
+
+    $made = Folder::query()->where('name', 'Mine inside')->sole();
+    expect(Folder::uploadableBy($alice, $made))->toBeTrue();
+});

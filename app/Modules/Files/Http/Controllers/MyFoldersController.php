@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Folders\ClientHomeFolders;
+use App\Modules\Files\Folders\FolderReach;
 use App\Modules\Files\Folders\FolderService;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
@@ -55,11 +56,11 @@ class MyFoldersController extends Controller
 
             // A folder made inside a public one is public too, and so is
             // its name on the public listing. So inside public ground the
-            // client must be allowed to place content there. Elsewhere,
-            // being able to see the parent is still enough: a client may
-            // nest a folder in a private folder staff shared with them,
-            // even though they cannot upload into that folder itself
-            // (GHSA-65c7-3fpf-q89h).
+            // client must be allowed to place content there
+            // (GHSA-65c7-3fpf-q89h). Elsewhere a client may nest a folder in
+            // a private folder staff shared with them alone, even though
+            // they cannot upload into that folder itself; not in one that
+            // reaches anybody else (below).
             if ($parent->isEffectivelyPublic()) {
                 abort_unless(Folder::uploadableBy($client, $parent), 403);
             }
@@ -71,6 +72,14 @@ class MyFoldersController extends Controller
         // folder would put it beside the staff folders, which is precisely
         // the mess the home folder exists to end.
         $parent ??= $this->homeFolders->for($client);
+
+        // Not inside a folder that reaches anybody else: a folder staff
+        // shared with a group, or with several clients, shows everything
+        // in it to all of them, so a client's folder there was a way to
+        // hand files to other clients. Clients do not see each other.
+        if ($parent !== null && ! $parent->isEffectivelyPublic()) {
+            abort_if(app(FolderReach::class)->reachesOthersThan($client, $parent), 403);
+        }
 
         $folder = $this->folders->create($validated['name'], $parent);
 

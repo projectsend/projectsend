@@ -229,7 +229,10 @@ class Folder extends Model
         }
 
         if (! $folder->isEffectivelyPublic()) {
-            return $folder->isOwnedBy($user);
+            // Their own folder, and one only they can see. A client's folder
+            // inside a folder staff shared with a group, or with several
+            // clients, showed everything they put in it to all of them.
+            return $folder->isOwnedBy($user) && ! app(FolderReach::class)->reachesOthersThan($user, $folder);
         }
 
         // Owning the folder is not enough once it is public, and a client's

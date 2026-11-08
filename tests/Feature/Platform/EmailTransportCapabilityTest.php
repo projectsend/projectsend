@@ -11,6 +11,8 @@ use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
     $this->admin = User::factory()->create();
+    // The mail screen asks for the password again before a change.
+    confirmPassword($this->admin);
 });
 
 test('community edition keeps saving and applying the transport as before', function () {

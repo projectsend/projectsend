@@ -242,7 +242,7 @@ export function AppSidebar() {
             { title: t('Privacy'), url: '/system/settings/privacy', when: settings },
 
             // Outgoing mail: the transport, then what it says.
-            { title: t('Email'), url: '/system/settings/email', when: settings },
+            { title: t('Email'), url: '/system/settings/email', when: settings && auth.is_administrator },
             { title: t('Email templates'), url: '/system/settings/email-templates', when: can('edit_email_templates') },
 
             // Housekeeping.

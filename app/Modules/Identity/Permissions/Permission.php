@@ -186,10 +186,18 @@ enum Permission: string
      * The orphan tool is one: stray bytes have no row, so no owner and no
      * client, and its missing-files tab lists rows from every client
      * (GHSA-767q-xvq3-r3fv).
+     *
+     * The settings screens are the other. They govern the installation:
+     * which group a self-registered client joins, whose account inherits an
+     * erased client's files, the scanner's recent activity across every
+     * client. A scoped role holding edit_settings could register itself into
+     * a group off its roster or name itself the heir to every erased
+     * client's files. Narrowing each screen would leave the next one to be
+     * forgotten, so the role cannot hold it at all.
      */
     public function spansAllClients(): bool
     {
-        return $this === self::ImportOrphans;
+        return $this === self::ImportOrphans || $this === self::EditSettings;
     }
 
     public function category(): PermissionCategory

@@ -14,10 +14,12 @@ import { useTranslation } from '@/hooks/use-translation';
 const FOLDERS_PERMISSION = 'create_own_folders';
 const UPLOAD_PERMISSION = 'upload';
 
-// Works on the whole storage, so a role limited to assigned clients never
-// holds it (Permission::spansAllClients(), enforced in PermissionChecker).
-// Shown disabled here so the box never looks like it does something.
-const ORPHANS_PERMISSION = 'import_orphans';
+// Work on the whole installation, so a role limited to assigned clients
+// never holds them (Permission::spansAllClients(), enforced in
+// PermissionChecker). Shown disabled here so the box never looks like it
+// does something.
+const UNSCOPED_ONLY_PERMISSIONS = ['import_orphans', 'edit_settings'];
+const unscopedOnly = (key: string) => UNSCOPED_ONLY_PERMISSIONS.includes(key);
 
 export interface PermissionCatalogCategory {
     key: string;
@@ -66,8 +68,8 @@ export function RoleForm({
     }, [hasUpload]);
 
     useEffect(() => {
-        if (clientScoped && permissions.includes(ORPHANS_PERMISSION)) {
-            onPermissionsChange(permissions.filter((permission) => permission !== ORPHANS_PERMISSION));
+        if (clientScoped && permissions.some(unscopedOnly)) {
+            onPermissionsChange(permissions.filter((permission) => !unscopedOnly(permission)));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clientScoped]);
@@ -88,7 +90,7 @@ export function RoleForm({
     const toggleCategory = (category: PermissionCatalogCategory, checked: boolean) => {
         const keys = category.permissions.map((permission) => permission.key);
         const rest = permissions.filter((permission) => !keys.includes(permission));
-        const added = clientScoped ? keys.filter((key) => key !== ORPHANS_PERMISSION) : keys;
+        const added = clientScoped ? keys.filter((key) => !unscopedOnly(key)) : keys;
         onPermissionsChange(checked ? [...rest, ...added] : rest);
     };
 
@@ -124,7 +126,7 @@ export function RoleForm({
             <div className="space-y-6">
                 {catalog.map((category) => {
                     const allChecked = category.permissions
-                        .filter((permission) => !(clientScoped && permission.key === ORPHANS_PERMISSION))
+                        .filter((permission) => !(clientScoped && unscopedOnly(permission.key)))
                         .every((permission) => permissions.includes(permission.key));
 
                     return (
@@ -144,7 +146,7 @@ export function RoleForm({
                                     const disabledReason =
                                         permission.key === FOLDERS_PERMISSION && !hasUpload
                                             ? t('Requires Upload files')
-                                            : permission.key === ORPHANS_PERMISSION && clientScoped
+                                            : unscopedOnly(permission.key) && clientScoped
                                               ? t('Not available to a role limited to assigned clients')
                                               : null;
                                     const disabled = disabledReason !== null;

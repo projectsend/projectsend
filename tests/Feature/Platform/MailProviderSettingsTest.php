@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 beforeEach(function () {
     $this->admin = User::factory()->create();
+    // The mail screen asks for the password again before a change.
+    confirmPassword($this->admin);
 });
 
 test('the password is encrypted at rest', function () {

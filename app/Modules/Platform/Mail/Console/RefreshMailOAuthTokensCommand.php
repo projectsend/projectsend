@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Modules\Platform\Mail\Console;
 
 use App\Models\User;
-use App\Modules\Identity\Permissions\Permission;
-use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Identity\UserType;
 use App\Modules\Notifications\Notifier;
 use App\Modules\Platform\Mail\MailOAuthBrokers;
@@ -14,6 +12,7 @@ use App\Modules\Platform\Mail\MailOAuthConnection;
 use App\Modules\Platform\Mail\MailOAuthException;
 use App\Modules\Platform\Settings\MailConfigApplier;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Gate;
 
 /**
  * Keeps every connected OAuth mailbox able to send, and says so early
@@ -34,7 +33,7 @@ class RefreshMailOAuthTokensCommand extends Command
 
     protected $description = 'Refresh connected OAuth mailbox tokens and flag connections that need to be reconnected (runs daily)';
 
-    public function handle(MailOAuthBrokers $brokers, Notifier $notifier, PermissionChecker $permissions, MailConfigApplier $mailConfig): int
+    public function handle(MailOAuthBrokers $brokers, Notifier $notifier, MailConfigApplier $mailConfig): int
     {
         $connections = MailOAuthConnection::query()->get()->filter(
             fn (MailOAuthConnection $connection): bool => $connection->usable(),
@@ -91,8 +90,10 @@ class RefreshMailOAuthTokensCommand extends Command
                 // silent for good, on exactly the installations whose
                 // password-reset mail rides on the connection.
                 if ($connection->broken_notified_at === null) {
-                    $recipients = array_values(User::query()->where('type', UserType::Staff)->get()
-                        ->filter(fn (User $staff): bool => $permissions->allows($staff, Permission::EditSettings))
+                    // The people who can reconnect it: the mail screen is
+                    // the administrator's alone (routes/settings.php).
+                    $recipients = array_values(User::query()->where('type', UserType::Staff)->where('active', true)->get()
+                        ->filter(fn (User $staff): bool => Gate::forUser($staff)->allows('administer'))
                         ->all());
 
                     $notifier->send('mail_oauth_connection_broken', $recipients, data: [

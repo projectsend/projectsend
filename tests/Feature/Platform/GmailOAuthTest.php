@@ -13,6 +13,8 @@ use Symfony\Component\Mailer\Exception\TransportException;
 
 beforeEach(function () {
     $this->admin = User::factory()->create();
+    // The mail screen asks for the password again before a change.
+    confirmPassword($this->admin);
 });
 
 /** A Google token response — no refresh_token: Google only sends one on the initial consent. */

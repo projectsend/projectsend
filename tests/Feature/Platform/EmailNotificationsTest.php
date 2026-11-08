@@ -127,6 +127,7 @@ test('denying a client sends nothing when the setting is disabled', function () 
 });
 
 test('staff can view and update the email settings page', function () {
+    confirmPassword($this->admin);
     $this->actingAs($this->admin);
 
     $this->get('/system/settings/email')->assertInertia(
@@ -145,6 +146,7 @@ test('staff can view and update the email settings page', function () {
 });
 
 test('saving an empty admin notification recipient list is rejected', function () {
+    confirmPassword($this->admin);
     $this->actingAs($this->admin);
 
     $this->patch('/system/settings/email', validEmailSettingsPayload([
@@ -155,6 +157,7 @@ test('saving an empty admin notification recipient list is rejected', function (
 });
 
 test('saving an admin notification recipient list with an invalid address is rejected', function () {
+    confirmPassword($this->admin);
     $this->actingAs($this->admin);
 
     $this->patch('/system/settings/email', validEmailSettingsPayload([

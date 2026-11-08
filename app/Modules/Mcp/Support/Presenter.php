@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Mcp\Support;
 
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Models\User;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
@@ -41,9 +42,13 @@ final class Presenter
     }
 
     /**
-     * The folder a file sits in, for staff. Never for a client: a file
-     * shared with them directly can sit in a staff folder they cannot
-     * see, and its name is not theirs to read.
+     * The folder a file sits in, for staff who may reach that folder.
+     * Never for a client: a file shared with them directly can sit in a
+     * staff folder they cannot see. Nor for a client-scoped staff member
+     * whose library holds the file but not its folder: a file shared with
+     * their client can sit in another client's home folder, which is named
+     * after that client. The web details panel and the REST FileResource
+     * ask the same.
      *
      * @return array{id: int, name: string}|null
      */
@@ -55,9 +60,11 @@ final class Presenter
 
         $folder = $file->folder;
 
-        return $folder !== null
-            ? ['id' => (int) $folder->getAttribute('id'), 'name' => (string) $folder->getAttribute('name')]
-            : null;
+        if ($folder === null || ! app(StaffLibraryScope::class)->allowsFolder($account->user, $folder)) {
+            return null;
+        }
+
+        return ['id' => (int) $folder->getAttribute('id'), 'name' => (string) $folder->getAttribute('name')];
     }
 
     /**

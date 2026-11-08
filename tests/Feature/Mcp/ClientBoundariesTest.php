@@ -9,6 +9,7 @@ use App\Modules\Files\Models\ShareLink;
 use App\Modules\Identity\Models\RolePermission;
 use App\Modules\Mcp\Support\McpContext;
 use App\Modules\Mcp\Tools\CreateClient;
+use App\Modules\Mcp\Tools\GetClient;
 use App\Modules\Mcp\Tools\CreateFileFromContent;
 use App\Modules\Mcp\Tools\CreateUpload;
 use App\Modules\Mcp\Tools\GetDownloadStatus;
@@ -245,4 +246,51 @@ it('does not name a downloader off a client-scoped manager\'s roster', function 
     expect(McpWorld::error($status))->toBeNull()
         ->and($status['summary']['total'])->toBe(1)
         ->and(json_encode($status))->not->toContain('Stranger Corp');
+});
+
+it('lists what a client was sent only to staff who may read files', function (): void {
+    $blind = McpWorld::staff(['edit_clients']);
+    $client = McpWorld::clientAccount('sent@example.com', 'Sent To');
+    $file = McpWorld::file($this->admin, ['name' => 'board-pack']);
+    shareFileWith($file, $client);
+
+    $answer = McpWorld::call(GetClient::class, ['client_id' => $client->id], $blind);
+
+    expect(McpWorld::error($answer))->toBeNull()
+        ->and($answer['client']['files_shared'] ?? $answer['files_shared'] ?? null)->toBeNull()
+        ->and(json_encode($answer))->not->toContain('board-pack');
+});
+
+it('does not name the folder a file sits in to a scoped manager who cannot reach it', function (): void {
+    $staff = McpWorld::staff();
+    $mine = McpWorld::clientAccount('mine@example.com', 'Roster Client');
+    $stranger = McpWorld::clientAccount('stranger@example.com', 'Stranger Corp');
+    McpWorld::scopeTo($staff, $mine);
+
+    $theirs = McpWorld::folder('Stranger Corp home', creator: $stranger);
+    $file = McpWorld::file($this->admin, ['name' => 'for-both', 'folder_id' => $theirs->id]);
+    shareFileWith($file, $mine);
+
+    $listed = McpWorld::call(ListFiles::class, [], $staff);
+    $got = McpWorld::call(GetFile::class, ['file_id' => $file->id], $staff);
+
+    expect(collect($listed['files'])->pluck('id'))->toContain($file->id)
+        ->and(json_encode($listed))->not->toContain('Stranger Corp home')
+        ->and(json_encode($got))->not->toContain('Stranger Corp home');
+});
+
+it('names the file a revision follows only when the viewer can see it', function (): void {
+    $staff = McpWorld::staff();
+    $mine = McpWorld::clientAccount('mine@example.com', 'Roster Client');
+    McpWorld::scopeTo($staff, $mine);
+
+    $original = McpWorld::file($this->admin, ['name' => 'original-hidden']);
+    // Their own upload is in their library; the original it revises is not.
+    $revision = McpWorld::file($staff, ['name' => 'revision', 'previous_file_id' => $original->id, 'version_root_id' => $original->id]);
+
+    $got = McpWorld::call(GetFile::class, ['file_id' => $revision->id], $staff);
+
+    expect(McpWorld::error($got))->toBeNull()
+        ->and($got['file']['is_revision'])->toBeTrue()
+        ->and($got['file']['sharing_root_id'])->toBeNull();
 });

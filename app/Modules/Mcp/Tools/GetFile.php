@@ -69,7 +69,9 @@ class GetFile extends ToolBase
             'checksum' => $file->getAttribute('checksum') === null ? null : 'sha256:'.$file->getAttribute('checksum'),
             'uploaded_by' => $uploaderName !== null ? ['name' => $uploaderName] : null,
             'is_revision' => $rootId !== null,
-            'sharing_root_id' => $rootId === null ? null : (int) $rootId,
+            // Named only when this account can see that file, as the REST
+            // FileResource answers.
+            'sharing_root_id' => $rootId !== null && Files::visibleTo($account)->whereKey((int) $rootId)->exists() ? (int) $rootId : null,
             'previous_version' => self::version($file, 'previousVersion', $account),
             'next_version' => self::version($file, 'nextVersion', $account),
         ];

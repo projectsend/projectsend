@@ -14,6 +14,7 @@ use App\Modules\Mcp\Support\Account;
 use App\Modules\Mcp\Support\Bytes;
 use App\Modules\Mcp\Support\ClientAccountsQuery;
 use App\Modules\Mcp\Support\Envelope;
+use App\Modules\Mcp\Support\Files;
 use App\Modules\Mcp\Support\Presenter;
 use App\Modules\Mcp\Support\ToolError;
 use App\Modules\Mcp\Support\Web;
@@ -112,14 +113,25 @@ class GetClient extends ToolBase
      * Whether each file was downloaded comes from the activity log, so it
      * is null for somebody who may not read the log.
      *
-     * @return array{count: int, latest: list<array{id: int, name: string, shared_at: string|null, downloaded: bool|null}>}
+     * Only the files this account may itself read, and null for an
+     * account that may read none: edit_clients is about the account, and
+     * listing what it was sent needs what the library needs, as on the
+     * web's client files page. A client-scoped manager is also not told
+     * about files their library leaves out (still being scanned, expired).
+     *
+     * @return array{count: int, latest: list<array{id: int, name: string, shared_at: string|null, downloaded: bool|null}>}|null
      */
-    private static function filesShared(Account $account, int $clientId): array
+    private static function filesShared(Account $account, int $clientId): ?array
     {
+        if (! ($account->can('upload') || $account->can('edit_files') || $account->can('edit_others_files'))) {
+            return null;
+        }
+
         $readsLog = $account->can('view_actions_log');
         $assignments = FileAssignment::query()
             ->where('assignable_type', ClientAccountsQuery::userMorph())
             ->where('assignable_id', $clientId)
+            ->whereIn('file_id', Files::visibleTo($account)->select('files.id'))
             ->orderByDesc('id');
 
         $count = (int) (clone $assignments)->count();

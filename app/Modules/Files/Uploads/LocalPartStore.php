@@ -240,7 +240,7 @@ class LocalPartStore
                 throw new RuntimeException('Could not reopen assembled file.');
             }
 
-            $diskEvent = new ResolvingUploadDisk($session->user);
+            $diskEvent = new ResolvingUploadDisk($session->user, $session->storage_location_id);
             Event::dispatch($diskEvent);
             $disk = $diskEvent->disk;
 

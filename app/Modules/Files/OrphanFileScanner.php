@@ -9,7 +9,6 @@ use App\Modules\Files\Models\File;
 use App\Modules\Files\Thumbnails\ImageRendition;
 use App\Modules\Files\Uploads\UploadExtensionPolicy;
 use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
-use App\Modules\Platform\Settings\ExternalStorageSettings;
 use Illuminate\Support\Facades\Storage;
 use League\Flysystem\WhitespacePathNormalizer;
 use Throwable;
@@ -17,9 +16,9 @@ use Throwable;
 /**
  * Finds files sitting on disk with no corresponding File row — v1
  * parity for the import_orphans permission. Scans the local 'files'
- * disk, and 'files_external' too once external storage is active
+ * disk, and every bucket too once external storage is active
  * (ExternalStorageConfigApplier::isActive()) — an upload can land on
- * either, so an orphan can too. See docs/unused-permissions-audit.md.
+ * any, so an orphan can too. See docs/unused-permissions-audit.md.
  */
 class OrphanFileScanner
 {
@@ -44,13 +43,15 @@ class OrphanFileScanner
             ],
         ];
 
-        if ($this->externalStorage->isActive()) {
-            $settings = ExternalStorageSettings::current();
-            $root = $settings->root !== null && $settings->root !== '' ? '/'.trim($settings->root, '/') : '';
+        // Every registered bucket, taking uploads or not: one that stopped
+        // can still hold bytes left behind from when it was taking them.
+        foreach ($this->externalStorage->externalLocations() as $location) {
+            $root = $location['root'] !== null && $location['root'] !== '' ? '/'.trim($location['root'], '/') : '';
+            $scheme = $location['provider'] === 'gcs' ? 'gs' : 's3';
 
-            $disks['files_external'] = [
-                'label' => 'External storage',
-                'location' => 's3://'.$settings->bucket.$root,
+            $disks[$location['disk']] = [
+                'label' => $location['name'],
+                'location' => $scheme.'://'.$location['bucket'].$root,
             ];
         }
 

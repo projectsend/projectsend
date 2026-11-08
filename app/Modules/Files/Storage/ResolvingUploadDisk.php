@@ -13,7 +13,7 @@ use App\Models\User;
  * unchanged from before this event existed.
  *
  * A listener (see ExternalStorageConfigApplier) sets $disk to
- * 'files_external' when the community-only external storage settings are
+ * a bucket (UploadLocations) when the community-only storage settings are
  * active. Deliberately a plain event with a mutable property, not an
  * interface a listener must implement — core never references any
  * specific feature's class this way, so nothing here breaks if no
@@ -25,5 +25,9 @@ class ResolvingUploadDisk
 
     public function __construct(
         public readonly User $uploader,
+        // The location a client picked for this upload, when the upload
+        // path lets them pick one (UploadSession::storage_location_id).
+        // A hint: UploadLocations only honors it if it is theirs to use.
+        public readonly ?int $requestedLocationId = null,
     ) {}
 }

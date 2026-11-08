@@ -27,8 +27,9 @@ beforeEach(function () {
 
 test('a rejected storage form does not flash the secret access key', function () {
     // Fails on the missing bucket, which is required.
-    $this->actingAs($this->admin)->patch('/system/settings/storage', [
-        'active' => true,
+    $this->actingAs($this->admin)->post('/system/settings/storage/locations', [
+        'name' => 'Archive',
+        'accepts_uploads' => true,
         'provider' => 's3',
         'access_key' => 'AKIAEXAMPLE',
         'secret' => 'super-secret-access-key',
@@ -54,8 +55,9 @@ test('a rejected storage form does not flash the service account key file', func
         'client_email' => 'svc@example.iam.gserviceaccount.com',
     ]);
 
-    $this->actingAs($this->admin)->patch('/system/settings/storage', [
-        'active' => true,
+    $this->actingAs($this->admin)->post('/system/settings/storage/locations', [
+        'name' => 'Archive',
+        'accepts_uploads' => true,
         'provider' => 'gcs',
         'key_file' => $key,
         'use_path_style' => false,

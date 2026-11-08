@@ -109,6 +109,9 @@ interface FilesIndexProps {
     downloads: 'none' | 'any' | null;
     role: number | null;
     version: 'current' | 'outdated' | null;
+    location: number | null;
+    /** Empty unless there is more than one storage location to filter by. */
+    location_options: Crumb[];
     uploader_options: Crumb[];
     role_options: Crumb[];
     expired: boolean;
@@ -134,6 +137,8 @@ export default function FilesIndex({
     downloads,
     role,
     version,
+    location,
+    location_options,
     uploader_options,
     role_options,
     expired,
@@ -156,7 +161,7 @@ export default function FilesIndex({
     // Withheld on some hosted plans. Only the zip buttons go: selection
     // also drives bulk edit here, so the checkboxes stay.
     const canZip = useCapability('downloads.zip');
-    const filterKey = JSON.stringify([folder?.id, search, category, uploader, visibility, downloads, role, version, expired]);
+    const filterKey = JSON.stringify([folder?.id, search, category, uploader, visibility, downloads, role, version, location, expired]);
     const carried = carriedSelection?.filterKey === filterKey ? carriedSelection : null;
     const [selectedFileIds, setSelectedFileIds] = useState<Set<number>>(() => carried?.fileIds ?? new Set());
     const [selectedFolderIds, setSelectedFolderIds] = useState<Set<number>>(() => carried?.folderIds ?? new Set());
@@ -304,9 +309,10 @@ export default function FilesIndex({
             downloads: downloads ?? ALL,
             role: role === null ? ALL : String(role),
             version: version ?? ALL,
+            location: location === null ? ALL : String(location),
             expired: expired ? 'true' : '',
         },
-        { search: '', category: ALL, uploader: ALL, visibility: ALL, downloads: ALL, role: ALL, version: ALL, expired: '' },
+        { search: '', category: ALL, uploader: ALL, visibility: ALL, downloads: ALL, role: ALL, version: ALL, location: ALL, expired: '' },
     );
 
     // A small drag threshold so clicking action buttons never starts a drag.
@@ -604,6 +610,23 @@ export default function FilesIndex({
                             </SelectContent>
                         </Select>
                     </FilterField>
+                    {location_options.length > 0 && (
+                        <FilterField label={t('Location')} htmlFor="files-location">
+                            <Select value={values.location} onValueChange={(v) => set('location', v)}>
+                                <SelectTrigger id="files-location" className="w-48">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value={ALL}>{t('All locations')}</SelectItem>
+                                    {location_options.map((option) => (
+                                        <SelectItem key={option.id} value={String(option.id)}>
+                                            {option.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </FilterField>
+                    )}
                     <FilterField label={t('Expired')} htmlFor="files-expired">
                         <div className="flex h-9 items-center gap-2">
                             <Checkbox

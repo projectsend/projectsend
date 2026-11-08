@@ -311,6 +311,9 @@ Route::middleware('auth')->group(function () {
             Route::get('system/settings/storage', [ExternalStorageSettingsController::class, 'edit'])->name('system-settings.storage.edit');
             Route::patch('system/settings/storage', [ExternalStorageSettingsController::class, 'update'])->name('system-settings.storage.update');
             Route::post('system/settings/storage/test', [ExternalStorageSettingsController::class, 'testConnection'])->name('system-settings.storage.test');
+            Route::post('system/settings/storage/locations', [ExternalStorageSettingsController::class, 'store'])->name('system-settings.storage.locations.store');
+            Route::patch('system/settings/storage/locations/{location}', [ExternalStorageSettingsController::class, 'updateLocation'])->name('system-settings.storage.locations.update');
+            Route::delete('system/settings/storage/locations/{location}', [ExternalStorageSettingsController::class, 'destroy'])->name('system-settings.storage.locations.destroy');
         });
 
         // Both editions since 2026-08-28, and gated all-or-nothing like

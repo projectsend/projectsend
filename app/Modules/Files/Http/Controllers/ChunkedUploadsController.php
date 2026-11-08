@@ -14,6 +14,7 @@ use App\Modules\Files\Models\File;
 use App\Modules\Files\Folders\ClientHomeFolders;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Notifications\AdminClientUploadedNotification;
+use App\Modules\Files\Storage\UploadLocations;
 use App\Modules\Files\Uploads\LocalPartStore;
 use App\Modules\Files\Uploads\PartTooLargeException;
 use App\Modules\Files\Uploads\StoreUploadedFile;
@@ -26,6 +27,7 @@ use App\Modules\Identity\UserType;
 use App\Modules\Notifications\Notifier;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use App\Modules\Platform\Settings\StorageLocation;
 use App\Support\Rules;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Cache\LockTimeoutException;
@@ -61,6 +63,7 @@ class ChunkedUploadsController extends Controller
         private readonly ActivityLogger $activity,
         private readonly ClientHomeFolders $homeFolders,
         private readonly FileVersions $versions,
+        private readonly UploadLocations $uploadLocations,
     ) {}
 
     /**
@@ -79,6 +82,7 @@ class ChunkedUploadsController extends Controller
             'description' => ['nullable', 'string', 'max:2000'],
             'folder_id' => Rules::folderId(),
             'previous_file_id' => ['nullable', 'integer'],
+            'storage_location_id' => ['nullable', 'integer'],
         ]);
 
         $maxMb = (int) $this->settings->get(Setting::MaxFileSizeMb);
@@ -181,8 +185,19 @@ class ChunkedUploadsController extends Controller
                 }
             }
 
+            // Only one of the uploader's own locations: anything else would let
+            // a client write into a bucket nobody gave them. Checked here, while
+            // a 422 can still reach the screen, not when the bytes land.
+            $storageLocationId = isset($validated['storage_location_id']) ? (int) $validated['storage_location_id'] : null;
+            if ($storageLocationId !== null && ! $this->uploadLocations->usableFor($user)->contains('id', $storageLocationId)) {
+                throw ValidationException::withMessages([
+                    'storage_location_id' => __('That storage location is not available for your uploads.'),
+                ]);
+            }
+
             $session = UploadSession::query()->create([
                 'user_id' => $user->id,
+                'storage_location_id' => $storageLocationId,
                 'folder_id' => $folder?->id,
                 'previous_file_id' => $previousFileId,
                 'original_name' => $validated['filename'],
@@ -532,8 +547,11 @@ class ChunkedUploadsController extends Controller
         if ($user->isClient()) {
             if ($this->settings->get(Setting::EmailNotificationsEnabled) === true) {
                 $adminEmails = $this->settings->get(Setting::AdminNotificationEmails);
+                $locationName = $this->settings->get(Setting::UploadNotificationNamesLocation) === true
+                    ? StorageLocation::query()->where('disk', $file->disk)->value('name')
+                    : null;
                 foreach (is_array($adminEmails) ? $adminEmails : [] as $email) {
-                    Notification::route('mail', $email)->notify(new AdminClientUploadedNotification($user->name, $file->name, $file->id));
+                    Notification::route('mail', $email)->notify(new AdminClientUploadedNotification($user->name, $file->name, $file->id, is_string($locationName) ? $locationName : null));
                 }
             }
 

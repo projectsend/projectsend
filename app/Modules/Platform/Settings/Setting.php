@@ -94,6 +94,11 @@ enum Setting: string
     // usage in the Email settings page.
     case EmailNotificationsEnabled = 'email_notifications_enabled';
 
+    // Whether the email telling staff a client uploaded a file names the
+    // storage location it went to. Off: the line means nothing on an
+    // installation with one place to keep files.
+    case UploadNotificationNamesLocation = 'upload_notification_names_location';
+
     // Freeform recipient list for admin-facing notifications (new client
     // registration, client upload) — not tied to specific User rows,
     // since "admin" isn't a role here, just whoever staff configure.
@@ -469,6 +474,7 @@ enum Setting: string
             self::PasswordRejectBreached,
             self::VirusScanningEnabled,
             self::AiConnectorEnabled,
+            self::UploadNotificationNamesLocation,
             self::GettingStartedPending => SettingType::Boolean,
 
             self::ClientsAutoGroup,
@@ -530,6 +536,7 @@ enum Setting: string
             // Off until somebody points it at a scanner, or a managed
             // configuration names one — see ScanningConfig.
             self::VirusScanningEnabled,
+            self::UploadNotificationNamesLocation,
             self::OrphanFilesAutoDeleteEnabled => false,
             // Off, because switching it on is a change to how a library is
             // laid out and that should be somebody's decision rather than

@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Storage\ResolvingUploadDisk;
 use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
-use App\Modules\Platform\Settings\ExternalStorageSettings;
+use App\Modules\Platform\Settings\StorageLocation;
 use App\Modules\Platform\Settings\StorageProvider;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -42,18 +42,35 @@ function fakeServiceAccountKey(): array
     ];
 }
 
-function configureGcs(array $overrides = []): void
+/**
+ * A GCS bucket location on 'files_external', as an upgraded installation
+ * has its bucket, and the default for new uploads.
+ */
+function configureGcs(array $overrides = []): StorageLocation
 {
-    ExternalStorageSettings::current()->fill([
-        'active' => true,
-        'provider' => StorageProvider::Gcs,
+    $location = gcsLocation($overrides);
+    StorageLocation::query()->update(['is_default' => false]);
+    $location->forceFill(['is_default' => true])->save();
+
+    app(ExternalStorageConfigApplier::class)->flush();
+    app(ExternalStorageConfigApplier::class)->apply();
+
+    return $location;
+}
+
+function gcsLocation(array $overrides = []): StorageLocation
+{
+    $location = new StorageLocation;
+    $location->disk = 'files_external';
+    $location->fill([
+        'name' => 'Google bucket',
+        'provider' => StorageProvider::Gcs->value,
         'bucket' => 'projectsend-files',
         'key_file' => json_encode(fakeServiceAccountKey()),
         ...$overrides,
     ])->save();
 
-    app(ExternalStorageConfigApplier::class)->flush();
-    app(ExternalStorageConfigApplier::class)->apply();
+    return $location;
 }
 
 test('choosing Google Cloud Storage points the external disk at the gcs driver', function () {
@@ -135,34 +152,26 @@ test('new uploads are routed to the external disk once gcs is configured', funct
 });
 
 test('gcs is judged configured by its key file, not by an access key and secret', function () {
-    $settings = ExternalStorageSettings::current();
-
     // Everything S3 would need, and nothing GCS needs.
-    $settings->fill([
-        'active' => true,
-        'provider' => StorageProvider::Gcs,
-        'bucket' => 'projectsend-files',
-        'key' => 'AKIAEXAMPLE',
-        'secret' => 'shh',
-    ])->save();
+    $location = gcsLocation(['key_file' => null, 'key' => 'AKIAEXAMPLE', 'secret' => 'shh']);
 
-    expect($settings->isConfigured())->toBeFalse();
+    expect($location->isConfigured())->toBeFalse();
 
-    $settings->fill(['key_file' => json_encode(fakeServiceAccountKey())])->save();
+    $location->fill(['key_file' => json_encode(fakeServiceAccountKey())])->save();
 
-    expect($settings->fresh()->isConfigured())->toBeTrue();
+    expect($location->fresh()->isConfigured())->toBeTrue();
 });
 
 test('the service account key is encrypted at rest', function () {
     $key = fakeServiceAccountKey();
 
-    ExternalStorageSettings::current()->fill(['key_file' => json_encode($key)])->save();
+    $location = gcsLocation(['key_file' => json_encode($key)]);
 
-    $raw = DB::table('external_storage_settings')->value('key_file');
+    $raw = DB::table('storage_locations')->where('id', $location->id)->value('key_file');
 
     expect($raw)->not->toContain('BEGIN PRIVATE KEY')
         ->and($raw)->not->toContain('iam.gserviceaccount.com')
-        ->and(json_decode((string) ExternalStorageSettings::current()->key_file, true)['private_key'])
+        ->and(json_decode((string) $location->fresh()->key_file, true)['private_key'])
         ->toBe($key['private_key']);
 });
 
@@ -173,17 +182,12 @@ test('the service account key never reaches the cache store', function () {
     // nothing.
     $key = fakeServiceAccountKey();
 
-    ExternalStorageSettings::current()->fill([
-        'active' => true,
-        'provider' => StorageProvider::Gcs,
-        'bucket' => 'projectsend-files',
-        'key_file' => json_encode($key),
-    ])->save();
+    gcsLocation(['key_file' => json_encode($key)]);
 
     Cache::flush();
     app(ExternalStorageConfigApplier::class)->apply();
 
-    $cached = Cache::get('platform.external_storage_settings.v4');
+    $cached = Cache::get('platform.storage_locations.v5');
 
     // Asserted to exist before it is searched: a renamed cache key would
     // otherwise make this pass by finding nothing at all, which is how a
@@ -196,15 +200,7 @@ test('the service account key never reaches the cache store', function () {
 test('apply() still configures the key file it no longer caches', function () {
     $key = fakeServiceAccountKey();
 
-    ExternalStorageSettings::current()->fill([
-        'active' => true,
-        'provider' => StorageProvider::Gcs,
-        'bucket' => 'projectsend-files',
-        'key_file' => json_encode($key),
-    ])->save();
-
-    app(ExternalStorageConfigApplier::class)->flush();
-    app(ExternalStorageConfigApplier::class)->apply();
+    configureGcs(['key_file' => json_encode($key)]);
 
     expect(config('filesystems.disks.files_external.key_file'))
         ->toBeArray()
@@ -237,26 +233,28 @@ test('a file stored on gcs downloads as a redirect to a signed url, not an nginx
 test('staff can save a Google Cloud Storage backend through the settings form', function () {
     $key = json_encode(fakeServiceAccountKey());
 
-    $this->actingAs($this->admin)->patch('/system/settings/storage', [
-        'active' => true,
+    $this->actingAs($this->admin)->post('/system/settings/storage/locations', [
+        'name' => 'Google bucket',
+        'accepts_uploads' => true,
         'provider' => 'gcs',
         'bucket' => 'projectsend-files',
         'key_file' => $key,
         'use_path_style' => false,
     ])->assertRedirect();
 
-    $settings = ExternalStorageSettings::current();
+    $location = StorageLocation::query()->where('provider', 'gcs')->firstOrFail();
 
-    expect($settings->provider)->toBe(StorageProvider::Gcs)
-        ->and($settings->key_file)->toBe($key)
-        ->and($settings->isConfigured())->toBeTrue();
+    expect($location->provider)->toBe(StorageProvider::Gcs->value)
+        ->and($location->key_file)->toBe($key)
+        ->and($location->isConfigured())->toBeTrue();
 });
 
 test('switching to gcs does not demand an access key or a region', function () {
     // The S3 fields are required_if, not required — otherwise selecting
     // Google would insist on an AWS region that means nothing to it.
-    $this->actingAs($this->admin)->patch('/system/settings/storage', [
-        'active' => true,
+    $this->actingAs($this->admin)->post('/system/settings/storage/locations', [
+        'name' => 'Google bucket',
+        'accepts_uploads' => true,
         'provider' => 'gcs',
         'bucket' => 'projectsend-files',
         'key_file' => json_encode(fakeServiceAccountKey()),
@@ -266,34 +264,37 @@ test('switching to gcs does not demand an access key or a region', function () {
 
 test('a blank key file keeps the one already stored', function () {
     $key = json_encode(fakeServiceAccountKey());
-    ExternalStorageSettings::current()->fill(['provider' => StorageProvider::Gcs, 'key_file' => $key])->save();
+    $location = gcsLocation(['key_file' => $key]);
 
-    $this->actingAs($this->admin)->patch('/system/settings/storage', [
-        'active' => true,
+    $this->actingAs($this->admin)->patch("/system/settings/storage/locations/{$location->id}", [
+        'name' => 'Google bucket',
+        'accepts_uploads' => true,
         'provider' => 'gcs',
         'bucket' => 'a-different-bucket',
         'key_file' => '',
         'use_path_style' => false,
     ])->assertRedirect();
 
-    expect(ExternalStorageSettings::current()->key_file)->toBe($key)
-        ->and(ExternalStorageSettings::current()->bucket)->toBe('a-different-bucket');
+    expect($location->fresh()->key_file)->toBe($key)
+        ->and($location->fresh()->bucket)->toBe('a-different-bucket');
 });
 
 test('a key file that is not a service account key is rejected before it can be saved', function () {
     // A paste that lost its last line is the likeliest way this goes
     // wrong, and the alternative to catching it here is a 500 at the
     // first upload with nothing pointing at the cause.
-    $this->actingAs($this->admin)->patch('/system/settings/storage', [
-        'active' => true,
+    $this->actingAs($this->admin)->post('/system/settings/storage/locations', [
+        'name' => 'Google bucket',
+        'accepts_uploads' => true,
         'provider' => 'gcs',
         'bucket' => 'projectsend-files',
         'key_file' => '{"type": "service_account", "project_id": "demo"',
         'use_path_style' => false,
     ])->assertSessionHasErrors('key_file');
 
-    $this->actingAs($this->admin)->patch('/system/settings/storage', [
-        'active' => true,
+    $this->actingAs($this->admin)->post('/system/settings/storage/locations', [
+        'name' => 'Google bucket',
+        'accepts_uploads' => true,
         'provider' => 'gcs',
         'bucket' => 'projectsend-files',
         'key_file' => '{"type": "service_account", "project_id": "demo"}',
@@ -302,16 +303,14 @@ test('a key file that is not a service account key is rejected before it can be 
 });
 
 test('the settings screen offers the provider choice and says whether a key is stored', function () {
-    ExternalStorageSettings::current()->fill([
-        'provider' => StorageProvider::Gcs,
-        'key_file' => json_encode(fakeServiceAccountKey()),
-    ])->save();
+    gcsLocation();
 
+    // The server disk is the default, so it comes first.
     $this->actingAs($this->admin)->get('/system/settings/storage')
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('system/settings/storage')
-            ->where('provider', 'gcs')
-            ->where('has_key_file', true)
+            ->where('locations.1.provider', 'gcs')
+            ->where('locations.1.has_key_file', true)
             // The key itself is never sent back to the browser.
-            ->missing('key_file'));
+            ->missing('locations.1.key_file'));
 });

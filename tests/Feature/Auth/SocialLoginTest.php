@@ -17,6 +17,7 @@ use App\Modules\Identity\Social\SocialSettings;
 use App\Modules\Identity\TwoFactor\TwoFactorService;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Testing\TestResponse;
 use Inertia\Testing\AssertableInertia;
 use Tests\Support\FakeSocialGateway;
@@ -646,4 +647,38 @@ test('the first sign-in that links an account by its address is still challenged
 
     expect(auth()->check())->toBeFalse()
         ->and(SocialAccount::query()->where('user_id', $client->id)->exists())->toBeTrue();
+});
+
+/*
+ * Anybody can register, or change their own email, to an address they do
+ * not own, and wait. When the address's real owner then signed in through
+ * a provider that verified it, they were linked into the waiting account,
+ * whose password the other person still knew.
+ */
+test('a verified address is not linked into an account whose own address was never proven', function () {
+    socialSettings();
+    $waiting = User::factory()->client()->create(['email' => 'victim@example.test', 'email_verified_at' => null]);
+    fakeProvider(identity('victim@example.test', subject: 'victim-google'));
+
+    signInWith();
+
+    $this->assertGuest();
+    expect(SocialAccount::query()->where('user_id', $waiting->id)->exists())->toBeFalse();
+});
+
+test('a reset password proves the address, after which a provider links to it', function () {
+    socialSettings();
+    $client = User::factory()->client()->create(['email' => 'mine@example.test', 'email_verified_at' => null]);
+    $token = Password::broker()->createToken($client);
+
+    $this->post('/reset-password', ['token' => $token, 'email' => 'mine@example.test', 'password' => 'a-new-password-1234', 'password_confirmation' => 'a-new-password-1234']);
+    app('auth')->forgetGuards();
+    $this->flushSession();
+
+    expect($client->refresh()->email_verified_at)->not->toBeNull();
+
+    fakeProvider(identity('mine@example.test', subject: 'mine-google'));
+    signInWith()->assertRedirect(route('dashboard'));
+
+    expect(auth()->id())->toBe($client->id);
 });

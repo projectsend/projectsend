@@ -121,6 +121,8 @@ class InvitationRedemptionController extends Controller
             // exists to establish for the address it never named.
             autoApprove: true,
             storageQuotaMb: $invitation->storage_quota_mb,
+            // The invitation went to this address and came back from it.
+            emailProven: true,
         );
 
         if ($invitation->group !== null && $this->mayJoin($invitation, $client)) {

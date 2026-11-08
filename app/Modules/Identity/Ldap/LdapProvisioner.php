@@ -81,6 +81,8 @@ class LdapProvisioner
             source: AuthSource::Ldap,
             ldapDn: $identity->dn,
             autoApprove: $settings->auto_approve,
+            // The directory the administrator configured vouches for it.
+            emailProven: true,
         );
     }
 }

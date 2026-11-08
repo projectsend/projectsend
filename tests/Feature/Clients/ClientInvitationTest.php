@@ -164,6 +164,9 @@ test('redeeming a valid invitation creates an active client and marks it redeeme
     expect($client->type)->toBe(UserType::Client)
         ->and($client->active)->toBeTrue()
         ->and($client->account_requested)->toBeFalse()
+        // The invitation went to this address and came back from it, so it
+        // counts as proven: a provider may later link to it by address.
+        ->and($client->email_verified_at)->not->toBeNull()
         ->and(ActivityLog::query()->where('action', Action::ClientInvitationRedeemed)->exists())->toBeTrue();
 
     expect($invitation->fresh()->status)->toBe(Invitation::STATUS_REDEEMED);

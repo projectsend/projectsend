@@ -623,3 +623,19 @@ test('an address the email rule accepts is still an address with username sign-i
     $this->assertAuthenticatedAs($client);
     expect($fake->lookedUpUsernames)->toBe([]);
 });
+
+/*
+ * Same trap through the directory: a local account behind an address its
+ * holder never proved fell back to the directory, so the real owner's
+ * directory password signed them into the account somebody else made.
+ */
+test('a local account whose address was never proven does not fall back to the directory', function () {
+    enableLdap();
+    $waiting = User::factory()->client()->create(['email' => 'victim@example.test', 'email_verified_at' => null]);
+    fakeDirectory(['victim@example.test' => ['password' => 'directory-pass']]);
+
+    $this->post('/login', ['email' => $waiting->email, 'password' => 'directory-pass'])
+        ->assertSessionHasErrors('email');
+
+    $this->assertGuest();
+});

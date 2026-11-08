@@ -39,7 +39,7 @@ class SocialProvisioner
      *                             never verified goes to the approval
      *                             queue whatever the setting says.
      */
-    public function provision(SocialSettings $settings, SocialIdentity $identity, bool $autoApprove): ?User
+    public function provision(SocialSettings $settings, SocialIdentity $identity, bool $autoApprove, bool $emailProven = false): ?User
     {
         if (! $settings->auto_provision || $identity->email === null) {
             return null;
@@ -73,6 +73,7 @@ class SocialProvisioner
             source: AuthSource::Social,
             autoApprove: $autoApprove,
             context: ['provider' => $settings->provider->label()],
+            emailProven: $emailProven,
         );
     }
 }

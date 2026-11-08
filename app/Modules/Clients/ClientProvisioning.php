@@ -99,6 +99,7 @@ class ClientProvisioning
         ?bool $autoApprove = null,
         array $context = [],
         int $storageQuotaMb = 0,
+        bool $emailProven = false,
     ): User {
         $autoApprove ??= $this->autoApproves();
 
@@ -130,6 +131,16 @@ class ClientProvisioning
                 'ldap_dn' => $ldapDn,
                 'ldap_synced_at' => $ldapDn === null ? null : now(),
             ])->save();
+        }
+
+        // Whether somebody other than the person typing it vouches for the
+        // address: an invitation sent to it, a directory, a provider that
+        // verified it. An address typed into the open registration form is
+        // not proven, and an account behind an unproven address is never
+        // linked to a provider or directory identity by matching it — see
+        // SocialAuthenticator and PasswordVerification.
+        if ($emailProven) {
+            $client->forceFill(['email_verified_at' => now()])->save();
         }
 
         $this->activity->log($action, $client, $client, $context);

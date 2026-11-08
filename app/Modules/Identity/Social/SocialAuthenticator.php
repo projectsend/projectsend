@@ -95,6 +95,22 @@ class SocialAuthenticator
                 );
             }
 
+            //      And the other half of "you own it": the account's own
+            //      address must have been proven too. Anybody can register,
+            //      or change their own email, to an address they do not own,
+            //      and wait. When the address's real owner then signed in
+            //      through a provider that verified it, they were linked
+            //      into the waiting account, whose password the other person
+            //      still knew. An unproven account is connected from its own
+            //      settings, after signing in with its password, instead.
+            if ($existing->email_verified_at === null) {
+                return SocialResolution::refuse(
+                    __('An account already uses this email address, and it has not been confirmed. Sign in with your password and connect :provider from your settings instead.', [
+                        'provider' => $settings->provider->label(),
+                    ])
+                );
+            }
+
             return $this->link($existing, $identity) === null
                 ? SocialResolution::refuse(__('That sign-in method is not available.'))
                 : SocialResolution::linked($existing);
@@ -109,6 +125,7 @@ class SocialAuthenticator
             // approval queue whatever auto_approve says, so a person sees
             // it before it becomes access.
             autoApprove: $trusted && $settings->auto_approve,
+            emailProven: $trusted,
         );
 
         if ($provisioned === null) {

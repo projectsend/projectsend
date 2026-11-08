@@ -60,6 +60,14 @@ class PasswordVerification
             return true;
         }
 
+        // A local account falls back to the directory only when its address
+        // was proven. Otherwise somebody who registered under an address
+        // they do not own would have the real owner's directory password
+        // accepted into the account they are waiting in.
+        if (! $this->ldap->isDirectoryAccount($user) && $user->email_verified_at === null) {
+            return false;
+        }
+
         $identity = $this->ldap->attempt($user->email, $password, $user);
 
         if ($identity === null) {

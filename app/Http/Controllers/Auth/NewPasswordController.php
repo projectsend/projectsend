@@ -139,6 +139,9 @@ class NewPasswordController extends Controller
                 $attributes = [
                     'password' => Hash::make($request->password),
                     'remember_token' => Str::random(60),
+                    // The reset link went to this address and came back:
+                    // it is proven now, whoever typed it in first.
+                    'email_verified_at' => $user->email_verified_at ?? now(),
                 ];
 
                 // `social` records that the account came into existence

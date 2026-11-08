@@ -128,6 +128,15 @@ class MyFoldersController extends Controller
             ));
         }
 
+        // Their own uploads go with the folder too, so deleting one that
+        // holds any is deleting files, and needs the permission that
+        // deleting a file one at a time needs (MyFilesController::destroy).
+        // A role without delete_files could otherwise delete everything it
+        // uploaded by putting it in a folder first.
+        if (! $client->can('delete_files') && File::query()->whereIn('folder_id', $folder->subtreeFolderIds())->exists()) {
+            return back()->with('error', __('This folder cannot be deleted while it holds files.'));
+        }
+
         $name = $folder->name;
         $parentId = $folder->parent_id;
 

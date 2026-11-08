@@ -167,6 +167,37 @@ test('a client cannot delete their own folder while it holds files they did not 
     expect(Folder::query()->find($folder->id))->toBeNull();
 });
 
+// Their own uploads go with the folder, so a client the administrator
+// has not allowed to delete files cannot delete them this way either.
+test('a client without delete_files cannot delete their own folder while it holds their own files', function () {
+    $client = User::factory()->client()->create();
+    expect($client->can('delete_files'))->toBeFalse();
+    $this->actingAs($client)->post('/my-folders', ['name' => 'Mine'])->assertRedirect();
+    $folder = Folder::query()->where('name', 'Mine')->sole();
+    $own = File::factory()->create([
+        'uploaded_by' => $client->id,
+        'folder_id' => $folder->id,
+        'name' => 'Invoice',
+        'original_name' => 'invoice.pdf',
+        'path' => '2026/08/invoice.pdf',
+        'mime_type' => 'application/pdf',
+        'size' => 10,
+    ]);
+
+    $this->actingAs($client)->delete("/my-folders/{$folder->id}")->assertRedirect();
+
+    expect(Folder::query()->find($folder->id))->not->toBeNull()
+        ->and(File::query()->find($own->id))->not->toBeNull();
+
+    // With the permission, the folder and its files go together.
+    RolePermission::query()->create(['role_id' => $client->role_id, 'permission' => 'delete_files']);
+    app()->forgetScopedInstances();
+
+    $this->actingAs($client->fresh())->delete("/my-folders/{$folder->id}")->assertRedirect();
+    expect(Folder::query()->find($folder->id))->toBeNull()
+        ->and(File::query()->find($own->id))->toBeNull();
+});
+
 test('a client cannot delete a folder shared with them but created by staff', function () {
     $client = User::factory()->client()->create();
     $shared = makeStaffFolder('Staff Owned');

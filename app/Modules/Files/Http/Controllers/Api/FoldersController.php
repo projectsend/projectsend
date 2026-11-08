@@ -186,6 +186,9 @@ class FoldersController extends Controller
                 // is handed out with it.
                 $beyond = app(FilesBeyondAuthority::class);
                 $refusal = $beyond->exposes($newParent) ? $beyond->refusal($user, $folder, 'move') : null;
+                // And out from under a shared parent, every file in it is
+                // taken away from the people that parent reached.
+                $refusal ??= $beyond->leavingRefusal($user, $folder, $newParent);
                 abort_if($refusal !== null, 403, (string) $refusal);
 
                 $this->folders->move($folder, $newParent);

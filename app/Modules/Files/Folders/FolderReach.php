@@ -28,6 +28,13 @@ use Illuminate\Support\Collection;
  *    inside a folder staff shared with a group, or with several clients,
  *    showed everything the client put in it to all of them. Clients do not
  *    see each other.
+ *
+ * And the reverse of the first: taking something out of a folder takes it
+ * away from everybody the folder reached and the new place does not. That
+ * is unsharing, and a client-scoped staff member may not unshare from
+ * somebody else's client (ResolvesShareTargets::guardAssignable refuses
+ * the direct route), so they may not move content out from under them
+ * either.
  */
 class FolderReach
 {
@@ -72,6 +79,67 @@ class FolderReach
         }
 
         return true;
+    }
+
+    /**
+     * Everybody who reaches what sits in $from and would not reach it in
+     * $to. Null means the top level, which reaches nobody.
+     *
+     * @return Collection<int, FolderAssignment>
+     */
+    public function lostBetween(?Folder $from, ?Folder $to): Collection
+    {
+        if ($from === null) {
+            return new Collection;
+        }
+
+        $key = fn (FolderAssignment $assignment): string => $assignment->assignable_type.':'.$assignment->assignable_id;
+        $kept = $to === null ? [] : $this->assignments($to)->map($key)->all();
+
+        return $this->assignments($from)
+            ->reject(fn (FolderAssignment $assignment): bool => in_array($key($assignment), $kept, true))
+            ->values();
+    }
+
+    /**
+     * Whether moving something from $from to $to takes it away from
+     * somebody $staff may not unshare from. Always false for staff who are
+     * not client-scoped.
+     */
+    public function strandsBeyondRosterOf(User $staff, ?Folder $from, ?Folder $to): bool
+    {
+        $clientIds = $this->scope->assignableClientIds($staff);
+
+        if ($clientIds === null) {
+            return false;
+        }
+
+        $groupIds = $this->scope->assignableGroupIds($staff) ?? [];
+        $groupMorph = (new Group)->getMorphClass();
+
+        foreach ($this->lostBetween($from, $to) as $assignment) {
+            $id = (int) $assignment->assignable_id;
+            $allowed = $assignment->assignable_type === $groupMorph
+                ? in_array($id, $groupIds, true)
+                : in_array($id, $clientIds, true);
+
+            if (! $allowed) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Why $staff may not move a file from $from to $to, or null when they
+     * may.
+     */
+    public function fileMoveRefusal(User $staff, ?Folder $from, ?Folder $to): ?string
+    {
+        return $this->strandsBeyondRosterOf($staff, $from, $to)
+            ? (string) __('This cannot be moved out of there: the folder it is in is shared with people outside your clients, and they would lose it.')
+            : null;
     }
 
     /**

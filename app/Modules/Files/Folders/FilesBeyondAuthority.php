@@ -94,6 +94,35 @@ class FilesBeyondAuthority
     }
 
     /**
+     * Why $viewer may not move $folder out from under its current parent
+     * to $newParent, or null when they may. The mirror of refusal('move'):
+     * taking a folder out of a shared one takes every file in it away from
+     * the people that parent reached, which is unsharing them, and that
+     * needs the same rights over each file as sharing them did.
+     */
+    public function leavingRefusal(User $viewer, Folder $folder, ?Folder $newParent): ?string
+    {
+        $reach = app(FolderReach::class);
+        $from = $folder->parent;
+
+        if ($reach->lostBetween($from, $newParent)->isEmpty()) {
+            return null;
+        }
+
+        if ($reach->strandsBeyondRosterOf($viewer, $from, $newParent)) {
+            return (string) __('This cannot be moved out of there: the folder it is in is shared with people outside your clients, and they would lose it.');
+        }
+
+        $blocked = $this->unshareable($viewer, $folder);
+
+        return $blocked === 0 ? null : trans_choice(
+            'This folder cannot be moved out of there: that folder is shared, and this one holds :count file you may not unshare.|This folder cannot be moved out of there: that folder is shared, and this one holds :count files you may not unshare.',
+            $blocked,
+            ['count' => (string) $blocked],
+        );
+    }
+
+    /**
      * Whether placing something under $parent hands it out: the parent is
      * public, or reaches somebody. Moving a folder elsewhere is filing.
      */

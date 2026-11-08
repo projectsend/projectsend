@@ -385,3 +385,22 @@ it('starts a scoped staff member\'s folder path at the first folder they can rea
         ->and($found['folders'][0]['path'] ?? null)->toBe('2026')
         ->and(json_encode($found))->not->toContain('Globex');
 });
+
+it('will not move a file out from under a client off a scoped account\'s roster', function (): void {
+    $staff = McpWorld::staff();
+    $staff->role->forceFill(['client_scoped' => true])->save();
+    $mine = McpWorld::clientAccount('mine@acme.example', 'Mine');
+    $stranger = McpWorld::clientAccount('stranger@other.example', 'Stranger Corp');
+    $staff->assignedClients()->sync([$mine->id]);
+
+    $both = McpWorld::folder('Shared with both');
+    foreach ([$mine, $stranger] as $client) {
+        FolderAssignment::query()->create(['folder_id' => $both->getKey(), 'assignable_type' => $client->getMorphClass(), 'assignable_id' => $client->id]);
+    }
+    $file = McpWorld::file($staff, ['folder_id' => $both->getKey()]);
+
+    $answer = McpWorld::call(MoveFile::class, ['file_id' => $file->getKey(), 'to_top_level' => true], $staff);
+
+    expect(McpWorld::error($answer)['code'] ?? null)->toBe('validation_failed')
+        ->and((int) $file->fresh()->folder_id)->toBe($both->getKey());
+});

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\Mcp\Tools;
 
 use App\Modules\Audit\Action;
+use App\Modules\Files\Folders\FolderReach;
+use App\Modules\Files\Models\Folder;
 use App\Modules\Mcp\Support\Account;
 use App\Modules\Mcp\Support\Audit;
 use App\Modules\Mcp\Support\Envelope;
@@ -100,6 +102,18 @@ class MoveFile extends ToolBase
             // does: placing it in a public folder publishes it (GHSA-rxf8-wh8v-jm9j).
             if ($destination !== null) {
                 Folders::requirePlaceable($destination, $account);
+            }
+
+            // Out of a shared folder is unsharing from whoever it reached.
+            // The folder it sat in, whether or not this account sees it.
+            $refusal = app(FolderReach::class)->fileMoveRefusal(
+                $account->user,
+                $fromId === null ? null : Folder::query()->find($fromId),
+                $destination === null ? null : Folder::query()->find($toId),
+            );
+
+            if ($refusal !== null) {
+                return ToolError::validationFailed(['folder_id' => [$refusal]]);
             }
 
             $file->update(['folder_id' => $toId]);

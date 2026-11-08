@@ -19,6 +19,7 @@ use App\Modules\Files\Editing\FileExpiry;
 use App\Modules\Files\Http\Resources\Api\FileResource;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Scanning\ScanStatus;
+use App\Modules\Files\Folders\FolderReach;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Storage\ResolvingUploadDisk;
 use App\Modules\Files\Uploads\StoreUploadedFile;
@@ -390,6 +391,13 @@ class FilesController extends Controller
 
                 abort_unless(Folder::uploadableBy($user, $destination), 403);
             }
+        }
+
+        // Out of a shared folder is unsharing from whoever it reached,
+        // asked whether the file goes to another folder or to the top.
+        if (array_key_exists('folder_id', $validated) && $validated['folder_id'] !== $file->folder_id) {
+            $refusal = app(FolderReach::class)->fileMoveRefusal($user, $file->folder, $destination ?? null);
+            abort_if($refusal !== null, 403, (string) $refusal);
         }
 
         // `sometimes` throughout the rules above means $validated already

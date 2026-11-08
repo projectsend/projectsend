@@ -19,6 +19,7 @@ use App\Modules\Files\Editing\ApplyFileEdits;
 use App\Modules\Files\Editing\FileExpiry;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\Folders\FolderReach;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Models\ShareLink;
 use App\Modules\Files\Storage\ResolvingUploadDisk;
@@ -329,6 +330,13 @@ class FilesController extends Controller
             abort_unless(Folder::uploadableBy($user, $destination), 403);
         }
 
+        // Out of a shared folder is unsharing from whoever it reached,
+        // asked whether the file goes to another folder or to the top.
+        if ($folderId !== $file->folder_id) {
+            $refusal = app(FolderReach::class)->fileMoveRefusal($user, $file->folder, $destination ?? null);
+            abort_if($refusal !== null, 403, (string) $refusal);
+        }
+
         // Normalised into the shape ApplyFileEdits reads, then handed
         // over: which of these the actor may actually write is that
         // class's decision, and it is the same decision the API and the
@@ -396,6 +404,15 @@ class FilesController extends Controller
             $destination = $this->scope->folders($user)->whereKey($folderId)->firstOrFail();
 
             abort_unless(Folder::uploadableBy($user, $destination), 403);
+        }
+
+        // Out of a shared folder is unsharing from whoever it reached.
+        if ($user !== null && $folderId !== $file->folder_id) {
+            $refusal = app(FolderReach::class)->fileMoveRefusal($user, $file->folder, $destination ?? null);
+
+            if ($refusal !== null) {
+                return back()->with('error', $refusal);
+            }
         }
 
         $file->update(['folder_id' => $folderId]);
@@ -475,6 +492,26 @@ class FilesController extends Controller
             ->filter(fn (File $file): bool => Gate::forUser($user)->allows('update', $file));
 
         abort_if($files->isEmpty(), 422, __('None of the selected files could be edited.'));
+
+        // Out of a shared folder is unsharing from whoever it reached; one
+        // file that may not leave keeps the whole batch where it is, the
+        // same as a destination none of them may enter.
+        if ($validated['folder_action'] === 'move') {
+            $destinationFolder = $targetFolderId === null ? null : Folder::query()->whereKey($targetFolderId)->first();
+            $reach = app(FolderReach::class);
+
+            foreach ($files as $file) {
+                if ($file->folder_id === $targetFolderId) {
+                    continue;
+                }
+
+                $refusal = $reach->fileMoveRefusal($user, $file->folder, $destinationFolder);
+
+                if ($refusal !== null) {
+                    return back()->with('error', $refusal);
+                }
+            }
+        }
 
         $canSetExpiration = $user->can('set_file_expiration_date');
         $canLimitDownloads = $user->can('limit_downloads');

@@ -369,9 +369,11 @@ class PublicGroupsController extends Controller
         // genuinely here and genuinely public, it has simply been taken
         // as many times as it was meant to be. Hiding that would send
         // someone hunting for a link that never broke.
-        abort_unless($this->allowance->allows($file, null), 403);
-
-        $this->activity->log(Action::PublicFileDownloaded, subject: $file);
+        abort_unless($this->allowance->take(
+            $file,
+            null,
+            fn () => $this->activity->log(Action::PublicFileDownloaded, subject: $file),
+        ), 403);
 
         return $this->bytes->attachment($file);
     }

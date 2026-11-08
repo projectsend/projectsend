@@ -5,12 +5,15 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Audit\ActivityLogger;
+use App\Modules\Files\Access\DownloadAllowance;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\ShareLink;
 use App\Modules\Files\Models\ZipDownload;
 use App\Modules\Identity\UserType;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -378,4 +381,30 @@ test('two fetches of one archive arriving together still count as one delivery',
     // Losing the claim means not logging: the fetch that won it is the
     // one that counts, and here that is the stand-in, which logs nothing.
     expect($file->downloads()->count())->toBe(0);
+});
+
+/*
+ * The check and the entry that counts a download were two steps, so
+ * downloads fired at once all passed before any was counted. take() runs
+ * both under a lock on the file; while a download is being recorded,
+ * nobody else can take the same file's lock.
+ */
+test('a capped download is checked and counted under one lock on the file', function () {
+    $file = limitedFile(['download_limit' => 1]);
+    $heldWhileRecording = null;
+
+    $taken = app(DownloadAllowance::class)->take($file, $this->client, function () use ($file, &$heldWhileRecording): void {
+        $heldWhileRecording = ! Cache::lock('download-allowance:'.$file->id, 1)->get();
+        app(ActivityLogger::class)->log(Action::FileDownloaded, $this->client, $file);
+    });
+
+    expect($taken)->toBeTrue()
+        ->and($heldWhileRecording)->toBeTrue()
+        ->and(Cache::lock('download-allowance:'.$file->id, 1)->get())->toBeTrue();
+
+    $recorded = false;
+    expect(app(DownloadAllowance::class)->take($file, $this->client, function () use (&$recorded): void {
+        $recorded = true;
+    }))->toBeFalse()
+        ->and($recorded)->toBeFalse();
 });

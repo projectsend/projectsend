@@ -46,9 +46,13 @@ class FileDownloadController extends Controller
         // not "you may not see this file" — the file stays listed, and
         // the same person may still open its details. It is only the
         // taking of a copy that stops. See DownloadAllowance.
-        abort_unless($this->allowance->allows($file, $request->user()), 403);
-
-        $this->activity->log(Action::FileDownloaded, subject: $file);
+        // The check and the entry that counts it as one step, so downloads
+        // fired together cannot all pass before any is counted.
+        abort_unless($this->allowance->take(
+            $file,
+            $request->user(),
+            fn () => $this->activity->log(Action::FileDownloaded, subject: $file),
+        ), 403);
 
         return $this->bytes->attachment($file);
     }

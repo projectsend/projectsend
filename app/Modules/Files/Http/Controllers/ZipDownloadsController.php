@@ -289,21 +289,30 @@ class ZipDownloadsController extends Controller
         // Same reasoning as the conditional increment guarding a share
         // link's max_downloads in PublicShareController. The other request
         // still receives the archive — that is the re-fetch rule above.
-        $claimed = ZipDownload::query()
-            ->whereKey($zipDownload->id)
-            ->whereNull('delivered_at')
-            ->update(['delivered_at' => now()]);
+        //
+        // The claim and the entries sit inside DownloadAllowance::takeAll,
+        // which holds every capped file while it re-checks them, so two
+        // archives (or an archive and a download) sharing a capped file
+        // cannot both pass the check above before either is counted.
+        $taken = $this->allowance->takeAll($contained, $requester, function () use ($zipDownload, $contained): void {
+            $claimed = ZipDownload::query()
+                ->whereKey($zipDownload->id)
+                ->whereNull('delivered_at')
+                ->update(['delivered_at' => now()]);
 
-        if ($claimed === 0) {
-            return;
-        }
+            if ($claimed === 0) {
+                return;
+            }
 
-        // Every file actually bundled gets a FileDownloaded entry —
-        // otherwise a file's download history/count would silently miss
-        // zip downloads.
-        foreach ($contained as $file) {
-            $this->activity->log(Action::FileDownloaded, subject: $file);
-        }
+            // Every file actually bundled gets a FileDownloaded entry —
+            // otherwise a file's download history/count would silently miss
+            // zip downloads.
+            foreach ($contained as $file) {
+                $this->activity->log(Action::FileDownloaded, subject: $file);
+            }
+        });
+
+        abort_unless($taken, 403, __('Those files have reached their download limit.'));
     }
 
     private function filenameFor(ZipDownload $zipDownload): string

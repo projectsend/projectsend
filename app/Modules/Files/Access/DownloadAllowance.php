@@ -7,7 +7,9 @@ namespace App\Modules\Files\Access;
 use App\Models\User;
 use App\Modules\Files\DownloadLimitScope;
 use App\Modules\Files\Models\File;
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Whether this person may still take a copy of this file.
@@ -78,6 +80,69 @@ class DownloadAllowance
         $remaining = $this->remaining($file, $viewer);
 
         return $remaining === null || $remaining > 0;
+    }
+
+    /**
+     * Check the allowance and record the download as one step: $record
+     * writes the entry that counts it, and runs only when there was room.
+     *
+     * allows() and the entry were two steps, so several downloads fired at
+     * once all passed the check before any of them was counted, and a file
+     * limited to one download went out as many times as there were
+     * requests. A share link's own cap was already safe (one conditional
+     * increment); a file's cap is counted from the activity log, which
+     * cannot be incremented conditionally, so the check and the entry hold
+     * a short lock on the file. An uncapped file takes no lock.
+     *
+     * @param  Closure(): void  $record
+     */
+    public function take(File $file, ?User $viewer, Closure $record): bool
+    {
+        return $this->takeAll([$file], $viewer, $record);
+    }
+
+    /**
+     * take() for several files at once — a zip: either there is room on
+     * every one and $record runs once, or it does not run. Locks are taken
+     * in id order, so two archives sharing files cannot wait on each other.
+     *
+     * @param  iterable<File>  $files
+     * @param  Closure(): void  $record
+     */
+    public function takeAll(iterable $files, ?User $viewer, Closure $record): bool
+    {
+        $capped = collect($files)
+            ->filter(fn (File $file): bool => $this->applies($file, $viewer))
+            ->sortBy('id')
+            ->values();
+
+        $check = function () use ($capped, $viewer, $record): bool {
+            foreach ($capped as $file) {
+                if (! $this->allows($file, $viewer)) {
+                    return false;
+                }
+            }
+
+            $record();
+
+            return true;
+        };
+
+        $locks = [];
+
+        try {
+            foreach ($capped as $file) {
+                $lock = Cache::lock('download-allowance:'.$file->id, 10);
+                $lock->block(5);
+                $locks[] = $lock;
+            }
+
+            return $check();
+        } finally {
+            foreach (array_reverse($locks) as $lock) {
+                $lock->release();
+            }
+        }
     }
 
     /**

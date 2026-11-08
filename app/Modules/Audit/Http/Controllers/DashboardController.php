@@ -14,6 +14,7 @@ use App\Modules\Audit\ActivityPresenter;
 use App\Modules\Audit\DashboardWidgetPreferences;
 use Illuminate\Support\Facades\Event;
 use App\Modules\Clients\ClientStorageUsage;
+use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Delivery\FileDelivery;
 use App\Modules\Files\Models\File;
@@ -391,8 +392,18 @@ class DashboardController extends Controller
             ->orderByDesc('size')
             ->limit(10)
             ->get(['id', 'name', 'size', 'uploaded_by', 'created_at'])
-            ->map(function (File $file) use ($canFiles, $canClients, $canStaffUsers): array {
+            ->map(function (File $file) use ($canFiles, $canClients, $canStaffUsers, $viewer): array {
                 $uploader = $file->uploader; // uploaded_by is nullOnDelete — may be gone.
+
+                // A stranger client's upload can sit in this library
+                // legitimately — shared with a group one of the viewer's
+                // clients is in — and the file is theirs to see. The
+                // uploader's name is not (ClientIdentityScope), so the row
+                // reads as "no uploader recorded", the way a deleted
+                // account's does.
+                if (! app(ClientIdentityScope::class)->permits($viewer, $uploader)) {
+                    $uploader = null;
+                }
 
                 return [
                     'id' => $file->id,

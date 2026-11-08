@@ -627,3 +627,29 @@ test('system capacity never presents local disk space as available object storag
             ->where('system.upload_temp_free_bytes', fn ($bytes): bool => is_int($bytes) && $bytes >= 0),
     );
 });
+
+/*
+ * A stranger client's upload can sit in a Client Manager's library — shared
+ * with one of their clients — and the file is theirs to see. Its uploader's
+ * name is not, and the widget printed it.
+ */
+test('the largest-files widget does not name an uploader the viewer may not be told about', function () {
+    $mine = User::factory()->client()->create(['name' => 'Mine']);
+    $stranger = User::factory()->client()->create(['name' => 'Stranger Corp']);
+    $manager = User::factory()->role(SystemRole::ClientManager)->create();
+    $manager->assignedClients()->sync([$mine->id]);
+
+    $file = File::factory()->create([
+        'uploaded_by' => $stranger->id, 'name' => 'from-stranger', 'original_name' => 's.pdf',
+        'path' => 's.pdf', 'mime_type' => 'application/pdf', 'size' => 5 * 1024 * 1024, 'checksum' => str_repeat('c', 64),
+    ]);
+    shareFileWith($file, $mine);
+    app()->forgetScopedInstances();
+
+    $this->actingAs($manager)->get('/dashboard')->assertInertia(
+        fn (AssertableInertia $page) => $page
+            ->where('largest_files.0.id', $file->id)
+            ->where('largest_files.0.uploader_name', null)
+            ->where('largest_files.0.uploader_edit_url', null),
+    );
+});

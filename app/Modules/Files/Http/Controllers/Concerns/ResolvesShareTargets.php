@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Files\Http\Controllers\Concerns;
 
 use App\Models\User;
+use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Groups\Models\Group;
 use Illuminate\Http\Request;
@@ -57,13 +58,16 @@ trait ResolvesShareTargets
      * root is a bigger act than the caller asked for, since it reaches every
      * other revision in the chain too. The message names the file to go to.
      */
-    private function guardFileOwnsItsSharing(File $file): void
+    private function guardFileOwnsItsSharing(File $file, ?User $viewer): void
     {
         if (! $file->isRevision()) {
             return;
         }
 
-        $root = File::query()->find($file->sharingOwnerId());
+        // Named only when the viewer can see it: a revision can sit in a
+        // client-scoped staff member's library while its original does
+        // not, and the refusal was telling them what it was called.
+        $root = $viewer === null ? null : app(ViewableFileScope::class)->for($viewer)->whereKey($file->sharingOwnerId())->first();
 
         throw ValidationException::withMessages([
             'id' => $root === null

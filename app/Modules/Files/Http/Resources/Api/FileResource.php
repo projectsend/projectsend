@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Modules\Files\Http\Resources\Api;
 
 use App\Modules\Files\Access\ClientIdentityScope;
+use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\DownloadLimitScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\FileAssignment;
@@ -113,8 +115,11 @@ class FileResource extends JsonResource
 
             // The oldest file in this version chain — the one whose
             // recipients govern the whole chain. Null when this file is not
-            // a revision.
-            'sharing_root_id' => $this->version_root_id,
+            // a revision, or when that file is one the caller cannot see.
+            'sharing_root_id' => $this->version_root_id !== null && $viewer !== null
+                && app(ViewableFileScope::class)->for($viewer)->whereKey($this->version_root_id)->exists()
+                ? $this->version_root_id
+                : null,
 
             // The file this one replaces. Null when there is none, or when
             // it is one you cannot see.
@@ -130,7 +135,8 @@ class FileResource extends JsonResource
             ]),
 
             // GET /folders/{id} has the rest, its place in the tree included.
-            'folder' => $this->whenLoaded('folder', fn (): ?array => $this->folder === null ? null : [
+            // Null when the file sits in a folder the caller cannot reach.
+            'folder' => $this->whenLoaded('folder', fn (): ?array => $this->folder === null || ($viewer !== null && ! app(StaffLibraryScope::class)->allowsFolder($viewer, $this->folder)) ? null : [
                 'id' => $this->folder->id,
                 'name' => $this->folder->name,
                 'parent_id' => $this->folder->parent_id,

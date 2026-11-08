@@ -13,6 +13,7 @@ use App\Modules\Comments\CommentScope;
 use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Access\ShareTargets;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\DownloadLimitScope;
 use App\Modules\Files\Editing\ApplyFileEdits;
 use App\Modules\Files\Editing\FileExpiry;
@@ -214,7 +215,10 @@ class FilesController extends Controller
                 'public_url' => $file->isEffectivelyPublic()
                     ? $this->publicUrl->for($file)
                     : null,
-                'public_via_folder' => $file->folder?->publicSourceName(),
+                // Which folder makes the file public. Named only when the
+                // viewer can reach it; otherwise the screen still locks the
+                // toggle and says why, without the name.
+                'public_via_folder' => $this->publicSourceFor($file, $viewer),
                 'created_at' => $file->created_at?->toIso8601String(),
                 'is_revision' => $file->isRevision(),
                 'version' => $this->versionLinks->for(
@@ -225,7 +229,12 @@ class FilesController extends Controller
             ],
             'sharing_root' => $sharingRoot === null ? null : [
                 'id' => $sharingRoot->id,
-                'name' => $sharingRoot->name,
+                // The original may be outside this viewer's library; its
+                // sharing still governs this file, but its name is not
+                // theirs to read.
+                'name' => app(ViewableFileScope::class)->for($viewer)->whereKey($sharingRoot->id)->exists()
+                    ? $sharingRoot->name
+                    : __('the original version'),
                 'url' => route('files.edit', $sharingRoot, false).'?tab=sharing',
             ],
             'can_update_root' => $sharingRoot !== null && Gate::forUser($viewer)->allows('update', $sharingRoot),
@@ -606,5 +615,26 @@ class FilesController extends Controller
         });
 
         return back()->with('success', trans_choice(':count file deleted.|:count files deleted.', $files->count(), ['count' => $files->count()]));
+    }
+
+    private function publicSourceFor(File $file, User $viewer): ?string
+    {
+        $folder = $file->folder;
+        $name = $folder?->publicSourceName();
+
+        if ($folder === null || $name === null) {
+            return null;
+        }
+
+        $source = $folder->public ? $folder : Folder::query()
+            ->whereIn('id', $folder->ancestorIds())
+            ->where('public', true)
+            ->get()
+            ->sortByDesc(fn (Folder $f): int => count($f->ancestorIds()))
+            ->first();
+
+        return $source !== null && app(StaffLibraryScope::class)->allowsFolder($viewer, $source)
+            ? $name
+            : __('a folder above this one');
     }
 }

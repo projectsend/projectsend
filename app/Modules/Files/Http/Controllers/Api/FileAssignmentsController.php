@@ -38,7 +38,7 @@ class FileAssignmentsController extends Controller
     public function store(Request $request, File $file): FileResource
     {
         Gate::authorize('update', $file);
-        $this->guardFileOwnsItsSharing($file);
+        $this->guardFileOwnsItsSharing($file, $request->user());
 
         [$assignable, $targetName] = $this->resolveRequestedTarget(
             $request,
@@ -55,7 +55,7 @@ class FileAssignmentsController extends Controller
     public function destroy(Request $request, File $file): FileResource
     {
         Gate::authorize('update', $file);
-        $this->guardFileOwnsItsSharing($file);
+        $this->guardFileOwnsItsSharing($file, $request->user());
 
         [$assignable, $targetName] = $this->resolveRequestedTarget(
             $request,

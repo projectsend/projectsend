@@ -14,6 +14,8 @@ use App\Modules\Comments\CommentingRules;
 use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Access\DownloadAllowance;
 use App\Modules\Files\Access\ShareTargets;
+use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\DownloadLimitScope;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
@@ -106,7 +108,13 @@ class FileDetailsController extends Controller
             // be told about, which reads the same as an uploader whose
             // account has since been deleted.
             'uploader' => $this->identity->nameOf($viewer, $file->uploader),
-            'folder' => $file->folder?->only('id', 'name'),
+            // A file can be in this library (assigned to one of the
+            // viewer's clients) while the folder it sits in is not, and a
+            // folder name says plenty — a client's home folder is named
+            // after the client. So only a folder the viewer can reach.
+            'folder' => $file->folder !== null && app(StaffLibraryScope::class)->allowsFolder($viewer, $file->folder)
+                ? $file->folder->only('id', 'name')
+                : null,
             'categories' => $file->categories()->orderBy('name')->get()
                 ->map(fn (Category $category): array => ['id' => $category->id, 'name' => $category->name, 'color' => $category->color])
                 ->values(),
@@ -146,8 +154,9 @@ class FileDetailsController extends Controller
             // does that), so this names who really has the file. The panel
             // says where those recipients are set.
             'shares' => $this->shareTargets->assignedFor($file, $viewer),
+            // Only an original this viewer can see is named.
             'sharing_root' => $file->isRevision()
-                ? File::query()->find($file->sharingOwnerId())?->only('id', 'name')
+                ? app(ViewableFileScope::class)->for($viewer)->whereKey($file->sharingOwnerId())->first()?->only('id', 'name')
                 : null,
             // Read-only here: creating/revoking a public link is edited
             // from the file's own edit page, not this info panel.

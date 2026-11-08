@@ -4825,7 +4825,7 @@
                             "integer",
                             "null"
                         ],
-                        "description": "The oldest file in this version chain \u2014 the one whose\nrecipients govern the whole chain. Null when this file is not\na revision."
+                        "description": "The oldest file in this version chain \u2014 the one whose\nrecipients govern the whole chain. Null when this file is not\na revision, or when that file is one the caller cannot see."
                     },
                     "previous_version": {
                         "type": [
@@ -4870,7 +4870,7 @@
                             "object",
                             "null"
                         ],
-                        "description": "GET /folders/{id} has the rest, its place in the tree included.",
+                        "description": "GET /folders/{id} has the rest, its place in the tree included.\nNull when the file sits in a folder the caller cannot reach.",
                         "properties": {
                             "id": {
                                 "type": "integer"

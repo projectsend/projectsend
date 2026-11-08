@@ -15,6 +15,7 @@ use App\Modules\Platform\Seats\SeatAllowance;
 use App\Modules\Identity\Permissions\SystemRole;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Modules\Identity\Social\ProviderLinks;
 
 /**
  * Moving an account between the two populations: a staff member becomes a
@@ -225,6 +226,10 @@ class AccountConversion
                 'dashboard_columns' => null,
             ])->save();
 
+            // After the type changed, so the provider staff must use is
+            // read for what the account is now.
+            app(ProviderLinks::class)->endAllFor($target);
+
             $this->activity->log(Action::AccountConvertedToClient, subject: $target, context: [
                 'from_role' => $oldRoleName,
                 'api_tokens_revoked' => $tokensRevoked,
@@ -298,6 +303,8 @@ class AccountConversion
             }
 
             $target->save();
+
+            app(ProviderLinks::class)->endAllFor($target);
 
             // Reused rather than re-derived: this is what clears the roster
             // for a role that is not client-scoped.

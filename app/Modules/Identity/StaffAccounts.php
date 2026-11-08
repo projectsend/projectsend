@@ -17,6 +17,7 @@ use App\Modules\Identity\Permissions\PermissionChecker;
 use App\Modules\Identity\Permissions\SystemRole;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
+use App\Modules\Identity\Social\ProviderLinks;
 
 /**
  * Creating, changing and deleting staff accounts — the rules and the side
@@ -374,6 +375,7 @@ class StaffAccounts
         if ($passwordReplaced) {
             $user->tokens()->delete();
             app(Grants::class)->revokeAllFor($user, 'password replaced');
+            app(ProviderLinks::class)->endAllFor($user);
         }
 
         if ($assignedClients !== null) {

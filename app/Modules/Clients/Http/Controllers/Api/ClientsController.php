@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
+use App\Modules\Identity\Social\ProviderLinks;
 
 /**
  * Client accounts over the API.
@@ -263,6 +264,10 @@ class ClientsController extends Controller
         }
 
         $client->save();
+
+        if ($passwordChanged) {
+            app(ProviderLinks::class)->endAllFor($client);
+        }
 
         if (array_key_exists('custom_field_values', $validated)) {
             app(ClientCustomFieldInput::class)->writeNamed($client, $validated['custom_field_values']);

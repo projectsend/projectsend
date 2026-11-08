@@ -36,6 +36,7 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Modules\Identity\Social\ProviderLinks;
 
 /**
  * Client management — the recipients files are shared with. Available
@@ -339,6 +340,10 @@ class ClientsController extends Controller
         }
 
         $client->save();
+
+        if ($passwordChanged) {
+            app(ProviderLinks::class)->endAllFor($client);
+        }
 
         app(ClientCustomFieldInput::class)->writeAll($client, $validated['custom_field_values'] ?? []);
 

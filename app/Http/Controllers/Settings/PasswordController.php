@@ -18,6 +18,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Modules\Identity\Social\ProviderLinks;
 
 class PasswordController extends Controller
 {
@@ -98,6 +99,7 @@ class PasswordController extends Controller
         // renews itself for good.
         $user->tokens()->delete();
         app(Grants::class)->revokeAllFor($user, 'password changed');
+        app(ProviderLinks::class)->endAllFor($user);
 
         app(ActivityLogger::class)->log(Action::PasswordUpdated, $user);
 

@@ -17,6 +17,7 @@ use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Modules\Identity\Social\ProviderLinks;
 
 class NewPasswordController extends Controller
 {
@@ -172,6 +173,7 @@ class NewPasswordController extends Controller
                 // Same as when staff replace a password (StaffAccounts).
                 $user->tokens()->delete();
                 app(Grants::class)->revokeAllFor($user, 'password reset');
+                app(ProviderLinks::class)->endAllFor($user);
 
                 event(new PasswordReset($user));
             }

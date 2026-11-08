@@ -51,7 +51,7 @@ class FileSharing
             'assignable_id' => $assignable->getKey(),
         ]);
 
-        $this->activity->log(Action::FileAssigned, subject: $file, context: ['target' => $targetName]);
+        $this->activity->log(Action::FileAssigned, subject: $file, context: self::targetContext($assignable, $targetName));
 
         // Sharing itself is never held up — the assignment above is
         // written, and the file is theirs the moment it can be had. What
@@ -86,7 +86,7 @@ class FileSharing
             ->delete();
 
         if ($deleted > 0) {
-            $this->activity->log(Action::FileUnassigned, subject: $file, context: ['target' => $targetName]);
+            $this->activity->log(Action::FileUnassigned, subject: $file, context: self::targetContext($assignable, $targetName));
         }
 
         return $deleted > 0;
@@ -102,5 +102,20 @@ class FileSharing
     private function recipients(User|Group $assignable): iterable
     {
         return $assignable instanceof Group ? $assignable->members : [$assignable];
+    }
+
+    /**
+     * The target's name, and who it is: ActivityLogScope::redact() needs
+     * the id to decide whether a viewer may read the name.
+     *
+     * @return array{target: string, target_type: string, target_id: int}
+     */
+    private static function targetContext(User|Group $assignable, string $targetName): array
+    {
+        return [
+            'target' => $targetName,
+            'target_type' => $assignable instanceof Group ? 'group' : 'client',
+            'target_id' => (int) $assignable->getKey(),
+        ];
     }
 }

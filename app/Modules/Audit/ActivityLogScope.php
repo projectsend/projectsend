@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Modules\Audit;
 
 use App\Models\User;
+use App\Modules\Files\Access\ClientIdentityScope;
 use App\Modules\Files\Access\StaffLibraryScope;
+use App\Modules\Identity\UserType;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
 use Illuminate\Database\Eloquent\Builder;
@@ -35,12 +37,152 @@ use Illuminate\Database\Eloquent\Builder;
  * is not theirs to read.
  *
  * An unscoped viewer's log is unchanged: installation-wide, as before.
+ *
+ * Seeing an entry is not the same as being told everybody in it. A file in
+ * a scoped library can also reach a client off the viewer's roster (a
+ * group holds clients of several managers), and that client downloading
+ * it, or being shared it, writes an entry about a file the viewer may
+ * see. redact() is the second half: it keeps the entry and drops the
+ * names, address and targets the viewer may not be told, the same rule
+ * ClientIdentityScope applies to every other surface that names a client.
+ * Every surface that shows an entry asks it.
  */
 class ActivityLogScope
 {
+    /** @var array<int, User|null> */
+    private array $accounts = [];
+
     public function __construct(
         private readonly StaffLibraryScope $library,
+        private readonly ClientIdentityScope $identity,
     ) {}
+
+    /**
+     * The entry as $viewer may read it.
+     *
+     * For a narrowed viewer, a client actor off their roster becomes "A
+     * client" with no id and no address; so does a client subject; and the
+     * context values that name somebody (a share target, a group member)
+     * or something (the original a file revises) go when the viewer may
+     * not be told them. Entries written before the ids were recorded carry
+     * only the name, so their names go for every narrowed viewer: there is
+     * nothing to check them against.
+     *
+     * Returns a copy; the stored entry is never touched.
+     */
+    public function redact(?User $viewer, ActivityLog $entry): ActivityLog
+    {
+        if (! $this->identity->isNarrowed($viewer)) {
+            return $entry;
+        }
+
+        $entry = clone $entry;
+
+        if ($entry->actor_type === UserType::Client->value && ! $this->clientPermitted($viewer, $entry->actor_id)) {
+            $entry->actor_id = null;
+            $entry->actor_name = (string) __('A client');
+            $entry->ip_address = null;
+        }
+
+        if ($entry->subject_type === (new User)->getMorphClass() && ! $this->clientPermitted($viewer, $entry->subject_id)) {
+            $entry->subject_name = (string) __('A client');
+        }
+
+        $context = $entry->context ?? [];
+
+        if (array_key_exists('target', $context)) {
+            $id = isset($context['target_id']) ? (int) $context['target_id'] : null;
+            $type = $context['target_type'] ?? null;
+
+            $permitted = match (true) {
+                $id === null => false,
+                $type === 'group' => $this->identity->permitsGroupId($viewer, $id),
+                default => $this->clientPermitted($viewer, $id),
+            };
+
+            if (! $permitted) {
+                $context['target'] = (string) match ($type) {
+                    'group' => __('a group'),
+                    'client' => __('a client'),
+                    default => __('a client or group'),
+                };
+                unset($context['target_id']);
+            }
+        }
+
+        if (array_key_exists('member', $context)) {
+            $id = isset($context['member_id']) ? (int) $context['member_id'] : null;
+
+            if ($id === null || ! $this->clientPermitted($viewer, $id)) {
+                $context['member'] = (string) __('a client');
+                unset($context['member_id']);
+            }
+        }
+
+        if (array_key_exists('previous', $context)) {
+            $id = isset($context['previous_id']) ? (int) $context['previous_id'] : null;
+
+            if ($viewer === null || $id === null || $this->openableFileIds($viewer, [$id]) === []) {
+                $context['previous'] = (string) __('another file');
+                unset($context['previous_id']);
+            }
+        }
+
+        if ($context !== []) {
+            $entry->context = $context;
+        }
+
+        return $entry;
+    }
+
+    /**
+     * Whether a client known by id may be named to $viewer. Unlike
+     * ClientIdentityScope::permitsClientId, an id that resolves to nobody
+     * (a deleted account) is refused: the entry still carries the name.
+     */
+    private function clientPermitted(?User $viewer, ?int $id): bool
+    {
+        if ($id === null) {
+            return false;
+        }
+
+        if ($viewer !== null && $viewer->id === $id) {
+            return true;
+        }
+
+        if (! array_key_exists($id, $this->accounts)) {
+            $this->accounts[$id] = User::withTrashed()->find($id);
+        }
+
+        $account = $this->accounts[$id];
+
+        return $account !== null && $this->identity->permits($viewer, $account);
+    }
+
+    /**
+     * Whether a name typed into an "actor" filter may be matched against
+     * this entry's actor: everybody's for an unscoped viewer, and for a
+     * narrowed one never a client they may not be told about. Otherwise
+     * the filter answers whether a hidden name contains what was typed.
+     *
+     * @param  Builder<ActivityLog>  $query
+     * @return Builder<ActivityLog>
+     */
+    public function whereActorNameLike(Builder $query, User $viewer, string $term): Builder
+    {
+        $query->where('actor_name', 'like', '%'.$term.'%');
+
+        if (! $this->identity->isNarrowed($viewer)) {
+            return $query;
+        }
+
+        $clientIds = $this->library->assignableClientIds($viewer) ?? [];
+
+        return $query->where(fn (Builder $actors) => $actors
+            ->whereNull('actor_type')
+            ->orWhere('actor_type', '!=', UserType::Client->value)
+            ->orWhereIn('actor_id', [$viewer->id, ...$clientIds]));
+    }
 
     /**
      * @param  Builder<ActivityLog>  $query

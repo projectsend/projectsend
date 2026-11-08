@@ -91,7 +91,7 @@ class MembershipRequestsController extends Controller
         $group->members()->syncWithoutDetaching([$client->id]);
         $membershipRequest->delete();
 
-        $this->activity->log(Action::GroupMembershipApproved, subject: $group, context: ['member' => $client->name]);
+        $this->activity->log(Action::GroupMembershipApproved, subject: $group, context: ['member' => $client->name, 'member_id' => $client->id]);
 
         $this->notifier->send('group.membership_approved', [$client], subject: $group, data: ['groupName' => $group->name]);
 
@@ -126,7 +126,7 @@ class MembershipRequestsController extends Controller
         ])->save();
 
         if ($group !== null && $client !== null) {
-            $this->activity->log(Action::GroupMembershipDenied, subject: $group, context: ['member' => $client->name]);
+            $this->activity->log(Action::GroupMembershipDenied, subject: $group, context: ['member' => $client->name, 'member_id' => $client->id]);
 
             if ($this->settings->get(Setting::EmailNotificationsEnabled) === true) {
                 $client->notify(new GroupMembershipDeniedNotification($group->name));

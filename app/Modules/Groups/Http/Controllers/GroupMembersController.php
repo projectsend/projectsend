@@ -57,7 +57,7 @@ class GroupMembersController extends Controller
 
         $group->members()->syncWithoutDetaching([$client->id]);
 
-        $this->activity->log(Action::GroupMemberAdded, subject: $group, context: ['member' => $client->name]);
+        $this->activity->log(Action::GroupMemberAdded, subject: $group, context: ['member' => $client->name, 'member_id' => $client->id]);
 
         return back();
     }
@@ -73,7 +73,7 @@ class GroupMembersController extends Controller
 
         $group->members()->detach($member->id);
 
-        $this->activity->log(Action::GroupMemberRemoved, subject: $group, context: ['member' => $member->name]);
+        $this->activity->log(Action::GroupMemberRemoved, subject: $group, context: ['member' => $member->name, 'member_id' => $member->id]);
 
         return back();
     }

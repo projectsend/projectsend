@@ -95,7 +95,7 @@ test('approving a request joins the client and clears the queue', function () {
         ->and(MembershipRequest::query()->count())->toBe(0);
 
     $entry = ActivityLog::query()->where('action', Action::GroupMembershipApproved)->sole();
-    expect($entry->context)->toBe(['member' => 'Hopeful'])
+    expect($entry->context)->toMatchArray(['member' => 'Hopeful'])
         ->and($entry->subject_name)->toBe('Target');
 });
 

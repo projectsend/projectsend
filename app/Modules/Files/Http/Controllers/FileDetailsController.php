@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Audit\ActivityLogScope;
 use App\Modules\Audit\ActivityPresenter;
 use App\Modules\Audit\DownloadPresenter;
 use App\Modules\Comments\CommentingRules;
@@ -87,6 +88,10 @@ class FileDetailsController extends Controller
         private readonly FileVersionLinks $versionLinks,
         private readonly DownloadAllowance $allowance,
         private readonly TimezoneRegistry $timezones,
+        // Seeing a file is not being told everybody who touched it: a file
+        // in a scoped library can reach a client off the roster too, and
+        // every log read here names them unless redact() says otherwise.
+        private readonly ActivityLogScope $logScope,
     ) {}
 
     public function show(Request $request, File $file): JsonResponse
@@ -187,6 +192,7 @@ class FileDetailsController extends Controller
         $entries = $query
             ->orderByDesc('created_at')->orderByDesc('id')
             ->limit(20)->get()
+            ->map(fn (ActivityLog $entry): ActivityLog => $this->logScope->redact($viewer, $entry))
             ->map(fn (ActivityLog $entry): array => $this->presenter->present($entry));
 
         return response()->json(['entries' => $entries, 'total' => $total]);
@@ -215,6 +221,7 @@ class FileDetailsController extends Controller
             ->whereIn('action', [...self::DOWNLOAD_ACTIONS, ...self::PREVIEW_ACTIONS])
             ->orderByDesc('created_at')->orderByDesc('id')
             ->limit(20)->get()
+            ->map(fn (ActivityLog $entry): ActivityLog => $this->logScope->redact($viewer, $entry))
             ->map(fn (ActivityLog $entry): array => [
                 // The sentence the presenter builds already says which of
                 // the two this was ("Downloaded the file …"), so nothing
@@ -304,7 +311,8 @@ class FileDetailsController extends Controller
             ->orderByDesc('created_at')
             ->orderByDesc('id')
             ->limit(self::DOWNLOADS_SUMMARY_LIMIT)
-            ->get();
+            ->get()
+            ->map(fn (ActivityLog $entry): ActivityLog => $this->logScope->redact($viewer, $entry));
 
         $downloaders = $entries
             ->groupBy(function (ActivityLog $entry): string {
@@ -357,7 +365,7 @@ class FileDetailsController extends Controller
             ->withQueryString();
 
         return Inertia::render('activity/downloads', [
-            'entries' => $entries->getCollection()->map(fn (ActivityLog $entry): array => $this->downloadPresenter->present($entry))->all(),
+            'entries' => $entries->getCollection()->map(fn (ActivityLog $entry): array => $this->downloadPresenter->present($this->logScope->redact($viewer, $entry)))->all(),
             'pagination' => [
                 'page' => $entries->currentPage(),
                 'last_page' => $entries->lastPage(),
@@ -411,6 +419,7 @@ class FileDetailsController extends Controller
         $entries = $query
             ->orderByDesc('created_at')->orderByDesc('id')
             ->limit(20)->get()
+            ->map(fn (ActivityLog $entry): ActivityLog => $this->logScope->redact($viewer, $entry))
             ->map(fn (ActivityLog $entry): array => $this->presenter->present($entry));
 
         return response()->json(['entries' => $entries, 'total' => $total]);
@@ -461,7 +470,7 @@ class FileDetailsController extends Controller
 
         return Inertia::render('activity/subject', [
             'entries' => $entries->getCollection()
-                ->map(fn (ActivityLog $entry): array => $this->presenter->present($entry))
+                ->map(fn (ActivityLog $entry): array => $this->presenter->present($this->logScope->redact($viewer, $entry)))
                 ->all(),
             'pagination' => [
                 'page' => $entries->currentPage(),
@@ -588,7 +597,7 @@ class FileDetailsController extends Controller
             // the main log: an account deleted since is still findable by
             // the name it acted under, which is the whole point of the
             // snapshot.
-            ->when($filters['actor'], fn (Builder $query, string $actor) => $query->where('actor_name', 'like', "%{$actor}%"))
+            ->when($filters['actor'], fn (Builder $query, string $actor) => $this->logScope->whereActorNameLike($query, $viewer, $actor))
             // The reader's own calendar day, not the UTC one — see LocalDay.
             ->when(
                 $filters['from'] !== null ? LocalDay::start($filters['from'], $timezone) : null,

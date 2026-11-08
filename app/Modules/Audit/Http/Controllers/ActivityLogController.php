@@ -47,10 +47,14 @@ class ActivityLogController extends Controller
             ->paginate(25)
             ->withQueryString();
 
-        $links = $this->linkResolver($entries->getCollection(), $viewer);
+        // What the viewer may be told about each entry, before anything
+        // reads it -- the links included, so a hidden actor links nowhere.
+        $rows = $entries->getCollection()->map(fn (ActivityLog $entry): ActivityLog => $this->scope->redact($viewer, $entry));
+
+        $links = $this->linkResolver($rows, $viewer);
 
         return Inertia::render('activity/index', [
-            'entries' => $entries->getCollection()->map(fn (ActivityLog $entry): array => [
+            'entries' => $rows->map(fn (ActivityLog $entry): array => [
                 'id' => $entry->id,
                 'created_at' => $entry->created_at->toIso8601String(),
                 'actor_name' => $entry->actor_name,
@@ -115,7 +119,9 @@ class ActivityLogController extends Controller
 
             fputcsv($out, ['Date', 'Account', 'Account type', 'Origin', 'API token', 'Action', 'Description', 'Subject', 'Details']);
 
-            foreach ($this->filteredQuery($filters, $viewer)->lazy() as $entry) {
+            foreach ($this->filteredQuery($filters, $viewer)->lazy() as $stored) {
+                $entry = $this->scope->redact($viewer, $stored);
+
                 fputcsv($out, array_map($this->csvSafe(...), [
                     // Kept as ISO 8601 — a spreadsheet parses it and the
                     // offset makes the zone self-describing, so the column
@@ -299,7 +305,7 @@ class ActivityLogController extends Controller
             ->when($filters['actor_type'], fn (Builder $query, string $type) => $type === 'system'
                 ? $query->whereNull('actor_type')
                 : $query->where('actor_type', $type))
-            ->when($filters['actor'], fn (Builder $query, string $actor) => $query->where('actor_name', 'like', "%{$actor}%"))
+            ->when($filters['actor'], fn (Builder $query, string $actor) => $this->scope->whereActorNameLike($query, $viewer, $actor))
             // Bounded by the viewer's own day rather than the UTC one —
             // see LocalDay for why whereDate() cannot do this.
             ->when(

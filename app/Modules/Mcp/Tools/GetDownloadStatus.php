@@ -152,7 +152,12 @@ class GetDownloadStatus extends ToolBase
 
         $downloads = [];
 
+        $scope = app(ActivityLogScope::class);
+
         foreach ($rows as $row) {
+            // A download by a client off a manager's roster is still a row
+            // about a file they may see; who it was is not theirs to read.
+            $row = $row instanceof ActivityLog ? $scope->redact($account->user, $row) : $row;
             $action = $row->getAttribute('action');
             $actionValue = $action instanceof BackedEnum ? (string) $action->value : (string) $action;
             $via = self::VIA[$actionValue] ?? 'link';

@@ -231,3 +231,18 @@ it('names a staff downloader as staff to staff who may read the log', function (
 
     expect($status['downloads'][0]['who'])->toBe(['type' => 'staff', 'id' => $this->admin->id, 'name' => 'A colleague']);
 });
+
+it('does not name a downloader off a client-scoped manager\'s roster', function (): void {
+    $staff = McpWorld::staff();
+    $mine = McpWorld::clientAccount('mine@example.com', 'Roster Client');
+    $stranger = McpWorld::clientAccount('stranger@example.com', 'Stranger Corp');
+    McpWorld::scopeTo($staff, $mine);
+    $file = McpWorld::file($staff, ['name' => 'mine']);
+    ActivityLog::query()->create(['actor_id' => $stranger->id, 'actor_name' => 'Stranger Corp', 'actor_type' => 'client', 'action' => 'file.downloaded', 'origin' => 'ui', 'subject_type' => $file->getMorphClass(), 'subject_id' => $file->id, 'subject_name' => 'mine', 'created_at' => now()]);
+
+    $status = McpWorld::call(GetDownloadStatus::class, ['file_id' => $file->id], $staff);
+
+    expect(McpWorld::error($status))->toBeNull()
+        ->and($status['summary']['total'])->toBe(1)
+        ->and(json_encode($status))->not->toContain('Stranger Corp');
+});

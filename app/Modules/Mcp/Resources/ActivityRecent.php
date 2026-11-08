@@ -44,8 +44,12 @@ class ActivityRecent extends Resource
 
         // The log page's own scope: a client-scoped staff member reads
         // what is about their library and their clients, and their own.
-        $rows = app(ActivityLogScope::class)->apply(ActivityLog::query(), $account->user)
-            ->orderByDesc('created_at')->orderByDesc('id')->limit(50)->get();
+        // And its redaction: an entry about their library can still name a
+        // client off their roster.
+        $scope = app(ActivityLogScope::class);
+        $rows = $scope->apply(ActivityLog::query(), $account->user)
+            ->orderByDesc('created_at')->orderByDesc('id')->limit(50)->get()
+            ->map(fn (ActivityLog $row): ActivityLog => $scope->redact($account->user, $row));
         $entries = [];
 
         foreach ($rows as $row) {
@@ -54,7 +58,7 @@ class ActivityRecent extends Resource
                 'id' => (int) $row->getAttribute('id'),
                 'action' => self::value($row->getAttribute('action')),
                 'at' => Presenter::iso($row->getAttribute('created_at')),
-                'actor' => $row->getAttribute('actor_id') === null ? null : [
+                'actor' => $row->getAttribute('actor_id') === null && $row->getAttribute('actor_name') === null ? null : [
                     'type' => $row->getAttribute('actor_type'),
                     'name' => $row->getAttribute('actor_name'),
                 ],

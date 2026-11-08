@@ -491,7 +491,7 @@ class DashboardController extends Controller
             ->orderByDesc('id')
             ->limit(8)
             ->get()
-            ->map(fn (ActivityLog $entry): array => $this->presenter->present($entry))
+            ->map(fn (ActivityLog $entry): array => $this->presenter->present($this->scope->redact($viewer, $entry)))
             ->all();
     }
 

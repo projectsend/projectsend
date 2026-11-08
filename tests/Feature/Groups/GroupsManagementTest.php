@@ -109,7 +109,7 @@ test('clients can be added to and removed from a group; staff cannot join', func
     $this->post("/groups/{$group->id}/members", ['user_id' => $client->id])->assertRedirect();
     expect($group->members()->pluck('users.id')->all())->toBe([$client->id]);
     expect(ActivityLog::query()->where('action', Action::GroupMemberAdded)->sole()->context)
-        ->toBe(['member' => 'Member Client']);
+        ->toBe(['member' => 'Member Client', 'member_id' => $client->id]);
 
     // Adding again is idempotent.
     $this->post("/groups/{$group->id}/members", ['user_id' => $client->id])->assertRedirect();

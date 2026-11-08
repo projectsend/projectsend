@@ -231,7 +231,7 @@ it('shares a folder with a client once: the assignment, the activity entry, the 
     $entry = ActivityLog::query()->where('action', 'folder.shared')->first();
 
     expect($entry->origin->value)->toBe('mcp')
-        ->and($entry->context)->toBe(['target' => 'Acme Ltd']);
+        ->and($entry->context)->toMatchArray(['target' => 'Acme Ltd', 'target_type' => 'client']);
 
     $again = McpWorld::call(ShareFolderWithClient::class, ['folder_id' => $folder->getKey(), 'client_id' => $acme->getKey()], $staff);
 

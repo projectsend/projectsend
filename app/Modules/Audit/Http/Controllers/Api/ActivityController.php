@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Audit\Http\Controllers\Api;
 
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use App\Modules\Api\Support\PollingQuery;
 use App\Modules\Audit\Action;
@@ -11,6 +12,7 @@ use App\Modules\Audit\ActivityLog;
 use App\Modules\Audit\ActivityLogScope;
 use App\Modules\Audit\Http\Resources\Api\ActivityResource;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\Rule;
 
@@ -74,7 +76,7 @@ class ActivityController extends Controller
         // created_at, not updated_at: the log is appended to and never
         // edited, and has no updated_at column to walk.
         return ActivityResource::collection(
-            $this->polling->paginate($request, $query, 'activity_log', 'created_at')
+            $this->redacted($this->polling->paginate($request, $query, 'activity_log', 'created_at'), $viewer)
         );
     }
 
@@ -87,5 +89,19 @@ class ActivityController extends Controller
     private function subjectClass(string $type): string
     {
         return array_search($type, ActivityResource::subjects(), true) ?: '__no_such_subject__';
+    }
+
+    /**
+     * The names in each entry are the second half of the scope: see
+     * ActivityLogScope::redact().
+     *
+     * @param  CursorPaginator<int, ActivityLog>  $page
+     * @return CursorPaginator<int, ActivityLog>
+     */
+    private function redacted(CursorPaginator $page, User $viewer): CursorPaginator
+    {
+        $page->setCollection($page->getCollection()->map(fn (ActivityLog $entry): ActivityLog => $this->scope->redact($viewer, $entry)));
+
+        return $page;
     }
 }

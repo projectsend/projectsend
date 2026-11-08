@@ -482,7 +482,7 @@ test('assignments reject staff targets and unassign removes access', function ()
 
     $this->actingAs($client)->get("/files/{$file->id}/download")->assertForbidden();
     expect(ActivityLog::query()->where('action', Action::FileUnassigned)->sole()->context)
-        ->toBe(['target' => $client->name]);
+        ->toBe(['target' => $client->name, 'target_type' => 'client', 'target_id' => $client->id]);
 });
 
 test('clients cannot reach staff file management', function () {

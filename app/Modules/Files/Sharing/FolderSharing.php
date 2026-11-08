@@ -52,7 +52,7 @@ class FolderSharing
             'assignable_id' => $assignable->getKey(),
         ]);
 
-        $this->activity->log(Action::FolderShared, subject: $folder, context: ['target' => $targetName]);
+        $this->activity->log(Action::FolderShared, subject: $folder, context: self::targetContext($assignable, $targetName));
 
         $recipients = $this->recipients($assignable);
 
@@ -75,7 +75,7 @@ class FolderSharing
             ->delete();
 
         if ($deleted > 0) {
-            $this->activity->log(Action::FolderUnshared, subject: $folder, context: ['target' => $targetName]);
+            $this->activity->log(Action::FolderUnshared, subject: $folder, context: self::targetContext($assignable, $targetName));
         }
 
         return $deleted > 0;
@@ -91,5 +91,20 @@ class FolderSharing
     private function recipients(User|Group $assignable): iterable
     {
         return $assignable instanceof Group ? $assignable->members : [$assignable];
+    }
+
+    /**
+     * The target's name, and who it is: ActivityLogScope::redact() needs
+     * the id to decide whether a viewer may read the name.
+     *
+     * @return array{target: string, target_type: string, target_id: int}
+     */
+    private static function targetContext(User|Group $assignable, string $targetName): array
+    {
+        return [
+            'target' => $targetName,
+            'target_type' => $assignable instanceof Group ? 'group' : 'client',
+            'target_id' => (int) $assignable->getKey(),
+        ];
     }
 }

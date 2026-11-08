@@ -62,7 +62,7 @@ class GroupMembersController extends Controller
         // a retried request is safe.
         $group->members()->syncWithoutDetaching([$client->id]);
 
-        $this->activity->log(Action::GroupMemberAdded, subject: $group, context: ['member' => $client->name]);
+        $this->activity->log(Action::GroupMemberAdded, subject: $group, context: ['member' => $client->name, 'member_id' => $client->id]);
 
         return $this->response($group, $actor);
     }
@@ -78,7 +78,7 @@ class GroupMembersController extends Controller
 
         $group->members()->detach($member->id);
 
-        $this->activity->log(Action::GroupMemberRemoved, subject: $group, context: ['member' => $member->name]);
+        $this->activity->log(Action::GroupMemberRemoved, subject: $group, context: ['member' => $member->name, 'member_id' => $member->id]);
 
         return $this->response($group, $actor);
     }

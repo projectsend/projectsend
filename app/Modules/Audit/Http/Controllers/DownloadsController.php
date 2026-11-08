@@ -53,7 +53,8 @@ class DownloadsController extends Controller
         $openableFileIds = $this->scope->openableFileIds($viewer, $entries->getCollection()->pluck('subject_id'));
 
         return Inertia::render('activity/downloads', [
-            'entries' => $entries->getCollection()->map(function (ActivityLog $entry) use ($openableFileIds, $canOpenFiles): array {
+            'entries' => $entries->getCollection()->map(function (ActivityLog $entry) use ($openableFileIds, $canOpenFiles, $viewer): array {
+                $entry = $this->scope->redact($viewer, $entry);
                 $openable = $entry->subject_id !== null && isset($openableFileIds[$entry->subject_id]);
 
                 return [
@@ -111,7 +112,7 @@ class DownloadsController extends Controller
             // anonymous flavours ("Public link", "Public listing") are
             // labels this page prints, not stored values, so a search for
             // them finds nothing rather than something arbitrary.
-            ->when($filters['user'], fn (Builder $query, string $user) => $query->where('actor_name', 'like', "%{$user}%"))
+            ->when($filters['user'], fn (Builder $query, string $user) => $this->scope->whereActorNameLike($query, $viewer, $user))
             // The viewer's own calendar day, not the UTC one — see LocalDay.
             ->when(
                 $filters['from'] !== null ? LocalDay::start($filters['from'], $timezone) : null,

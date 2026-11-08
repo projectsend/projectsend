@@ -117,7 +117,7 @@ class FileVersions
                     Action::FileVersionLinked,
                     actor: $actor,
                     subject: $file,
-                    context: ['previous' => $previous->name],
+                    context: ['previous' => $previous->name, 'previous_id' => $previous->id],
                 );
             });
         } catch (UniqueConstraintViolationException) {

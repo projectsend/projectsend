@@ -367,12 +367,12 @@ class Folder extends Model
      */
     public static function ownRootIds(User $client): array
     {
-        return self::query()
+        return array_values(self::query()
             ->whereNull('parent_id')
             ->where('created_by', $client->id)
             ->pluck('id')
             ->map(fn ($id): int => (int) $id)
-            ->all();
+            ->all());
     }
 
     /**

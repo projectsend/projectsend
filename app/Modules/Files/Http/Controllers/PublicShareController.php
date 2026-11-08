@@ -114,26 +114,31 @@ class PublicShareController extends Controller
             return redirect()->route('share.show', $token);
         }
 
-        // Before the link's counter moves, not after: a download refused
-        // by the file's own limit must not spend one of the link's.
-        if (! $this->allowance->allows($file, null)) {
+        // The file's own limit and the link's counter, checked and moved
+        // under the file's allowance lock (DownloadAllowance::take), so
+        // simultaneous requests cannot all pass the file's check before any
+        // of them is logged. The file limit is asked before the link's
+        // counter moves: a download refused by the file must not spend one
+        // of the link's.
+        $counted = false;
+
+        $allowed = $this->allowance->take($file, null, function () use ($shareLink, $file, &$counted): void {
+            // Atomic: only increments if still under the link's limit.
+            $counted = ShareLink::query()
+                ->whereKey($shareLink->id)
+                ->where(fn ($query) => $query->whereNull('max_downloads')->orWhereColumn('downloads_count', '<', 'max_downloads'))
+                ->increment('downloads_count') > 0;
+
+            if ($counted) {
+                // Which link, so a link's own downloads can be told apart
+                // from the file's other links (get_download_status asks).
+                $this->activity->log(Action::ShareLinkDownloaded, subject: $file, context: ['share_link_id' => $shareLink->id]);
+            }
+        });
+
+        if (! $allowed || ! $counted) {
             return redirect()->route('share.show', $token);
         }
-
-        // Atomic: only increments if still under the limit, closing the
-        // race between two simultaneous requests both passing the check.
-        $incremented = ShareLink::query()
-            ->whereKey($shareLink->id)
-            ->where(fn ($query) => $query->whereNull('max_downloads')->orWhereColumn('downloads_count', '<', 'max_downloads'))
-            ->increment('downloads_count');
-
-        if ($incremented === 0) {
-            return redirect()->route('share.show', $token);
-        }
-
-        // Which link, so a link's own downloads can be told apart from the
-        // file's other links (the assistant's get_download_status asks).
-        $this->activity->log(Action::ShareLinkDownloaded, subject: $file, context: ['share_link_id' => $shareLink->id]);
 
         return $this->bytes->attachment($file);
     }

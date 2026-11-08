@@ -408,3 +408,31 @@ test('a capped download is checked and counted under one lock on the file', func
     }))->toBeFalse()
         ->and($recorded)->toBeFalse();
 });
+
+// The share link was the one path left checking the file's limit and
+// logging the download as two steps, so a burst of requests to one link
+// could all pass the file's check before any of them counted.
+test('a share-link download is checked and counted under the file\'s lock', function () {
+    $file = limitedFile(['download_limit' => 1]);
+    $link = ShareLink::query()->create([
+        'shareable_type' => $file->getMorphClass(),
+        'shareable_id' => $file->id,
+        'token' => Str::random(40),
+        'created_by' => $this->uploader->id,
+    ]);
+
+    $heldWhileLogging = null;
+    ActivityLog::creating(function (ActivityLog $row) use ($file, &$heldWhileLogging): void {
+        if ($row->action === Action::ShareLinkDownloaded) {
+            $heldWhileLogging = ! Cache::lock('download-allowance:'.$file->id, 1)->get();
+        }
+    });
+
+    $this->get("/s/{$link->token}/download")->assertOk();
+
+    expect($heldWhileLogging)->toBeTrue()
+        ->and($link->fresh()->downloads_count)->toBe(1);
+
+    $this->get("/s/{$link->token}/download")->assertRedirect(route('share.show', $link->token));
+    expect($link->fresh()->downloads_count)->toBe(1);
+});

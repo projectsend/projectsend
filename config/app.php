@@ -1,5 +1,7 @@
 <?php
 
+use App\Support\EnvFlag;
+
 return [
 
     /*
@@ -39,7 +41,9 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    // Strict: `(bool) env()` reads APP_DEBUG=no or =off as on, and debug
+    // pages show stack traces and environment values to visitors.
+    'debug' => EnvFlag::isTrue(env('APP_DEBUG', false)),
 
     /*
     |--------------------------------------------------------------------------

@@ -257,6 +257,9 @@ That is not the file this release published. It has been left in place for you t
         note "Checksum matches."
     else
         warn "No .sha256 was published beside this release, so the download could not be verified."
+        # Not a question --yes answers: an unattended run installing a
+        # file nobody checked is the case the checksum exists to stop.
+        [[ "$ASSUME_YES" == "1" ]] && fail "Stopped. An unverified download is never installed unattended; run without --yes to decide. Nothing has been changed."
         ask "Continue with an unverified download? [y/N]" "n" || fail "Stopped. Nothing has been changed."
     fi
 }

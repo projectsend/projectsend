@@ -1,5 +1,7 @@
 <?php
 
+use App\Support\EnvFlag;
+
 return [
 
     /*
@@ -78,7 +80,7 @@ return [
             // off is not merely equivalent to the old configuration but
             // literally it — no install that does not need this sees its
             // file modes change.
-            ...(env('FILES_WEB_SERVER_READABLE', false)
+            ...(EnvFlag::isTrue(env('FILES_WEB_SERVER_READABLE', false))
                 ? [
                     'visibility' => 'public',
                     'permissions' => ['dir' => ['public' => 0755, 'private' => 0755]],

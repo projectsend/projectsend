@@ -1,10 +1,10 @@
 import { Head, Link } from '@inertiajs/react';
 import { Archive, File as FileIcon, Folder as FolderIcon, Globe, Upload } from 'lucide-react';
 
+import { ViewerAnnouncement } from '@/components/announcement';
 import { CommentsShellCompact } from '@/components/comments/shells/comments-shell-compact';
 import { DownloadAction } from '@/components/download-action';
 import { FilePreviewDialog } from '@/components/file-preview-dialog';
-import { PreviewAction } from '@/components/preview-action';
 import { CategoryBadges } from '@/components/files/category-badges';
 import { VersionBadge } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
@@ -14,11 +14,12 @@ import { FileExpiry } from '@/components/portal/file-expiry';
 import { FileRowActions } from '@/components/portal/file-row-actions';
 import { FolderRowActions } from '@/components/portal/folder-row-actions';
 import { NewFolderButton } from '@/components/portal/new-folder-button';
-import { ViewerAnnouncement } from '@/components/announcement';
 import { PortalBreadcrumb } from '@/components/portal/portal-breadcrumb';
 import { PortalFilesToolbarCompact } from '@/components/portal/portal-files-toolbar-compact';
 import { RenameFolderDialog } from '@/components/portal/rename-folder-dialog';
 import { SelectionBar } from '@/components/portal/selection-bar';
+import { PreviewAction } from '@/components/preview-action';
+import { SortableHeader } from '@/components/sortable-header';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ZipDownloadDialog } from '@/components/zip-download-dialog';
@@ -56,11 +57,8 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
     const {
         zip,
         canZip,
-        selectedFileIds,
-        selectedFolderIds,
+        selection,
         selectionCount,
-        toggleFile,
-        toggleFolder,
         clearSelection,
         downloadSelectionAsZip,
         values,
@@ -68,6 +66,8 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
         setMany,
         reset,
         hasFilters,
+        sortState,
+        sortBy,
         folderUrl,
     } = usePortalFiles(props);
     const {
@@ -154,10 +154,38 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
                     <table className="w-full border-collapse text-xs">
                         <thead>
                             <tr className="border-b border-neutral-300 bg-neutral-100 text-neutral-500 uppercase dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400">
-                                {canZip && <th className="w-8 px-2 py-1 text-left font-medium"></th>}
-                                <th className="px-2 py-1 text-left font-medium">{t('Name')}</th>
-                                <th className="w-24 px-2 py-1 text-right font-medium">{t('Size')}</th>
-                                <th className="w-28 px-2 py-1 text-right font-medium">{t('Modified')}</th>
+                                {canZip && (
+                                    <th className="w-8 px-2 py-1 text-left font-medium">
+                                        {folders.length + files.length > 0 && (
+                                            <Checkbox
+                                                checked={selection.pageState}
+                                                onCheckedChange={(checked) => selection.togglePage(checked === true)}
+                                                aria-label={t('Select all on this page')}
+                                            />
+                                        )}
+                                    </th>
+                                )}
+                                <SortableHeader column="name" {...sortState} onSort={sortBy} className="px-2 py-1 text-left uppercase">
+                                    {t('Name')}
+                                </SortableHeader>
+                                <SortableHeader
+                                    column="size"
+                                    {...sortState}
+                                    onSort={sortBy}
+                                    firstDirection="desc"
+                                    className="w-24 px-2 py-1 text-right uppercase"
+                                >
+                                    {t('Size')}
+                                </SortableHeader>
+                                <SortableHeader
+                                    column="date"
+                                    {...sortState}
+                                    onSort={sortBy}
+                                    firstDirection="desc"
+                                    className="w-28 px-2 py-1 text-right uppercase"
+                                >
+                                    {t('Modified')}
+                                </SortableHeader>
                                 <th className="w-8 px-2 py-1"></th>
                             </tr>
                         </thead>
@@ -175,8 +203,7 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
                                     {canZip && (
                                         <td className="px-2 py-1">
                                             <Checkbox
-                                                checked={selectedFolderIds.has(row.id)}
-                                                onCheckedChange={() => toggleFolder(row.id)}
+                                                {...selection.checkboxProps({ kind: 'folder', id: row.id })}
                                                 aria-label={t('Select :name', { name: row.name })}
                                             />
                                         </td>
@@ -204,8 +231,7 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
                                     {canZip && (
                                         <td className="px-2 py-1 align-top">
                                             <Checkbox
-                                                checked={selectedFileIds.has(file.id)}
-                                                onCheckedChange={() => toggleFile(file.id)}
+                                                {...selection.checkboxProps({ kind: 'file', id: file.id })}
                                                 aria-label={t('Select :name', { name: file.name })}
                                             />
                                         </td>
@@ -213,7 +239,9 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
                                     <td className="px-2 py-1">
                                         <div className="flex items-start gap-1.5">
                                             <FilePreviewDialog
-                                                previewUrl={preview_enabled && file.download_limit.limit === null ? route('files.preview', file.id) : null}
+                                                previewUrl={
+                                                    preview_enabled && file.download_limit.limit === null ? route('files.preview', file.id) : null
+                                                }
                                                 mimeType={file.mime_type}
                                                 fileName={file.original_name}
                                                 className="shrink-0"
@@ -230,7 +258,9 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
                                             </FilePreviewDialog>
                                             <div className="min-w-0">
                                                 <div className="flex items-center gap-1.5">
-                                                    <p className="truncate font-medium">{file.name}</p>
+                                                    <p className="truncate font-medium" title={file.name}>
+                                                        {file.name}
+                                                    </p>
                                                     {file.public && (
                                                         <span title={t('Public file')}>
                                                             <Globe className="size-3 shrink-0 text-neutral-400" />
@@ -268,7 +298,9 @@ export default function MyFilesCompact(props: MyFilesFolderManagementProps) {
                                                 />
                                             )}
                                             <PreviewAction
-                                                previewUrl={preview_enabled && file.download_limit.limit === null ? route('files.preview', file.id) : null}
+                                                previewUrl={
+                                                    preview_enabled && file.download_limit.limit === null ? route('files.preview', file.id) : null
+                                                }
                                                 mimeType={file.mime_type}
                                                 fileName={file.original_name}
                                                 variant="ghost"

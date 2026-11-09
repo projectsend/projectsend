@@ -1,10 +1,10 @@
 import { Head, Link } from '@inertiajs/react';
 import { Archive, Folder as FolderIcon, Globe, Upload } from 'lucide-react';
 
+import { ViewerAnnouncement } from '@/components/announcement';
 import { CommentsShellDrive } from '@/components/comments/shells/comments-shell-drive';
 import { DownloadAction } from '@/components/download-action';
 import { FilePreviewDialog } from '@/components/file-preview-dialog';
-import { PreviewAction } from '@/components/preview-action';
 import { CategoryBadges } from '@/components/files/category-badges';
 import { VersionBadge } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
@@ -14,11 +14,12 @@ import { FileExpiry } from '@/components/portal/file-expiry';
 import { FileRowActions } from '@/components/portal/file-row-actions';
 import { FolderRowActions } from '@/components/portal/folder-row-actions';
 import { NewFolderButton } from '@/components/portal/new-folder-button';
-import { ViewerAnnouncement } from '@/components/announcement';
 import { PortalBreadcrumb } from '@/components/portal/portal-breadcrumb';
 import { PortalFilesToolbarDrive } from '@/components/portal/portal-files-toolbar-drive';
 import { RenameFolderDialog } from '@/components/portal/rename-folder-dialog';
 import { SelectionBar } from '@/components/portal/selection-bar';
+import { PreviewAction } from '@/components/preview-action';
+import { SortButton } from '@/components/sortable-header';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ZipDownloadDialog } from '@/components/zip-download-dialog';
@@ -57,11 +58,8 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
     const {
         zip,
         canZip,
-        selectedFileIds,
-        selectedFolderIds,
+        selection,
         selectionCount,
-        toggleFile,
-        toggleFolder,
         clearSelection,
         downloadSelectionAsZip,
         values,
@@ -69,6 +67,8 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
         setMany,
         reset,
         hasFilters,
+        sortState,
+        sortBy,
         folderUrl,
     } = usePortalFiles(props);
     const {
@@ -164,10 +164,29 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
 
                     {(folders.length > 0 || files.length > 0) && (
                         <div className="flex items-center gap-4 border-b border-neutral-200 px-2 pb-2 text-xs font-medium tracking-wide text-neutral-400 uppercase dark:border-neutral-800">
-                            {canZip && <span className="w-5" />}
-                            <span className="flex-1">{t('Name')}</span>
-                            <span className="w-20 text-right">{t('Size')}</span>
-                            <span className="w-9" />
+                            {canZip && (
+                                <Checkbox
+                                    checked={selection.pageState}
+                                    onCheckedChange={(checked) => selection.togglePage(checked === true)}
+                                    aria-label={t('Select all on this page')}
+                                />
+                            )}
+                            <span className="flex-1">
+                                <SortButton column="name" {...sortState} onSort={sortBy} className="uppercase">
+                                    {t('Name')}
+                                </SortButton>
+                            </span>
+                            <span className="w-20 text-right">
+                                <SortButton column="size" {...sortState} onSort={sortBy} firstDirection="desc" className="uppercase">
+                                    {t('Size')}
+                                </SortButton>
+                            </span>
+                            {/* One slot per icon column on the rows below
+                                (comments, preview, download), so Size sits
+                                over the sizes rather than over the icons. */}
+                            {comments_enabled && <span className="w-9 shrink-0" />}
+                            <span className="w-9 shrink-0" />
+                            <span className="w-9 shrink-0" />
                         </div>
                     )}
 
@@ -178,8 +197,7 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
                         >
                             {canZip && (
                                 <Checkbox
-                                    checked={selectedFolderIds.has(row.id)}
-                                    onCheckedChange={() => toggleFolder(row.id)}
+                                    {...selection.checkboxProps({ kind: 'folder', id: row.id })}
                                     aria-label={t('Select :name', { name: row.name })}
                                 />
                             )}
@@ -212,8 +230,7 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
                             >
                                 {canZip && (
                                     <Checkbox
-                                        checked={selectedFileIds.has(file.id)}
-                                        onCheckedChange={() => toggleFile(file.id)}
+                                        {...selection.checkboxProps({ kind: 'file', id: file.id })}
                                         aria-label={t('Select :name', { name: file.name })}
                                     />
                                 )}
@@ -232,7 +249,9 @@ export default function MyFilesDrive(props: MyFilesFolderManagementProps) {
                                     </FilePreviewDialog>
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-1.5">
-                                            <p className="truncate text-sm font-medium text-neutral-800 dark:text-neutral-200">{file.name}</p>
+                                            <p className="truncate text-sm font-medium text-neutral-800 dark:text-neutral-200" title={file.name}>
+                                                {file.name}
+                                            </p>
                                             {file.public && (
                                                 <span title={t('Public file')}>
                                                     <Globe className="size-3.5 shrink-0 text-neutral-400" />

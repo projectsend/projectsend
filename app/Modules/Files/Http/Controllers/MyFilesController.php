@@ -58,14 +58,6 @@ use Inertia\Response;
  */
 class MyFilesController extends Controller
 {
-    /**
-     * Folders and files share one page window — see FoldersController's
-     * equivalent constant/docblock for why (folders were previously
-     * fetched fully unbounded and repeated identically on every file
-     * page; this is the client-portal twin of that same fix).
-     */
-    private const PER_PAGE = 25;
-
     public function __construct(
         private readonly Settings $settings,
         private readonly ClientStorageUsage $storageUsage,
@@ -135,7 +127,7 @@ class MyFilesController extends Controller
             // context in the portal rows.
             $current = null;
             $folders = $searching
-                ? Folder::query()->visibleToClient($client)->where('name', 'like', "%{$search}%")->orderBy('name')
+                ? Folder::query()->visibleToClient($client)->where('name', 'like', "%{$search}%")
                 : Folder::query()->whereRaw('1 = 0');
 
             $filesQuery = File::query()->visibleToClient($client)
@@ -178,13 +170,11 @@ class MyFilesController extends Controller
                                 $outer->where('id', '!=', $homeId);
                             }
                         });
-                    })
-                    ->orderBy('name');
+                    });
             } else {
                 $folders = Folder::query()
                     ->whereIn('id', $visibleIds)
-                    ->where('parent_id', $current->id)
-                    ->orderBy('name');
+                    ->where('parent_id', $current->id);
             }
 
             // Files: inside a folder, that folder's files; at root, only
@@ -221,7 +211,16 @@ class MyFilesController extends Controller
         // a feature nobody here has turned on.
         $files = $this->allowance->withCounts($filesQuery, $client)
             ->with('categories', 'folder')
-            ->orderBy($column, $direction);
+            ->orderBy($filesQuery->qualifyColumn($column), $direction)
+            // Rows with the same name, size or date need one fixed order,
+            // or paging shows some twice and skips others.
+            ->orderBy($filesQuery->qualifyColumn('id'), $direction);
+        // Folders have no size or date, so they stay A to Z unless the
+        // list is sorted by name, when they follow its direction.
+        $folders
+            ->orderBy($folders->qualifyColumn('name'), $sort === 'name' ? $direction : 'asc')
+            ->orderBy($folders->qualifyColumn('id'));
+        $perPage = Pagination::perPage($request);
 
         $page = Paginator::resolveCurrentPage();
 
@@ -236,7 +235,7 @@ class MyFilesController extends Controller
         $sliced = ConcatenatedPagination::slice(
             $sequences,
             $page,
-            self::PER_PAGE,
+            $perPage,
             ['path' => $request->url(), 'query' => $request->query()],
         );
 
@@ -248,6 +247,7 @@ class MyFilesController extends Controller
                 'owner' => $owner,
                 'sort' => $sort !== 'date' ? $sort : null,
                 'direction' => $direction !== 'desc' ? $direction : null,
+                'per_page' => Pagination::perPageParam($perPage),
                 'page' => Pagination::redirectPage($sliced['paginator']),
             ]));
         }
@@ -345,7 +345,7 @@ class MyFilesController extends Controller
                 // an expired file.
                 'download_limit' => $this->allowance->summaryFor($file, $client),
             ])->values()->all(),
-            'pagination' => Pagination::meta($sliced['paginator']),
+            'pagination' => Pagination::meta($sliced['paginator'], choosablePerPage: true),
             'search' => $search,
             'searching' => $flat,
             'category' => $categoryId,

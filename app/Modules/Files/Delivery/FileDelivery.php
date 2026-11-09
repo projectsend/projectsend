@@ -162,6 +162,13 @@ class FileDelivery
             'Content-Type' => $mimeType,
             'Content-Disposition' => $disposition,
             'Content-Length' => $length === null ? null : (string) $length,
+            // What the nginx location adds for its own path, said here so
+            // X-Sendfile and PHP streaming carry it too: these are a
+            // customer's bytes on the app's origin, and nothing but the
+            // inline allowlist would otherwise stop one being read as a
+            // page.
+            'X-Content-Type-Options' => 'nosniff',
+            'Content-Security-Policy' => "sandbox; default-src 'none'",
         ], static fn (?string $value): bool => $value !== null);
 
         return match ($this->method()) {

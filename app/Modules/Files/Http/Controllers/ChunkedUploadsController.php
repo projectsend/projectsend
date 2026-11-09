@@ -481,8 +481,10 @@ class ChunkedUploadsController extends Controller
         // Never trust the client-supplied `type` (store()'s $session->mime_type) for
         // what gets served back — FileThumbnailController::preview() serves files
         // inline using this value, so a spoofed "text/html" would execute script in
-        // the previewer's browser. Detect the real mime type from the assembled bytes.
-        $mimeType = Storage::disk($assembled['disk'])->mimeType($assembled['path']) ?: 'application/octet-stream';
+        // the previewer's browser. Detected from the assembled bytes, by
+        // the part store, before they left this machine: asked of an
+        // external disk afterwards, the answer is a guess from the name.
+        $mimeType = $assembled['mime_type'];
 
         // Re-resolved rather than taken from the session. A chunked
         // upload is two requests, and store()'s rule only ever sees the

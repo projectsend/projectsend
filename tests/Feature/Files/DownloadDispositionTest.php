@@ -181,3 +181,23 @@ test('without a signing disk, or with one that does not exist, the file\'s own d
     $this->actingAs($this->admin)->get("/files/{$file->id}/download")
         ->assertRedirect('https://own.example.test/'.$file->path);
 })->with([null, 'no_such_disk']);
+
+test('a presigned link names the type detected from the bytes, not the one the object was stored with', function () {
+    $options = [];
+
+    Storage::fake('files_external');
+    Storage::disk('files_external')->buildTemporaryUrlsUsing(
+        function (string $path, $expiration, array $opts) use (&$options): string {
+            $options = $opts;
+
+            return 'https://storage.example.test/'.$path;
+        }
+    );
+
+    $file = uploadDocumentFile($this->admin, 'report.pdf');
+    $file->update(['disk' => 'files_external']);
+
+    $this->actingAs($this->admin)->get("/files/{$file->id}/download")->assertRedirect();
+
+    expect($options['ResponseContentType'] ?? null)->toBe($file->mime_type);
+});

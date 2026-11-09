@@ -90,7 +90,11 @@ class StoredFileResponse
             $url = Storage::disk($this->signingDisk($file->disk))->temporaryUrl(
                 $file->path,
                 now()->addSeconds($linkSeconds),
-                ['ResponseContentDisposition' => $disposition],
+                // The type this application detected from the bytes, not
+                // the one the object was written with: on an external disk
+                // that was a guess from the file name, and an inline
+                // preview served as the guess can be a page.
+                ['ResponseContentDisposition' => $disposition, 'ResponseContentType' => $file->mime_type],
             );
 
             return redirect()->away($url);

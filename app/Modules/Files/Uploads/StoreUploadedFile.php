@@ -90,6 +90,12 @@ class StoreUploadedFile
     public static function sanitizeFilename(string $name): string
     {
         $clean = preg_replace('/[\x00-\x1F\x7F]/u', '', $name) ?? $name;
+
+        // And the bidirectional overrides and isolates, which reorder what
+        // is shown without changing what is stored: "invoice\u{202E}fdp.exe"
+        // reads as "invoiceexe.pdf" to whoever is deciding whether to open
+        // it.
+        $clean = preg_replace('/[\x{202A}-\x{202E}\x{2066}-\x{2069}\x{200E}\x{200F}]/u', '', $clean) ?? $clean;
         $clean = trim($clean);
 
         return $clean === '' ? 'file' : $clean;

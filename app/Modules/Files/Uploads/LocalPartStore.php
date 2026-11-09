@@ -212,7 +212,7 @@ class LocalPartStore
      * part. Both are freed by the abort() below the moment the write lands,
      * and by the failure path the moment it does not.
      *
-     * @return array{path: string, disk: string, size: int, checksum: string}
+     * @return array{path: string, disk: string, size: int, checksum: string, mime_type: string}
      */
     public function assemble(UploadSession $session, string $targetPath): array
     {
@@ -244,7 +244,15 @@ class LocalPartStore
             Event::dispatch($diskEvent);
             $disk = $diskEvent->disk;
 
-            $written = Storage::disk($disk)->writeStream($targetPath, $readStream);
+            // From the bytes, here, while they are still on this machine.
+            // Read back from an external disk afterwards, the type is the
+            // one Flysystem guessed from the extension when it wrote the
+            // object, so junk named photo.png was recorded as an image and
+            // a page named .png was stored to be served as one. Handed to
+            // the write as well, so the object's own Content-Type agrees.
+            $mimeType = (new \finfo(FILEINFO_MIME_TYPE))->file($assembledPath) ?: 'application/octet-stream';
+
+            $written = Storage::disk($disk)->writeStream($targetPath, $readStream, ['mimetype' => $mimeType]);
 
             if (is_resource($readStream)) {
                 fclose($readStream);
@@ -295,6 +303,7 @@ class LocalPartStore
             'disk' => $disk,
             'size' => $size,
             'checksum' => $checksum,
+            'mime_type' => $mimeType,
         ];
     }
 

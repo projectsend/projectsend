@@ -250,3 +250,14 @@ test('a stated method is always observed, console or not', function () {
         ->and($described['detected'])->toBeFalse()
         ->and($described['observed'])->toBeTrue();
 });
+
+test('every way of sending a file says it is not a page', function (string $method) {
+    // nginx adds these for its own location; X-Sendfile and PHP streaming
+    // had nothing but the inline allowlist between a file and the origin.
+    deliverAs($method);
+    $file = storedFile();
+
+    $this->actingAs($this->admin)->get("/files/{$file->id}/download")
+        ->assertHeader('X-Content-Type-Options', 'nosniff')
+        ->assertHeader('Content-Security-Policy', "sandbox; default-src 'none'");
+})->with(['php', 'xsendfile']);

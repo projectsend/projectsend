@@ -27,6 +27,8 @@ use RuntimeException;
  */
 class LocalSourceFile
 {
+    private const MAX_REMOTE_BYTES = 200 * 1024 * 1024;
+
     /**
      * @template TReturn
      *
@@ -37,6 +39,14 @@ class LocalSourceFile
     {
         if ($file->disk === 'files') {
             return $work(Storage::disk('files')->path($file->path));
+        }
+
+        // Copied whole before anything can look at it, and a failed render
+        // is not remembered, so every request for a big remote file pulled
+        // all of it down again, several at once. Nothing over this is an
+        // image this application would render anyway (40 megapixels).
+        if ($file->size > self::MAX_REMOTE_BYTES) {
+            throw new RuntimeException($file->original_name.' is too large to render a preview from.');
         }
 
         $tempPath = tempnam(sys_get_temp_dir(), 'thumb-src-');

@@ -5,7 +5,9 @@ import { DownloadAction } from '@/components/download-action';
 import { CategoryBadges, type CategoryTag } from '@/components/files/category-badges';
 import { VersionBadge, type VersionLinks } from '@/components/files/version-badge';
 import { Pagination, type PaginationMeta } from '@/components/pagination';
+import { PublicSortSelect } from '@/components/public-sort-select';
 import { Button } from '@/components/ui/button';
+import { type PublicListOrder, usePublicListing } from '@/hooks/use-public-listing';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
 import { formatBytes } from '@/lib/format-bytes';
@@ -22,7 +24,7 @@ interface PublicFile {
     categories: CategoryTag[];
 }
 
-interface PublicGroupShowProps {
+interface PublicGroupShowProps extends PublicListOrder {
     group: {
         name: string;
         description: string | null;
@@ -31,19 +33,22 @@ interface PublicGroupShowProps {
     pagination: PaginationMeta;
 }
 
-export default function PublicGroupShow({ group, files, pagination }: PublicGroupShowProps) {
+export default function PublicGroupShow({ group, files, pagination, sort, direction }: PublicGroupShowProps) {
     const { t } = useTranslation();
+    const { sortState, sortBy } = usePublicListing({ sort, direction });
 
     return (
         <PublicLayout title={group.name} description={group.description ?? undefined}>
             <Head title={group.name} />
+
+            {pagination.total > 1 && <PublicSortSelect sortState={sortState} sortBy={sortBy} className="mb-3" />}
 
             <div className="rounded-lg border">
                 {files.length === 0 && <p className="text-muted-foreground px-4 py-6 text-center text-sm">{t('No files here yet.')}</p>}
                 {files.map((file) => (
                     <div key={file.url} className="flex items-center justify-between gap-2 border-b px-4 py-3 last:border-0">
                         <Link href={file.url} className="min-w-0 hover:underline">
-                            <p className="flex items-center gap-1.5 truncate text-sm font-medium">
+                            <p className="flex items-center gap-1.5 truncate text-sm font-medium" title={file.name}>
                                 {file.name}
                                 <VersionBadge version={file.version} />
                             </p>

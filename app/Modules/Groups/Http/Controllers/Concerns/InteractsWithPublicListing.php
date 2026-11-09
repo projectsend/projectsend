@@ -10,6 +10,9 @@ use App\Modules\Files\Models\File;
 use App\Modules\Files\Thumbnails\ThumbnailGenerator;
 use App\Modules\Files\Versions\FileVersionLinks;
 use App\Modules\Platform\Settings\Setting;
+use App\Support\Pagination;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 
 /**
  * Shared by every guest-facing public listing controller
@@ -26,6 +29,67 @@ trait InteractsWithPublicListing
     private function guardSlug(string $publicSlug): void
     {
         abort_unless($publicSlug === $this->settings->get(Setting::PublicListingSlug), 404);
+    }
+
+    /**
+     * The order a visitor asked for: `sort` is name, size or date, and
+     * `direction` asc or desc. Anything else gets the default, by name A
+     * to Z, rather than an error page: these values only arrive through a
+     * URL, and a visitor following a mangled link should still see the
+     * folder.
+     *
+     * @return array{sort: string, direction: string}
+     */
+    private function listingOrder(Request $request): array
+    {
+        $sort = $request->query('sort');
+        $sort = in_array($sort, ['name', 'size', 'date'], true) ? $sort : 'name';
+        $direction = $request->query('direction');
+        $direction = in_array($direction, ['asc', 'desc'], true) ? $direction : ($sort === 'date' ? 'desc' : 'asc');
+
+        return ['sort' => $sort, 'direction' => $direction];
+    }
+
+    /**
+     * Orders a file query as listingOrder() says. The id breaks ties, or
+     * rows with the same size or date could repeat or vanish between pages.
+     *
+     * @template TModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  Builder<TModel>  $files
+     * @param  array{sort: string, direction: string}  $order
+     * @return Builder<TModel>
+     */
+    private function orderFiles(Builder $files, array $order): Builder
+    {
+        $column = match ($order['sort']) {
+            'size' => 'size',
+            'date' => 'created_at',
+            default => 'name',
+        };
+
+        return $files
+            ->orderBy($files->qualifyColumn($column), $order['direction'])
+            ->orderBy($files->qualifyColumn('id'), $order['direction']);
+    }
+
+    /**
+     * The query a past-the-last-page redirect carries, so the visitor
+     * keeps their order and page size. Defaults are left out to keep the
+     * address clean.
+     *
+     * @param  array{sort: string, direction: string}  $order
+     * @return array<string, string|int>
+     */
+    private function listingQuery(array $order, int $perPage): array
+    {
+        $default = $order['sort'] === 'name' && $order['direction'] === 'asc';
+
+        return array_filter([
+            'sort' => $default ? null : $order['sort'],
+            'direction' => $default ? null : $order['direction'],
+            'per_page' => Pagination::perPageParam($perPage),
+        ], fn ($value): bool => $value !== null);
     }
 
     private function themeKey(): string

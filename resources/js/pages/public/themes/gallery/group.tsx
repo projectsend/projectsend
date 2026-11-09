@@ -5,6 +5,8 @@ import { DownloadAction } from '@/components/download-action';
 import { CategoryBadges, type CategoryTag } from '@/components/files/category-badges';
 import { VersionBadge, type VersionLinks } from '@/components/files/version-badge';
 import { Pagination, type PaginationMeta } from '@/components/pagination';
+import { PublicSortSelect } from '@/components/public-sort-select';
+import { type PublicListOrder, usePublicListing } from '@/hooks/use-public-listing';
 import { useTranslation } from '@/hooks/use-translation';
 import { formatBytes } from '@/lib/format-bytes';
 import { type DownloadLimit } from '@/types/portal';
@@ -22,7 +24,7 @@ interface PublicFile {
     categories: CategoryTag[];
 }
 
-interface PublicGroupShowProps {
+interface PublicGroupShowProps extends PublicListOrder {
     group: {
         name: string;
         description: string | null;
@@ -31,12 +33,15 @@ interface PublicGroupShowProps {
     pagination: PaginationMeta;
 }
 
-export default function PublicGroupShowGallery({ group, files, pagination }: PublicGroupShowProps) {
+export default function PublicGroupShowGallery({ group, files, pagination, sort, direction }: PublicGroupShowProps) {
     const { t } = useTranslation();
+    const { sortState, sortBy } = usePublicListing({ sort, direction });
 
     return (
         <PublicLayoutGallery title={group.name} description={group.description ?? undefined}>
             <Head title={group.name} />
+
+            {pagination.total > 1 && <PublicSortSelect sortState={sortState} sortBy={sortBy} className="mb-3" />}
 
             {files.length === 0 ? (
                 <p className="text-muted-foreground text-center text-sm">{t('No files here yet.')}</p>
@@ -59,7 +64,9 @@ export default function PublicGroupShowGallery({ group, files, pagination }: Pub
                             </Link>
                             <div className="flex items-center justify-between gap-2 p-3">
                                 <Link href={file.url} className="min-w-0 hover:underline">
-                                    <p className="truncate text-sm font-medium">{file.name}</p>
+                                    <p className="truncate text-sm font-medium" title={file.name}>
+                                        {file.name}
+                                    </p>
                                     <p className="text-muted-foreground text-xs">{formatBytes(file.size)}</p>
                                     <CategoryBadges categories={file.categories} className="mt-1" />
                                 </Link>

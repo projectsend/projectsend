@@ -4,7 +4,10 @@ import { Folder, Info } from 'lucide-react';
 import { DownloadAction } from '@/components/download-action';
 import { CategoryBadges, type CategoryTag } from '@/components/files/category-badges';
 import { Pagination, type PaginationMeta } from '@/components/pagination';
+import { PublicSortSelect } from '@/components/public-sort-select';
+import { SortableHeader } from '@/components/sortable-header';
 import { Button } from '@/components/ui/button';
+import { type PublicListOrder, usePublicListing } from '@/hooks/use-public-listing';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayoutCompact from '@/layouts/public-layout-compact';
 import { formatBytes } from '@/lib/format-bytes';
@@ -30,27 +33,40 @@ interface PublicFile {
     categories: CategoryTag[];
 }
 
-interface PublicIndexProps {
+interface PublicIndexProps extends PublicListOrder {
     groups: PublicGroup[];
     folders: PublicFolder[];
     files: PublicFile[];
     pagination: PaginationMeta;
 }
 
-export default function PublicIndexCompact({ groups, folders, files, pagination }: PublicIndexProps) {
+export default function PublicIndexCompact({ groups, folders, files, pagination, sort, direction }: PublicIndexProps) {
     const { t } = useTranslation();
+    const { sortState, sortBy } = usePublicListing({ sort, direction });
 
     return (
         <PublicLayoutCompact title={t('Public files')} description={t('Browse publicly shared groups and files below.')}>
             <Head title={t('Public files')} />
+
+            {pagination.total > 1 && <PublicSortSelect sortState={sortState} sortBy={sortBy} className="mb-3" />}
 
             <div className="overflow-hidden rounded-none border border-neutral-300 dark:border-neutral-700">
                 <table className="w-full border-collapse text-xs">
                     <thead>
                         <tr className="border-b border-neutral-300 bg-neutral-100 text-neutral-500 uppercase dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400">
                             <th className="w-8 px-2 py-1 text-left font-medium"></th>
-                            <th className="px-2 py-1 text-left font-medium">{t('Name')}</th>
-                            <th className="w-24 px-2 py-1 text-right font-medium">{t('Size')}</th>
+                            <SortableHeader column="name" {...sortState} onSort={sortBy} className="px-2 py-1 text-left uppercase">
+                                {t('Name')}
+                            </SortableHeader>
+                            <SortableHeader
+                                column="size"
+                                {...sortState}
+                                onSort={sortBy}
+                                firstDirection="desc"
+                                className="w-24 px-2 py-1 text-right uppercase"
+                            >
+                                {t('Size')}
+                            </SortableHeader>
                             <th className="w-20 px-2 py-1"></th>
                         </tr>
                     </thead>

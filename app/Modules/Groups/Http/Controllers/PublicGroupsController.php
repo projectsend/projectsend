@@ -69,15 +69,6 @@ class PublicGroupsController extends Controller
 {
     use InteractsWithPublicListing;
 
-    /**
-     * Groups, folders, and files share one page window — three flat,
-     * independent, unbounded lists otherwise, the guest-facing (and thus
-     * most exposed) instance of the same problem FoldersController::index()
-     * and MyFilesController::index() already had. See either one's
-     * docblock for the full reasoning.
-     */
-    private const PER_PAGE = 25;
-
     public function __construct(
         private readonly Settings $settings,
         private readonly ActivityLogger $activity,
@@ -98,7 +89,13 @@ class PublicGroupsController extends Controller
         $this->guardSlug($publicSlug);
         abort_unless($this->settings->get(Setting::PublicListingEnabled) === true, 404);
 
-        $groups = Group::query()->where('public', true)->orderBy('name');
+        $order = $this->listingOrder($request);
+        $perPage = Pagination::perPage($request);
+        // Groups and folders have no size or date, so they stay A to Z
+        // unless the list is sorted by name, when they follow it.
+        $nameDirection = $order['sort'] === 'name' ? $order['direction'] : 'asc';
+
+        $groups = Group::query()->where('public', true)->orderBy('name', $nameDirection)->orderBy('id');
         // Top of each public subtree only — a public folder nested inside
         // another public folder already appears on its ancestor's own
         // page (PublicFoldersController::show), same "don't list twice"
@@ -108,8 +105,8 @@ class PublicGroupsController extends Controller
         // to filter client-side.
         $folders = Folder::query()->where('public', true)
             ->whereDoesntHave('parent', fn (Builder $q) => $q->where('public', true))
-            ->orderBy('name');
-        $files = $this->allowance->withCounts(File::query()->standalonePublic(), null)->with('categories')->orderBy('name');
+            ->orderBy('name', $nameDirection)->orderBy('id');
+        $files = $this->orderFiles($this->allowance->withCounts(File::query()->standalonePublic(), null)->with('categories'), $order);
 
         $page = Paginator::resolveCurrentPage();
 
@@ -124,12 +121,12 @@ class PublicGroupsController extends Controller
         $sliced = ConcatenatedPagination::slice(
             $sequences,
             $page,
-            self::PER_PAGE,
+            $perPage,
             ['path' => $request->url(), 'query' => $request->query()],
         );
 
         if (Pagination::isPastLastPage($sliced['paginator'], $page)) {
-            $redirectParams = [$publicSlug];
+            $redirectParams = [$publicSlug, ...$this->listingQuery($order, $perPage)];
             $redirectPage = Pagination::redirectPage($sliced['paginator']);
             if ($redirectPage !== null) {
                 $redirectParams['page'] = $redirectPage;
@@ -156,22 +153,25 @@ class PublicGroupsController extends Controller
                 'url' => route('public.folder', [$publicSlug, $folder->slug]),
             ])->values()->all(),
             'files' => $fileRows->map(fn (File $file): array => $this->fileProps($file, $publicSlug))->values()->all(),
-            'pagination' => Pagination::meta($sliced['paginator']),
+            'pagination' => Pagination::meta($sliced['paginator'], choosablePerPage: true),
+            ...$order,
         ]);
     }
 
-    public function show(string $publicSlug, string $groupSlug): InertiaResponse|RedirectResponse
+    public function show(Request $request, string $publicSlug, string $groupSlug): InertiaResponse|RedirectResponse
     {
         $this->guardSlug($publicSlug);
 
         $group = Group::query()->where('slug', $groupSlug)->where('public', true)->firstOrFail();
 
-        $files = $this->allowance->withCounts(File::query()->publiclyVisibleForGroup($group), null)->with('categories')->orderBy('name')
-            ->paginate(self::PER_PAGE)->withQueryString();
+        $order = $this->listingOrder($request);
+        $perPage = Pagination::perPage($request);
+        $files = $this->orderFiles($this->allowance->withCounts(File::query()->publiclyVisibleForGroup($group), null)->with('categories'), $order)
+            ->paginate($perPage)->withQueryString();
 
         $page = Paginator::resolveCurrentPage();
         if (Pagination::isPastLastPage($files, $page)) {
-            $redirectParams = [$publicSlug, $groupSlug];
+            $redirectParams = [$publicSlug, $groupSlug, ...$this->listingQuery($order, $perPage)];
             $redirectPage = Pagination::redirectPage($files);
             if ($redirectPage !== null) {
                 $redirectParams['page'] = $redirectPage;
@@ -186,7 +186,8 @@ class PublicGroupsController extends Controller
                 'description' => $group->description,
             ],
             'files' => $files->through(fn (File $file): array => $this->fileProps($file, $publicSlug))->items(),
-            'pagination' => Pagination::meta($files),
+            'pagination' => Pagination::meta($files, choosablePerPage: true),
+            ...$order,
         ]);
     }
 

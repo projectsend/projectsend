@@ -4,6 +4,8 @@ import { File as FileIcon, Folder } from 'lucide-react';
 import { DownloadAction } from '@/components/download-action';
 import { CategoryBadges, type CategoryTag } from '@/components/files/category-badges';
 import { Pagination, type PaginationMeta } from '@/components/pagination';
+import { PublicSortSelect } from '@/components/public-sort-select';
+import { type PublicListOrder, usePublicListing } from '@/hooks/use-public-listing';
 import { useTranslation } from '@/hooks/use-translation';
 import { formatBytes } from '@/lib/format-bytes';
 import { type DownloadLimit } from '@/types/portal';
@@ -29,19 +31,22 @@ interface PublicFile {
     categories: CategoryTag[];
 }
 
-interface PublicIndexProps {
+interface PublicIndexProps extends PublicListOrder {
     groups: PublicGroup[];
     folders: PublicFolder[];
     files: PublicFile[];
     pagination: PaginationMeta;
 }
 
-export default function PublicIndexGallery({ groups, folders, files, pagination }: PublicIndexProps) {
+export default function PublicIndexGallery({ groups, folders, files, pagination, sort, direction }: PublicIndexProps) {
     const { t } = useTranslation();
+    const { sortState, sortBy } = usePublicListing({ sort, direction });
 
     return (
         <PublicLayoutGallery title={t('Public files')} description={t('Browse publicly shared groups and files below.')}>
             <Head title={t('Public files')} />
+
+            {pagination.total > 1 && <PublicSortSelect sortState={sortState} sortBy={sortBy} className="mb-3" />}
 
             <div className="space-y-10">
                 {groups.length > 0 && (
@@ -55,7 +60,9 @@ export default function PublicIndexGallery({ groups, folders, files, pagination 
                                     className="flex flex-col items-center gap-2 rounded-xl border p-6 text-center transition hover:border-violet-400 hover:shadow-md"
                                 >
                                     <Folder className="size-10 shrink-0 text-violet-600" strokeWidth={1.5} />
-                                    <p className="w-full truncate text-sm font-medium">{group.name}</p>
+                                    <p className="w-full truncate text-sm font-medium" title={group.name}>
+                                        {group.name}
+                                    </p>
                                 </Link>
                             ))}
                         </div>
@@ -73,7 +80,9 @@ export default function PublicIndexGallery({ groups, folders, files, pagination 
                                     className="flex flex-col items-center gap-2 rounded-xl border p-6 text-center transition hover:border-violet-400 hover:shadow-md"
                                 >
                                     <Folder className="size-10 shrink-0 text-violet-600" strokeWidth={1.5} />
-                                    <p className="w-full truncate text-sm font-medium">{folder.name}</p>
+                                    <p className="w-full truncate text-sm font-medium" title={folder.name}>
+                                        {folder.name}
+                                    </p>
                                 </Link>
                             ))}
                         </div>
@@ -104,7 +113,9 @@ export default function PublicIndexGallery({ groups, folders, files, pagination 
                                     </Link>
                                     <div className="flex items-center justify-between gap-2 p-3">
                                         <Link href={file.url} className="min-w-0 hover:underline">
-                                            <p className="truncate text-sm font-medium">{file.name}</p>
+                                            <p className="truncate text-sm font-medium" title={file.name}>
+                                                {file.name}
+                                            </p>
                                             <p className="text-muted-foreground text-xs">{formatBytes(file.size)}</p>
                                             <CategoryBadges categories={file.categories} className="mt-1" />
                                         </Link>

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Files\Access\DownloadAllowance;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
+use App\Modules\Files\Models\ZipDownload;
 use App\Modules\Groups\Http\Controllers\Concerns\InteractsWithPublicListing;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Settings\Settings;
@@ -74,6 +75,7 @@ class PublicFoldersController extends Controller
             'files' => $files->through(fn (File $file): array => $this->fileProps($file, $publicSlug))->items(),
             'pagination' => Pagination::meta($files, choosablePerPage: true),
             ...$order,
+            'zip' => $this->zipProps($publicSlug, ZipDownload::SCOPE_FOLDER, $folder->slug),
         ]);
     }
 }

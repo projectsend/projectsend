@@ -16,6 +16,7 @@ use App\Modules\Files\Models\File;
 use App\Modules\Files\Scanning\FileAvailability;
 use App\Modules\Files\Scanning\ScanningConfig;
 use App\Modules\Files\Models\Folder;
+use App\Modules\Files\Models\ZipDownload;
 use App\Modules\Files\Preview\PreviewKind;
 use App\Modules\Files\Preview\PreviewLog;
 use App\Modules\Files\Thumbnails\ImageAudience;
@@ -155,6 +156,7 @@ class PublicGroupsController extends Controller
             'files' => $fileRows->map(fn (File $file): array => $this->fileProps($file, $publicSlug))->values()->all(),
             'pagination' => Pagination::meta($sliced['paginator'], choosablePerPage: true),
             ...$order,
+            'zip' => $this->zipProps($publicSlug, ZipDownload::SCOPE_INDEX, null),
         ]);
     }
 
@@ -188,6 +190,7 @@ class PublicGroupsController extends Controller
             'files' => $files->through(fn (File $file): array => $this->fileProps($file, $publicSlug))->items(),
             'pagination' => Pagination::meta($files, choosablePerPage: true),
             ...$order,
+            'zip' => $this->zipProps($publicSlug, ZipDownload::SCOPE_GROUP, $group->slug),
         ]);
     }
 

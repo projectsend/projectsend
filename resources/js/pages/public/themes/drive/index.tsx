@@ -4,9 +4,10 @@ import { Folder } from 'lucide-react';
 import { DownloadAction } from '@/components/download-action';
 import { CategoryBadges, type CategoryTag } from '@/components/files/category-badges';
 import { Pagination, type PaginationMeta } from '@/components/pagination';
-import { PublicSortSelect } from '@/components/public-sort-select';
+import { PublicListControls } from '@/components/public-list-controls';
 import { SortButton } from '@/components/sortable-header';
-import { type PublicListOrder, usePublicListing } from '@/hooks/use-public-listing';
+import { Checkbox } from '@/components/ui/checkbox';
+import { type PublicListOrder, type PublicZip, usePublicListing } from '@/hooks/use-public-listing';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayoutDrive from '@/layouts/public-layout-drive';
 import { driveFileIcon } from '@/lib/drive-file-icon';
@@ -25,6 +26,7 @@ interface PublicFolder {
 }
 
 interface PublicFile {
+    slug: string;
     name: string;
     size: number;
     url: string;
@@ -40,21 +42,36 @@ interface PublicIndexProps extends PublicListOrder {
     folders: PublicFolder[];
     files: PublicFile[];
     pagination: PaginationMeta;
+    zip: PublicZip | null;
 }
 
-export default function PublicIndexDrive({ groups, folders, files, pagination, sort, direction }: PublicIndexProps) {
+export default function PublicIndexDrive({ groups, folders, files, pagination, sort, direction, zip }: PublicIndexProps) {
     const { t } = useTranslation();
-    const { sortState, sortBy } = usePublicListing({ sort, direction });
+    const listing = usePublicListing({ sort, direction, files, zip });
+    const { sortState, sortBy, canZip, selection } = listing;
 
     return (
         <PublicLayoutDrive title={t('Public files')} description={t('Browse publicly shared groups and files below.')}>
             <Head title={t('Public files')} />
 
-            {pagination.total > 1 && <PublicSortSelect sortState={sortState} sortBy={sortBy} className="mb-3" />}
+            <PublicListControls
+                listing={listing}
+                total={pagination.total}
+                rows={files.length}
+                selectAll={false}
+                downloadClassName="bg-blue-600 hover:bg-blue-700"
+            />
 
             <div>
                 {(groups.length > 0 || folders.length > 0 || files.length > 0) && (
                     <div className="flex items-center gap-4 border-b border-neutral-200 px-2 pb-2 text-xs font-medium tracking-wide text-neutral-400 uppercase dark:border-neutral-800">
+                        {canZip && (
+                            <Checkbox
+                                checked={selection.pageState}
+                                onCheckedChange={(checked) => selection.togglePage(checked === true)}
+                                aria-label={t('Select all on this page')}
+                            />
+                        )}
                         <span className="size-6" />
                         <span className="flex-1">
                             <SortButton column="name" {...sortState} onSort={sortBy} className="uppercase">
@@ -76,6 +93,7 @@ export default function PublicIndexDrive({ groups, folders, files, pagination, s
                         href={group.url}
                         className="flex items-center gap-4 border-b border-neutral-100 px-2 py-4 hover:bg-blue-50/70 dark:border-neutral-900 dark:hover:bg-blue-950/30"
                     >
+                        {canZip && <span className="size-4 shrink-0" />}
                         <Folder className="size-6 shrink-0 text-blue-600" />
                         <div className="min-w-0 flex-1">
                             <p className="truncate text-sm font-medium text-neutral-800 dark:text-neutral-200" title={group.name}>
@@ -94,6 +112,7 @@ export default function PublicIndexDrive({ groups, folders, files, pagination, s
                         href={folder.url}
                         className="flex items-center gap-4 border-b border-neutral-100 px-2 py-4 hover:bg-blue-50/70 dark:border-neutral-900 dark:hover:bg-blue-950/30"
                     >
+                        {canZip && <span className="size-4 shrink-0" />}
                         <Folder className="size-6 shrink-0 text-blue-600" />
                         <div className="min-w-0 flex-1">
                             <p className="truncate text-sm font-medium text-neutral-800 dark:text-neutral-200" title={folder.name}>
@@ -113,6 +132,12 @@ export default function PublicIndexDrive({ groups, folders, files, pagination, s
                             key={file.url}
                             className="flex items-center gap-4 border-b border-neutral-100 px-2 py-4 hover:bg-blue-50/70 dark:border-neutral-900 dark:hover:bg-blue-950/30"
                         >
+                            {canZip && (
+                                <Checkbox
+                                    {...selection.checkboxProps({ kind: 'file', id: file.slug })}
+                                    aria-label={t('Select :name', { name: file.name })}
+                                />
+                            )}
                             <Link href={file.url} className="flex min-w-0 flex-1 items-center gap-4">
                                 <Icon className={`size-6 shrink-0 ${color}`} strokeWidth={1.5} />
                                 <div className="min-w-0">

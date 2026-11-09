@@ -40,7 +40,7 @@ class ZipDownloadsController extends Controller
     /**
      * A generous but real cap — abuse/foot-gun guard, not a tunable Setting.
      */
-    private const MAX_FILES = 10000;
+    public const MAX_FILES = 10000;
 
     public function __construct(
         private readonly ActivityLogger $activity,

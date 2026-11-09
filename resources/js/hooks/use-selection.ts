@@ -3,18 +3,21 @@ import { type MouseEvent, useEffect, useRef, useState } from 'react';
 
 export type SelectableKind = 'file' | 'folder';
 
-export interface SelectableRow {
+/** Numeric ids on signed-in screens; slugs on public pages, which hand out no ids. */
+export type SelectionKey = number | string;
+
+export interface SelectableRow<K extends SelectionKey = number> {
     kind: SelectableKind;
-    id: number;
+    id: K;
     /** Whether this person may delete it. Remembered as the selection grows, so bulk delete knows about rows on other pages. */
     deletable?: boolean;
 }
 
 interface Carried {
     resetKey: string;
-    files: Set<number>;
-    folders: Set<number>;
-    deletable: Set<number>;
+    files: Set<SelectionKey>;
+    folders: Set<SelectionKey>;
+    deletable: Set<SelectionKey>;
 }
 
 /**
@@ -25,7 +28,7 @@ interface Carried {
  */
 const carried = new Map<string, Carried>();
 
-const same = (a: SelectableRow, b: SelectableRow) => a.kind === b.kind && a.id === b.id;
+const same = <K extends SelectionKey>(a: SelectableRow<K>, b: SelectableRow<K>) => a.kind === b.kind && a.id === b.id;
 
 /**
  * The selection on a paginated list of files and folders.
@@ -45,12 +48,25 @@ const same = (a: SelectableRow, b: SelectableRow) => a.kind === b.kind && a.id =
  * @param resetKey everything that changes which rows the list holds, except the page and the page size
  * @param rows    the rows on screen, in the order they are shown
  */
-export function useSelection({ scope, resetKey, rows }: { scope: string; resetKey: string; rows: SelectableRow[] }) {
-    const initial = carried.get(scope)?.resetKey === resetKey ? carried.get(scope) : undefined;
-    const [files, setFiles] = useState<Set<number>>(() => initial?.files ?? new Set());
-    const [folders, setFolders] = useState<Set<number>>(() => initial?.folders ?? new Set());
-    const [deletable, setDeletable] = useState<Set<number>>(() => initial?.deletable ?? new Set());
-    const anchor = useRef<SelectableRow | null>(null);
+export function useSelection<K extends SelectionKey = number>({
+    scope,
+    resetKey,
+    rows,
+}: {
+    scope: string;
+    resetKey: string;
+    rows: SelectableRow<K>[];
+}) {
+    // A carried selection only ever comes back to the list that stored it
+    // (same scope), so its keys are this list's key type.
+    const initial =
+        carried.get(scope)?.resetKey === resetKey
+            ? (carried.get(scope) as unknown as { files: Set<K>; folders: Set<K>; deletable: Set<K> })
+            : undefined;
+    const [files, setFiles] = useState<Set<K>>(() => initial?.files ?? new Set());
+    const [folders, setFolders] = useState<Set<K>>(() => initial?.folders ?? new Set());
+    const [deletable, setDeletable] = useState<Set<K>>(() => initial?.deletable ?? new Set());
+    const anchor = useRef<SelectableRow<K> | null>(null);
 
     // Filters applied with preserveState keep the component mounted, so a
     // new reset key has to clear the selection here as well.
@@ -78,10 +94,10 @@ export function useSelection({ scope, resetKey, rows }: { scope: string; resetKe
         [scope],
     );
 
-    const isSelected = (row: SelectableRow) => (row.kind === 'file' ? files : folders).has(row.id);
+    const isSelected = (row: SelectableRow<K>) => (row.kind === 'file' ? files : folders).has(row.id);
 
-    const apply = (targets: SelectableRow[], select: boolean) => {
-        const update = (current: Set<number>, kind: SelectableKind) => {
+    const apply = (targets: SelectableRow<K>[], select: boolean) => {
+        const update = (current: Set<K>, kind: SelectableKind) => {
             const next = new Set(current);
             for (const row of targets) {
                 if (row.kind !== kind) continue;
@@ -101,7 +117,7 @@ export function useSelection({ scope, resetKey, rows }: { scope: string; resetKe
         }
     };
 
-    const click = (row: SelectableRow, shiftKey: boolean) => {
+    const click = (row: SelectableRow<K>, shiftKey: boolean) => {
         const select = !isSelected(row);
         const from = anchor.current ? rows.findIndex((candidate) => same(candidate, anchor.current!)) : -1;
         const to = rows.findIndex((candidate) => same(candidate, row));
@@ -118,7 +134,7 @@ export function useSelection({ scope, resetKey, rows }: { scope: string; resetKe
      * Spread onto a row's <Checkbox>. It uses onClick, not onCheckedChange,
      * because only the click event knows whether Shift was held.
      */
-    const checkboxProps = (row: SelectableRow) => ({
+    const checkboxProps = (row: SelectableRow<K>) => ({
         checked: isSelected(row),
         onClick: (event: MouseEvent) => click(row, event.shiftKey),
         // Shift-click otherwise extends the page's text selection.
@@ -134,7 +150,7 @@ export function useSelection({ scope, resetKey, rows }: { scope: string; resetKe
     const togglePage = (checked: boolean) => apply(rows, checked);
 
     /** Replaces the whole selection, e.g. with every row across all pages. */
-    const replace = (ids: { fileIds: number[]; folderIds: number[]; deletableFileIds?: number[] }) => {
+    const replace = (ids: { fileIds: K[]; folderIds: K[]; deletableFileIds?: K[] }) => {
         setFiles(new Set(ids.fileIds));
         setFolders(new Set(ids.folderIds));
         setDeletable(new Set(ids.deletableFileIds ?? []));
@@ -164,4 +180,4 @@ export function useSelection({ scope, resetKey, rows }: { scope: string; resetKe
     };
 }
 
-export type Selection = ReturnType<typeof useSelection>;
+export type Selection<K extends SelectionKey = number> = ReturnType<typeof useSelection<K>>;

@@ -4,8 +4,9 @@ import { File as FileIcon, Folder } from 'lucide-react';
 import { DownloadAction } from '@/components/download-action';
 import { CategoryBadges, type CategoryTag } from '@/components/files/category-badges';
 import { Pagination, type PaginationMeta } from '@/components/pagination';
-import { PublicSortSelect } from '@/components/public-sort-select';
-import { type PublicListOrder, usePublicListing } from '@/hooks/use-public-listing';
+import { PublicListControls } from '@/components/public-list-controls';
+import { Checkbox } from '@/components/ui/checkbox';
+import { type PublicListOrder, type PublicZip, usePublicListing } from '@/hooks/use-public-listing';
 import { useTranslation } from '@/hooks/use-translation';
 import { formatBytes } from '@/lib/format-bytes';
 import { type DownloadLimit } from '@/types/portal';
@@ -22,6 +23,7 @@ interface PublicFolder {
 }
 
 interface PublicFile {
+    slug: string;
     name: string;
     size: number;
     url: string;
@@ -36,17 +38,19 @@ interface PublicIndexProps extends PublicListOrder {
     folders: PublicFolder[];
     files: PublicFile[];
     pagination: PaginationMeta;
+    zip: PublicZip | null;
 }
 
-export default function PublicIndexGallery({ groups, folders, files, pagination, sort, direction }: PublicIndexProps) {
+export default function PublicIndexGallery({ groups, folders, files, pagination, sort, direction, zip }: PublicIndexProps) {
     const { t } = useTranslation();
-    const { sortState, sortBy } = usePublicListing({ sort, direction });
+    const listing = usePublicListing({ sort, direction, files, zip });
+    const { canZip, selection } = listing;
 
     return (
         <PublicLayoutGallery title={t('Public files')} description={t('Browse publicly shared groups and files below.')}>
             <Head title={t('Public files')} />
 
-            {pagination.total > 1 && <PublicSortSelect sortState={sortState} sortBy={sortBy} className="mb-3" />}
+            <PublicListControls listing={listing} total={pagination.total} rows={files.length} />
 
             <div className="space-y-10">
                 {groups.length > 0 && (
@@ -96,8 +100,15 @@ export default function PublicIndexGallery({ groups, folders, files, pagination,
                             {files.map((file) => (
                                 <div
                                     key={file.url}
-                                    className="group overflow-hidden rounded-xl border transition hover:border-violet-400 hover:shadow-lg"
+                                    className="group relative overflow-hidden rounded-xl border transition hover:border-violet-400 hover:shadow-lg"
                                 >
+                                    {canZip && (
+                                        <Checkbox
+                                            {...selection.checkboxProps({ kind: 'file', id: file.slug })}
+                                            aria-label={t('Select :name', { name: file.name })}
+                                            className="bg-background/80 absolute top-3 left-3 z-10"
+                                        />
+                                    )}
                                     <Link href={file.url} className="bg-muted block aspect-square overflow-hidden">
                                         {file.thumbnail_url ? (
                                             <img

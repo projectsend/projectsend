@@ -9,6 +9,7 @@ use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Thumbnails\ThumbnailGenerator;
 use App\Modules\Files\Versions\FileVersionLinks;
+use App\Modules\Platform\Capabilities\Capability;
 use App\Modules\Platform\Settings\Setting;
 use App\Support\Pagination;
 use Illuminate\Database\Eloquent\Builder;
@@ -92,6 +93,28 @@ trait InteractsWithPublicListing
         ], fn ($value): bool => $value !== null);
     }
 
+    /**
+     * What a page needs to offer "download selected as zip": where to ask,
+     * and which page the request is for. Null where visitors cannot have
+     * one — the switch off, or zips not offered on this installation at
+     * all — and then the page shows no checkboxes.
+     *
+     * @return array{store_url: string, scope: string, slug: string|null}|null
+     */
+    private function zipProps(string $publicSlug, string $scope, ?string $slug): ?array
+    {
+        if ($this->settings->get(Setting::PublicZipDownloadsEnabled) !== true
+            || ! $this->capabilities->has(Capability::ZipDownloads)) {
+            return null;
+        }
+
+        return [
+            'store_url' => route('public.zip-downloads.store', [$publicSlug]),
+            'scope' => $scope,
+            'slug' => $slug,
+        ];
+    }
+
     private function themeKey(): string
     {
         $value = $this->settings->get(Setting::Theme);
@@ -100,11 +123,15 @@ trait InteractsWithPublicListing
     }
 
     /**
-     * @return array{name: string, size: int, url: string, download_url: string, thumbnail_url: string|null, mime_type: string, categories: list<array{id: int, name: string, color: string}>}
+     * @return array{slug: string, name: string, size: int, url: string, download_url: string, thumbnail_url: string|null, mime_type: string, categories: list<array{id: int, name: string, color: string}>}
      */
     private function fileProps(File $file, string $publicSlug): array
     {
         return [
+            // What a visitor ticks it by, for a zip of several files. The
+            // slug rather than the id: it is already in every URL on the
+            // page, and public pages hand out no ids.
+            'slug' => $file->slug,
             'name' => $file->name,
             'size' => $file->size,
             // Categories are not internal metadata: whoever can reach a

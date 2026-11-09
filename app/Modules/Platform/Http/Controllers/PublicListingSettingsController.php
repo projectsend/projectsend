@@ -35,6 +35,7 @@ class PublicListingSettingsController extends Controller
             'public_listing_enabled' => $this->settings->get(Setting::PublicListingEnabled),
             'public_listing_slug' => $this->settings->get(Setting::PublicListingSlug),
             'public_listing_preview_enabled' => $this->settings->get(Setting::PublicListingPreviewEnabled),
+            'public_zip_downloads_enabled' => $this->settings->get(Setting::PublicZipDownloadsEnabled),
         ]);
     }
 
@@ -44,11 +45,19 @@ class PublicListingSettingsController extends Controller
             'public_listing_enabled' => ['required', 'boolean'],
             'public_listing_slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9]+(-[a-z0-9]+)*$/'],
             'public_listing_preview_enabled' => ['required', 'boolean'],
+            // Optional, so a form from before this switch existed still
+            // saves. The page leaves it out where zips are not offered at
+            // all (Capability::ZipDownloads), and then it is not touched.
+            'public_zip_downloads_enabled' => ['sometimes', 'boolean'],
         ]);
 
         $this->settings->set(Setting::PublicListingEnabled, $validated['public_listing_enabled']);
         $this->settings->set(Setting::PublicListingSlug, $validated['public_listing_slug']);
         $this->settings->set(Setting::PublicListingPreviewEnabled, $validated['public_listing_preview_enabled']);
+
+        if (array_key_exists('public_zip_downloads_enabled', $validated)) {
+            $this->settings->set(Setting::PublicZipDownloadsEnabled, (bool) $validated['public_zip_downloads_enabled']);
+        }
 
         $this->activity->log(Action::SettingsUpdated, context: ['section' => 'public_listing']);
 

@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
  * checkbox: grids of cards. Ticks every row on screen, and shows a dash
  * when only some of them are ticked.
  */
-export function SelectPageCheckbox({ selection, className }: { selection: Selection; className?: string }) {
+export function SelectPageCheckbox({ selection, className }: { selection: Pick<Selection, 'pageState' | 'togglePage'>; className?: string }) {
     const { t } = useTranslation();
 
     return (

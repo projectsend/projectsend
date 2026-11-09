@@ -4,9 +4,10 @@ import { Folder, Info } from 'lucide-react';
 import { DownloadAction } from '@/components/download-action';
 import { CategoryBadges, type CategoryTag } from '@/components/files/category-badges';
 import { Pagination, type PaginationMeta } from '@/components/pagination';
-import { PublicSortSelect } from '@/components/public-sort-select';
+import { PublicListControls } from '@/components/public-list-controls';
 import { Button } from '@/components/ui/button';
-import { type PublicListOrder, usePublicListing } from '@/hooks/use-public-listing';
+import { Checkbox } from '@/components/ui/checkbox';
+import { type PublicListOrder, type PublicZip, usePublicListing } from '@/hooks/use-public-listing';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayout from '@/layouts/public-layout';
 import { formatBytes } from '@/lib/format-bytes';
@@ -24,6 +25,7 @@ interface PublicFolder {
 }
 
 interface PublicFile {
+    slug: string;
     name: string;
     size: number;
     url: string;
@@ -37,17 +39,19 @@ interface PublicIndexProps extends PublicListOrder {
     folders: PublicFolder[];
     files: PublicFile[];
     pagination: PaginationMeta;
+    zip: PublicZip | null;
 }
 
-export default function PublicIndex({ groups, folders, files, pagination, sort, direction }: PublicIndexProps) {
+export default function PublicIndex({ groups, folders, files, pagination, sort, direction, zip }: PublicIndexProps) {
     const { t } = useTranslation();
-    const { sortState, sortBy } = usePublicListing({ sort, direction });
+    const listing = usePublicListing({ sort, direction, files, zip });
+    const { canZip, selection } = listing;
 
     return (
         <PublicLayout title={t('Public files')} description={t('Browse publicly shared groups and files below.')}>
             <Head title={t('Public files')} />
 
-            {pagination.total > 1 && <PublicSortSelect sortState={sortState} sortBy={sortBy} className="mb-3" />}
+            <PublicListControls listing={listing} total={pagination.total} rows={files.length} />
 
             <div className="space-y-8">
                 {groups.length > 0 && (
@@ -99,7 +103,13 @@ export default function PublicIndex({ groups, folders, files, pagination, sort, 
                         <div className="rounded-lg border">
                             {files.map((file) => (
                                 <div key={file.url} className="flex items-center justify-between gap-2 border-b px-4 py-3 last:border-0">
-                                    <Link href={file.url} className="min-w-0 hover:underline">
+                                    {canZip && (
+                                        <Checkbox
+                                            {...selection.checkboxProps({ kind: 'file', id: file.slug })}
+                                            aria-label={t('Select :name', { name: file.name })}
+                                        />
+                                    )}
+                                    <Link href={file.url} className="mr-auto min-w-0 hover:underline">
                                         <p className="truncate text-sm font-medium" title={file.name}>
                                             {file.name}
                                         </p>

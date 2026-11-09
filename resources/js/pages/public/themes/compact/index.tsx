@@ -4,10 +4,11 @@ import { Folder, Info } from 'lucide-react';
 import { DownloadAction } from '@/components/download-action';
 import { CategoryBadges, type CategoryTag } from '@/components/files/category-badges';
 import { Pagination, type PaginationMeta } from '@/components/pagination';
-import { PublicSortSelect } from '@/components/public-sort-select';
+import { PublicListControls } from '@/components/public-list-controls';
 import { SortableHeader } from '@/components/sortable-header';
 import { Button } from '@/components/ui/button';
-import { type PublicListOrder, usePublicListing } from '@/hooks/use-public-listing';
+import { Checkbox } from '@/components/ui/checkbox';
+import { type PublicListOrder, type PublicZip, usePublicListing } from '@/hooks/use-public-listing';
 import { useTranslation } from '@/hooks/use-translation';
 import PublicLayoutCompact from '@/layouts/public-layout-compact';
 import { formatBytes } from '@/lib/format-bytes';
@@ -25,6 +26,7 @@ interface PublicFolder {
 }
 
 interface PublicFile {
+    slug: string;
     name: string;
     size: number;
     url: string;
@@ -38,23 +40,33 @@ interface PublicIndexProps extends PublicListOrder {
     folders: PublicFolder[];
     files: PublicFile[];
     pagination: PaginationMeta;
+    zip: PublicZip | null;
 }
 
-export default function PublicIndexCompact({ groups, folders, files, pagination, sort, direction }: PublicIndexProps) {
+export default function PublicIndexCompact({ groups, folders, files, pagination, sort, direction, zip }: PublicIndexProps) {
     const { t } = useTranslation();
-    const { sortState, sortBy } = usePublicListing({ sort, direction });
+    const listing = usePublicListing({ sort, direction, files, zip });
+    const { sortState, sortBy, canZip, selection } = listing;
 
     return (
         <PublicLayoutCompact title={t('Public files')} description={t('Browse publicly shared groups and files below.')}>
             <Head title={t('Public files')} />
 
-            {pagination.total > 1 && <PublicSortSelect sortState={sortState} sortBy={sortBy} className="mb-3" />}
+            <PublicListControls listing={listing} total={pagination.total} rows={files.length} selectAll={false} />
 
             <div className="overflow-hidden rounded-none border border-neutral-300 dark:border-neutral-700">
                 <table className="w-full border-collapse text-xs">
                     <thead>
                         <tr className="border-b border-neutral-300 bg-neutral-100 text-neutral-500 uppercase dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-400">
-                            <th className="w-8 px-2 py-1 text-left font-medium"></th>
+                            <th className="w-8 px-2 py-1 text-left font-medium">
+                                {canZip && files.length > 0 && (
+                                    <Checkbox
+                                        checked={selection.pageState}
+                                        onCheckedChange={(checked) => selection.togglePage(checked === true)}
+                                        aria-label={t('Select all on this page')}
+                                    />
+                                )}
+                            </th>
                             <SortableHeader column="name" {...sortState} onSort={sortBy} className="px-2 py-1 text-left uppercase">
                                 {t('Name')}
                             </SortableHeader>
@@ -110,7 +122,14 @@ export default function PublicIndexCompact({ groups, folders, files, pagination,
                         ))}
                         {files.map((file) => (
                             <tr key={file.url} className="hover:bg-neutral-100 dark:hover:bg-neutral-900">
-                                <td className="px-2 py-1" />
+                                <td className="px-2 py-1 align-top">
+                                    {canZip && (
+                                        <Checkbox
+                                            {...selection.checkboxProps({ kind: 'file', id: file.slug })}
+                                            aria-label={t('Select :name', { name: file.name })}
+                                        />
+                                    )}
+                                </td>
                                 <td className="px-2 py-1">
                                     <Link href={file.url} className="font-medium hover:underline">
                                         {file.name}

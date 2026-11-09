@@ -4,9 +4,16 @@ import { xsrfToken } from '@/lib/xsrf';
 
 export type ZipDownloadStatus = 'idle' | 'preparing' | 'ready' | 'failed';
 
-interface ZipSelection {
-    file_ids?: number[];
-    folder_ids?: number[];
+export type ZipSelection = Record<string, unknown>;
+
+/**
+ * Where a different zip endpoint lives — a visitor's zip on a public page
+ * (PublicZipDownloadsController). Its store answers with the status and
+ * download URLs, because they sit under the public base address the
+ * frontend does not know. Left out, the signed-in routes are used.
+ */
+export interface ZipEndpoints {
+    storeUrl: string;
 }
 
 const POLL_INTERVAL_MS = 2000;
@@ -18,7 +25,7 @@ const POLL_INTERVAL_MS = 2000;
  * return plain JSON, not an Inertia response — so this talks to them with
  * a manually CSRF-tokened fetch instead of the Inertia router.
  */
-export function useZipDownload() {
+export function useZipDownload(endpoints?: ZipEndpoints) {
     const [status, setStatus] = useState<ZipDownloadStatus>('idle');
     const [error, setError] = useState<string | null>(null);
     const pollRef = useRef<number | null>(null);
@@ -59,7 +66,7 @@ export function useZipDownload() {
             setStatus('preparing');
             setError(null);
 
-            fetch(route('zip-downloads.store'), {
+            fetch(endpoints?.storeUrl ?? route('zip-downloads.store'), {
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: {
@@ -74,14 +81,16 @@ export function useZipDownload() {
                         const body = await response.json().catch(() => null);
                         throw new Error(body?.message ?? 'Request failed.');
                     }
-                    return response.json() as Promise<{ id: number }>;
+                    return response.json() as Promise<{ id: number; status_url?: string; download_url?: string }>;
                 })
-                .then(({ id }) => {
+                .then(({ id, status_url, download_url }) => {
                     if (unmountedRef.current) {
                         return;
                     }
+                    const statusUrl = status_url ?? route('zip-downloads.show', id);
+                    const downloadUrl = download_url ?? route('zip-downloads.download', id);
                     pollRef.current = window.setInterval(() => {
-                        fetch(route('zip-downloads.show', id), {
+                        fetch(statusUrl, {
                             credentials: 'same-origin',
                             headers: { Accept: 'application/json' },
                         })
@@ -90,7 +99,7 @@ export function useZipDownload() {
                                 if (state.status === 'ready') {
                                     stopPolling();
                                     setStatus('ready');
-                                    window.location.href = route('zip-downloads.download', id);
+                                    window.location.href = downloadUrl;
                                 } else if (state.status === 'failed') {
                                     stopPolling();
                                     setStatus('failed');
@@ -104,7 +113,7 @@ export function useZipDownload() {
                     setError(err.message);
                 });
         },
-        [stopPolling],
+        [stopPolling, endpoints?.storeUrl],
     );
 
     return { status, error, start, close };

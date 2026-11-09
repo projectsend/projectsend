@@ -32,6 +32,7 @@ enum EmailTemplateSlot: string
     case ClientAccountEdited = 'client_account_edited';
     case AdminClientRegistered = 'admin_client_registered';
     case AdminClientUploaded = 'admin_client_uploaded';
+    case AdminClientUploadDigest = 'admin_client_upload_digest';
     case GroupMembershipRequested = 'group_membership_requested';
     case GroupMembershipApproved = 'group_membership_approved';
     case GroupMembershipDenied = 'group_membership_denied';
@@ -53,6 +54,7 @@ enum EmailTemplateSlot: string
             self::ClientAccountEdited => 'Client account edited',
             self::AdminClientRegistered => 'Admin: new client registered',
             self::AdminClientUploaded => 'Admin: client uploaded a file',
+            self::AdminClientUploadDigest => 'Admin: client uploaded several files at once (digest)',
             self::GroupMembershipRequested => 'Admin: group membership requested',
             self::GroupMembershipApproved => 'Group membership approved',
             self::GroupMembershipDenied => 'Group membership denied',
@@ -78,6 +80,7 @@ enum EmailTemplateSlot: string
             self::ClientAccountEdited => 'Your account was updated',
             self::AdminClientRegistered => 'A new client has registered',
             self::AdminClientUploaded => 'A client uploaded a file',
+            self::AdminClientUploadDigest => ':client uploaded :count files',
             self::GroupMembershipRequested => 'A client requested to join a group',
             self::GroupMembershipApproved => 'Your group membership request was approved',
             self::GroupMembershipDenied => 'Your group membership request was denied',
@@ -101,6 +104,7 @@ enum EmailTemplateSlot: string
             self::ClientAccountEdited => 'Your account details were recently changed by an administrator. Contact your administrator if this was not expected.',
             self::AdminClientRegistered => 'A new client account was created: :name (:email).',
             self::AdminClientUploaded => 'The file ":file" was uploaded by :client.',
+            self::AdminClientUploadDigest => ':client uploaded these :count files:',
             self::GroupMembershipRequested => 'New membership request from :client for the group ":group".',
             self::GroupMembershipApproved => 'Your request to join the group ":group" has been approved.',
             self::GroupMembershipDenied => 'Your request to join the group ":group" has been denied.',
@@ -126,6 +130,9 @@ enum EmailTemplateSlot: string
             self::ClientInvited => ['name' => "The invited person's name, or their email address if none was given"],
             self::AdminClientRegistered => ['name' => "The client's name", 'email' => "The client's email address"],
             self::AdminClientUploaded => ['file' => 'The file name', 'client' => "The uploading client's name"],
+            // The list of files is appended after the body, like the share
+            // digest's — never part of the customizable text.
+            self::AdminClientUploadDigest => ['client' => "The uploading client's name", 'count' => 'How many files they uploaded'],
             self::GroupMembershipRequested => ['client' => "The client's name", 'group' => 'The group name'],
             self::GroupMembershipApproved, self::GroupMembershipDenied => ['group' => 'The group name'],
             self::PasswordReset => ['count' => 'Minutes until the reset link expires'],

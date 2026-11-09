@@ -14,7 +14,7 @@ use App\Modules\Files\Models\File;
 use App\Modules\Files\Folders\ClientHomeFolders;
 use App\Modules\Files\Folders\UploadFolderPath;
 use App\Modules\Files\Models\Folder;
-use App\Modules\Files\Notifications\AdminClientUploadedNotification;
+use App\Modules\Files\Uploads\ClientUploadMail;
 use App\Modules\Files\Uploads\LocalPartStore;
 use App\Modules\Files\Uploads\PartTooLargeException;
 use App\Modules\Files\Uploads\StoreUploadedFile;
@@ -35,7 +35,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -567,12 +566,9 @@ class ChunkedUploadsController extends Controller
         // member uploading their own file isn't "someone to notify
         // about", only a client uploading is.
         if ($user->isClient()) {
-            if ($this->settings->get(Setting::EmailNotificationsEnabled) === true) {
-                $adminEmails = $this->settings->get(Setting::AdminNotificationEmails);
-                foreach (is_array($adminEmails) ? $adminEmails : [] as $email) {
-                    Notification::route('mail', $email)->notify(new AdminClientUploadedNotification($user->name, $file->name, $file->id));
-                }
-            }
+            // One email per burst rather than per file: a folder upload is
+            // hundreds of files. See ClientUploadMail.
+            app(ClientUploadMail::class)->queue($user, $file);
 
             $this->notifier->send('client_uploaded', $this->staffWhoCanSeeUploads($user), subject: $file, data: [
                 'clientName' => $user->name,

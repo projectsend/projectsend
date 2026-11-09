@@ -6,18 +6,18 @@ import { FormEventHandler, useEffect, useRef, useState } from 'react';
 
 import { BulkEditFilesDialog, type BulkEditPayload } from '@/components/bulk-edit-files-dialog';
 import { CommentsRowButton } from '@/components/comments/comments-row-button';
-import { DownloadAction, DownloadLimitNote } from '@/components/download-action';
-import { type DownloadLimit } from '@/types/portal';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { DetailsPanel, DetailsTarget } from '@/components/details-panel';
+import { DownloadAction, DownloadLimitNote } from '@/components/download-action';
 import { DragChip, DragData, DropZone, useFolderDrop, useRowDrag } from '@/components/file-dnd';
 import { FilePreviewDialog } from '@/components/file-preview-dialog';
-import { PreviewAction } from '@/components/preview-action';
 import { ScanBadge, type ScanState } from '@/components/files/scan-badge';
 import { VersionBadge, type VersionLinks } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
 import { FilterField, ListToolbar } from '@/components/list-toolbar';
 import { Pagination, PaginationMeta } from '@/components/pagination';
+import { PreviewAction } from '@/components/preview-action';
+import { SortableHeader, type SortDirection } from '@/components/sortable-header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -29,7 +29,9 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { ViewModeToggle } from '@/components/view-mode-toggle';
 import { ZipDownloadDialog } from '@/components/zip-download-dialog';
 import { useCapability } from '@/hooks/use-capability';
+import { useFormatDate } from '@/hooks/use-format-date';
 import { ALL, useListQuery } from '@/hooks/use-list-query';
+import { type Selection, useSelection } from '@/hooks/use-selection';
 import { useTranslation } from '@/hooks/use-translation';
 import { useViewMode } from '@/hooks/use-view-mode';
 import { useZipDownload } from '@/hooks/use-zip-download';
@@ -39,6 +41,7 @@ import { formatBytes } from '@/lib/format-bytes';
 import { isPreviewable } from '@/lib/previews';
 import { isThumbnailable } from '@/lib/thumbnails';
 import { slugify } from '@/lib/utils';
+import { type DownloadLimit } from '@/types/portal';
 
 interface FolderRow {
     id: number;
@@ -83,6 +86,8 @@ interface FileRow {
     categories: CategoryTag[];
 }
 
+type SortColumn = 'name' | 'size' | 'date';
+
 interface Crumb {
     id: number;
     name: string;
@@ -102,6 +107,11 @@ interface FilesIndexProps {
     pagination: PaginationMeta;
     search: string;
     searching: boolean;
+    /** The order the rows come in, chosen or not. */
+    sort: SortColumn;
+    direction: SortDirection;
+    /** False while the folder's own order applies: newest first in a folder, by name across a search. */
+    sort_chosen: boolean;
     category: number | null;
     categories: CategoryTag[];
     uploader: number | null;
@@ -127,6 +137,9 @@ export default function FilesIndex({
     pagination,
     search,
     searching,
+    sort,
+    direction,
+    sort_chosen,
     category,
     categories,
     uploader,
@@ -156,93 +169,27 @@ export default function FilesIndex({
     // Withheld on some hosted plans. Only the zip buttons go: selection
     // also drives bulk edit here, so the checkboxes stay.
     const canZip = useCapability('downloads.zip');
+    // Everything that changes which rows the list holds, except the page,
+    // the page size and the order. A change here starts a new selection.
     const filterKey = JSON.stringify([folder?.id, search, category, uploader, visibility, downloads, role, version, expired]);
-    const carried = carriedSelection?.filterKey === filterKey ? carriedSelection : null;
-    const [selectedFileIds, setSelectedFileIds] = useState<Set<number>>(() => carried?.fileIds ?? new Set());
-    const [selectedFolderIds, setSelectedFolderIds] = useState<Set<number>>(() => carried?.folderIds ?? new Set());
-    const selectionCount = selectedFileIds.size + selectedFolderIds.size;
-    // Set by "Select all :count items": the selection then spans every
-    // page of this listing, so paging keeps it. The ids come from
-    // files.selection, as are the files among them this person may delete.
-    const [crossPage, setCrossPage] = useState(carried !== null);
-    const [deletableAcrossPages, setDeletableAcrossPages] = useState<Set<number>>(() => carried?.deletable ?? new Set());
+    const selection = useSelection({
+        scope: 'files.index',
+        resetKey: filterKey,
+        rows: [
+            ...folders.map((row) => ({ kind: 'folder' as const, id: row.id })),
+            ...files.map((row) => ({ kind: 'file' as const, id: row.id, deletable: row.can_delete })),
+        ],
+    });
+    const selectionCount = selection.count;
+    const rowsOnPage = folders.length + files.length;
     const [selectingAll, setSelectingAll] = useState(false);
     const [selectAllFailed, setSelectAllFailed] = useState(false);
+    const filterKeyRef = useRef(filterKey);
+    filterKeyRef.current = filterKey;
 
     const clearSelection = () => {
-        carriedSelection = null;
-        setSelectedFileIds(new Set());
-        setSelectedFolderIds(new Set());
-        setCrossPage(false);
-        setDeletableAcrossPages(new Set());
+        selection.clear();
         setSelectAllFailed(false);
-    };
-
-    // A new folder/search/category context (or a different page) means a
-    // different set of rows on screen — stale selections would silently
-    // zip items no longer visible. A selection made across pages survives
-    // paging, since it was made for all of them, but not a new filter.
-    const filterKeyRef = useRef(filterKey);
-    const crossPageRef = useRef(crossPage);
-    crossPageRef.current = crossPage;
-    useEffect(() => {
-        const filtersChanged = filterKeyRef.current !== filterKey;
-        filterKeyRef.current = filterKey;
-        if (crossPageRef.current && !filtersChanged) return;
-        clearSelection();
-    }, [filterKey, pagination.page]);
-
-    // Anything that changes the library (a bulk edit, a delete, a move)
-    // reloads the page, which mounts before the request's onSuccess
-    // runs, so the carried selection is dropped as the request starts.
-    // So is leaving the screen: only paging carries it.
-    useEffect(
-        () =>
-            router.on('before', (event) => {
-                const { method, url } = event.detail.visit;
-                if (method !== 'get' || url.pathname !== window.location.pathname) carriedSelection = null;
-            }),
-        [],
-    );
-
-    useEffect(() => {
-        carriedSelection = crossPage
-            ? { filterKey, folderIds: selectedFolderIds, fileIds: selectedFileIds, deletable: deletableAcrossPages }
-            : null;
-    }, [crossPage, filterKey, selectedFolderIds, selectedFileIds, deletableAcrossPages]);
-
-    const toggleFile = (id: number) =>
-        setSelectedFileIds((current) => {
-            const next = new Set(current);
-            if (next.has(id)) next.delete(id);
-            else next.add(id);
-            return next;
-        });
-    const toggleFolder = (id: number) =>
-        setSelectedFolderIds((current) => {
-            const next = new Set(current);
-            if (next.has(id)) next.delete(id);
-            else next.add(id);
-            return next;
-        });
-
-    const rowsOnPage = folders.length + files.length;
-    const selectedOnPage = folders.filter((row) => selectedFolderIds.has(row.id)).length + files.filter((row) => selectedFileIds.has(row.id)).length;
-    const pageSelection: boolean | 'indeterminate' =
-        rowsOnPage > 0 && selectedOnPage === rowsOnPage ? true : selectedOnPage > 0 ? 'indeterminate' : false;
-    const togglePage = (checked: boolean) => {
-        const folderIds = folders.map((row) => row.id);
-        const fileIds = files.map((row) => row.id);
-        const apply = (current: Set<number>, ids: number[]) => {
-            const next = new Set(current);
-            for (const id of ids) {
-                if (checked) next.add(id);
-                else next.delete(id);
-            }
-            return next;
-        };
-        setSelectedFolderIds((current) => apply(current, folderIds));
-        setSelectedFileIds((current) => apply(current, fileIds));
     };
 
     const selectAllMatching = () => {
@@ -260,29 +207,25 @@ export default function FilesIndex({
             .then((ids) => {
                 // The filters moved on while this was in flight.
                 if (filterKeyRef.current !== requestedFor) return;
-                setSelectedFolderIds(new Set(ids.folder_ids));
-                setSelectedFileIds(new Set(ids.file_ids));
-                setDeletableAcrossPages(new Set(ids.deletable_file_ids));
-                setCrossPage(true);
+                selection.replace({ folderIds: ids.folder_ids, fileIds: ids.file_ids, deletableFileIds: ids.deletable_file_ids });
             })
             .catch(() => setSelectAllFailed(true))
             .finally(() => setSelectingAll(false));
     };
 
-    const downloadSelectionAsZip = () => zip.start({ file_ids: [...selectedFileIds], folder_ids: [...selectedFolderIds] });
+    const downloadSelectionAsZip = () => zip.start({ file_ids: [...selection.fileIds], folder_ids: [...selection.folderIds] });
 
     const bulkEditFiles = (payload: BulkEditPayload) =>
         router.patch(
             route('files.bulk-update'),
-            { file_ids: [...selectedFileIds], ...payload },
+            { file_ids: [...selection.fileIds], ...payload },
             { preserveScroll: true, preserveState: false, onSuccess: () => clearSelection() },
         );
 
     // Only the selected files this person may delete. The server asks
     // each one again (FilesController::bulkDestroy); this decides whether
     // the button shows and what it says.
-    const deletableOnPage = new Set(files.filter((file) => file.can_delete).map((file) => file.id));
-    const deletableFileIds = [...selectedFileIds].filter((id) => deletableOnPage.has(id) || deletableAcrossPages.has(id));
+    const deletableFileIds = selection.deletableFileIds;
 
     const bulkDeleteFiles = () =>
         router.delete(route('files.bulk-destroy'), {
@@ -294,9 +237,16 @@ export default function FilesIndex({
 
     // A search term or a category filter both switch to a flat, global view,
     // dropping the current folder context.
-    const { values, set, reset, hasFilters } = useListQuery(
+    // `sort`, `direction` and `per_page` ride along so a new filter keeps
+    // them. Reset leaves them alone too: they are how the list is shown,
+    // not what is in it.
+    const perPage = pagination.per_page !== undefined && pagination.per_page !== pagination.per_page_options?.[0] ? String(pagination.per_page) : '';
+    const { values, set, setMany, reset } = useListQuery(
         'files.index',
         {
+            sort: sort_chosen ? sort : '',
+            direction: sort_chosen ? direction : '',
+            per_page: perPage,
             search,
             category: category === null ? ALL : String(category),
             uploader: uploader === null ? ALL : String(uploader),
@@ -306,7 +256,24 @@ export default function FilesIndex({
             version: version ?? ALL,
             expired: expired ? 'true' : '',
         },
-        { search: '', category: ALL, uploader: ALL, visibility: ALL, downloads: ALL, role: ALL, version: ALL, expired: '' },
+        {
+            sort: sort_chosen ? sort : '',
+            direction: sort_chosen ? direction : '',
+            per_page: perPage,
+            search: '',
+            category: ALL,
+            uploader: ALL,
+            visibility: ALL,
+            downloads: ALL,
+            role: ALL,
+            version: ALL,
+            expired: '',
+        },
+    );
+    const sortBy = (column: string, nextDirection: SortDirection) => setMany({ sort: column, direction: nextDirection });
+    // The Clear button is for what narrows the list, not how it is shown.
+    const filtering = Object.entries(values).some(
+        ([key, value]) => !['sort', 'direction', 'per_page'].includes(key) && value !== '' && value !== ALL,
     );
 
     // A small drag threshold so clicking action buttons never starts a drag.
@@ -358,7 +325,11 @@ export default function FilesIndex({
     };
 
     const breadcrumbs: BreadcrumbItem[] = [{ title: t('Files'), href: '/files' }];
-    const folderUrl = (id: number | null) => (id === null ? route('files.index') : route('files.index', { folder: id }));
+    // Opening a folder keeps the chosen order and page size.
+    const viewParams = Object.fromEntries(
+        Object.entries({ sort: values.sort, direction: values.direction, per_page: values.per_page }).filter(([, v]) => v !== ''),
+    );
+    const folderUrl = (id: number | null) => (id === null ? route('files.index', viewParams) : route('files.index', { folder: id, ...viewParams }));
 
     const createForm = useForm({
         name: '',
@@ -503,7 +474,7 @@ export default function FilesIndex({
                     </div>
                 </div>
 
-                <ListToolbar showClear={hasFilters} onClear={reset}>
+                <ListToolbar showClear={filtering} onClear={reset}>
                     <FilterField label={t('Search')} htmlFor="files-search">
                         <Input
                             id="files-search"
@@ -621,13 +592,28 @@ export default function FilesIndex({
                 <div className="mb-3 flex items-center justify-between gap-3">
                     {viewMode === 'grid' && rowsOnPage > 0 ? (
                         <label className="text-muted-foreground flex items-center gap-2 text-sm">
-                            <Checkbox checked={pageSelection} onCheckedChange={(checked) => togglePage(checked === true)} />
+                            <Checkbox checked={selection.pageState} onCheckedChange={(checked) => selection.togglePage(checked === true)} />
                             {t('Select all on this page')}
                         </label>
                     ) : (
                         <span />
                     )}
-                    <ViewModeToggle value={viewMode} onChange={setViewMode} />
+                    <div className="flex items-center gap-2">
+                        <Select value={`${sort}:${direction}`} onValueChange={(value) => sortBy(...(value.split(':') as [string, SortDirection]))}>
+                            <SelectTrigger className="h-9 w-auto min-w-[10rem]" aria-label={t('Sort by')}>
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="name:asc">{t('Name (A–Z)')}</SelectItem>
+                                <SelectItem value="name:desc">{t('Name (Z–A)')}</SelectItem>
+                                <SelectItem value="date:desc">{t('Newest first')}</SelectItem>
+                                <SelectItem value="date:asc">{t('Oldest first')}</SelectItem>
+                                <SelectItem value="size:desc">{t('Largest first')}</SelectItem>
+                                <SelectItem value="size:asc">{t('Smallest first')}</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <ViewModeToggle value={viewMode} onChange={setViewMode} />
+                    </div>
                 </div>
 
                 <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd} onDragCancel={() => setActiveDrag(null)}>
@@ -661,11 +647,11 @@ export default function FilesIndex({
                         <div className="bg-muted/40 mb-3 flex items-center justify-between gap-3 rounded-lg border px-4 py-2">
                             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
                                 <p className="font-medium" aria-live="polite">
-                                    {crossPage && selectionCount === pagination.total
+                                    {selectionCount === pagination.total
                                         ? t('All :count items are selected.', { count: pagination.total })
                                         : t(':count selected', { count: selectionCount })}
                                 </p>
-                                {pageSelection === true && !crossPage && pagination.total > rowsOnPage && (
+                                {selection.pageState === true && selectionCount < pagination.total && (
                                     <Button variant="link" size="sm" className="h-auto p-0" disabled={selectingAll} onClick={selectAllMatching}>
                                         {selectingAll ? t('Selecting…') : t('Select all :count items', { count: pagination.total })}
                                     </Button>
@@ -679,7 +665,7 @@ export default function FilesIndex({
                                         {t('Download as zip')}
                                     </Button>
                                 )}
-                                {selectedFileIds.size === 0 ? (
+                                {selection.fileIds.size === 0 ? (
                                     <TooltipProvider delayDuration={0}>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
@@ -701,7 +687,7 @@ export default function FilesIndex({
                                                 {t('Edit')}
                                             </Button>
                                         }
-                                        count={selectedFileIds.size}
+                                        count={selection.fileIds.size}
                                         folderOptions={folder_options}
                                         categories={categories}
                                         canSetCategories={canSetCategories}
@@ -720,7 +706,7 @@ export default function FilesIndex({
                                         }
                                         title={t('Delete the selected files?')}
                                         description={
-                                            deletableFileIds.length === selectedFileIds.size
+                                            deletableFileIds.length === selection.fileIds.size
                                                 ? t('They will no longer be available to anyone they were shared with.')
                                                 : t(
                                                       'Only the files you are allowed to delete are removed. They will no longer be available to anyone they were shared with.',
@@ -752,13 +738,22 @@ export default function FilesIndex({
                                         <tr>
                                             <th className="w-8 px-2 py-2.5">
                                                 <Checkbox
-                                                    checked={pageSelection}
-                                                    onCheckedChange={(checked) => togglePage(checked === true)}
+                                                    checked={selection.pageState}
+                                                    onCheckedChange={(checked) => selection.togglePage(checked === true)}
                                                     aria-label={t('Select all on this page')}
                                                 />
                                             </th>
-                                            <th className="px-4 py-2.5 font-medium" colSpan={3}>
+                                            <SortableHeader column="name" sort={sort} direction={direction} onSort={sortBy}>
                                                 {t('Name')}
+                                            </SortableHeader>
+                                            <SortableHeader column="size" sort={sort} direction={direction} onSort={sortBy} firstDirection="desc">
+                                                {t('Size')}
+                                            </SortableHeader>
+                                            <SortableHeader column="date" sort={sort} direction={direction} onSort={sortBy} firstDirection="desc">
+                                                {t('Uploaded')}
+                                            </SortableHeader>
+                                            <th className="px-4 py-2.5 font-medium">
+                                                <span className="sr-only">{t('Activity')}</span>
                                             </th>
                                             <th className="px-4 py-2.5 text-right font-medium">{t('Actions')}</th>
                                         </tr>
@@ -770,8 +765,7 @@ export default function FilesIndex({
                                                 row={row}
                                                 folderUrl={folderUrl}
                                                 onDetails={() => setPanelTarget({ type: 'folder', id: row.id })}
-                                                selected={selectedFolderIds.has(row.id)}
-                                                onToggleSelect={() => toggleFolder(row.id)}
+                                                checkbox={selection.checkboxProps({ kind: 'folder', id: row.id })}
                                             />
                                         ))}
                                         {files.map((row) => (
@@ -782,8 +776,7 @@ export default function FilesIndex({
                                                 onComments={
                                                     comments_enabled ? () => setPanelTarget({ type: 'file', id: row.id, tab: 'comments' }) : undefined
                                                 }
-                                                selected={selectedFileIds.has(row.id)}
-                                                onToggleSelect={() => toggleFile(row.id)}
+                                                checkbox={selection.checkboxProps({ kind: 'file', id: row.id, deletable: row.can_delete })}
                                             />
                                         ))}
                                     </tbody>
@@ -798,8 +791,7 @@ export default function FilesIndex({
                                     row={row}
                                     folderUrl={folderUrl}
                                     onDetails={() => setPanelTarget({ type: 'folder', id: row.id })}
-                                    selected={selectedFolderIds.has(row.id)}
-                                    onToggleSelect={() => toggleFolder(row.id)}
+                                    checkbox={selection.checkboxProps({ kind: 'folder', id: row.id })}
                                 />
                             ))}
                             {files.map((row) => (
@@ -808,8 +800,7 @@ export default function FilesIndex({
                                     row={row}
                                     onDetails={() => setPanelTarget({ type: 'file', id: row.id })}
                                     onComments={comments_enabled ? () => setPanelTarget({ type: 'file', id: row.id, tab: 'comments' }) : undefined}
-                                    selected={selectedFileIds.has(row.id)}
-                                    onToggleSelect={() => toggleFile(row.id)}
+                                    checkbox={selection.checkboxProps({ kind: 'file', id: row.id, deletable: row.can_delete })}
                                 />
                             ))}
                         </div>
@@ -833,13 +824,7 @@ export default function FilesIndex({
     );
 }
 
-/**
- * A selection made with "Select all :count items", kept outside the page
- * component: every Inertia visit, a page change included, mounts the page
- * afresh, and this is what lets the selection outlive the visit. Only
- * picked up again under the same filters.
- */
-let carriedSelection: { filterKey: string; folderIds: Set<number>; fileIds: Set<number>; deletable: Set<number> } | null = null;
+type CheckboxProps = ReturnType<Selection['checkboxProps']>;
 
 // The whole row is the drag handle (and, for folders, the drop target). A 6px
 // activation distance keeps clicks on the title/action buttons from starting a
@@ -850,14 +835,12 @@ function FolderRow({
     row,
     folderUrl,
     onDetails,
-    selected,
-    onToggleSelect,
+    checkbox,
 }: {
     row: FolderRow;
     folderUrl: (id: number | null) => string;
     onDetails: () => void;
-    selected: boolean;
-    onToggleSelect: () => void;
+    checkbox: CheckboxProps;
 }) {
     const { t } = useTranslation();
     const { setDragRef, dragHandleProps, isDragging } = useRowDrag({ kind: 'folder', id: row.id, name: row.name });
@@ -874,7 +857,7 @@ function FolderRow({
             className={`${rowBase} ${isDragging ? 'opacity-40' : ''} ${isOver ? 'bg-primary/15 [box-shadow:inset_0_0_0_2px_var(--primary)]' : ''}`}
         >
             <td className="w-8 px-2 py-2.5" onPointerDown={(e) => e.stopPropagation()}>
-                <Checkbox checked={selected} onCheckedChange={onToggleSelect} aria-label={t('Select :name', { name: row.name })} />
+                <Checkbox {...checkbox} aria-label={t('Select :name', { name: row.name })} />
             </td>
             <td className="px-4 py-2.5">
                 <Link href={folderUrl(row.id)} draggable={false} className="inline-flex items-center gap-2 font-medium">
@@ -893,6 +876,7 @@ function FolderRow({
                 {t(':files files', { files: row.files_count })}
                 {row.children_count > 0 && ` · ${t(':count folders', { count: row.children_count })}`}
             </td>
+            <td />
             <td className="text-muted-foreground px-4 py-2.5 text-sm whitespace-nowrap">
                 {row.shared_count > 0 && t('Shared with :count', { count: row.shared_count })}
             </td>
@@ -938,23 +922,22 @@ function FileRow({
     row,
     onDetails,
     onComments,
-    selected,
-    onToggleSelect,
+    checkbox,
 }: {
     row: FileRow;
     onDetails: () => void;
     /** Undefined when the installation has commenting switched off. */
     onComments?: () => void;
-    selected: boolean;
-    onToggleSelect: () => void;
+    checkbox: CheckboxProps;
 }) {
     const { t } = useTranslation();
+    const { date } = useFormatDate();
     const { setDragRef, dragHandleProps, isDragging } = useRowDrag({ kind: 'file', id: row.id, name: row.name });
 
     return (
         <tr ref={setDragRef} {...dragHandleProps} className={`${rowBase} ${isDragging ? 'opacity-40' : ''}`}>
             <td className="w-8 px-2 py-2.5" onPointerDown={(e) => e.stopPropagation()}>
-                <Checkbox checked={selected} onCheckedChange={onToggleSelect} aria-label={t('Select :name', { name: row.name })} />
+                <Checkbox {...checkbox} aria-label={t('Select :name', { name: row.name })} />
             </td>
             <td className="px-4 py-2.5">
                 <div className="flex items-start gap-2">
@@ -1016,7 +999,8 @@ function FileRow({
                     </div>
                 </div>
             </td>
-            <td className="text-muted-foreground px-4 py-2.5 text-sm whitespace-nowrap">{formatBytes(row.size)}</td>
+            <td className="text-muted-foreground px-4 py-2.5 text-sm whitespace-nowrap tabular-nums">{formatBytes(row.size)}</td>
+            <td className="text-muted-foreground px-4 py-2.5 text-sm whitespace-nowrap tabular-nums">{date(row.created_at)}</td>
             <td className="text-muted-foreground px-4 py-2.5 text-sm whitespace-nowrap">
                 {t(':count downloads', { count: row.downloads_count })}
                 {row.download_limit.limit !== null && (
@@ -1079,14 +1063,12 @@ function FolderCard({
     row,
     folderUrl,
     onDetails,
-    selected,
-    onToggleSelect,
+    checkbox,
 }: {
     row: FolderRow;
     folderUrl: (id: number | null) => string;
     onDetails: () => void;
-    selected: boolean;
-    onToggleSelect: () => void;
+    checkbox: CheckboxProps;
 }) {
     const { t } = useTranslation();
     const { setDragRef, dragHandleProps, isDragging } = useRowDrag({ kind: 'folder', id: row.id, name: row.name });
@@ -1103,8 +1085,7 @@ function FolderCard({
             className={`group hover:border-primary/50 relative flex cursor-grab flex-col items-center justify-center gap-2 rounded-xl border p-6 text-center transition select-none hover:shadow-md active:cursor-grabbing ${isDragging ? 'opacity-40' : ''} ${isOver ? 'border-primary bg-primary/10' : ''}`}
         >
             <Checkbox
-                checked={selected}
-                onCheckedChange={onToggleSelect}
+                {...checkbox}
                 onPointerDown={(e) => e.stopPropagation()}
                 aria-label={t('Select :name', { name: row.name })}
                 className="absolute top-3 left-3"
@@ -1112,7 +1093,9 @@ function FolderCard({
             <Link href={folderUrl(row.id)} draggable={false} className="flex w-full flex-col items-center gap-2">
                 <FolderIcon className="text-primary size-10 shrink-0" strokeWidth={1.25} />
                 <span className="flex max-w-full items-center gap-1.5">
-                    <p className="truncate text-sm font-medium">{row.name}</p>
+                    <p className="truncate text-sm font-medium" title={row.name}>
+                        {row.name}
+                    </p>
                     {row.public && (
                         <Badge variant="secondary" className="text-[11px] font-normal">
                             {t('Public')}
@@ -1162,15 +1145,13 @@ function FileCard({
     row,
     onDetails,
     onComments,
-    selected,
-    onToggleSelect,
+    checkbox,
 }: {
     row: FileRow;
     onDetails: () => void;
     /** Undefined when the installation has commenting switched off. */
     onComments?: () => void;
-    selected: boolean;
-    onToggleSelect: () => void;
+    checkbox: CheckboxProps;
 }) {
     const { t } = useTranslation();
     const { setDragRef, dragHandleProps, isDragging } = useRowDrag({ kind: 'file', id: row.id, name: row.name });
@@ -1182,8 +1163,7 @@ function FileCard({
             className={`group hover:border-primary/50 relative cursor-grab overflow-hidden rounded-xl border transition select-none hover:shadow-lg active:cursor-grabbing ${isDragging ? 'opacity-40' : ''}`}
         >
             <Checkbox
-                checked={selected}
-                onCheckedChange={onToggleSelect}
+                {...checkbox}
                 onPointerDown={(e) => e.stopPropagation()}
                 aria-label={t('Select :name', { name: row.name })}
                 className="bg-background/80 absolute top-3 left-3 z-10"
@@ -1217,7 +1197,7 @@ function FileCard({
 
             <div className="p-3">
                 <div className="flex items-center gap-1.5">
-                    <Link href={route('files.edit', row.id)} draggable={false} className="truncate text-sm font-medium">
+                    <Link href={route('files.edit', row.id)} draggable={false} className="truncate text-sm font-medium" title={row.name}>
                         {row.name}
                     </Link>
                     {row.public && (

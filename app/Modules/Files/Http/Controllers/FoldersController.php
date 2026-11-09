@@ -48,14 +48,6 @@ use Inertia\Response;
  */
 class FoldersController extends Controller
 {
-    /**
-     * Folders and files share one page window (folders first, files
-     * filling whatever room is left) rather than folders being an
-     * unbounded, always-fully-shown block above a separately paginated
-     * file list — see index()'s own docblock for why.
-     */
-    private const PER_PAGE = 25;
-
     public function __construct(
         private readonly FolderService $folders,
         private readonly StaffLibraryScope $scope,
@@ -74,8 +66,8 @@ class FoldersController extends Controller
     /**
      * Folders and files are two independently-ordered sequences
      * (folders by name, files by whatever the current mode sorts by)
-     * concatenated into one flat sequence and sliced into fixed
-     * PER_PAGE-sized pages — folders first, files filling whatever room
+     * concatenated into one flat sequence and sliced into pages of the
+     * size the viewer picked (Pagination::perPage) — folders first, files filling whatever room
      * is left once folders run out. This keeps every folder and file
      * reachable via Next/Previous with a bounded per-page query cost,
      * regardless of how many folders or files exist — the previous
@@ -99,9 +91,13 @@ class FoldersController extends Controller
             'roleId' => $roleId,
             'version' => $version,
             'expired' => $expired,
+            'sort' => $sort,
+            'direction' => $direction,
+            'sortChosen' => $sortChosen,
             'folders' => $folders,
             'files' => $files,
         ] = $this->listing($request, $user);
+        $perPage = Pagination::perPage($request);
 
         $folders->withCount(['children', 'files']);
         // `downloads` unconditionally — the library has always shown a
@@ -125,7 +121,7 @@ class FoldersController extends Controller
         $sliced = ConcatenatedPagination::slice(
             $sequences,
             $page,
-            self::PER_PAGE,
+            $perPage,
             ['path' => $request->url(), 'query' => $request->query()],
         );
         /** @var Collection<int, Folder> $folderRows */
@@ -147,6 +143,9 @@ class FoldersController extends Controller
                 'role' => $roleId,
                 'version' => $version,
                 'expired' => $expired ? 'true' : null,
+                'sort' => $sortChosen ? $sort : null,
+                'direction' => $sortChosen ? $direction : null,
+                'per_page' => Pagination::perPageParam($perPage),
                 'page' => Pagination::redirectPage($sliced['paginator']),
             ]));
         }
@@ -174,9 +173,12 @@ class FoldersController extends Controller
             'breadcrumb' => $flat ? [] : $this->breadcrumb($user, $current),
             'folders' => $folderRows->map(fn (Folder $folder): array => $this->folderRow($user, $folder))->all(),
             'files' => $fileRows->map(fn (File $file): array => $this->fileRow($user, $file, $commentCounts, $pendingCounts, $versions))->all(),
-            'pagination' => Pagination::meta($sliced['paginator']),
+            'pagination' => Pagination::meta($sliced['paginator'], choosablePerPage: true),
             'search' => $search,
             'searching' => $flat,
+            'sort' => $sort,
+            'direction' => $direction,
+            'sort_chosen' => $sortChosen,
             'category' => $categoryId,
             'uploader' => $uploaderId,
             'visibility' => $visibility,
@@ -243,7 +245,11 @@ class FoldersController extends Controller
      * index() and selection(), so "select everything" picks exactly the
      * rows the pages would show.
      *
-     * @return array{search: string, flat: bool, current: Folder|null, categoryId: int|null, uploaderId: int|null, visibility: string|null, downloads: string|null, roleId: int|null, version: string|null, expired: bool, folders: Builder<Folder>, files: Builder<File>}
+     * `sort` and `direction` are always the order the rows come in. With
+     * none chosen (`sortChosen` false), that is the mode's own: by name
+     * across a search or filter, newest first inside a folder.
+     *
+     * @return array{search: string, flat: bool, current: Folder|null, categoryId: int|null, uploaderId: int|null, visibility: string|null, downloads: string|null, roleId: int|null, version: string|null, expired: bool, sort: string, direction: string, sortChosen: bool, folders: Builder<Folder>, files: Builder<File>}
      */
     private function listing(Request $request, User $user): array
     {
@@ -260,6 +266,8 @@ class FoldersController extends Controller
             // version of itself. "outdated" is the same word the version
             // badge uses, so the filter and the row agree.
             'version' => ['nullable', 'in:current,outdated'],
+            'sort' => ['nullable', 'in:name,size,date'],
+            'direction' => ['nullable', 'in:asc,desc'],
             // Not a 'boolean' rule: that only accepts true/false/0/1/'0'/'1',
             // rejecting the literal "true"/"" the frontend checkbox sends.
             // $request->boolean() below coerces any of those safely, so
@@ -278,6 +286,7 @@ class FoldersController extends Controller
         $roleId = isset($validated['role']) ? (int) $validated['role'] : null;
         $version = $validated['version'] ?? null;
         $expired = $request->boolean('expired');
+        $sortChosen = isset($validated['sort']);
 
         // A search term or any filter switches to a flat view across the
         // whole visible library; otherwise it's folder browsing. Every
@@ -287,6 +296,9 @@ class FoldersController extends Controller
         $flat = $searching || $categoryId !== null || $expired
             || $uploaderId !== null || $visibility !== null
             || $downloads !== null || $roleId !== null || $version !== null;
+
+        $sort = $validated['sort'] ?? ($flat ? 'name' : 'date');
+        $direction = $validated['direction'] ?? ($sort === 'date' ? 'desc' : 'asc');
 
         $folderQuery = $this->scope->folders($user);
         $fileQuery = $this->scope->files($user)
@@ -305,7 +317,7 @@ class FoldersController extends Controller
         if ($flat) {
             $current = null;
             $folders = $searching
-                ? $folderQuery->where('name', 'like', "%{$search}%")->orderBy('name')
+                ? $folderQuery->where('name', 'like', "%{$search}%")
                 : $folderQuery->whereRaw('1 = 0');
             $files = $fileQuery
                 ->when($searching, fn (Builder $q) => $q->where(fn (Builder $w) => $w
@@ -335,19 +347,29 @@ class FoldersController extends Controller
                 ->when($downloads === 'any', fn (Builder $q) => $q->whereHas('downloads'))
                 ->when($version === 'current', fn (Builder $q) => $q->whereDoesntHave('nextVersion'))
                 ->when($version === 'outdated', fn (Builder $q) => $q->whereHas('nextVersion'))
-                ->when($visibility !== null, fn (Builder $q) => $q->effectivelyPublic($visibility === 'public'))
-                ->orderBy('name');
+                ->when($visibility !== null, fn (Builder $q) => $q->effectivelyPublic($visibility === 'public'));
         } else {
             $current = $request->integer('folder') > 0
                 ? $this->scope->folders($user)->find($request->integer('folder'))
                 : null;
-            $folders = $folderQuery
-                ->where('parent_id', $current?->id)
-                ->orderBy('name');
-            $files = $fileQuery
-                ->where('folder_id', $current?->id)
-                ->orderByDesc('created_at');
+            $folders = $folderQuery->where('parent_id', $current?->id);
+            $files = $fileQuery->where('folder_id', $current?->id);
         }
+
+        // Folders have no size or upload date, so they stay A to Z unless
+        // the list is sorted by name, when they follow its direction. The
+        // id breaks ties: rows with the same name or size must keep one
+        // order, or paging would show some twice and skip others.
+        $folders
+            ->orderBy($folders->qualifyColumn('name'), $sort === 'name' ? $direction : 'asc')
+            ->orderBy($folders->qualifyColumn('id'));
+        $files
+            ->orderBy($files->qualifyColumn(match ($sort) {
+                'name' => 'name',
+                'size' => 'size',
+                default => 'created_at',
+            }), $direction)
+            ->orderBy($files->qualifyColumn('id'), $direction);
 
         return [
             'search' => $search,
@@ -360,6 +382,9 @@ class FoldersController extends Controller
             'roleId' => $roleId,
             'version' => $version,
             'expired' => $expired,
+            'sort' => $sort,
+            'direction' => $direction,
+            'sortChosen' => $sortChosen,
             'folders' => $folders,
             'files' => $files,
         ];

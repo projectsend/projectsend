@@ -10,6 +10,67 @@ Anything under **⚠️ Important — do these yourself** is something you have 
 we did. It sits at the top of a release for that reason. Older entries call the same section
 **Upgrade notes**.
 
+## 2.8.1 — 9 November 2026
+
+A security update. It tightens who can see and change what, mostly for staff limited to some clients,
+for clients, and for AI assistant connections.
+
+### ⚠️ Important — do these yourself
+
+Everything else in this release happens on its own, and nothing here stops the upgrade.
+
+- **If you installed from the zip, run `update.sh` as root, as before.** From now on root owns the
+  program files, and the web server can write only to `storage/` and `bootstrap/cache/`. `update.sh`
+  sets this up the first time it runs. It now stops if `storage/` itself belongs to root, because it
+  can no longer tell which user is the web server. `INSTALL.md` and `UPDATE.md` show the new layout.
+- **`update.sh --yes` no longer installs a download it could not verify.** If the checksum file
+  cannot be fetched, run it without `--yes` and confirm by hand, or pass the zip with `--zip`.
+- **Check custom roles that edit settings.** The email settings are now for administrators only. A
+  role limited to assigned clients can no longer hold "Edit settings" at all, and loses it on its own.
+- **Linked sign-in providers end when a password changes.** Changing or resetting a password, or
+  converting an account between staff and client, now also disconnects Google, Microsoft and other
+  providers, as it already ended API tokens and assistant connections. People connect them again from
+  their settings. The provider staff are required to use stays connected.
+
+**Closed holes in who can see what**
+
+- The AI assistant names only the clients, files, folders and versions the person asking can see,
+  and does only what that person and their token may do.
+- An assistant connection is refused for clients once clients may no longer connect, and its
+  authorize page can no longer send people to another site.
+- A staff member limited to some clients no longer sees other clients in the activity log, the API
+  usage page, comment searches, sidebar badges, the dashboard or member forms.
+- Staff can edit, delete or grant only roles they could hand out themselves, and act only on
+  colleagues with no more clients than they have.
+- Converting an account, activating an account request and deleting a folder that holds files each
+  need their own permission now.
+- Clients can no longer make public folders, publish into them, or keep rights over a folder once
+  it is no longer shared with them.
+- Putting a file in a shared folder, or moving it out, counts as sharing or unsharing it, with the
+  same permission checks.
+- Turning on two-factor for a group of accounts, or removing someone's second factor, ends their API
+  tokens and assistant connections.
+- An invitation stops working when its sender can no longer invite.
+- A capped download is checked and counted as one step, and the preview no longer serves a capped
+  file whole.
+- The sign-in form no longer reveals which email addresses have accounts, and repeated wrong
+  passwords from one address are slowed down across all accounts.
+- On external storage, a file's type now comes from its contents, not its name. Downloads carry
+  protective headers on every web server, not only on nginx.
+- `APP_DEBUG=no` and `APP_DEBUG=off` now turn debug pages off, as they say. Only `true` or `1` turns
+  them on.
+- The virus scanner connection and external storage are for administrators only.
+
+**Fixed**
+
+- Commenting has a rate limit, and a zip request has a sensible maximum number of files.
+- Thumbnails are no longer attempted for very large files on remote storage.
+- File names lose hidden characters that could make one file type look like another.
+- The allowed file types are checked again when an upload finishes.
+
+Thanks to [@S31ZUR3](https://github.com/S31ZUR3) and [@xIllunight](https://github.com/xIllunight)
+for reporting.
+
 ## 2.8.0 — 28 October 2026
 
 Connect an AI assistant to your account, require staff to sign in through your organisation's

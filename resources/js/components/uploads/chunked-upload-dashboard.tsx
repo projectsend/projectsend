@@ -15,6 +15,8 @@ interface ChunkedUploadDashboardProps {
     description?: string;
     folderId?: number | null;
     previousFileId?: number | null;
+    /** Offer "browse folders" and keep a dropped folder's subfolders. See useChunkedUploadUppy. */
+    keepFolders?: boolean;
     height?: number;
     onComplete: (fileIds: number[]) => void;
     onVersionError?: (message: string) => void;
@@ -29,6 +31,7 @@ export default function ChunkedUploadDashboard({
     description,
     folderId,
     previousFileId,
+    keepFolders = false,
     height = 440,
     onComplete,
     onVersionError,
@@ -44,6 +47,7 @@ export default function ChunkedUploadDashboard({
         description,
         folderId,
         previousFileId,
+        keepFolders,
         onFileUploaded: (fileId) => uploadedFileIds.push(fileId),
         onVersionError,
     });
@@ -62,5 +66,14 @@ export default function ChunkedUploadDashboard({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [uppy]);
 
-    return <Dashboard uppy={uppy} theme={theme} width="100%" height={height} proudlyDisplayPoweredByUppy={false} />;
+    return (
+        <Dashboard
+            uppy={uppy}
+            theme={theme}
+            width="100%"
+            height={height}
+            proudlyDisplayPoweredByUppy={false}
+            fileManagerSelectionType={keepFolders ? 'both' : 'files'}
+        />
+    );
 }

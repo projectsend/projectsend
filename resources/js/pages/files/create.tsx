@@ -1,5 +1,5 @@
-import { type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { type BreadcrumbItem, type SharedData } from '@/types';
+import { Head, router, usePage } from '@inertiajs/react';
 
 import Heading from '@/components/heading';
 import ChunkedUploadDashboard from '@/components/uploads/chunked-upload-dashboard';
@@ -16,6 +16,10 @@ interface FilesCreateProps {
 
 export default function FilesCreate({ folder, max_file_size_mb, part_size_mb, allowed_extensions }: FilesCreateProps) {
     const { t } = useTranslation();
+    // Dropping a folder recreates its subfolders only for someone who may
+    // make folders; anyone else's drop flattens, as it always has.
+    const { auth } = usePage<SharedData>().props;
+    const canMakeFolders = auth.permissions.includes('create_own_folders') && auth.permissions.includes('upload');
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: t('All files'), href: '/files' },
@@ -47,11 +51,10 @@ export default function FilesCreate({ folder, max_file_size_mb, part_size_mb, al
                     }
                 />
 
-                {folder !== null && (
-                    <p className="text-muted-foreground mb-4 text-sm">{t('Uploading into :folder', { folder: folder.name })}</p>
-                )}
+                {folder !== null && <p className="text-muted-foreground mb-4 text-sm">{t('Uploading into :folder', { folder: folder.name })}</p>}
 
                 <ChunkedUploadDashboard
+                    keepFolders={canMakeFolders}
                     folderId={folder?.id}
                     maxFileSizeMb={max_file_size_mb}
                     partSizeMb={part_size_mb}

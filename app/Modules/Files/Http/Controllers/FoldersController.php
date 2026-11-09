@@ -16,6 +16,7 @@ use App\Modules\Files\Access\ShareTargets;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Folders\BreadcrumbBuilder;
 use App\Modules\Files\Folders\FilesBeyondAuthority;
+use App\Modules\Files\Folders\FolderCreationRules;
 use App\Modules\Files\Folders\FolderService;
 use App\Modules\Files\Folders\UndeletableFiles;
 use App\Modules\Files\Models\Category;
@@ -534,9 +535,7 @@ class FoldersController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $user = $request->user();
-        // Requires upload too, same as the client portal's MyFoldersController::store()
-        // — a folder nobody can put anything in isn't useful on its own.
-        abort_unless($user !== null && $user->can('create_own_folders') && $user->can('upload'), 403);
+        abort_unless($user !== null, 403);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -548,10 +547,8 @@ class FoldersController extends Controller
 
         $parent = $this->resolveParent($user, $validated['parent_id'] ?? null);
 
-        // A folder inside a public one is public, so creating it there is
-        // placing content into a public folder: the question every other
-        // write of a parent_id already asks (Folder::uploadableBy).
-        abort_unless(Folder::uploadableBy($user, $parent), 403);
+        // The same rules a folder upload's subfolders are made under.
+        app(FolderCreationRules::class)->authorize($user, $parent);
 
         $folder = $this->folders->create($validated['name'], $parent);
 

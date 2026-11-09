@@ -26,6 +26,13 @@ interface UseChunkedUploadOptions {
      * prop would be captured stale when the picker is used after mount.
      */
     previousFileId?: number | null;
+    /**
+     * Recreate a dropped folder's subfolders (#1840) by sending each file's
+     * path inside it. Off for anyone who may not create folders: the server
+     * would refuse the paths, so their drop flattens as it always did. Held
+     * in a ref like description, for the same reason.
+     */
+    keepFolders?: boolean;
     onFileUploaded?: (fileId: number) => void;
     /** The server refused the version link, but the upload itself succeeded. */
     onVersionError?: (message: string) => void;
@@ -51,6 +58,11 @@ export function useChunkedUploadUppy(options: UseChunkedUploadOptions): { uppy: 
     useEffect(() => {
         descriptionRef.current = options.description;
     }, [options.description]);
+
+    const keepFoldersRef = useRef(options.keepFolders ?? false);
+    useEffect(() => {
+        keepFoldersRef.current = options.keepFolders ?? false;
+    }, [options.keepFolders]);
 
     const previousFileIdRef = useRef(options.previousFileId);
     useEffect(() => {
@@ -78,7 +90,12 @@ export function useChunkedUploadUppy(options: UseChunkedUploadOptions): { uppy: 
             shouldUseMultipart: true,
             getChunkSize: () => options.partSizeMb * 1024 * 1024,
             async createMultipartUpload(file) {
+                // Set by Uppy for files that came out of a dropped or picked
+                // folder: "/Project_A/Drawings/plan.pdf". Null otherwise.
+                const relativePath = (file.meta as { relativePath?: string | null }).relativePath ?? null;
+
                 return apiFetch<{ uploadId: string; key: string }>(route('uploads.store'), 'POST', {
+                    relative_path: keepFoldersRef.current && relativePath ? relativePath : undefined,
                     filename: file.name,
                     size: file.size,
                     type: file.type,

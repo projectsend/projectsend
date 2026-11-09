@@ -201,8 +201,10 @@ Route::middleware(['auth'])->group(function () {
     // per-file and per-comment inside the controller, through the policy
     // and VisibleCommentScope.
     Route::get('files/{file}/comments', [FileCommentsController::class, 'index'])->name('files.comments.index');
-    Route::post('files/{file}/comments', [FileCommentsController::class, 'store'])->name('files.comments.store');
-    Route::patch('comments/{comment}', [FileCommentsController::class, 'update'])->name('comments.update');
+    // Each post writes a row, a log entry and a bell entry for everybody
+    // watching the file; the visitor form already had its own limit.
+    Route::post('files/{file}/comments', [FileCommentsController::class, 'store'])->middleware('throttle:20,1,comment-post')->name('files.comments.store');
+    Route::patch('comments/{comment}', [FileCommentsController::class, 'update'])->middleware('throttle:20,1,comment-edit')->name('comments.update');
     Route::delete('comments/{comment}', [FileCommentsController::class, 'destroy'])->name('comments.destroy');
     // Where a comment notification lands — staff and clients have no page
     // in common, so the redirect resolves it per viewer.

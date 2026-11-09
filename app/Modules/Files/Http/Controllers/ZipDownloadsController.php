@@ -73,9 +73,12 @@ class ZipDownloadsController extends Controller
         abort_if($inFlight, 429, __('A zip download is already being prepared. Wait for that one to finish before starting another.'));
 
         $validated = $request->validate([
-            'file_ids' => ['array'],
+            // Bounded before it becomes a whereIn: a JSON body is not
+            // held to max_input_vars, and past the database's placeholder
+            // limit the query fails outright.
+            'file_ids' => ['array', 'max:'.self::MAX_FILES],
             'file_ids.*' => ['integer'],
-            'folder_ids' => ['array'],
+            'folder_ids' => ['array', 'max:1000'],
             'folder_ids.*' => ['integer'],
         ]);
 

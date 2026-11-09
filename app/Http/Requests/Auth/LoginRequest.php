@@ -15,6 +15,7 @@ use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -22,6 +23,8 @@ use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
+    private const ADDRESS_FAILURES_PER_MINUTE = 50;
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -156,6 +159,12 @@ class LoginRequest extends FormRequest
     private function verifyCredentials(?User $user): ?User
     {
         if ($user === null) {
+            // The same hashing cost as a wrong password on a real account.
+            // Returning at once answered an unknown address in a tenth of
+            // the time, which listed every account to anybody timing the
+            // form, staff included, with the same message either way.
+            Hash::make((string) $this->string('password'));
+
             return null;
         }
 
@@ -170,6 +179,7 @@ class LoginRequest extends FormRequest
     protected function failWithInvalidCredentials(): never
     {
         RateLimiter::hit($this->throttleKey());
+        RateLimiter::hit($this->addressThrottleKey());
 
         throw ValidationException::withMessages([
             'email' => __('auth.failed'),
@@ -183,13 +193,23 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        // Per email and address, tight; per address alone, loose. The
+        // first key alone gave one address a fresh five tries for every
+        // email it named, which is spraying one password across every
+        // account. The second counts only failures, and is set high
+        // enough that an office behind one address never meets it.
+        $key = collect([
+            [$this->throttleKey(), 5],
+            [$this->addressThrottleKey(), self::ADDRESS_FAILURES_PER_MINUTE],
+        ])->first(fn (array $limit): bool => RateLimiter::tooManyAttempts($limit[0], $limit[1]))[0] ?? null;
+
+        if ($key === null) {
             return;
         }
 
         event(new Lockout($this));
 
-        $seconds = RateLimiter::availableIn($this->throttleKey());
+        $seconds = RateLimiter::availableIn($key);
 
         throw ValidationException::withMessages([
             'email' => __('auth.throttle', [
@@ -205,5 +225,10 @@ class LoginRequest extends FormRequest
     public function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+    }
+
+    private function addressThrottleKey(): string
+    {
+        return 'login-address|'.$this->ip();
     }
 }

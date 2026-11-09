@@ -90,3 +90,24 @@ test('somebody who knows the password is not locked out by somebody who does not
         ->post('/confirm-password', ['password' => 'password'])
         ->assertSessionHasNoErrors();
 });
+
+test('one address cannot spread guesses across every account', function () {
+    // The per-email bucket alone gave each new email five fresh tries.
+    foreach (range(1, 50) as $n) {
+        $this->post('/login', ['email' => "nobody{$n}@example.test", 'password' => 'Summer2026!'])
+            ->assertSessionHasErrors('email');
+    }
+
+    $this->post('/login', ['email' => $this->user->email, 'password' => 'password'])
+        ->assertSessionHasErrors('email');
+    $this->assertGuest();
+});
+
+test('an address with no account costs the same hashing as a wrong password', function () {
+    \Illuminate\Support\Facades\Hash::spy();
+
+    $this->post('/login', ['email' => 'nobody@example.test', 'password' => 'Summer2026!'])
+        ->assertSessionHasErrors('email');
+
+    \Illuminate\Support\Facades\Hash::shouldHaveReceived('make')->once();
+});

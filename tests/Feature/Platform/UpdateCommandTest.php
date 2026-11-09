@@ -23,11 +23,35 @@ beforeEach(function () {
 
 test('it migrates, ensures roles, links storage and restarts the queue', function () {
     $fake = recordingUpdate();
+    // A public/ of its own with no link in it: the suite's real one is
+    // shared by every parallel worker.
+    $public = sys_get_temp_dir().'/ps-public-'.uniqid();
+    mkdir($public);
+    app()->usePublicPath($public);
 
     $this->artisan('projectsend:update')->assertSuccessful();
 
     expect($fake->calls)->toContain('migrate', 'storage:link', 'queue:restart')
         ->and(array_search('migrate', $fake->calls, true))->toBe(0);
+
+    rmdir($public);
+});
+
+test('it leaves a correct storage link alone', function () {
+    // update.sh makes it as root, in a public/ the web server's user
+    // cannot write to; asked to replace it, storage:link would throw.
+    $fake = recordingUpdate();
+    $public = sys_get_temp_dir().'/ps-public-'.uniqid();
+    mkdir($public);
+    symlink(storage_path('app/public'), $public.'/storage');
+    app()->usePublicPath($public);
+
+    $this->artisan('projectsend:update')->assertSuccessful();
+
+    expect($fake->calls)->toContain('migrate')->not->toContain('storage:link');
+
+    unlink($public.'/storage');
+    rmdir($public);
 });
 
 // queue:restart writes its signal into the cache. Anything that clears the

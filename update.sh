@@ -265,10 +265,14 @@ That is not the file this release published. It has been left in place for you t
 }
 
 detect_web_user() {
+    # Read off storage/, the one folder the web server's user always owns.
+    # The code is root's (see "Replacing the application files"), so
+    # public/index.php names root on any installation this has updated.
     if [[ -z "$WEB_USER" ]]; then
-        WEB_USER="$(stat -c '%U' "$INSTALL_DIR/public/index.php" 2>/dev/null || echo www-data)"
+        WEB_USER="$(stat -c '%U' "$INSTALL_DIR/storage" 2>/dev/null || echo www-data)"
     fi
 
+    [[ "$WEB_USER" != "root" ]] || fail "storage/ is owned by root, so the web server's user cannot be told from it. Pass --user with the account your web server runs as."
     id -u "$WEB_USER" >/dev/null 2>&1 || fail "No such user: $WEB_USER. Pass --user with the account your web server runs as."
     WEB_GROUP="$(id -gn "$WEB_USER")"
 }
@@ -706,10 +710,42 @@ If you know what you are doing, re-run with --force."
     # export with root_squash. Aborting an update over a cosmetic detail on
     # a link is not a trade worth making, so they are left alone rather than
     # tolerated by ignoring errors that might have mattered.
-    find "$INSTALL_DIR" \! -type l -exec chown "$WEB_USER:$WEB_GROUP" {} + \
+    #
+    # The code is root's, and only the two folders PHP writes to are the
+    # web server's. Everything used to be the web server's, this script
+    # included: anything running as that user -- a PHP bug, a bad package
+    # -- could rewrite the application, or rewrite this file and have it
+    # run as root the next time somebody typed sudo ./update.sh.
+    #
+    # -h on every chown: the web server's user owns storage/ and can swap
+    # a file there for a symlink between find seeing it and chown acting
+    # on it. Without -h, chown would follow that link and hand its target
+    # -- anything on the machine -- to that user.
+    local writable=("$INSTALL_DIR/storage" "$INSTALL_DIR/bootstrap/cache")
+
+    find "$INSTALL_DIR" \( -path "${writable[0]}" -o -path "${writable[1]}" \) -prune \
+        -o \! -type l -exec chown -h "root:$WEB_GROUP" {} + \
+        || warn "Some files could not be given to root. Check ownership under $INSTALL_DIR before trusting this install."
+
+    find "$INSTALL_DIR" \( -path "${writable[0]}" -o -path "${writable[1]}" \) -prune \
+        -o \! -type l -exec chmod go-w {} + \
+        || warn "Some files are still writable by $WEB_GROUP. Check modes under $INSTALL_DIR before trusting this install."
+
+    find "${writable[@]}" \! -type l -exec chown -h "$WEB_USER:$WEB_GROUP" {} + \
         || warn "Some files could not be given to $WEB_USER. Check ownership under $INSTALL_DIR before trusting this install."
 
-    chmod -R u+rwX "$INSTALL_DIR/storage" "$INSTALL_DIR/bootstrap/cache"
+    chmod -R u+rwX "${writable[@]}"
+
+    # PHP reads the configuration and never writes it.
+    if [[ -f "$INSTALL_DIR/.env" ]]; then
+        chown "root:$WEB_GROUP" "$INSTALL_DIR/.env"
+        chmod 640 "$INSTALL_DIR/.env"
+    fi
+
+    # public/ is root's now, so storage:link -- run as the web server's user
+    # by projectsend:update -- cannot make the link itself. Made here, the
+    # same absolute link it would make.
+    ln -sfn "$INSTALL_DIR/storage/app/public" "$INSTALL_DIR/public/storage"
 
     say "Bringing the installation in line with the new code"
 

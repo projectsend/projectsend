@@ -236,13 +236,22 @@ logged in. See [Sending email](#sending-email).
 ## Step 4 — Set the file permissions
 
 ProjectSend writes to two folders: `storage/` (uploaded files, logs, sessions, cache) and
-`bootstrap/cache/`. Both need to be writable by the user your web server runs as — usually
-`www-data`, sometimes `nginx`.
+`bootstrap/cache/`. Those two belong to the user your web server runs as — usually `www-data`,
+sometimes `nginx`. Everything else stays owned by root, so that nothing running as the web server
+can change the application's code, or `update.sh`, which you run as root.
 
 ```sh
-sudo chown -R www-data:www-data /var/www/projectsend
-sudo chmod -R 775 /var/www/projectsend/storage /var/www/projectsend/bootstrap/cache
+cd /var/www/projectsend
+sudo chown -R root:www-data .
+sudo chmod -R go-w .
+sudo chown -R www-data:www-data storage bootstrap/cache
+sudo chmod -R 775 storage bootstrap/cache
+sudo chmod 640 .env
+sudo ln -sfn /var/www/projectsend/storage/app/public public/storage
 ```
+
+The last line is the link uploaded logos are served through. The web server's user cannot create it
+itself, because `public/` is root's.
 
 ### If your web server and PHP-FPM are different users
 
@@ -306,18 +315,17 @@ Some panels expose this as a "umask" field instead. Restart PHP-FPM afterwards, 
 
 ## Step 5 — Prepare the application
 
-Three commands. Run them from the install directory, as the web server's user, so that everything
-they create ends up with the right owner:
+Two commands, from the install directory:
 
 ```sh
-sudo -u www-data php artisan key:generate
+sudo sed -i "s|^APP_KEY=.*|APP_KEY=$(sudo -u www-data php artisan key:generate --show)|" .env
 sudo -u www-data php artisan migrate --force
-sudo -u www-data php artisan storage:link
 ```
 
-What they do: the first generates the secret key used to encrypt sessions and cookies (it writes
-itself into your `.env`); the second creates all the database tables; the third makes public assets
-like your logo reachable from the web.
+What they do: the first generates the secret key used to encrypt sessions and cookies and writes it
+into your `.env` (as root, since `.env` is root's; PHP only reads it); the second creates all the
+database tables, as the web server's user so that anything it creates has the right owner. The link
+that makes your logo reachable from the web was made in step 4.
 
 > Keep a copy of `APP_KEY` with your backups. Anything encrypted with it — including saved
 > credentials for your mail server — cannot be read back without it.
@@ -682,8 +690,8 @@ them. On shared hosting, where it is not yours, keep the note and re-apply it.
 `storage/` or `bootstrap/cache/` is not writable by the web server user. Step 4.
 
 **`php artisan` says "Table 'sessions' doesn't exist".**
-Something reached the database before `migrate` created its tables. Finish step 5 in order —
-`key:generate`, then `migrate`, then `storage:link`.
+Something reached the database before `migrate` created its tables. Finish step 5 in order: the
+key, then `migrate`.
 
 **Every address redirects me to the setup screen.**
 That is correct behaviour until the first administrator exists. Finish step 7. If you have already

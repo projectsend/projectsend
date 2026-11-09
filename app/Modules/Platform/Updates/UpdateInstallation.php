@@ -122,7 +122,20 @@ class UpdateInstallation
         // followed UPDATE.md's "unpack beside it and swap the directories"
         // advice loses the link entirely, and nothing in the documented
         // sequence ever put it back.
-        $this->artisan('storage:link', ['--force' => true], $output);
+        //
+        // Left alone when it is already right. update.sh makes it as root,
+        // because public/ is root's and this runs as the web server's
+        // user: asked to replace a link it cannot remove, storage:link
+        // fails to delete it quietly and then throws on creating it.
+        $link = public_path('storage');
+
+        if (! (is_link($link) && readlink($link) === storage_path('app/public'))) {
+            try {
+                $this->artisan('storage:link', ['--force' => true], $output);
+            } catch (Throwable $exception) {
+                $result['warnings'][] = 'public/storage could not be linked to storage/app/public, so uploaded logos will not show: '.$exception->getMessage();
+            }
+        }
 
         // Read before anything is cleared: this is the only moment the
         // question "was this installation using the optional caches?" can

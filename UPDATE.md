@@ -194,7 +194,10 @@ The script is not magic, and there is no harm in running the steps yourself:
 cd /var/www/projectsend
 sudo -u www-data php artisan down
 # unpack the release over this directory, keeping .env and storage/
-sudo chown -R www-data:www-data .
+sudo chown -R root:www-data . && sudo chmod -R go-w .
+sudo chown -R www-data:www-data storage bootstrap/cache
+sudo chmod 640 .env
+sudo ln -sfn "$PWD/storage/app/public" public/storage
 sudo -u www-data php artisan projectsend:update
 sudo systemctl reload php8.4-fpm        # not optional — see below
 sudo systemctl restart projectsend-worker
@@ -260,8 +263,10 @@ It exits on `queue:restart` only once it finishes its current job, and something
 again. Check the service INSTALL.md sets up: `sudo systemctl status projectsend-worker`.
 
 **Permission errors after unpacking.**
-Step 2's `chown`. `storage/` and `bootstrap/cache/` must be writable by the web server user — the
-same requirement as [INSTALL.md](INSTALL.md) step 4.
+Step 2's `chown`. `storage/` and `bootstrap/cache/` must be writable by the web server user, and
+everything else owned by root — the same layout as [INSTALL.md](INSTALL.md) step 4. Installations
+from before 2.8.1 gave the whole directory to the web server user; `update.sh` changes that on its
+next run.
 
 **You need to go back.**
 

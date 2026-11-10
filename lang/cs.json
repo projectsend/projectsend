@@ -2424,5 +2424,18 @@
     "This folder cannot be moved out of there: that folder is shared, and this one holds :count file you may not unshare.|This folder cannot be moved out of there: that folder is shared, and this one holds :count files you may not unshare.": "Tuto složku odtud nelze přesunout: ta složka je sdílená a tato obsahuje soubory, jejichž sdílení nesmíte zrušit. Počet souborů: :count.|Tuto složku odtud nelze přesunout: ta složka je sdílená a tato obsahuje soubory, jejichž sdílení nesmíte zrušit. Počet souborů: :count.",
     "This folder cannot be shared: it holds :count file you may not share.|This folder cannot be shared: it holds :count files you may not share.": "Tuto složku nelze sdílet: obsahuje soubory, které nesmíte sdílet. Počet souborů: :count.|Tuto složku nelze sdílet: obsahuje soubory, které nesmíte sdílet. Počet souborů: :count.",
     "This folder cannot go there: that folder is shared or public, and this one holds :count file you may not share.|This folder cannot go there: that folder is shared or public, and this one holds :count files you may not share.": "Tato složka tam nemůže: ta složka je sdílená nebo veřejná a tato obsahuje soubory, které nesmíte sdílet. Počet souborů: :count.|Tato složka tam nemůže: ta složka je sdílená nebo veřejná a tato obsahuje soubory, které nesmíte sdílet. Počet souborů: :count.",
-    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Jakmile se požadavek začne vztahovat na účet, který ho nesplňuje, přestanou API tokeny a připojení AI asistentů tohoto účtu fungovat."
+    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Jakmile se požadavek začne vztahovat na účet, který ho nesplňuje, přestanou API tokeny a připojení AI asistentů tohoto účtu fungovat.",
+    ":client uploaded :count files": ":client nahrál soubory: :count",
+    ":client uploaded these :count files:": ":client nahrál tyto soubory (:count):",
+    "Admin: client uploaded several files at once (digest)": "Administrace: klient nahrál několik souborů najednou (souhrn)",
+    "A file in this archive is no longer public.": "Soubor v tomto archivu už není veřejný.",
+    "Another upload is creating these folders. Try again in a moment.": "Tyto složky právě vytváří jiné nahrávání. Zkuste to za chvíli znovu.",
+    "Items per page": "Položek na stránku",
+    "Let visitors download several public files as one zip": "Umožnit návštěvníkům stáhnout několik veřejných souborů jako jeden ZIP",
+    "per page": "na stránku",
+    "The folder path of this file is not valid.": "Cesta ke složkám u tohoto souboru není platná.",
+    "Too many zip downloads are being prepared right now. Try again in a few minutes.": "Právě se připravuje příliš mnoho stahování ZIP. Zkuste to znovu za pár minut.",
+    "Uploaded": "Nahráno",
+    "View the files": "Zobrazit soubory",
+    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Návštěvníci mohou ve veřejné složce, skupině nebo na stránce adresáře zaškrtnout soubory a stáhnout je společně. Každý ZIP se vytváří na pozadí, takže spotřebovává čas serveru a místo na disku – pro kohokoli s odkazem. Platí limit velikosti z nastavení stahování ZIP."
 }

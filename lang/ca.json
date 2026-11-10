@@ -2424,5 +2424,18 @@
     "This folder cannot be moved out of there: that folder is shared, and this one holds :count file you may not unshare.|This folder cannot be moved out of there: that folder is shared, and this one holds :count files you may not unshare.": "Aquesta carpeta no es pot treure d'aquí: aquella carpeta està compartida, i aquesta conté :count fitxer que no pots deixar de compartir.|Aquesta carpeta no es pot treure d'aquí: aquella carpeta està compartida, i aquesta conté :count fitxers que no pots deixar de compartir.",
     "This folder cannot be shared: it holds :count file you may not share.|This folder cannot be shared: it holds :count files you may not share.": "Aquesta carpeta no es pot compartir: conté :count fitxer que no pots compartir.|Aquesta carpeta no es pot compartir: conté :count fitxers que no pots compartir.",
     "This folder cannot go there: that folder is shared or public, and this one holds :count file you may not share.|This folder cannot go there: that folder is shared or public, and this one holds :count files you may not share.": "Aquesta carpeta no pot anar aquí: aquella carpeta és compartida o pública, i aquesta conté :count fitxer que no pots compartir.|Aquesta carpeta no pot anar aquí: aquella carpeta és compartida o pública, i aquesta conté :count fitxers que no pots compartir.",
-    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Quan el requisit passi a cobrir un compte que no el compleix, els testimonis d'API i les connexions d'assistents d'IA d'aquest compte deixaran de funcionar."
+    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Quan el requisit passi a cobrir un compte que no el compleix, els testimonis d'API i les connexions d'assistents d'IA d'aquest compte deixaran de funcionar.",
+    ":client uploaded :count files": ":client ha pujat :count fitxers",
+    ":client uploaded these :count files:": ":client ha pujat aquests :count fitxers:",
+    "Admin: client uploaded several files at once (digest)": "Administració: un client ha pujat diversos fitxers alhora (resum)",
+    "A file in this archive is no longer public.": "Un fitxer d’aquest ZIP ja no és públic.",
+    "Another upload is creating these folders. Try again in a moment.": "Una altra pujada està creant aquestes carpetes. Torna-ho a provar d’aquí a un moment.",
+    "Items per page": "Elements per pàgina",
+    "Let visitors download several public files as one zip": "Permet que els visitants descarreguin diversos fitxers públics en un sol ZIP",
+    "per page": "per pàgina",
+    "The folder path of this file is not valid.": "El camí de carpetes d’aquest fitxer no és vàlid.",
+    "Too many zip downloads are being prepared right now. Try again in a few minutes.": "Ara mateix s’estan preparant massa descàrregues ZIP. Torna-ho a provar d’aquí a uns minuts.",
+    "Uploaded": "Pujat",
+    "View the files": "Mostra els fitxers",
+    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Els visitants poden marcar fitxers en una carpeta pública, un grup o la pàgina del directori i descarregar-los junts. Cada ZIP es crea en segon pla, així que consumeix temps de servidor i espai de disc per a qualsevol persona amb l’enllaç. S’aplica el límit de mida de la configuració de descàrregues ZIP."
 }

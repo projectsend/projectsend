@@ -2424,5 +2424,18 @@
     "This folder cannot be moved out of there: that folder is shared, and this one holds :count file you may not unshare.|This folder cannot be moved out of there: that folder is shared, and this one holds :count files you may not unshare.": "Эту папку нельзя переместить оттуда: та папка открыта для общего доступа, а в этой есть файлы, доступ к которым вам нельзя закрывать. Файлов: :count.|Эту папку нельзя переместить оттуда: та папка открыта для общего доступа, а в этой есть файлы, доступ к которым вам нельзя закрывать. Файлов: :count.",
     "This folder cannot be shared: it holds :count file you may not share.|This folder cannot be shared: it holds :count files you may not share.": "Этой папкой нельзя поделиться: в ней есть файлы, которыми вам нельзя делиться. Файлов: :count.|Этой папкой нельзя поделиться: в ней есть файлы, которыми вам нельзя делиться. Файлов: :count.",
     "This folder cannot go there: that folder is shared or public, and this one holds :count file you may not share.|This folder cannot go there: that folder is shared or public, and this one holds :count files you may not share.": "Эту папку нельзя поместить туда: та папка открыта для общего доступа или общедоступна, а в этой есть файлы, которыми вам нельзя делиться. Файлов: :count.|Эту папку нельзя поместить туда: та папка открыта для общего доступа или общедоступна, а в этой есть файлы, которыми вам нельзя делиться. Файлов: :count.",
-    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Когда требование начнёт распространяться на учётную запись, которая ему не соответствует, её токены API и подключения ИИ-ассистентов перестанут работать."
+    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Когда требование начнёт распространяться на учётную запись, которая ему не соответствует, её токены API и подключения ИИ-ассистентов перестанут работать.",
+    ":client uploaded :count files": ":client загрузил файлы: :count",
+    ":client uploaded these :count files:": ":client загрузил эти файлы (:count):",
+    "Admin: client uploaded several files at once (digest)": "Администрирование: клиент загрузил несколько файлов за раз (сводка)",
+    "A file in this archive is no longer public.": "Один из файлов в этом архиве больше не публичный.",
+    "Another upload is creating these folders. Try again in a moment.": "Эти папки сейчас создаёт другая загрузка. Попробуйте ещё раз через мгновение.",
+    "Items per page": "Элементов на странице",
+    "Let visitors download several public files as one zip": "Разрешить посетителям скачивать несколько публичных файлов одним ZIP",
+    "per page": "на странице",
+    "The folder path of this file is not valid.": "Путь к папкам у этого файла недопустим.",
+    "Too many zip downloads are being prepared right now. Try again in a few minutes.": "Сейчас готовится слишком много ZIP-архивов. Попробуйте снова через несколько минут.",
+    "Uploaded": "Загружен",
+    "View the files": "Открыть файлы",
+    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Посетители могут отметить файлы в публичной папке, группе или на странице каталога и скачать их вместе. Каждый ZIP собирается в фоне, поэтому тратит время сервера и место на диске — для любого, у кого есть ссылка. Действует ограничение размера из настроек ZIP-загрузок."
 }

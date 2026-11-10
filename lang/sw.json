@@ -2424,5 +2424,18 @@
     "This folder cannot be moved out of there: that folder is shared, and this one holds :count file you may not unshare.|This folder cannot be moved out of there: that folder is shared, and this one holds :count files you may not unshare.": "Folda hii haiwezi kuhamishwa kutoka hapo: folda ile inashirikiwa, na hii ina faili :count ambayo huruhusiwi kuacha kuishiriki.|Folda hii haiwezi kuhamishwa kutoka hapo: folda ile inashirikiwa, na hii ina faili :count ambazo huruhusiwi kuacha kuzishiriki.",
     "This folder cannot be shared: it holds :count file you may not share.|This folder cannot be shared: it holds :count files you may not share.": "Folda hii haiwezi kushirikiwa: ina faili :count ambayo huruhusiwi kushiriki.|Folda hii haiwezi kushirikiwa: ina faili :count ambazo huruhusiwi kushiriki.",
     "This folder cannot go there: that folder is shared or public, and this one holds :count file you may not share.|This folder cannot go there: that folder is shared or public, and this one holds :count files you may not share.": "Folda hii haiwezi kwenda hapo: folda ile inashirikiwa au ni ya umma, na hii ina faili :count ambayo huruhusiwi kushiriki.|Folda hii haiwezi kwenda hapo: folda ile inashirikiwa au ni ya umma, na hii ina faili :count ambazo huruhusiwi kushiriki.",
-    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Sharti linapoanza kuhusu akaunti ambayo haijalitimiza, tokeni za API na miunganisho ya wasaidizi wa AI ya akaunti hiyo huacha kufanya kazi."
+    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Sharti linapoanza kuhusu akaunti ambayo haijalitimiza, tokeni za API na miunganisho ya wasaidizi wa AI ya akaunti hiyo huacha kufanya kazi.",
+    ":client uploaded :count files": ":client amepakia faili :count",
+    ":client uploaded these :count files:": ":client amepakia faili hizi :count:",
+    "Admin: client uploaded several files at once (digest)": "Usimamizi: mteja amepakia faili kadhaa kwa mpigo (muhtasari)",
+    "A file in this archive is no longer public.": "Faili moja katika kumbukumbu hii si ya umma tena.",
+    "Another upload is creating these folders. Try again in a moment.": "Upakiaji mwingine unaunda folda hizi sasa hivi. Jaribu tena baada ya muda mfupi.",
+    "Items per page": "Vipengee kwa kila ukurasa",
+    "Let visitors download several public files as one zip": "Ruhusu wageni kupakua faili kadhaa za umma kama ZIP moja",
+    "per page": "kwa kila ukurasa",
+    "The folder path of this file is not valid.": "Njia ya folda ya faili hii si sahihi.",
+    "Too many zip downloads are being prepared right now. Try again in a few minutes.": "ZIP nyingi mno zinatayarishwa kwa sasa. Jaribu tena baada ya dakika chache.",
+    "Uploaded": "Imepakiwa",
+    "View the files": "Angalia faili",
+    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Wageni wanaweza kuchagua faili kwenye folda ya umma, kikundi au ukurasa wa saraka na kuzipakua pamoja. Kila ZIP hutengenezwa chinichini, kwa hivyo hutumia muda wa seva na nafasi ya diski kwa yeyote mwenye kiungo. Kikomo cha ukubwa kutoka kwenye mipangilio ya upakuaji wa ZIP kinatumika."
 }

@@ -2424,5 +2424,18 @@
     "This folder cannot be moved out of there: that folder is shared, and this one holds :count file you may not unshare.|This folder cannot be moved out of there: that folder is shared, and this one holds :count files you may not unshare.": "Không thể chuyển thư mục này ra khỏi đó: thư mục kia đang được chia sẻ, và thư mục này chứa :count tệp mà bạn không được hủy chia sẻ.|Không thể chuyển thư mục này ra khỏi đó: thư mục kia đang được chia sẻ, và thư mục này chứa :count tệp mà bạn không được hủy chia sẻ.",
     "This folder cannot be shared: it holds :count file you may not share.|This folder cannot be shared: it holds :count files you may not share.": "Không thể chia sẻ thư mục này: nó chứa :count tệp mà bạn không được chia sẻ.|Không thể chia sẻ thư mục này: nó chứa :count tệp mà bạn không được chia sẻ.",
     "This folder cannot go there: that folder is shared or public, and this one holds :count file you may not share.|This folder cannot go there: that folder is shared or public, and this one holds :count files you may not share.": "Không thể đặt thư mục này vào đó: thư mục kia đang được chia sẻ hoặc công khai, và thư mục này chứa :count tệp mà bạn không được chia sẻ.|Không thể đặt thư mục này vào đó: thư mục kia đang được chia sẻ hoặc công khai, và thư mục này chứa :count tệp mà bạn không được chia sẻ.",
-    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Khi yêu cầu bắt đầu áp dụng cho một tài khoản chưa đáp ứng, các token API và kết nối trợ lý AI của tài khoản đó sẽ ngừng hoạt động."
+    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Khi yêu cầu bắt đầu áp dụng cho một tài khoản chưa đáp ứng, các token API và kết nối trợ lý AI của tài khoản đó sẽ ngừng hoạt động.",
+    ":client uploaded :count files": ":client đã tải lên :count tệp",
+    ":client uploaded these :count files:": ":client đã tải lên :count tệp sau:",
+    "Admin: client uploaded several files at once (digest)": "Quản trị: khách hàng tải lên nhiều tệp cùng lúc (tóm tắt)",
+    "A file in this archive is no longer public.": "Một tệp trong tệp nén này không còn công khai.",
+    "Another upload is creating these folders. Try again in a moment.": "Một lần tải lên khác đang tạo các thư mục này. Hãy thử lại sau giây lát.",
+    "Items per page": "Số mục mỗi trang",
+    "Let visitors download several public files as one zip": "Cho phép khách truy cập tải nhiều tệp công khai dưới dạng một ZIP",
+    "per page": "mỗi trang",
+    "The folder path of this file is not valid.": "Đường dẫn thư mục của tệp này không hợp lệ.",
+    "Too many zip downloads are being prepared right now. Try again in a few minutes.": "Hiện đang chuẩn bị quá nhiều bản tải xuống ZIP. Hãy thử lại sau vài phút.",
+    "Uploaded": "Ngày tải lên",
+    "View the files": "Xem các tệp",
+    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Khách truy cập có thể đánh dấu tệp trong một thư mục công khai, một nhóm hoặc trang danh mục rồi tải xuống cùng lúc. Mỗi tệp ZIP được tạo ở chế độ nền, nên sẽ dùng thời gian máy chủ và dung lượng đĩa cho bất kỳ ai có liên kết. Giới hạn kích thước trong cài đặt tải xuống ZIP vẫn được áp dụng."
 }

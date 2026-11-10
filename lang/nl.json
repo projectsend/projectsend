@@ -2424,5 +2424,18 @@
     "This folder cannot be moved out of there: that folder is shared, and this one holds :count file you may not unshare.|This folder cannot be moved out of there: that folder is shared, and this one holds :count files you may not unshare.": "Deze map kan daar niet uit worden verplaatst: die map is gedeeld, en deze bevat :count bestand waarvan je het delen niet mag stoppen.|Deze map kan daar niet uit worden verplaatst: die map is gedeeld, en deze bevat :count bestanden waarvan je het delen niet mag stoppen.",
     "This folder cannot be shared: it holds :count file you may not share.|This folder cannot be shared: it holds :count files you may not share.": "Deze map kan niet worden gedeeld: hij bevat :count bestand dat je niet mag delen.|Deze map kan niet worden gedeeld: hij bevat :count bestanden die je niet mag delen.",
     "This folder cannot go there: that folder is shared or public, and this one holds :count file you may not share.|This folder cannot go there: that folder is shared or public, and this one holds :count files you may not share.": "Deze map kan daar niet heen: die map is gedeeld of openbaar, en deze bevat :count bestand dat je niet mag delen.|Deze map kan daar niet heen: die map is gedeeld of openbaar, en deze bevat :count bestanden die je niet mag delen.",
-    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Zodra de vereiste gaat gelden voor een account dat er niet aan voldoet, werken de API-tokens en AI-assistentkoppelingen van dat account niet meer."
+    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Zodra de vereiste gaat gelden voor een account dat er niet aan voldoet, werken de API-tokens en AI-assistentkoppelingen van dat account niet meer.",
+    ":client uploaded :count files": ":client heeft :count bestanden geüpload",
+    ":client uploaded these :count files:": ":client heeft deze :count bestanden geüpload:",
+    "Admin: client uploaded several files at once (digest)": "Beheer: klant heeft meerdere bestanden tegelijk geüpload (samenvatting)",
+    "A file in this archive is no longer public.": "Een bestand in dit archief is niet meer openbaar.",
+    "Another upload is creating these folders. Try again in a moment.": "Een andere upload maakt deze mappen net aan. Probeer het zo opnieuw.",
+    "Items per page": "Items per pagina",
+    "Let visitors download several public files as one zip": "Bezoekers meerdere openbare bestanden als één ZIP laten downloaden",
+    "per page": "per pagina",
+    "The folder path of this file is not valid.": "Het mappad van dit bestand is ongeldig.",
+    "Too many zip downloads are being prepared right now. Try again in a few minutes.": "Er worden nu te veel ZIP-downloads voorbereid. Probeer het over een paar minuten opnieuw.",
+    "Uploaded": "Geüpload",
+    "View the files": "Bestanden bekijken",
+    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Bezoekers kunnen in een openbare map, een groep of op de overzichtspagina bestanden aanvinken en samen downloaden. Elke ZIP wordt op de achtergrond gemaakt, dus dit kost servertijd en schijfruimte voor iedereen met de link. De groottelimiet uit de instellingen voor ZIP-downloads geldt."
 }

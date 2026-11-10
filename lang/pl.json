@@ -2424,5 +2424,18 @@
     "This folder cannot be moved out of there: that folder is shared, and this one holds :count file you may not unshare.|This folder cannot be moved out of there: that folder is shared, and this one holds :count files you may not unshare.": "Tego folderu nie można stamtąd przenieść: tamten folder jest udostępniony, a ten zawiera pliki, których udostępniania nie możesz cofnąć. Liczba plików: :count.|Tego folderu nie można stamtąd przenieść: tamten folder jest udostępniony, a ten zawiera pliki, których udostępniania nie możesz cofnąć. Liczba plików: :count.",
     "This folder cannot be shared: it holds :count file you may not share.|This folder cannot be shared: it holds :count files you may not share.": "Tego folderu nie można udostępnić: zawiera pliki, których nie możesz udostępniać. Liczba plików: :count.|Tego folderu nie można udostępnić: zawiera pliki, których nie możesz udostępniać. Liczba plików: :count.",
     "This folder cannot go there: that folder is shared or public, and this one holds :count file you may not share.|This folder cannot go there: that folder is shared or public, and this one holds :count files you may not share.": "Ten folder nie może tam trafić: tamten folder jest udostępniony lub publiczny, a ten zawiera pliki, których nie możesz udostępniać. Liczba plików: :count.|Ten folder nie może tam trafić: tamten folder jest udostępniony lub publiczny, a ten zawiera pliki, których nie możesz udostępniać. Liczba plików: :count.",
-    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Gdy wymóg zacznie obejmować konto, które go nie spełnia, tokeny API i połączenia asystentów AI tego konta przestaną działać."
+    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Gdy wymóg zacznie obejmować konto, które go nie spełnia, tokeny API i połączenia asystentów AI tego konta przestaną działać.",
+    ":client uploaded :count files": ":client przesłał pliki: :count",
+    ":client uploaded these :count files:": ":client przesłał następujące pliki (:count):",
+    "Admin: client uploaded several files at once (digest)": "Administracja: klient przesłał kilka plików naraz (podsumowanie)",
+    "A file in this archive is no longer public.": "Plik w tym archiwum nie jest już publiczny.",
+    "Another upload is creating these folders. Try again in a moment.": "Inne przesyłanie właśnie tworzy te foldery. Spróbuj ponownie za chwilę.",
+    "Items per page": "Elementów na stronę",
+    "Let visitors download several public files as one zip": "Zezwól odwiedzającym pobierać kilka plików publicznych jako jeden ZIP",
+    "per page": "na stronę",
+    "The folder path of this file is not valid.": "Ścieżka folderów tego pliku jest nieprawidłowa.",
+    "Too many zip downloads are being prepared right now. Try again in a few minutes.": "W tej chwili przygotowywanych jest zbyt wiele archiwów ZIP. Spróbuj ponownie za kilka minut.",
+    "Uploaded": "Przesłano",
+    "View the files": "Pokaż pliki",
+    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Odwiedzający mogą zaznaczyć pliki w publicznym folderze, grupie lub na stronie katalogu i pobrać je razem. Każdy ZIP powstaje w tle, więc zużywa czas serwera i miejsce na dysku – dla każdego, kto ma link. Obowiązuje limit rozmiaru z ustawień pobierania ZIP."
 }

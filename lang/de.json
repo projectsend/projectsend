@@ -2424,5 +2424,18 @@
     "This folder cannot be moved out of there: that folder is shared, and this one holds :count file you may not unshare.|This folder cannot be moved out of there: that folder is shared, and this one holds :count files you may not unshare.": "Dieser Ordner kann nicht dort herausbewegt werden: Jener Ordner ist geteilt, und dieser enthält :count Datei, deren Freigabe Sie nicht aufheben dürfen.|Dieser Ordner kann nicht dort herausbewegt werden: Jener Ordner ist geteilt, und dieser enthält :count Dateien, deren Freigabe Sie nicht aufheben dürfen.",
     "This folder cannot be shared: it holds :count file you may not share.|This folder cannot be shared: it holds :count files you may not share.": "Dieser Ordner kann nicht geteilt werden: Er enthält :count Datei, die Sie nicht teilen dürfen.|Dieser Ordner kann nicht geteilt werden: Er enthält :count Dateien, die Sie nicht teilen dürfen.",
     "This folder cannot go there: that folder is shared or public, and this one holds :count file you may not share.|This folder cannot go there: that folder is shared or public, and this one holds :count files you may not share.": "Dieser Ordner kann nicht dorthin: Jener Ordner ist geteilt oder öffentlich, und dieser enthält :count Datei, die Sie nicht teilen dürfen.|Dieser Ordner kann nicht dorthin: Jener Ordner ist geteilt oder öffentlich, und dieser enthält :count Dateien, die Sie nicht teilen dürfen.",
-    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Sobald die Anforderung ein Konto erfasst, das sie nicht erfüllt, funktionieren dessen API-Token und KI-Assistent-Verbindungen nicht mehr."
+    "When the requirement starts to cover an account without it, that account's API tokens and AI assistant connections stop working.": "Sobald die Anforderung ein Konto erfasst, das sie nicht erfüllt, funktionieren dessen API-Token und KI-Assistent-Verbindungen nicht mehr.",
+    ":client uploaded :count files": ":client hat :count Dateien hochgeladen",
+    ":client uploaded these :count files:": ":client hat diese :count Dateien hochgeladen:",
+    "Admin: client uploaded several files at once (digest)": "Administrator: Kunde hat mehrere Dateien auf einmal hochgeladen (Zusammenfassung)",
+    "A file in this archive is no longer public.": "Eine Datei in diesem Archiv ist nicht mehr öffentlich.",
+    "Another upload is creating these folders. Try again in a moment.": "Ein anderer Upload legt diese Ordner gerade an. Versuchen Sie es gleich noch einmal.",
+    "Items per page": "Einträge pro Seite",
+    "Let visitors download several public files as one zip": "Besucher dürfen mehrere öffentliche Dateien als ZIP herunterladen",
+    "per page": "pro Seite",
+    "The folder path of this file is not valid.": "Der Ordnerpfad dieser Datei ist ungültig.",
+    "Too many zip downloads are being prepared right now. Try again in a few minutes.": "Gerade werden zu viele ZIP-Downloads vorbereitet. Versuchen Sie es in ein paar Minuten erneut.",
+    "Uploaded": "Hochgeladen",
+    "View the files": "Dateien ansehen",
+    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Besucher können in einem öffentlichen Ordner, einer Gruppe oder auf der Verzeichnisseite Dateien auswählen und gemeinsam herunterladen. Jedes ZIP wird im Hintergrund erstellt und beansprucht daher Serverzeit und Speicherplatz – für jeden, der den Link hat. Es gilt die Größenbeschränkung aus den Einstellungen für ZIP-Downloads."
 }

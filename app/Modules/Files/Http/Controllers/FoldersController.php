@@ -49,6 +49,9 @@ use Inertia\Response;
  */
 class FoldersController extends Controller
 {
+    /** @var list<int>|null */
+    private ?array $scopedGroupIds = null;
+
     public function __construct(
         private readonly FolderService $folders,
         private readonly StaffLibraryScope $scope,
@@ -100,7 +103,18 @@ class FoldersController extends Controller
         ] = $this->listing($request, $user);
         $perPage = Pagination::perPage($request);
 
-        $folders->withCount(['children', 'files']);
+        // Counted through the same scope the rows come from. Counting the
+        // whole folder told a staff member limited to some clients how many
+        // files and subfolders they were not allowed to see.
+        $folders->withCount($user->isClientScoped()
+            ? [
+                // qualifyColumn, not a literal 'folders.id': counting a
+                // folder's children joins folders to itself under an alias,
+                // and the literal named the outer folder instead.
+                'children' => fn (Builder $q) => $q->whereIn($q->qualifyColumn('id'), $this->scope->folders($user)->select('folders.id')),
+                'files' => fn (Builder $q) => $q->whereIn($q->qualifyColumn('id'), $this->scope->files($user)->select('files.id')),
+            ]
+            : ['children', 'files']);
         // `downloads` unconditionally — the library has always shown a
         // downloads column. The viewer's own count is only added when
         // something on this install is actually limited.
@@ -425,6 +439,34 @@ class FoldersController extends Controller
     }
 
     /**
+     * How many clients and groups a folder is shared with, as far as this
+     * staff member may know: for one limited to some clients, only their
+     * clients and the groups they may share with -- the same rule as the
+     * share targets they are offered (StaffLibraryScope).
+     */
+    private function visibleShareCount(User $user, Folder $folder): int
+    {
+        $clientIds = $this->scope->assignableClientIds($user);
+
+        if ($clientIds === null) {
+            return $folder->assignments()->count();
+        }
+
+        // Once per request, not once per row.
+        $groupIds = $this->scopedGroupIds ??= ($this->scope->assignableGroupIds($user) ?? []);
+
+        return $folder->assignments()
+            ->where(fn (Builder $any) => $any
+                ->where(fn (Builder $client) => $client
+                    ->where('assignable_type', (new User)->getMorphClass())
+                    ->whereIn('assignable_id', $clientIds))
+                ->orWhere(fn (Builder $group) => $group
+                    ->where('assignable_type', (new Group)->getMorphClass())
+                    ->whereIn('assignable_id', $groupIds)))
+            ->count();
+    }
+
+    /**
      * @return array<string, mixed>
      */
     private function folderRow(User $user, Folder $folder): array
@@ -445,7 +487,7 @@ class FoldersController extends Controller
                 : null,
             'children_count' => $folder->children_count,
             'files_count' => $folder->files_count,
-            'shared_count' => $folder->assignments()->count(),
+            'shared_count' => $this->visibleShareCount($user, $folder),
             'can_update' => Gate::forUser($user)->allows('update', $folder),
             'can_delete' => Gate::forUser($user)->allows('delete', $folder),
         ];

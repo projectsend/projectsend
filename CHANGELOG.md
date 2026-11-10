@@ -10,6 +10,26 @@ Anything under **⚠️ Important — do these yourself** is something you have 
 we did. It sits at the top of a release for that reason. Older entries call the same section
 **Upgrade notes**.
 
+## Unreleased
+
+### Worth knowing before you upgrade
+
+Nothing here needs doing. These are changes you may notice, or choices you may want to make.
+
+- **"A client uploaded a file" emails now come in batches.** The addresses under admin notification
+  emails used to get one email per uploaded file, so a client uploading a folder of 200 drawings sent
+  200 of them. Now they get one email once the client has stopped uploading for two minutes, listing
+  every file, and at least one every fifteen minutes while an upload is still going. A single file
+  still sends the email you know. The batched email has its own editable template, "Admin: client
+  uploaded several files at once", under email templates.
+
+  **Who this affected.** Every installation that sends these emails. If your queue runs on the
+  `sync` driver, the emails still go out at once, one per file, because a sync queue cannot wait.
+- **Visitors can now be allowed to download several public files as one zip.** This is off until you
+  turn it on, under public listing settings. Zips are built on the server, so anyone with a public
+  link can use server time and some disk space. The size limit from the zip download settings
+  applies, and visitors' zips share a fixed amount of disk between them.
+
 ## 2.8.1 — 9 November 2026
 
 A security update. It tightens who can see and change what, mostly for staff limited to some clients,

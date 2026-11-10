@@ -12,8 +12,9 @@ use App\Modules\Clients\ClientStorageUsage;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Folders\ClientHomeFolders;
+use App\Modules\Files\Folders\UploadFolderPath;
 use App\Modules\Files\Models\Folder;
-use App\Modules\Files\Notifications\AdminClientUploadedNotification;
+use App\Modules\Files\Uploads\ClientUploadMail;
 use App\Modules\Files\Uploads\LocalPartStore;
 use App\Modules\Files\Uploads\PartTooLargeException;
 use App\Modules\Files\Uploads\StoreUploadedFile;
@@ -34,7 +35,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -61,6 +61,7 @@ class ChunkedUploadsController extends Controller
         private readonly ActivityLogger $activity,
         private readonly ClientHomeFolders $homeFolders,
         private readonly FileVersions $versions,
+        private readonly UploadFolderPath $folderPaths,
     ) {}
 
     /**
@@ -79,6 +80,12 @@ class ChunkedUploadsController extends Controller
             'description' => ['nullable', 'string', 'max:2000'],
             'folder_id' => Rules::folderId(),
             'previous_file_id' => ['nullable', 'integer'],
+            // The file's path inside a folder uploaded whole, such as
+            // "Project_A/Drawings/plan.pdf". Each folder in it is found, or
+            // created, inside folder_id, and the file goes in the last one.
+            // Creating a folder needs permission to create folders. Ignored
+            // together with previous_file_id.
+            'relative_path' => ['nullable', 'string', 'max:4096'],
         ]);
 
         $maxMb = (int) $this->settings->get(Setting::MaxFileSizeMb);
@@ -106,7 +113,21 @@ class ChunkedUploadsController extends Controller
             $folder = $this->homeFolders->for($user);
         }
 
+        // The starting folder has to be one this person may upload into
+        // before anything is created inside it.
         abort_unless(Folder::uploadableBy($user, $folder), 403);
+
+        // A file from inside a dropped folder goes into the matching
+        // subfolder, made if it is not there yet, under the same rules as
+        // the New folder button. Not for a new version of a file: that
+        // belongs beside the one it replaces.
+        if (($validated['previous_file_id'] ?? null) === null) {
+            $folder = $this->folderPaths->resolve($user, $folder, $validated['relative_path'] ?? null);
+
+            // And the folder it ends up in, which may be one that already
+            // existed and was only found.
+            abort_unless(Folder::uploadableBy($user, $folder), 403);
+        }
 
         // The session cap and the quota below are both "count what is open,
         // then open one more", so two requests starting together each saw
@@ -545,12 +566,9 @@ class ChunkedUploadsController extends Controller
         // member uploading their own file isn't "someone to notify
         // about", only a client uploading is.
         if ($user->isClient()) {
-            if ($this->settings->get(Setting::EmailNotificationsEnabled) === true) {
-                $adminEmails = $this->settings->get(Setting::AdminNotificationEmails);
-                foreach (is_array($adminEmails) ? $adminEmails : [] as $email) {
-                    Notification::route('mail', $email)->notify(new AdminClientUploadedNotification($user->name, $file->name, $file->id));
-                }
-            }
+            // One email per burst rather than per file: a folder upload is
+            // hundreds of files. See ClientUploadMail.
+            app(ClientUploadMail::class)->queue($user, $file);
 
             $this->notifier->send('client_uploaded', $this->staffWhoCanSeeUploads($user), subject: $file, data: [
                 'clientName' => $user->name,

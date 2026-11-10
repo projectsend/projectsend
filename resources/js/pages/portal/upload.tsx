@@ -1,5 +1,5 @@
-import { type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { type BreadcrumbItem, type SharedData } from '@/types';
+import { Head, router, usePage } from '@inertiajs/react';
 import { Info } from 'lucide-react';
 import { useState } from 'react';
 
@@ -39,6 +39,10 @@ export default function PortalUpload({
     version_candidates_url,
 }: PortalUploadProps) {
     const { t } = useTranslation();
+    // Dropping a folder recreates its subfolders only for someone who may
+    // make folders; anyone else's drop flattens, as it always has.
+    const { auth } = usePage<SharedData>().props;
+    const canMakeFolders = auth.permissions.includes('create_own_folders') && auth.permissions.includes('upload');
     const [previousFileId, setPreviousFileId] = useState<number | null>(null);
     const [versionError, setVersionError] = useState<string | null>(null);
 
@@ -100,6 +104,7 @@ export default function PortalUpload({
                 {versionError !== null && <p className="text-destructive mb-4 text-sm">{versionError}</p>}
 
                 <ChunkedUploadDashboard
+                    keepFolders={canMakeFolders && previousFileId === null}
                     maxFileSizeMb={max_file_size_mb}
                     partSizeMb={part_size_mb}
                     allowedExtensions={allowed_extensions}

@@ -8,12 +8,14 @@ use App\Http\Controllers\Controller;
 use App\Modules\Files\Access\DownloadAllowance;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
+use App\Modules\Files\Models\ZipDownload;
 use App\Modules\Groups\Http\Controllers\Concerns\InteractsWithPublicListing;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Settings\Settings;
 use App\Modules\Platform\Theming\PublicThemeRegistry;
 use App\Support\Pagination;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Inertia\Inertia;
 use Inertia\Response as InertiaResponse;
@@ -37,8 +39,6 @@ class PublicFoldersController extends Controller
 {
     use InteractsWithPublicListing;
 
-    private const PER_PAGE = 25;
-
     public function __construct(
         private readonly Settings $settings,
         private readonly PublicThemeRegistry $themes,
@@ -46,19 +46,20 @@ class PublicFoldersController extends Controller
         private readonly DownloadAllowance $allowance,
     ) {}
 
-    public function show(string $publicSlug, string $folderSlug): InertiaResponse|RedirectResponse
+    public function show(Request $request, string $publicSlug, string $folderSlug): InertiaResponse|RedirectResponse
     {
         $this->guardSlug($publicSlug);
 
         $folder = Folder::query()->where('slug', $folderSlug)->where('public', true)->firstOrFail();
 
-        $files = $this->allowance->withCounts(File::query()->publiclyVisibleForFolder($folder), null)
-            ->with('categories')->orderBy('name')
-            ->paginate(self::PER_PAGE)->withQueryString();
+        $order = $this->listingOrder($request);
+        $perPage = Pagination::perPage($request);
+        $files = $this->orderFiles($this->allowance->withCounts(File::query()->publiclyVisibleForFolder($folder), null)->with('categories'), $order)
+            ->paginate($perPage)->withQueryString();
 
         $page = Paginator::resolveCurrentPage();
         if (Pagination::isPastLastPage($files, $page)) {
-            $redirectParams = [$publicSlug, $folderSlug];
+            $redirectParams = [$publicSlug, $folderSlug, ...$this->listingQuery($order, $perPage)];
             $redirectPage = Pagination::redirectPage($files);
             if ($redirectPage !== null) {
                 $redirectParams['page'] = $redirectPage;
@@ -72,7 +73,9 @@ class PublicFoldersController extends Controller
                 'name' => $folder->name,
             ],
             'files' => $files->through(fn (File $file): array => $this->fileProps($file, $publicSlug))->items(),
-            'pagination' => Pagination::meta($files),
+            'pagination' => Pagination::meta($files, choosablePerPage: true),
+            ...$order,
+            'zip' => $this->zipProps($publicSlug, ZipDownload::SCOPE_FOLDER, $folder->slug),
         ]);
     }
 }

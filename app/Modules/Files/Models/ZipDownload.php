@@ -14,7 +14,9 @@ use Illuminate\Support\Carbon;
  * see PurgeZipDownloadsCommand, which removes old rows and their files.
  *
  * @property int $id
- * @property int $requested_by
+ * @property int|null $requested_by  null for a visitor on a public page; see public_scope_type
+ * @property string|null $public_scope_type  'index', 'group' or 'folder' for a visitor's zip, else null
+ * @property int|null $public_scope_id  the group's or folder's id for a visitor's zip
  * @property string $status
  * @property string|null $path
  * @property int $file_count
@@ -34,6 +36,18 @@ class ZipDownload extends Model
     public const STATUS_READY = 'ready';
 
     public const STATUS_FAILED = 'failed';
+
+    public const SCOPE_INDEX = 'index';
+
+    public const SCOPE_GROUP = 'group';
+
+    public const SCOPE_FOLDER = 'folder';
+
+    /** Whether a visitor on a public page asked for this, rather than a signed-in user. */
+    public function isPublic(): bool
+    {
+        return $this->public_scope_type !== null;
+    }
 
     protected $guarded = [];
 

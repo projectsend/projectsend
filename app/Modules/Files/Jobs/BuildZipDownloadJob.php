@@ -11,6 +11,7 @@ use App\Modules\Files\Models\File;
 use App\Modules\Files\Scanning\FileAvailability;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Models\ZipDownload;
+use App\Modules\Groups\PublicListing\PublicFileScope;
 use App\Modules\Platform\Capabilities\Capability;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Settings\Setting;
@@ -121,18 +122,36 @@ class BuildZipDownloadJob implements ShouldQueue
         // even in a folder they hold). Re-deriving also closes the gap
         // between request time and run time — access can be revoked while
         // the job sits in the queue.
-        $requester = User::query()->find($zipDownload->requested_by);
+        //
+        // A visitor on a public page has no account, so the same question
+        // is put to the page instead: what does it offer now? A folder made
+        // private while the job waited offers nothing, and the build stops.
+        if ($zipDownload->isPublic()) {
+            $requester = null;
+            $visible = app(PublicFileScope::class)->files((string) $zipDownload->public_scope_type, $zipDownload->public_scope_id);
 
-        if ($requester === null) {
-            $zipDownload->update([
-                'status' => ZipDownload::STATUS_FAILED,
-                'error' => 'The requesting account no longer exists.',
-            ]);
+            if ($visible === null) {
+                $zipDownload->update([
+                    'status' => ZipDownload::STATUS_FAILED,
+                    'error' => 'This page is no longer public.',
+                ]);
 
-            return;
+                return;
+            }
+        } else {
+            $requester = User::query()->find($zipDownload->requested_by);
+
+            if ($requester === null) {
+                $zipDownload->update([
+                    'status' => ZipDownload::STATUS_FAILED,
+                    'error' => 'The requesting account no longer exists.',
+                ]);
+
+                return;
+            }
+
+            $visible = app(ViewableFileScope::class)->for($requester);
         }
-
-        $visible = app(ViewableFileScope::class)->for($requester);
         $allowance = app(DownloadAllowance::class);
         $availability = app(FileAvailability::class);
 
@@ -404,7 +423,7 @@ class BuildZipDownloadJob implements ShouldQueue
      * @param  list<array{id: int, name: string}>  $skipped
      * @param  array<int, true>  $added  every file really written into the archive, keyed by id
      */
-    private function addFolder(ZipArchive $zip, Folder $folder, User $requester, array &$usedNames, array &$tempFiles, Builder $visible, array &$skipped, array &$added): int
+    private function addFolder(ZipArchive $zip, Folder $folder, ?User $requester, array &$usedNames, array &$tempFiles, Builder $visible, array &$skipped, array &$added): int
     {
         $allowance = app(DownloadAllowance::class);
         $availability = app(FileAvailability::class);

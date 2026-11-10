@@ -16,6 +16,7 @@ use App\Modules\Clients\Notifications\ClientInvitationNotification;
 use App\Modules\Clients\Notifications\ClientWelcomeNotification;
 use App\Modules\Comments\Notifications\CommentDigestNotification;
 use App\Modules\Comments\Notifications\CommentPostedNotification;
+use App\Modules\Files\Notifications\AdminClientUploadDigestNotification;
 use App\Modules\Files\Notifications\AdminClientUploadedNotification;
 use App\Modules\Files\Notifications\FileShareDigestNotification;
 use App\Modules\Files\Notifications\FileSharedNotification;
@@ -141,6 +142,11 @@ class EmailTemplatesController extends Controller
             EmailTemplateSlot::ClientAccountEdited => (new ClientAccountEditedNotification)->toMail($notifiable),
             EmailTemplateSlot::AdminClientRegistered => (new AdminClientRegisteredNotification('Jane Client', 'preview@example.com', pendingApproval: false))->toMail($notifiable),
             EmailTemplateSlot::AdminClientUploaded => (new AdminClientUploadedNotification('Jane Client', 'sample-file.pdf', 0))->toMail($notifiable),
+            EmailTemplateSlot::AdminClientUploadDigest => (new AdminClientUploadDigestNotification('Jane Client', 0, [
+                new PendingNotification(['subject_name' => 'Drawing_001.pdf']),
+                new PendingNotification(['subject_name' => 'Drawing_002.pdf']),
+                new PendingNotification(['subject_name' => 'Report_001.pdf']),
+            ]))->toMail($notifiable),
             EmailTemplateSlot::GroupMembershipRequested => (new GroupMembershipRequestedNotification('Jane Client', 'Sample Group'))->toMail($notifiable),
             EmailTemplateSlot::GroupMembershipApproved => (new GroupMembershipApprovedNotification('Sample Group'))->toMail($notifiable),
             EmailTemplateSlot::GroupMembershipDenied => (new GroupMembershipDeniedNotification('Sample Group'))->toMail($notifiable),

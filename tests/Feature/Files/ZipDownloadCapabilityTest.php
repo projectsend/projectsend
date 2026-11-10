@@ -180,8 +180,9 @@ test('every route that reaches a zip build carries capability:downloads.zip', fu
         });
 
     // Otherwise a refactor that renamed the controller would leave this
-    // test green over nothing.
-    expect($zipRoutes)->toHaveCount(3);
+    // test green over nothing. Three for signed-in users, three for
+    // visitors on public pages (PublicZipDownloadsController).
+    expect($zipRoutes)->toHaveCount(6);
 
     foreach ($zipRoutes as $route) {
         expect(in_array('capability:downloads.zip', $route->gatherMiddleware(), true))

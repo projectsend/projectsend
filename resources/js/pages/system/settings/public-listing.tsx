@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useCapability } from '@/hooks/use-capability';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
 
@@ -17,29 +18,35 @@ interface PublicListingSettingsProps {
     public_listing_enabled: boolean;
     public_listing_slug: string;
     public_listing_preview_enabled: boolean;
+    public_zip_downloads_enabled: boolean;
 }
 
 export default function PublicListingSettings({
     public_listing_enabled,
     public_listing_slug,
     public_listing_preview_enabled,
+    public_zip_downloads_enabled,
 }: PublicListingSettingsProps) {
     const { t } = useTranslation();
+    // Where zips are not offered at all, the switch is not shown and not sent.
+    const canZip = useCapability('downloads.zip');
 
     const breadcrumbs: BreadcrumbItem[] = [
         { title: t('Settings'), href: '/system/settings' },
         { title: t('Public listing'), href: '/system/settings/public-listing' },
     ];
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
+    const { data, setData, patch, transform, errors, processing, recentlySuccessful } = useForm({
         public_listing_enabled: public_listing_enabled,
         public_listing_slug: public_listing_slug,
         public_listing_preview_enabled: public_listing_preview_enabled,
+        public_zip_downloads_enabled: public_zip_downloads_enabled,
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
+        transform(({ public_zip_downloads_enabled: zip, ...rest }) => (canZip ? { ...rest, public_zip_downloads_enabled: zip } : rest));
         patch(route('system-settings.public-listing.update'));
     };
 
@@ -146,6 +153,29 @@ export default function PublicListingSettings({
                         </div>
                         <InputError message={errors.public_listing_preview_enabled} />
                     </div>
+
+                    {canZip && (
+                        <div className="grid gap-2">
+                            <div className="flex items-start gap-2">
+                                <Checkbox
+                                    id="public_zip_downloads_enabled"
+                                    checked={data.public_zip_downloads_enabled}
+                                    onCheckedChange={(checked) => setData('public_zip_downloads_enabled', checked === true)}
+                                />
+                                <div className="grid gap-1">
+                                    <Label htmlFor="public_zip_downloads_enabled" className="font-normal">
+                                        {t('Let visitors download several public files as one zip')}
+                                    </Label>
+                                    <p className="text-muted-foreground text-sm">
+                                        {t(
+                                            'Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.',
+                                        )}
+                                    </p>
+                                </div>
+                            </div>
+                            <InputError message={errors.public_zip_downloads_enabled} />
+                        </div>
+                    )}
 
                     <SaveButton processing={processing} recentlySuccessful={recentlySuccessful} />
                 </form>

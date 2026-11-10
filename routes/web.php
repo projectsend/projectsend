@@ -38,6 +38,7 @@ use App\Modules\Groups\Http\Controllers\GroupsController;
 use App\Modules\Groups\Http\Controllers\MembershipRequestsController;
 use App\Modules\Groups\Http\Controllers\MyGroupsController;
 use App\Modules\Groups\Http\Controllers\PublicFoldersController;
+use App\Modules\Groups\Http\Controllers\PublicZipDownloadsController;
 use App\Modules\Groups\Http\Controllers\PublicGroupsController;
 use App\Modules\Identity\Http\Controllers\AccountConversionController;
 use App\Modules\Identity\Http\Controllers\RolesController;
@@ -442,6 +443,17 @@ Route::get('{publicSlug}/files/{file:slug}/thumbnail', [PublicGroupsController::
 // download ever would. Its own bucket, like every route in this block.
 Route::get('{publicSlug}/files/{file:slug}/preview', [PublicGroupsController::class, 'preview'])->middleware('throttle:240,1,public-preview')->name('public.preview')->fallback();
 Route::get('{publicSlug}/files/{file:slug}/download', [PublicGroupsController::class, 'download'])->middleware('throttle:30,1,public-download')->name('public.download')->fallback();
+// Visitors downloading files they ticked as one zip (#1840). Off unless an
+// administrator turns it on, and behind the zip capability like every other
+// route that queues a build (ZipDownloadCapabilityTest). Asking for a build
+// gets the tightest bucket in this block: anybody can, and each one holds
+// the zips worker. The status poll runs every two seconds while a build is
+// prepared, so it gets room of its own.
+Route::middleware('capability:downloads.zip')->group(function () {
+    Route::post('{publicSlug}/zip-downloads', [PublicZipDownloadsController::class, 'store'])->middleware('throttle:5,1,public-zip')->name('public.zip-downloads.store')->fallback();
+    Route::get('{publicSlug}/zip-downloads/{zipDownload}', [PublicZipDownloadsController::class, 'show'])->middleware('throttle:120,1,public-zip-status')->name('public.zip-downloads.show')->fallback();
+    Route::get('{publicSlug}/zip-downloads/{zipDownload}/download', [PublicZipDownloadsController::class, 'download'])->middleware('throttle:10,1,public-zip-download')->name('public.zip-downloads.download')->fallback();
+});
 // Must be registered before the generic {groupSlug} catch-all below, or
 // "folders" would be swallowed as a group slug value first.
 Route::get('{publicSlug}/folders/{folderSlug}', [PublicFoldersController::class, 'show'])->middleware('throttle:60,1,public-browse')->name('public.folder')->fallback();

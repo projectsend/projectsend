@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Folders\ClientHomeFolders;
-use App\Modules\Files\Folders\FolderReach;
+use App\Modules\Files\Folders\FolderCreationRules;
 use App\Modules\Files\Folders\FolderService;
 use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
@@ -39,32 +39,16 @@ class MyFoldersController extends Controller
     {
         $client = $request->user();
         abort_unless($client !== null && $client->isClient(), 404);
-        // Creating one requires upload too — an empty folder a client can
-        // never put anything in isn't useful on its own (renaming/deleting
-        // an existing one, below, doesn't carry this requirement: it stays
-        // theirs to manage even if upload is later revoked).
-        abort_unless($client->can('create_own_folders') && $client->can('upload'), 403);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'parent_id' => Rules::folderId(),
         ]);
 
-        $parent = null;
-        if (($validated['parent_id'] ?? null) !== null) {
-            $parent = Folder::query()->visibleToClient($client)->whereKey($validated['parent_id'])->firstOrFail();
-
-            // A folder made inside a public one is public too, and so is
-            // its name on the public listing. So inside public ground the
-            // client must be allowed to place content there
-            // (GHSA-65c7-3fpf-q89h). Elsewhere a client may nest a folder in
-            // a private folder staff shared with them alone, even though
-            // they cannot upload into that folder itself; not in one that
-            // reaches anybody else (below).
-            if ($parent->isEffectivelyPublic()) {
-                abort_unless(Folder::uploadableBy($client, $parent), 403);
-            }
-        }
+        // Only a folder the client can see may be named as the parent.
+        $parent = ($validated['parent_id'] ?? null) !== null
+            ? Folder::query()->visibleToClient($client)->whereKey($validated['parent_id'])->firstOrFail()
+            : null;
 
         // No parent named means the top of what this client sees -- which,
         // where the installation gives them a home, is inside it rather
@@ -73,13 +57,10 @@ class MyFoldersController extends Controller
         // the mess the home folder exists to end.
         $parent ??= $this->homeFolders->for($client);
 
-        // Not inside a folder that reaches anybody else: a folder staff
-        // shared with a group, or with several clients, shows everything
-        // in it to all of them, so a client's folder there was a way to
-        // hand files to other clients. Clients do not see each other.
-        if ($parent !== null && ! $parent->isEffectivelyPublic()) {
-            abort_if(app(FolderReach::class)->reachesOthersThan($client, $parent), 403);
-        }
+        // Public ground, folders that reach other clients, and the
+        // create_own_folders + upload pair: see FolderCreationRules, shared
+        // with the staff library and folder uploads.
+        app(FolderCreationRules::class)->authorize($client, $parent);
 
         $folder = $this->folders->create($validated['name'], $parent);
 

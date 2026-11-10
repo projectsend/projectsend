@@ -2,10 +2,10 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { Archive, File as FileIcon, Folder as FolderIcon, Globe, Upload } from 'lucide-react';
 
+import { ViewerAnnouncement } from '@/components/announcement';
 import { CommentsShellDefault } from '@/components/comments/shells/comments-shell-default';
 import { DownloadAction } from '@/components/download-action';
 import { FilePreviewDialog } from '@/components/file-preview-dialog';
-import { PreviewAction } from '@/components/preview-action';
 import { CategoryBadges } from '@/components/files/category-badges';
 import { VersionBadge } from '@/components/files/version-badge';
 import Heading from '@/components/heading';
@@ -15,11 +15,13 @@ import { FileExpiry } from '@/components/portal/file-expiry';
 import { FileRowActions } from '@/components/portal/file-row-actions';
 import { FolderRowActions } from '@/components/portal/folder-row-actions';
 import { NewFolderButton } from '@/components/portal/new-folder-button';
-import { ViewerAnnouncement } from '@/components/announcement';
 import { PortalBreadcrumb } from '@/components/portal/portal-breadcrumb';
 import { PortalFilesToolbar } from '@/components/portal/portal-files-toolbar';
 import { RenameFolderDialog } from '@/components/portal/rename-folder-dialog';
+import { SelectPageCheckbox } from '@/components/portal/select-page-checkbox';
 import { SelectionBar } from '@/components/portal/selection-bar';
+import { PreviewAction } from '@/components/preview-action';
+import { SortButton } from '@/components/sortable-header';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ViewModeToggle } from '@/components/view-mode-toggle';
@@ -75,11 +77,8 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
     const {
         zip,
         canZip,
-        selectedFileIds,
-        selectedFolderIds,
+        selection,
         selectionCount,
-        toggleFile,
-        toggleFolder,
         clearSelection,
         downloadSelectionAsZip,
         values,
@@ -87,8 +86,11 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
         setMany,
         reset,
         hasFilters,
+        sortState,
+        sortBy,
         folderUrl,
     } = usePortalFiles(props);
+    const hasRows = folders.length + files.length > 0;
 
     const breadcrumbs: BreadcrumbItem[] = [{ title: t('My files'), href: '/my-files' }];
 
@@ -144,13 +146,12 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                     <PortalBreadcrumb breadcrumb={breadcrumb} folderUrl={folderUrl} className="mb-3" />
                 )}
 
-                <div className="mb-3 flex justify-end">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                    {viewMode === 'grid' && canZip && hasRows ? <SelectPageCheckbox selection={selection} /> : <span />}
                     <ViewModeToggle value={viewMode} onChange={setViewMode} />
                 </div>
 
-                {canZip && (
-                    <SelectionBar count={selectionCount} onDownload={downloadSelectionAsZip} onClear={clearSelection} className="mb-3" />
-                )}
+                {canZip && <SelectionBar count={selectionCount} onDownload={downloadSelectionAsZip} onClear={clearSelection} className="mb-3" />}
 
                 {folders.length === 0 && files.length === 0 && (
                     <p className="text-muted-foreground rounded-lg border px-4 py-10 text-center text-sm">
@@ -160,12 +161,37 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
 
                 {viewMode === 'list' ? (
                     <div className="space-y-2">
+                        {/* A header row over the cards, lined up with what
+                            each card holds: the tick box, then the name. The
+                            size and date sit on the card's second line, so
+                            their buttons share the right-hand end. */}
+                        {hasRows && (
+                            <div className="text-muted-foreground flex items-center gap-3 px-4 text-xs font-medium">
+                                {canZip && (
+                                    <Checkbox
+                                        checked={selection.pageState}
+                                        onCheckedChange={(checked) => selection.togglePage(checked === true)}
+                                        aria-label={t('Select all on this page')}
+                                    />
+                                )}
+                                <span className="flex-1">
+                                    <SortButton column="name" {...sortState} onSort={sortBy}>
+                                        {t('Name')}
+                                    </SortButton>
+                                </span>
+                                <SortButton column="size" {...sortState} onSort={sortBy} firstDirection="desc">
+                                    {t('Size')}
+                                </SortButton>
+                                <SortButton column="date" {...sortState} onSort={sortBy} firstDirection="desc">
+                                    {t('Date')}
+                                </SortButton>
+                            </div>
+                        )}
                         {folders.map((row) => (
                             <div key={`folder-${row.id}`} className="bg-card flex items-center gap-3 rounded-lg border px-4 py-3">
                                 {canZip && (
                                     <Checkbox
-                                        checked={selectedFolderIds.has(row.id)}
-                                        onCheckedChange={() => toggleFolder(row.id)}
+                                        {...selection.checkboxProps({ kind: 'folder', id: row.id })}
                                         aria-label={t('Select :name', { name: row.name })}
                                     />
                                 )}
@@ -194,8 +220,7 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                 <div className="flex min-w-0 flex-1 items-center gap-3">
                                     {canZip && (
                                         <Checkbox
-                                            checked={selectedFileIds.has(file.id)}
-                                            onCheckedChange={() => toggleFile(file.id)}
+                                            {...selection.checkboxProps({ kind: 'file', id: file.id })}
                                             aria-label={t('Select :name', { name: file.name })}
                                         />
                                     )}
@@ -213,7 +238,9 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                     </FilePreviewDialog>
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-1.5">
-                                            <p className="truncate text-sm font-medium">{file.name}</p>
+                                            <p className="truncate text-sm font-medium" title={file.name}>
+                                                {file.name}
+                                            </p>
                                             {file.public && (
                                                 <span title={t('Public file')}>
                                                     <Globe className="text-muted-foreground size-3.5 shrink-0" />
@@ -277,8 +304,7 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                             >
                                 {canZip && (
                                     <Checkbox
-                                        checked={selectedFolderIds.has(row.id)}
-                                        onCheckedChange={() => toggleFolder(row.id)}
+                                        {...selection.checkboxProps({ kind: 'folder', id: row.id })}
                                         aria-label={t('Select :name', { name: row.name })}
                                         className="absolute top-3 left-3"
                                     />
@@ -286,7 +312,9 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                 <Link href={folderUrl(row.id)} className="flex w-full flex-col items-center gap-2">
                                     <FolderIcon className="text-primary size-10 shrink-0" strokeWidth={1.5} />
                                     <span className="flex max-w-full items-center gap-1.5">
-                                        <p className="truncate text-sm font-medium">{row.name}</p>
+                                        <p className="truncate text-sm font-medium" title={row.name}>
+                                            {row.name}
+                                        </p>
                                         {row.public && (
                                             <span title={t('Public folder')}>
                                                 <Globe className="text-muted-foreground size-3.5 shrink-0" />
@@ -310,8 +338,7 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                             >
                                 {canZip && (
                                     <Checkbox
-                                        checked={selectedFileIds.has(file.id)}
-                                        onCheckedChange={() => toggleFile(file.id)}
+                                        {...selection.checkboxProps({ kind: 'file', id: file.id })}
                                         aria-label={t('Select :name', { name: file.name })}
                                         className="bg-background/80 absolute top-3 left-3 z-10"
                                     />
@@ -353,7 +380,9 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                 <div className="flex items-center justify-between gap-2 p-3">
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-1.5">
-                                            <p className="truncate text-sm font-medium">{file.name}</p>
+                                            <p className="truncate text-sm font-medium" title={file.name}>
+                                                {file.name}
+                                            </p>
                                             {file.public && (
                                                 <span title={t('Public file')}>
                                                     <Globe className="text-muted-foreground size-3.5 shrink-0" />
@@ -393,7 +422,9 @@ export default function MyFiles(props: MyFilesFolderManagementProps) {
                                             />
                                         )}
                                         <PreviewAction
-                                            previewUrl={preview_enabled && file.download_limit.limit === null ? route('files.preview', file.id) : null}
+                                            previewUrl={
+                                                preview_enabled && file.download_limit.limit === null ? route('files.preview', file.id) : null
+                                            }
                                             mimeType={file.mime_type}
                                             fileName={file.original_name}
                                             variant="ghost"

@@ -233,6 +233,14 @@
                                             "integer",
                                             "null"
                                         ]
+                                    },
+                                    "relative_path": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "description": "The file's path inside a folder uploaded whole, such as\n\"Project_A/Drawings/plan.pdf\". Each folder in it is found, or\ncreated, inside folder_id, and the file goes in the last one.\nCreating a folder needs permission to create folders. Ignored\ntogether with previous_file_id.",
+                                        "maxLength": 4096
                                     }
                                 },
                                 "required": [

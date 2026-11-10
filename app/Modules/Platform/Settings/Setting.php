@@ -249,6 +249,13 @@ enum Setting: string
     // PublicGroupsController::preview.
     case PublicListingPreviewEnabled = 'public_listing_preview_enabled';
 
+    // Whether visitors on a public folder, group or the public index may
+    // tick files and download them together as one zip (#1840). Off by
+    // default: a zip build holds a worker and disk space, and anybody at
+    // all can ask for one, so it is an installation's decision to offer.
+    // Needs Capability::ZipDownloads as well. See PublicZipDownloadsController.
+    case PublicZipDownloadsEnabled = 'public_zip_downloads_enabled';
+
     // The configurable base URL segment for the public listing (e.g.
     // "public" -> /public, /public/{group-slug}). Consumed by
     // PublicGroupsController's guard against every request's first path
@@ -456,6 +463,7 @@ enum Setting: string
             self::PublicListingEnabled,
             self::ClientsCanPreviewFiles,
             self::PublicListingPreviewEnabled,
+            self::PublicZipDownloadsEnabled,
             self::CheckForUpdates,
             self::FetchNews,
             self::ExpiredFilesAutoDeleteEnabled,
@@ -525,6 +533,7 @@ enum Setting: string
             self::EmailNotificationsEnabled,
             self::DiscourageSearchIndexing,
             self::PublicListingEnabled,
+            self::PublicZipDownloadsEnabled,
             self::ExpiredFilesAutoDeleteEnabled,
             self::PublicCommentsEnabled,
             // Off until somebody points it at a scanner, or a managed

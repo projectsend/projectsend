@@ -4,6 +4,9 @@ import { File as FileIcon, Folder } from 'lucide-react';
 import { DownloadAction } from '@/components/download-action';
 import { CategoryBadges, type CategoryTag } from '@/components/files/category-badges';
 import { Pagination, type PaginationMeta } from '@/components/pagination';
+import { PublicListControls } from '@/components/public-list-controls';
+import { Checkbox } from '@/components/ui/checkbox';
+import { type PublicListOrder, type PublicZip, usePublicListing } from '@/hooks/use-public-listing';
 import { useTranslation } from '@/hooks/use-translation';
 import { formatBytes } from '@/lib/format-bytes';
 import { type DownloadLimit } from '@/types/portal';
@@ -20,6 +23,7 @@ interface PublicFolder {
 }
 
 interface PublicFile {
+    slug: string;
     name: string;
     size: number;
     url: string;
@@ -29,19 +33,24 @@ interface PublicFile {
     categories: CategoryTag[];
 }
 
-interface PublicIndexProps {
+interface PublicIndexProps extends PublicListOrder {
     groups: PublicGroup[];
     folders: PublicFolder[];
     files: PublicFile[];
     pagination: PaginationMeta;
+    zip: PublicZip | null;
 }
 
-export default function PublicIndexGallery({ groups, folders, files, pagination }: PublicIndexProps) {
+export default function PublicIndexGallery({ groups, folders, files, pagination, sort, direction, zip }: PublicIndexProps) {
     const { t } = useTranslation();
+    const listing = usePublicListing({ sort, direction, files, zip });
+    const { canZip, selection } = listing;
 
     return (
         <PublicLayoutGallery title={t('Public files')} description={t('Browse publicly shared groups and files below.')}>
             <Head title={t('Public files')} />
+
+            <PublicListControls listing={listing} total={pagination.total} rows={files.length} />
 
             <div className="space-y-10">
                 {groups.length > 0 && (
@@ -55,7 +64,9 @@ export default function PublicIndexGallery({ groups, folders, files, pagination 
                                     className="flex flex-col items-center gap-2 rounded-xl border p-6 text-center transition hover:border-violet-400 hover:shadow-md"
                                 >
                                     <Folder className="size-10 shrink-0 text-violet-600" strokeWidth={1.5} />
-                                    <p className="w-full truncate text-sm font-medium">{group.name}</p>
+                                    <p className="w-full truncate text-sm font-medium" title={group.name}>
+                                        {group.name}
+                                    </p>
                                 </Link>
                             ))}
                         </div>
@@ -73,7 +84,9 @@ export default function PublicIndexGallery({ groups, folders, files, pagination 
                                     className="flex flex-col items-center gap-2 rounded-xl border p-6 text-center transition hover:border-violet-400 hover:shadow-md"
                                 >
                                     <Folder className="size-10 shrink-0 text-violet-600" strokeWidth={1.5} />
-                                    <p className="w-full truncate text-sm font-medium">{folder.name}</p>
+                                    <p className="w-full truncate text-sm font-medium" title={folder.name}>
+                                        {folder.name}
+                                    </p>
                                 </Link>
                             ))}
                         </div>
@@ -87,8 +100,15 @@ export default function PublicIndexGallery({ groups, folders, files, pagination 
                             {files.map((file) => (
                                 <div
                                     key={file.url}
-                                    className="group overflow-hidden rounded-xl border transition hover:border-violet-400 hover:shadow-lg"
+                                    className="group relative overflow-hidden rounded-xl border transition hover:border-violet-400 hover:shadow-lg"
                                 >
+                                    {canZip && (
+                                        <Checkbox
+                                            {...selection.checkboxProps({ kind: 'file', id: file.slug })}
+                                            aria-label={t('Select :name', { name: file.name })}
+                                            className="bg-background/80 absolute top-3 left-3 z-10"
+                                        />
+                                    )}
                                     <Link href={file.url} className="bg-muted block aspect-square overflow-hidden">
                                         {file.thumbnail_url ? (
                                             <img
@@ -104,7 +124,9 @@ export default function PublicIndexGallery({ groups, folders, files, pagination 
                                     </Link>
                                     <div className="flex items-center justify-between gap-2 p-3">
                                         <Link href={file.url} className="min-w-0 hover:underline">
-                                            <p className="truncate text-sm font-medium">{file.name}</p>
+                                            <p className="truncate text-sm font-medium" title={file.name}>
+                                                {file.name}
+                                            </p>
                                             <p className="text-muted-foreground text-xs">{formatBytes(file.size)}</p>
                                             <CategoryBadges categories={file.categories} className="mt-1" />
                                         </Link>

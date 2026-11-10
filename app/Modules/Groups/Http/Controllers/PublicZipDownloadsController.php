@@ -246,6 +246,19 @@ class PublicZipDownloadsController extends Controller
 
         if ($zipDownload->delivered_at === null) {
             $this->deliverOnce($zipDownload);
+        } else {
+            // Fetching the same archive again is the same delivery, which
+            // a broken connection needs. Not when it holds a file with a
+            // download limit: that delivery already spent the allowance,
+            // and anyone holding this visitor's session cookie could
+            // otherwise take copy after copy for as long as the archive
+            // lives. A signed-in user's zip is tied to an account; this one
+            // only to a cookie.
+            abort_if(
+                File::query()->whereIn('id', $contained)->whereNotNull('download_limit')->where('download_limit', '>', 0)->exists(),
+                410,
+                __('This zip has already been downloaded. Select the files again to download them.'),
+            );
         }
 
         return $this->delivery->serve(

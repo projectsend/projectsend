@@ -320,6 +320,24 @@ test('a download limit is spent when the zip is delivered', function () {
     askForPublicZip('folder', $this->folder->slug, [$this->a->slug])->assertStatus(422);
 });
 
+test('a zip holding a file with a download limit can be fetched once, not over and over', function () {
+    File::query()->whereKey($this->a->id)->update(['download_limit' => 1]);
+
+    $response = askForPublicZip('folder', $this->folder->slug, [$this->a->slug, $this->b->slug])->assertOk();
+    $this->get($response->json('download_url'))->assertOk();
+
+    // The one allowed download has gone into the zip; fetching the same
+    // archive again would hand out more copies than the limit allows.
+    $this->get($response->json('download_url'))->assertStatus(410);
+});
+
+test('a zip of files without limits can be fetched again, as an interrupted download needs', function () {
+    $response = askForPublicZip('folder', $this->folder->slug, [$this->a->slug])->assertOk();
+
+    $this->get($response->json('download_url'))->assertOk();
+    $this->get($response->json('download_url'))->assertOk();
+});
+
 test('a public group page offers its own files', function () {
     $group = Group::query()->create(['name' => 'Partners', 'public' => true]);
     File::query()->whereKey($this->secret->id)->update(['public' => true]);

@@ -436,7 +436,10 @@ class FilesController extends Controller
         assert($user !== null);
 
         $validated = $request->validate([
-            'file_ids' => ['required', 'array', 'min:1'],
+            // Bounded like a zip's selection (ZipDownloadsController::MAX_FILES):
+            // a selection now survives paging, so a long list is ordinary,
+            // and each id costs a policy check.
+            'file_ids' => ['required', 'array', 'min:1', 'max:'.ZipDownloadsController::MAX_FILES],
             'file_ids.*' => ['integer', 'distinct'],
 
             'folder_action' => ['required', Rule::in(['no_change', 'move'])],
@@ -633,7 +636,10 @@ class FilesController extends Controller
         assert($user !== null);
 
         $validated = $request->validate([
-            'file_ids' => ['required', 'array', 'min:1'],
+            // Bounded like a zip's selection (ZipDownloadsController::MAX_FILES):
+            // a selection now survives paging, so a long list is ordinary,
+            // and each id costs a policy check.
+            'file_ids' => ['required', 'array', 'min:1', 'max:'.ZipDownloadsController::MAX_FILES],
             'file_ids.*' => ['integer', 'distinct'],
         ]);
 

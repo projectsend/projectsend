@@ -56,7 +56,12 @@ final class ClientUploadMail
             'context' => ['file_id' => $file->id],
         ]);
 
-        SendClientUploadMail::dispatch($client->id)->delay(now()->addSeconds(self::DEBOUNCE_SECONDS));
+        // A queue that runs jobs on the spot cannot wait, and a send that
+        // stood down there would never be followed by another. Such an
+        // installation gets the email at once, one per file, as before.
+        $immediate = config('queue.connections.'.config('queue.default').'.driver') === 'sync';
+
+        SendClientUploadMail::dispatch($client->id, $immediate)->delay(now()->addSeconds(self::DEBOUNCE_SECONDS));
     }
 
     /**

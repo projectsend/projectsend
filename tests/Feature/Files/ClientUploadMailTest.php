@@ -40,6 +40,13 @@ function runClientUploadMail(int $clientId): void
     app()->call([new SendClientUploadMail($clientId), 'handle']);
 }
 
+/** A send as it runs for real: once the client has been quiet for the debounce. */
+function runClientUploadMailAfterQuiet(int $clientId): void
+{
+    test()->travel(ClientUploadMail::DEBOUNCE_SECONDS)->seconds();
+    runClientUploadMail($clientId);
+}
+
 test('a burst of uploads becomes one email per admin address, listing every file', function () {
     Queue::fake();
     Notification::fake();
@@ -54,7 +61,7 @@ test('a burst of uploads becomes one email per admin address, listing every file
     Queue::assertPushed(SendClientUploadMail::class, fn (SendClientUploadMail $job): bool => $job->delay !== null);
     Notification::assertNothingSent();
 
-    runClientUploadMail($this->client->id);
+    runClientUploadMailAfterQuiet($this->client->id);
 
     Notification::assertSentOnDemandTimes(AdminClientUploadDigestNotification::class, 2);
     Notification::assertNotSentTo(Notification::route('mail', 'ops@example.com'), AdminClientUploadedNotification::class);
@@ -65,13 +72,51 @@ test('a burst of uploads becomes one email per admin address, listing every file
     Notification::assertNothingSent();
 });
 
+test('a send stands down while the client is still uploading, so a long upload is still one email', function () {
+    Queue::fake();
+    Notification::fake();
+
+    // A file every 90 seconds, for longer than the quiet period: a fixed
+    // delay would have mailed after the first two minutes.
+    for ($i = 1; $i <= 4; $i++) {
+        app(ClientUploadMail::class)->queue($this->client, clientUploadMailFile($this->client, "part-{$i}"));
+        $this->travel(90)->seconds();
+        // The send the previous file queued comes due mid-burst.
+        runClientUploadMail($this->client->id);
+        if ($i < 4) {
+            Notification::assertNothingSent();
+        }
+    }
+
+    // 90 seconds after the last file is not yet quiet; 120 is.
+    Notification::assertNothingSent();
+    $this->travel(30)->seconds();
+    runClientUploadMail($this->client->id);
+
+    Notification::assertSentOnDemandTimes(AdminClientUploadDigestNotification::class, 2);
+    expect(PendingNotification::query()->count())->toBe(0);
+});
+
+test('a client uploading without pause still gets an email every quarter of an hour', function () {
+    Queue::fake();
+    Notification::fake();
+
+    app(ClientUploadMail::class)->queue($this->client, clientUploadMailFile($this->client, 'first'));
+    $this->travel(SendClientUploadMail::MAX_HOLD_SECONDS + 1)->seconds();
+    app(ClientUploadMail::class)->queue($this->client, clientUploadMailFile($this->client, 'just-now'));
+
+    runClientUploadMail($this->client->id);
+
+    Notification::assertSentOnDemandTimes(AdminClientUploadDigestNotification::class, 2);
+});
+
 test('a single upload still sends the single-file email', function () {
     Queue::fake();
     Notification::fake();
 
     $file = clientUploadMailFile($this->client, 'plan');
     app(ClientUploadMail::class)->queue($this->client, $file);
-    runClientUploadMail($this->client->id);
+    runClientUploadMailAfterQuiet($this->client->id);
 
     Notification::assertSentOnDemand(
         AdminClientUploadedNotification::class,
@@ -96,7 +141,7 @@ test('email switched off during the wait sends nothing, and leaves nothing behin
 
     app(ClientUploadMail::class)->queue($this->client, clientUploadMailFile($this->client, 'plan'));
     app(Settings::class)->set(Setting::EmailNotificationsEnabled, false);
-    runClientUploadMail($this->client->id);
+    runClientUploadMailAfterQuiet($this->client->id);
 
     Notification::assertNothingSent();
     expect(PendingNotification::query()->count())->toBe(0);
@@ -111,7 +156,7 @@ test('one client\'s uploads never land in another client\'s email', function () 
     app(ClientUploadMail::class)->queue($this->client, clientUploadMailFile($this->client, 'mine-2'));
     app(ClientUploadMail::class)->queue($other, clientUploadMailFile($other, 'theirs'));
 
-    runClientUploadMail($this->client->id);
+    runClientUploadMailAfterQuiet($this->client->id);
 
     expect(PendingNotification::query()->pluck('subject_name')->all())->toBe(['theirs']);
 });
@@ -135,4 +180,14 @@ test('the digest is an editable template that previews', function () {
         ->get(route('email-templates.preview', EmailTemplateSlot::AdminClientUploadDigest->value))
         ->assertOk()
         ->assertSee('Drawing_001.pdf');
+});
+
+test('a queue that cannot wait still gets every email, at once', function () {
+    // phpunit.xml runs the sync driver, which is exactly this case.
+    Notification::fake();
+
+    app(ClientUploadMail::class)->queue($this->client, clientUploadMailFile($this->client, 'plan'));
+
+    Notification::assertSentOnDemand(AdminClientUploadedNotification::class);
+    expect(PendingNotification::query()->count())->toBe(0);
 });

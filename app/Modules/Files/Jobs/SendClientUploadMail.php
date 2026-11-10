@@ -23,13 +23,34 @@ use Illuminate\Support\Facades\Notification;
 /**
  * Sends whatever one client has uploaded since the last send, as one email
  * per admin address. See ClientUploadMail.
+ *
+ * A real debounce: every upload queues one of these, and each one stands
+ * down while the client is still uploading — while the newest file is
+ * younger than the quiet period. Only the send queued by the last file of
+ * a burst finds the client quiet, and mails the lot. A fixed delay without
+ * this grouped only the first two minutes of a long folder upload and sent
+ * one email per file after that.
+ *
+ * Never held longer than MAX_HOLD_SECONDS, so a client uploading steadily
+ * for an hour still produces an email every quarter of an hour rather
+ * than one at the end.
  */
 class SendClientUploadMail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public const MAX_HOLD_SECONDS = 900;
+
+    /**
+     * Allowance for a queue that runs a delayed job a moment early, so the
+     * send queued by the last file is never mistaken for one mid-burst.
+     */
+    private const SLACK_SECONDS = 5;
+
     public function __construct(
         private readonly int $clientId,
+        /** Send what is waiting now, without standing down. For a queue that cannot delay. */
+        private readonly bool $immediate = false,
     ) {}
 
     public function handle(Settings $settings, ClientUploadMail $mail): void
@@ -47,6 +68,15 @@ class SendClientUploadMail implements ShouldQueue
                 ->get();
 
             if ($pending->isEmpty()) {
+                return null;
+            }
+
+            $quietSince = now()->subSeconds(ClientUploadMail::DEBOUNCE_SECONDS - self::SLACK_SECONDS);
+            $stillUploading = $pending->contains(fn (PendingNotification $row): bool => $row->created_at !== null && $row->created_at->greaterThan($quietSince));
+            $heldTooLong = $pending->contains(fn (PendingNotification $row): bool => $row->created_at !== null && $row->created_at->lessThan(now()->subSeconds(self::MAX_HOLD_SECONDS)));
+
+            // A later upload queued its own send; that one will take these.
+            if ($stillUploading && ! $heldTooLong && ! $this->immediate) {
                 return null;
             }
 

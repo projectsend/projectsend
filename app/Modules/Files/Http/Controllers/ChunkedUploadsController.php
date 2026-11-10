@@ -117,17 +117,6 @@ class ChunkedUploadsController extends Controller
         // before anything is created inside it.
         abort_unless(Folder::uploadableBy($user, $folder), 403);
 
-        // A file from inside a dropped folder goes into the matching
-        // subfolder, made if it is not there yet, under the same rules as
-        // the New folder button. Not for a new version of a file: that
-        // belongs beside the one it replaces.
-        if (($validated['previous_file_id'] ?? null) === null) {
-            $folder = $this->folderPaths->resolve($user, $folder, $validated['relative_path'] ?? null);
-
-            // And the folder it ends up in, which may be one that already
-            // existed and was only found.
-            abort_unless(Folder::uploadableBy($user, $folder), 403);
-        }
 
         // The session cap and the quota below are both "count what is open,
         // then open one more", so two requests starting together each saw
@@ -200,6 +189,20 @@ class ChunkedUploadsController extends Controller
                         'previous_file_id' => __('That file can\'t be used as the previous version.'),
                     ]);
                 }
+            }
+
+            // A file from inside a dropped folder goes into the matching
+            // subfolder, made if it is not there yet, under the same rules
+            // as the New folder button. Not for a new version of a file:
+            // that belongs beside the one it replaces. Last, after every
+            // check that could still refuse the upload, so a refused one
+            // leaves no empty folders behind.
+            if ($previousFileId === null) {
+                $folder = $this->folderPaths->resolve($user, $folder, $validated['relative_path'] ?? null);
+
+                // And the folder it ends up in, which may be one that
+                // already existed and was only found.
+                abort_unless(Folder::uploadableBy($user, $folder), 403);
             }
 
             $session = UploadSession::query()->create([

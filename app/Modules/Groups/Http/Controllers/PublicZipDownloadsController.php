@@ -25,6 +25,7 @@ use App\Support\ContentDisposition;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
 use Symfony\Component\HttpFoundation\Response;
@@ -75,6 +76,14 @@ class PublicZipDownloadsController extends Controller
     /** The same ceiling where the per-archive limit is switched off. */
     private const VISITOR_DISK_BUDGET_UNLIMITED_FALLBACK = 10 * 1024 * 1024 * 1024;
 
+    /**
+     * How much of that budget one address may hold in a day. A visitor
+     * who sends no session cookie gets a fresh session every request, so
+     * the per-session rule alone let two addresses spend the whole budget
+     * and switch visitor zips off for everyone until the next day.
+     */
+    private const VISITOR_DISK_SHARE_PER_ADDRESS = 2;
+
     public function __construct(
         private readonly Settings $settings,
         private readonly PublicFileScope $scope,
@@ -102,8 +111,11 @@ class PublicZipDownloadsController extends Controller
         // One at a time per visitor, for the reason ZipDownloadsController
         // gives for one per user. An hour old counts as abandoned.
         $mine = $this->sessionZipIds($request);
+        $addressKey = $this->addressKey($request);
+        $addressPending = Cache::get("{$addressKey}:pending");
         abort_if(
-            $mine !== [] && $this->pendingVisitorBuilds()->whereIn('id', $mine)->exists(),
+            ($mine !== [] && $this->pendingVisitorBuilds()->whereIn('id', $mine)->exists())
+                || (is_int($addressPending) && $this->pendingVisitorBuilds()->whereKey($addressPending)->exists()),
             429,
             __('A zip download is already being prepared. Wait for that one to finish before starting another.'),
         );
@@ -149,8 +161,11 @@ class PublicZipDownloadsController extends Controller
             ->where('created_at', '>', now()->subDay())
             ->sum('total_size');
 
+        $heldByAddress = (int) Cache::get("{$addressKey}:bytes", 0);
+
         abort_if(
-            $held + $totalSize > $budget,
+            $held + $totalSize > $budget
+                || $heldByAddress + $totalSize > intdiv($budget, self::VISITOR_DISK_BUDGET_MULTIPLE) * self::VISITOR_DISK_SHARE_PER_ADDRESS,
             429,
             __('Too many zip downloads are being prepared right now. Try again in a few minutes.'),
         );
@@ -170,6 +185,11 @@ class PublicZipDownloadsController extends Controller
 
         // The last few only: a session is not a place to keep a history.
         $request->session()->put(self::SESSION_KEY, array_slice([...$mine, $zipDownload->id], -20));
+        // The pending build for an hour, the age at which one counts as
+        // abandoned; the bytes for a day, as long as the archive lives
+        // (PurgeZipDownloadsCommand).
+        Cache::put("{$addressKey}:pending", $zipDownload->id, now()->addHour());
+        Cache::put("{$addressKey}:bytes", $heldByAddress + $totalSize, now()->addDay());
 
         BuildZipDownloadJob::dispatch($zipDownload->id);
 
@@ -189,7 +209,8 @@ class PublicZipDownloadsController extends Controller
             'status' => $zipDownload->status,
             'file_count' => $zipDownload->file_count,
             'error' => $zipDownload->status === ZipDownload::STATUS_FAILED ? $zipDownload->error : null,
-            'skipped_files' => $zipDownload->skipped_files ?? [],
+            // Names only: public pages hand out no ids.
+            'skipped_files' => array_map(fn (array $file): array => ['name' => $file['name']], $zipDownload->skipped_files ?? []),
         ]);
     }
 
@@ -304,6 +325,15 @@ class PublicZipDownloadsController extends Controller
             $zipDownload->isPublic() && in_array($zipDownload->id, $this->sessionZipIds($request), true),
             404,
         );
+    }
+
+    /**
+     * A cache key for the visitor's address. Keyed, not the address itself,
+     * so the cache never holds a visitor's IP in the clear.
+     */
+    private function addressKey(Request $request): string
+    {
+        return 'public-zip:'.hash_hmac('sha256', (string) $request->ip(), (string) config('app.key'));
     }
 
     /**

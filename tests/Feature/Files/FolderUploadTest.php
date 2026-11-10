@@ -171,3 +171,27 @@ test('someone who may not create folders cannot upload a folder that needs new o
 
     expect(Folder::query()->count())->toBe(0);
 });
+
+test('an upload refused for another reason leaves no empty folders behind', function () {
+    config(['projectsend.uploads.max_open_sessions' => 1]);
+    $this->actingAs($this->admin);
+
+    startFolderUpload('first.pdf')->assertOk();
+    startFolderUpload('Project_A/Drawings/plan.pdf')->assertStatus(422);
+
+    expect(Folder::query()->count())->toBe(0);
+});
+
+test('folders another upload is still creating are a retryable refusal, not an error page', function () {
+    $this->actingAs($this->admin);
+    $held = Illuminate\Support\Facades\Cache::lock('upload-folder-path:root', 30);
+    $held->get();
+
+    try {
+        startFolderUpload('Project_A/plan.pdf')->assertStatus(429);
+    } finally {
+        $held->release();
+    }
+
+    expect(Folder::query()->count())->toBe(0);
+});

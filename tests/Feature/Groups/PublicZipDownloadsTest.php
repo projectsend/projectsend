@@ -273,6 +273,42 @@ test('visitors\' archives share a disk budget, so many addresses cannot fill the
     askForPublicZip('folder', $this->folder->slug, [$this->b->slug])->assertOk();
 });
 
+test('leaving out the session cookie does not get round the one-at-a-time rule', function () {
+    // The build stays pending: nothing runs the queue.
+    Illuminate\Support\Facades\Queue::fake();
+
+    askForPublicZip('folder', $this->folder->slug, [$this->a->slug])->assertOk();
+    $this->flushSession();
+
+    askForPublicZip('folder', $this->folder->slug, [$this->b->slug])->assertStatus(429);
+
+    // Another address is not held up by it.
+    $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.9']);
+    askForPublicZip('folder', $this->folder->slug, [$this->b->slug])->assertOk();
+});
+
+test('one address cannot spend the whole visitors\' disk budget', function () {
+    // 1 MB per archive: 10 MB for all visitors, 2 MB for any one address.
+    app(Settings::class)->set(Setting::MaxZipDownloadSizeMb, 1);
+    File::query()->whereIn('id', [$this->a->id, $this->b->id, $this->c->id])->update(['size' => 900 * 1024]);
+
+    askForPublicZip('folder', $this->folder->slug, [$this->a->slug])->assertOk();
+    $this->flushSession();
+    askForPublicZip('folder', $this->folder->slug, [$this->b->slug])->assertOk();
+    $this->flushSession();
+    askForPublicZip('folder', $this->folder->slug, [$this->c->slug])->assertStatus(429);
+
+    $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.9']);
+    askForPublicZip('folder', $this->folder->slug, [$this->c->slug])->assertOk();
+});
+
+test('a visitor is told which files were left out by name, never by id', function () {
+    $response = askForPublicZip('folder', $this->folder->slug, [$this->a->slug])->assertOk();
+    ZipDownload::query()->whereKey($response->json('id'))->update(['skipped_files' => [['id' => $this->b->id, 'name' => 'b']]]);
+
+    expect($this->getJson($response->json('status_url'))->json('skipped_files'))->toBe([['name' => 'b']]);
+});
+
 test('a download limit is spent when the zip is delivered', function () {
     File::query()->whereKey($this->a->id)->update(['download_limit' => 1]);
 

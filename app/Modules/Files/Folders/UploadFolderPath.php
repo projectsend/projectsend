@@ -9,6 +9,7 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\Folder;
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 
@@ -55,7 +56,16 @@ final class UploadFolderPath
         }
 
         $lock = Cache::lock('upload-folder-path:'.($base->id ?? 'root'), 30);
-        $lock->block(20);
+
+        // Busy for this long means something else is stuck, not a queue:
+        // making a few folders takes milliseconds. Kept short because the
+        // caller already holds the per-person upload lock, which expires
+        // after ten. A refusal the uploader can retry, not an error page.
+        try {
+            $lock->block(5);
+        } catch (LockTimeoutException) {
+            abort(429, __('Another upload is creating these folders. Try again in a moment.'));
+        }
 
         try {
             $parent = $base;

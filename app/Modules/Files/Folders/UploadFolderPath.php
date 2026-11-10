@@ -9,8 +9,10 @@ use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLogger;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\Folder;
+use Closure;
 use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -47,7 +49,18 @@ final class UploadFolderPath
      * `$base` (null for the top level). Returns `$base` itself when the
      * path names no folder, as for a single file picked on its own.
      */
-    public function resolve(User $user, ?Folder $base, ?string $relativePath): ?Folder
+    /**
+     * `$accept` is the caller's last word on the folder this arrives at,
+     * asked before anything is kept: it aborts to refuse, and every folder
+     * made on the way is then rolled back with the activity entries for
+     * them. Without it a refused upload left its new folders behind -- one
+     * empty folder per request, past every session cap and quota, and in a
+     * public drop folder whose subfolders a client cannot see, on every
+     * single attempt.
+     *
+     * @param  (Closure(?Folder): void)|null  $accept
+     */
+    public function resolve(User $user, ?Folder $base, ?string $relativePath, ?Closure $accept = null): ?Folder
     {
         $segments = $this->folderSegments($relativePath);
 
@@ -67,26 +80,36 @@ final class UploadFolderPath
             abort(429, __('Another upload is creating these folders. Try again in a moment.'));
         }
 
+        // One transaction, committed while the lock is still held, so the
+        // next upload waiting on the lock sees these folders rather than
+        // making its own. A refusal anywhere inside -- a level that may not
+        // be created, a path too deep, the caller's $accept -- keeps none.
         try {
-            $parent = $base;
+            return DB::transaction(function () use ($user, $base, $segments, $accept): Folder {
+                $parent = $base;
 
-            foreach ($segments as $name) {
-                $existing = $this->visibleChild($user, $parent, $name);
+                foreach ($segments as $name) {
+                    $existing = $this->visibleChild($user, $parent, $name);
 
-                if ($existing !== null) {
-                    $parent = $existing;
+                    if ($existing !== null) {
+                        $parent = $existing;
 
-                    continue;
+                        continue;
+                    }
+
+                    $this->rules->authorize($user, $parent);
+
+                    $folder = $this->folders->create($name, $parent);
+                    $this->activity->log(Action::FolderCreated, subject: $folder);
+                    $parent = $folder;
                 }
 
-                $this->rules->authorize($user, $parent);
+                if ($accept !== null) {
+                    $accept($parent);
+                }
 
-                $folder = $this->folders->create($name, $parent);
-                $this->activity->log(Action::FolderCreated, subject: $folder);
-                $parent = $folder;
-            }
-
-            return $parent;
+                return $parent;
+            });
         } finally {
             $lock->release();
         }

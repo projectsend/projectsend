@@ -198,11 +198,15 @@ class ChunkedUploadsController extends Controller
             // check that could still refuse the upload, so a refused one
             // leaves no empty folders behind.
             if ($previousFileId === null) {
-                $folder = $this->folderPaths->resolve($user, $folder, $validated['relative_path'] ?? null);
-
                 // And the folder it ends up in, which may be one that
-                // already existed and was only found.
-                abort_unless(Folder::uploadableBy($user, $folder), 403);
+                // already existed and was only found -- asked before the
+                // new folders are kept, so a refusal keeps none of them.
+                $folder = $this->folderPaths->resolve(
+                    $user,
+                    $folder,
+                    $validated['relative_path'] ?? null,
+                    fn (?Folder $target) => abort_unless(Folder::uploadableBy($user, $target), 403),
+                );
             }
 
             $session = UploadSession::query()->create([

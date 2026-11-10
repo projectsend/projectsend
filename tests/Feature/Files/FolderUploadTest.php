@@ -195,3 +195,40 @@ test('folders another upload is still creating are a retryable refusal, not an e
 
     expect(Folder::query()->count())->toBe(0);
 });
+
+test('a folder upload refused at the end leaves no folders behind, even in a public drop folder the client cannot see', function () {
+    // A client may upload straight into a public folder that takes client
+    // uploads without it being shared with them. They cannot see its
+    // subfolders, so every level of a path looked new; the levels were
+    // made, the upload was then refused, and the folders stayed -- one
+    // per request, with no session cap or quota in the way.
+    $drop = app(FolderService::class)->create('Drop box', null);
+    $drop->forceFill(['public' => true, 'allow_client_uploads' => true])->save();
+
+    $role = Role::query()->create(['name' => 'Public uploader', 'is_administrator' => false, 'is_system' => false]);
+    foreach (['upload', 'create_own_folders', 'upload_to_public_folders'] as $permission) {
+        RolePermission::query()->create(['role_id' => $role->id, 'permission' => $permission]);
+    }
+    $client = User::factory()->create(['type' => UserType::Client, 'role_id' => $role->id]);
+    $this->actingAs($client);
+
+    startFolderUpload('plain.pdf', $drop->id)->assertOk();
+    startFolderUpload('Spam/plan.pdf', $drop->id)->assertForbidden();
+    startFolderUpload('Spam/plan.pdf', $drop->id)->assertForbidden();
+
+    expect(Folder::query()->where('parent_id', $drop->id)->count())->toBe(0)
+        ->and(App\Modules\Audit\ActivityLog::query()->where('action', Action::FolderCreated->value)->where('actor_id', $client->id)->count())->toBe(0);
+});
+
+test('a path too deep for where it starts leaves no partial folders behind', function () {
+    $this->actingAs($this->admin);
+    $parent = null;
+    for ($i = 1; $i <= Folder::MAX_DEPTH - 3; $i++) {
+        $parent = app(FolderService::class)->create("Level {$i}", $parent);
+    }
+    $before = Folder::query()->count();
+
+    startFolderUpload('A/B/C/D/plan.pdf', $parent->id)->assertStatus(422);
+
+    expect(Folder::query()->count())->toBe($before);
+});

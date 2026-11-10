@@ -13,6 +13,7 @@ use App\Modules\Identity\Models\RolePermission;
 use App\Modules\Notifications\InAppNotification;
 use App\Modules\Notifications\Jobs\SendNotificationDigest;
 use App\Modules\Notifications\NotificationTypeRegistry;
+use App\Modules\Notifications\PendingBatch;
 use App\Modules\Notifications\PendingNotification;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -54,6 +55,7 @@ test('a digest is not sent to an account deactivated while it waited', function 
     expect(PendingNotification::query()->count())->toBe(1);
 
     $client->forceFill(['active' => false])->save();
+    $this->travel(PendingBatch::QUIET_SECONDS)->seconds();
     (new SendNotificationDigest($client->id, 'file_shared'))->handle(app(NotificationTypeRegistry::class));
 
     Notification::assertNothingSentTo($client);

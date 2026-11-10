@@ -6,23 +6,21 @@ namespace App\Modules\Notifications\Jobs;
 
 use App\Models\User;
 use App\Modules\Notifications\NotificationTypeRegistry;
+use App\Modules\Notifications\PendingBatch;
 use App\Modules\Notifications\PendingNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
 
 /**
- * One of these is dispatched, delayed, for every single queued item — so
- * several to the same recipient inside the debounce window leave several
- * jobs scheduled, all but one of which find nothing to do. That is
- * deliberate and cheap: whichever runs first consumes everything
- * accumulated for that recipient and type so far and sends one email;
- * every later job finds an empty list and no-ops. No "is a digest already
- * scheduled" flag is needed for that reason.
+ * One of these is dispatched, delayed, for every single queued item, so a
+ * burst leaves several scheduled. Each stands down while the burst is
+ * still going (PendingBatch's rule); the one queued by the last item finds
+ * things quiet and sends everything as one email. Any left after it find
+ * nothing and do nothing. No "is a digest already scheduled" flag is
+ * needed for that reason.
  *
  * A lone item still sends the type's ordinary single-item mail, so one
  * share or one comment looks exactly as it would have without any
@@ -32,10 +30,20 @@ class SendNotificationDigest implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * Send what is waiting now, without standing down. For a queue that
+     * cannot delay. A declared property with a default rather than a
+     * promoted one, so a job queued before this existed still reads false.
+     */
+    private bool $immediate = false;
+
     public function __construct(
         private readonly int $userId,
         private readonly string $typeKey,
-    ) {}
+        bool $immediate = false,
+    ) {
+        $this->immediate = $immediate;
+    }
 
     public function handle(NotificationTypeRegistry $types): void
     {
@@ -45,27 +53,9 @@ class SendNotificationDigest implements ShouldQueue
             return;
         }
 
-        // Locked and deleted inside a transaction, before anything is
-        // sent — sending is itself queued, so it must happen after this
-        // commits rather than from inside it.
-        $items = DB::transaction(function (): ?Collection {
-            $pending = PendingNotification::query()
-                ->where('user_id', $this->userId)
-                ->where('type', $this->typeKey)
-                ->lockForUpdate()
-                ->orderBy('id')
-                ->get();
+        $items = PendingBatch::takeWhenQuiet($this->userId, $this->typeKey, $this->immediate);
 
-            if ($pending->isEmpty()) {
-                return null;
-            }
-
-            PendingNotification::query()->whereIn('id', $pending->pluck('id'))->delete();
-
-            return $pending;
-        });
-
-        if ($items === null || $items->isEmpty()) {
+        if ($items === null) {
             return;
         }
 

@@ -12,6 +12,7 @@ use App\Modules\Notifications\InAppNotification;
 use App\Modules\Notifications\Jobs\SendNotificationDigest;
 use App\Modules\Notifications\NotificationDigester;
 use App\Modules\Notifications\NotificationPreference;
+use App\Modules\Notifications\PendingBatch;
 use App\Modules\Notifications\PendingNotification;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -42,9 +43,13 @@ beforeEach(function () {
     shareFileWith($this->file, $this->client);
 });
 
-/** Run the digest the way the queue would, resolving its dependencies. */
+/**
+ * Run the digest the way the queue would: once the burst has gone quiet,
+ * resolving its dependencies.
+ */
 function runDigest(int $userId): void
 {
+    test()->travel(PendingBatch::QUIET_SECONDS)->seconds();
     app()->call([new SendNotificationDigest($userId, 'file_comment.posted'), 'handle']);
 }
 
@@ -129,4 +134,18 @@ test('comments and shares queue separately, so one does not swallow the other', 
 
     Notification::assertSentTo($this->client, CommentPostedNotification::class);
     expect(PendingNotification::query()->where('type', 'file_shared')->count())->toBe(1);
+});
+
+test('a send stands down while comments are still arriving', function () {
+    $this->comments->post($this->file, $this->admin, CommentVisibility::Clients, 'First');
+    $this->travel(90)->seconds();
+    $this->comments->post($this->file, $this->admin, CommentVisibility::Clients, 'Second');
+    $this->travel(30)->seconds();
+
+    // The send queued by the first comment runs now; the second is fresh.
+    app()->call([new SendNotificationDigest($this->client->id, 'file_comment.posted'), 'handle']);
+    Notification::assertNothingSentTo($this->client);
+
+    runDigest($this->client->id);
+    Notification::assertSentToTimes($this->client, CommentDigestNotification::class, 1);
 });

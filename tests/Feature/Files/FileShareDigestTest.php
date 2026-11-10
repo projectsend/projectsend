@@ -10,12 +10,20 @@ use App\Modules\Files\Notifications\FileSharedNotification;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Notifications\InAppNotification;
 use App\Modules\Notifications\Jobs\SendNotificationDigest;
+use App\Modules\Notifications\PendingBatch;
 use App\Modules\Notifications\PendingNotification;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
+
+/** Run a digest the way the queue would: once the burst has gone quiet. */
+function runShareDigest(int $userId): void
+{
+    test()->travel(PendingBatch::QUIET_SECONDS)->seconds();
+    app()->call([new SendNotificationDigest($userId, 'file_shared'), 'handle']);
+}
 
 function digestTestFile(User $uploader, string $name): File
 {
@@ -56,7 +64,7 @@ test('sharing several files with the same client in a burst sends one digest, no
 
     // Simulate the debounce window elapsing: run just one job, as if it
     // were the first of the three to fire.
-    app()->call([new SendNotificationDigest($client->id, 'file_shared'), 'handle']);
+    runShareDigest($client->id);
 
     Notification::assertSentTo($client, FileShareDigestNotification::class, function (FileShareDigestNotification $notification) {
         $mail = $notification->toMail(new User);
@@ -83,11 +91,11 @@ test('a later debounced job for an already-consumed batch is a no-op', function 
     Notification::fake();
 
     // The first job to run consumes everything.
-    app()->call([new SendNotificationDigest($client->id, 'file_shared'), 'handle']);
+    runShareDigest($client->id);
     Notification::assertSentToTimes($client, FileShareDigestNotification::class, 1);
 
     // The second job (from the second share) finds nothing pending.
-    app()->call([new SendNotificationDigest($client->id, 'file_shared'), 'handle']);
+    runShareDigest($client->id);
     Notification::assertSentToTimes($client, FileShareDigestNotification::class, 1);
 });
 
@@ -112,7 +120,7 @@ test('a folder and a file shared together land in the same digest, each labeled 
     $this->actingAs($this->admin)->post("/folders/{$folder->id}/assignments", ['type' => 'client', 'id' => $client->id]);
 
     Notification::fake();
-    app()->call([new SendNotificationDigest($client->id, 'file_shared'), 'handle']);
+    runShareDigest($client->id);
 
     Notification::assertSentTo($client, FileShareDigestNotification::class, function (FileShareDigestNotification $notification) {
         $mail = $notification->toMail(new User);
@@ -139,8 +147,8 @@ test('each group member gets their own digest, not a shared one', function () {
         ->and(PendingNotification::query()->where('user_id', $memberB->id)->count())->toBe(2);
 
     Notification::fake();
-    app()->call([new SendNotificationDigest($memberA->id, 'file_shared'), 'handle']);
-    app()->call([new SendNotificationDigest($memberB->id, 'file_shared'), 'handle']);
+    runShareDigest($memberA->id);
+    runShareDigest($memberB->id);
 
     Notification::assertSentToTimes($memberA, FileShareDigestNotification::class, 1);
     Notification::assertSentToTimes($memberB, FileShareDigestNotification::class, 1);
@@ -179,10 +187,103 @@ test('assigning a file also creates an in-app notification, independent of the e
 });
 
 test('a digest job for a deleted user or with nothing pending does not error', function () {
-    app()->call([new SendNotificationDigest(999999, 'file_shared'), 'handle']);
+    runShareDigest(999999);
 
     $client = User::factory()->client()->create();
-    app()->call([new SendNotificationDigest($client->id, 'file_shared'), 'handle']);
+    runShareDigest($client->id);
 
     expect(true)->toBeTrue();
+});
+
+/*
+ * The debounce is real (PendingBatch): a send stands down while shares are
+ * still arriving, so a long burst is still one email, not one email for the
+ * first two minutes and one per share after that.
+ */
+
+test('a send stands down while shares are still arriving, so a long burst is one email', function () {
+    $client = User::factory()->client()->create();
+    Queue::fake();
+    Notification::fake();
+
+    // A share every 90 seconds for six minutes: each send queued along the
+    // way runs while the next share is newer than the quiet period.
+    foreach (['a', 'b', 'c', 'd', 'e'] as $name) {
+        $file = digestTestFile($this->admin, $name);
+        $this->actingAs($this->admin)->post("/files/{$file->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+        $this->travel(90)->seconds();
+        app()->call([new SendNotificationDigest($client->id, 'file_shared'), 'handle']);
+    }
+
+    // The fifth share is only 90 seconds old: still waiting.
+    Notification::assertNothingSentTo($client);
+    expect(PendingNotification::query()->where('user_id', $client->id)->count())->toBe(5);
+
+    $this->travel(30)->seconds();
+    app()->call([new SendNotificationDigest($client->id, 'file_shared'), 'handle']);
+
+    Notification::assertSentToTimes($client, FileShareDigestNotification::class, 1);
+    Notification::assertSentTo($client, FileShareDigestNotification::class, fn (FileShareDigestNotification $n) => $n->toMail(new User)->subject === '5 items have been shared with you');
+});
+
+test('shares arriving without pause still send an email every quarter of an hour', function () {
+    $client = User::factory()->client()->create();
+    Queue::fake();
+    Notification::fake();
+
+    $first = digestTestFile($this->admin, 'first');
+    $this->actingAs($this->admin)->post("/files/{$first->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+    $this->travel(PendingBatch::MAX_HOLD_SECONDS + 1)->seconds();
+    $latest = digestTestFile($this->admin, 'latest');
+    $this->actingAs($this->admin)->post("/files/{$latest->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+
+    app()->call([new SendNotificationDigest($client->id, 'file_shared'), 'handle']);
+
+    Notification::assertSentToTimes($client, FileShareDigestNotification::class, 1);
+    expect(PendingNotification::query()->where('user_id', $client->id)->count())->toBe(0);
+});
+
+test('each share queues its send for after the quiet period', function () {
+    $client = User::factory()->client()->create();
+    $file = digestTestFile($this->admin, 'solo');
+    Queue::fake();
+
+    $this->actingAs($this->admin)->post("/files/{$file->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+
+    Queue::assertPushed(SendNotificationDigest::class, fn (SendNotificationDigest $job) => $job->delay !== null);
+});
+
+test('a queue that cannot wait still sends every share email, at once', function () {
+    // phpunit.xml runs the sync driver, which is exactly this case.
+    $client = User::factory()->client()->create();
+    $file = digestTestFile($this->admin, 'solo');
+    Notification::fake();
+
+    $this->actingAs($this->admin)->post("/files/{$file->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+
+    Notification::assertSentTo($client, FileSharedNotification::class);
+    expect(PendingNotification::query()->count())->toBe(0);
+});
+
+test('a digest job queued before the debounce change still runs', function () {
+    // A job serialized by the previous release has no `immediate` property.
+    // It must read as false, not crash on an uninitialized property.
+    $client = User::factory()->client()->create();
+    $file = digestTestFile($this->admin, 'old');
+    Queue::fake();
+    $this->actingAs($this->admin)->post("/files/{$file->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+
+    // Build that old payload: today's, minus `immediate` if it is there.
+    $payload = serialize(new SendNotificationDigest($client->id, 'file_shared'));
+    $old = preg_replace('/s:\d+:"\0[^\0]+\0immediate";b:[01];/', '', $payload, 1, $removed);
+    if ($removed === 1) {
+        $old = preg_replace_callback('/^O:(\d+):"([^"]+)":(\d+):/', fn ($m) => "O:{$m[1]}:\"{$m[2]}\":".($m[3] - 1).':', $old);
+    }
+    expect($old)->not->toContain('immediate');
+
+    Notification::fake();
+    $this->travel(PendingBatch::QUIET_SECONDS)->seconds();
+    app()->call([unserialize($old), 'handle']);
+
+    Notification::assertSentTo($client, FileSharedNotification::class);
 });

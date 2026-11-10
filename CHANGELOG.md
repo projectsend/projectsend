@@ -25,6 +25,11 @@ Nothing here needs doing. These are changes you may notice, or choices you may w
 
   **Who this affected.** Every installation that sends these emails. If your queue runs on the
   `sync` driver, the emails still go out at once, one per file, because a sync queue cannot wait.
+- **Share and comment emails now wait until the burst is over.** These were already batched, but
+  only for the first two minutes: sharing files with a client for ten minutes sent one email for the
+  first two minutes and then one per file. Now the email goes out once nothing new has arrived for
+  two minutes, and at least once every fifteen minutes during a long burst. A `sync` queue still
+  sends each one at once.
 - **Visitors can now be allowed to download several public files as one zip.** This is off until you
   turn it on, under public listing settings. Zips are built on the server, so anyone with a public
   link can use server time and some disk space. The size limit from the zip download settings

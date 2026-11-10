@@ -13,6 +13,9 @@ use App\Modules\Platform\Settings\Settings;
  * Collapses a burst of the same kind of notification to the same person
  * into one email.
  *
+ * A send waits until the burst is over, with a ceiling — the rule lives in
+ * PendingBatch, shared with the client-upload email.
+ *
  * Sharing five files with a client one at a time used to mean five emails;
  * so would answering five comments. This debounces both, without needing a
  * "is a send already scheduled" flag — see SendNotificationDigest for why.
@@ -31,13 +34,6 @@ use App\Modules\Platform\Settings\Settings;
  */
 class NotificationDigester
 {
-    /**
-     * How long a recipient's pending items wait for more to accumulate.
-     * Deliberately short — this is about collapsing a burst a few seconds
-     * apart, not batching over an afternoon.
-     */
-    private const DEBOUNCE_SECONDS = 120;
-
     public function __construct(
         private readonly NotificationTypeRegistry $types,
         private readonly NotificationPreferences $preferences,
@@ -74,8 +70,8 @@ class NotificationDigester
                 'context' => $context === [] ? null : $context,
             ]);
 
-            SendNotificationDigest::dispatch($recipient->getKey(), $type->key)
-                ->delay(now()->addSeconds(self::DEBOUNCE_SECONDS));
+            SendNotificationDigest::dispatch($recipient->getKey(), $type->key, PendingBatch::queueCannotWait())
+                ->delay(now()->addSeconds(PendingBatch::QUIET_SECONDS));
         }
     }
 }

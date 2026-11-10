@@ -7,6 +7,7 @@ namespace App\Modules\Files\Uploads;
 use App\Models\User;
 use App\Modules\Files\Jobs\SendClientUploadMail;
 use App\Modules\Files\Models\File;
+use App\Modules\Notifications\PendingBatch;
 use App\Modules\Notifications\PendingNotification;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
@@ -37,7 +38,7 @@ final class ClientUploadMail
      * Long enough for a folder upload to finish, short enough that a
      * single file is still news.
      */
-    public const DEBOUNCE_SECONDS = 120;
+    public const DEBOUNCE_SECONDS = PendingBatch::QUIET_SECONDS;
 
     public function __construct(
         private readonly Settings $settings,
@@ -56,12 +57,7 @@ final class ClientUploadMail
             'context' => ['file_id' => $file->id],
         ]);
 
-        // A queue that runs jobs on the spot cannot wait, and a send that
-        // stood down there would never be followed by another. Such an
-        // installation gets the email at once, one per file, as before.
-        $immediate = config('queue.connections.'.config('queue.default').'.driver') === 'sync';
-
-        SendClientUploadMail::dispatch($client->id, $immediate)->delay(now()->addSeconds(self::DEBOUNCE_SECONDS));
+        SendClientUploadMail::dispatch($client->id, PendingBatch::queueCannotWait())->delay(now()->addSeconds(self::DEBOUNCE_SECONDS));
     }
 
     /**

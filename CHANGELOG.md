@@ -29,7 +29,8 @@ Nothing here needs doing. These are changes you may notice, or choices you may w
   only for the first two minutes: sharing files with a client for ten minutes sent one email for the
   first two minutes and then one per file. Now the email goes out once nothing new has arrived for
   two minutes, and at least once every fifteen minutes during a long burst. A `sync` queue still
-  sends each one at once.
+  sends each one at once. Anything the recipient lost access to during the wait is left out, and
+  nothing is sent if they switched that email off in the meantime.
 - **Visitors can now be allowed to download several public files as one zip.** This is off until you
   turn it on, under public listing settings. Zips are built on the server, so anyone with a public
   link can use server time and some disk space. The size limit from the zip download settings

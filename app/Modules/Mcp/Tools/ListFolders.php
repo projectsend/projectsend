@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Mcp\Tools;
 
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Mcp\Support\Account;
 use App\Modules\Mcp\Support\Envelope;
@@ -84,7 +85,8 @@ class ListFolders extends ToolBase
             $query->whereNull('parent_id');
         }
 
-        $query->withCount(['children', 'files', 'assignments'])->orderBy('name')->orderBy('id');
+        // Only what this person may see, as on the library page.
+        $query->withCount(app(StaffLibraryScope::class)->folderCounts($account->user))->orderBy('name')->orderBy('id');
 
         $total = (clone $query)->count();
         $limit = (int) ($validated['limit'] ?? 20);

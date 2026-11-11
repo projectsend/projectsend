@@ -131,6 +131,58 @@ class StaffLibraryScope
     }
 
     /**
+     * withCount() relations for a folder's subfolders, files and shares,
+     * counting only what this user may see. Without the scope a folder's
+     * counts told a staff member limited to some clients how many files,
+     * subfolders and shares they were not allowed to know about.
+     *
+     * Each count is aliased to the relation's usual name, so callers read
+     * children_count, files_count and assignments_count as before.
+     *
+     * @return array<int|string, mixed>
+     */
+    public function folderCounts(User $user): array
+    {
+        if (! $user->isClientScoped()) {
+            return ['children', 'files', 'assignments'];
+        }
+
+        return [
+            // qualifyColumn, not a literal 'folders.id': counting a
+            // folder's children joins folders to itself under an alias, and
+            // the literal named the outer folder.
+            'children' => fn (Builder $q) => $q->whereIn($q->qualifyColumn('id'), $this->folders($user)->select('folders.id')),
+            'files' => fn (Builder $q) => $q->whereIn($q->qualifyColumn('id'), $this->files($user)->select('files.id')),
+        ] + $this->assignmentCount($user);
+    }
+
+    /**
+     * withCount() relation for a file's or folder's shares, counting only
+     * the clients and groups this user may share with -- the same rule as
+     * the share targets they are offered. Read back as assignments_count.
+     *
+     * @return array<int|string, mixed>
+     */
+    public function assignmentCount(User $user): array
+    {
+        $clientIds = $this->assignableClientIds($user);
+
+        if ($clientIds === null) {
+            return ['assignments'];
+        }
+
+        $groupIds = $this->assignableGroupIds($user) ?? [];
+
+        return ['assignments' => fn (Builder $q) => $q->where(fn (Builder $any) => $any
+            ->where(fn (Builder $client) => $client
+                ->where('assignable_type', (new User)->getMorphClass())
+                ->whereIn('assignable_id', $clientIds))
+            ->orWhere(fn (Builder $group) => $group
+                ->where('assignable_type', (new Group)->getMorphClass())
+                ->whereIn('assignable_id', $groupIds)))];
+    }
+
+    /**
      * Client ids a user may share with, or null when unrestricted (the
      * whole roster). A scoped user may only share with their assigned
      * clients.

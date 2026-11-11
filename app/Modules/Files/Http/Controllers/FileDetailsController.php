@@ -384,12 +384,15 @@ class FileDetailsController extends Controller
         assert($viewer !== null);
         Gate::forUser($viewer)->authorize('view', $folder);
 
+        // Only what this viewer may see, as on the folder's library row.
+        $folder->loadCount(app(StaffLibraryScope::class)->folderCounts($viewer));
+
         return response()->json([
             'type' => 'folder',
             'id' => $folder->id,
             'name' => $folder->name,
-            'files_count' => $folder->files()->count(),
-            'children_count' => $folder->children()->count(),
+            'files_count' => (int) $folder->files_count,
+            'children_count' => (int) $folder->children_count,
             'creator' => $this->identity->nameOf($viewer, $folder->creator),
             'created_at' => $folder->created_at?->toIso8601String(),
             'open_url' => route('files.index', ['folder' => $folder->id], false),

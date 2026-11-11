@@ -80,17 +80,49 @@ class FilesBeyondAuthority
     {
         $blocked = $this->unshareable($viewer, $folder);
 
+        return match ($act) {
+            'publish' => $this->message($viewer, $folder, $blocked,
+                'This folder cannot be made public: it holds :count file you may not share.|This folder cannot be made public: it holds :count files you may not share.',
+                'This folder cannot be made public: it holds files you may not share.'),
+            'move' => $this->message($viewer, $folder, $blocked,
+                'This folder cannot go there: that folder is shared or public, and this one holds :count file you may not share.|This folder cannot go there: that folder is shared or public, and this one holds :count files you may not share.',
+                'This folder cannot go there: that folder is shared or public, and this one holds files you may not share.'),
+            default => $this->message($viewer, $folder, $blocked,
+                'This folder cannot be shared: it holds :count file you may not share.|This folder cannot be shared: it holds :count files you may not share.',
+                'This folder cannot be shared: it holds files you may not share.'),
+        };
+    }
+
+    /**
+     * The refusal for $blocked files, or null when there are none.
+     *
+     * Counted when every blocked file is one the viewer can see, which is
+     * useful and tells them nothing new. Not counted when some are outside
+     * their library: the number told a staff member limited to some clients
+     * how many files they were not allowed to know about. That the folder
+     * holds something they cannot act on is the refusal itself, and cannot
+     * be hidden.
+     */
+    public function message(User $viewer, Folder $folder, int $blocked, string $counted, string $uncounted): ?string
+    {
         if ($blocked === 0) {
             return null;
         }
 
-        $replace = ['count' => (string) $blocked];
+        if ($this->holdsFilesHiddenFrom($viewer, $folder)) {
+            return (string) __($uncounted);
+        }
 
-        return match ($act) {
-            'publish' => trans_choice('This folder cannot be made public: it holds :count file you may not share.|This folder cannot be made public: it holds :count files you may not share.', $blocked, $replace),
-            'move' => trans_choice('This folder cannot go there: that folder is shared or public, and this one holds :count file you may not share.|This folder cannot go there: that folder is shared or public, and this one holds :count files you may not share.', $blocked, $replace),
-            default => trans_choice('This folder cannot be shared: it holds :count file you may not share.|This folder cannot be shared: it holds :count files you may not share.', $blocked, $replace),
-        };
+        return trans_choice($counted, $blocked, ['count' => (string) $blocked]);
+    }
+
+    private function holdsFilesHiddenFrom(User $viewer, Folder $folder): bool
+    {
+        return $viewer->isClientScoped()
+            && File::query()
+                ->whereIn('folder_id', $folder->subtreeFolderIds())
+                ->whereNotIn('id', $this->scope->files($viewer)->select('id'))
+                ->exists();
     }
 
     /**
@@ -113,13 +145,9 @@ class FilesBeyondAuthority
             return (string) __('This cannot be moved out of there: the folder it is in is shared with people outside your clients, and they would lose it.');
         }
 
-        $blocked = $this->unshareable($viewer, $folder);
-
-        return $blocked === 0 ? null : trans_choice(
+        return $this->message($viewer, $folder, $this->unshareable($viewer, $folder),
             'This folder cannot be moved out of there: that folder is shared, and this one holds :count file you may not unshare.|This folder cannot be moved out of there: that folder is shared, and this one holds :count files you may not unshare.',
-            $blocked,
-            ['count' => (string) $blocked],
-        );
+            'This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.');
     }
 
     /**

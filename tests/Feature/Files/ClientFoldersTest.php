@@ -386,3 +386,28 @@ test('the move picker asks about every folder without a query for each', functio
 
     expect($queries)->toBeLessThan(60);
 });
+
+test('a client refused deletion is not told how many files sit in a subfolder they cannot see', function () {
+    $client = User::factory()->client()->create();
+    $this->actingAs($client)->post('/my-folders', ['name' => 'Mine'])->assertRedirect();
+    $folder = Folder::query()->where('name', 'Mine')->sole();
+
+    // Staff organise a client's folder: a subfolder of theirs, which the
+    // client is not shown, holding files the client is not shown either.
+    $this->actingAs($this->admin);
+    $hidden = app(FolderService::class)->create('Staff notes', $folder);
+    File::factory()->count(2)->create(['uploaded_by' => $this->admin->id, 'folder_id' => $hidden->id]);
+
+    $this->actingAs($client)->delete("/my-folders/{$folder->id}")
+        ->assertSessionHas('error', 'This folder cannot be deleted: it holds files you did not upload.');
+});
+
+test('a client refused deletion is still told how many staff files they can see', function () {
+    $client = User::factory()->client()->create();
+    $this->actingAs($client)->post('/my-folders', ['name' => 'Mine'])->assertRedirect();
+    $folder = Folder::query()->where('name', 'Mine')->sole();
+    File::factory()->count(2)->create(['uploaded_by' => $this->admin->id, 'folder_id' => $folder->id]);
+
+    $this->actingAs($client)->delete("/my-folders/{$folder->id}")
+        ->assertSessionHas('error', 'This folder cannot be deleted: it holds 2 files you did not upload.');
+});

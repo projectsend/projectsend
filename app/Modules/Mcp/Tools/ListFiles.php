@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Modules\Mcp\Tools;
 
+use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Models\ShareLink;
 use App\Modules\Mcp\Support\Account;
 use App\Modules\Mcp\Support\Envelope;
@@ -84,7 +85,8 @@ class ListFiles extends ToolBase
         // Each file says which folder it is in and how many it is shared
         // with; staff only (Presenter::file).
         if (! $account->isClient()) {
-            $query->withCount('assignments')->with('folder');
+            // Shares to clients and groups this person may know about only.
+            $query->withCount(app(StaffLibraryScope::class)->assignmentCount($account->user))->with('folder');
         }
 
         $total = (clone $query)->count();

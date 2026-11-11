@@ -96,17 +96,24 @@ class MyFoldersController extends Controller
         // and the client can see those files without being able to delete
         // them individually (FilePolicy::delete denies clients outright).
         // Refuse rather than silently destroy them.
-        $foreignFiles = File::query()
+        $foreign = File::query()
             ->whereIn('folder_id', $folder->subtreeFolderIds())
-            ->where(fn ($query) => $query->whereNull('uploaded_by')->orWhere('uploaded_by', '!=', $client->id))
-            ->count();
+            ->where(fn ($query) => $query->whereNull('uploaded_by')->orWhere('uploaded_by', '!=', $client->id));
+        $foreignFiles = (clone $foreign)->count();
 
         if ($foreignFiles > 0) {
-            return back()->with('error', trans_choice(
-                'This folder cannot be deleted: it holds :count file you did not upload.|This folder cannot be deleted: it holds :count files you did not upload.',
-                $foreignFiles,
-                ['count' => (string) $foreignFiles],
-            ));
+            // Not counted when some are in a subfolder staff made, which the
+            // client cannot see: the number would tell them about files
+            // they were never shown.
+            $hidden = $foreignFiles > (clone $foreign)->visibleToClient($client)->count();
+
+            return back()->with('error', $hidden
+                ? __('This folder cannot be deleted: it holds files you did not upload.')
+                : trans_choice(
+                    'This folder cannot be deleted: it holds :count file you did not upload.|This folder cannot be deleted: it holds :count files you did not upload.',
+                    $foreignFiles,
+                    ['count' => (string) $foreignFiles],
+                ));
         }
 
         // The same goes for folders inside it that somebody else made:

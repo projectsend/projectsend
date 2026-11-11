@@ -7,7 +7,6 @@ namespace App\Modules\Mcp\Support;
 use App\Models\User;
 use App\Modules\Files\Access\StaffLibraryScope;
 use App\Modules\Files\Folders\FolderTrails;
-use App\Modules\Files\Models\File;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Models\FolderAssignment;
 use App\Modules\Files\Sharing\FolderSharing;
@@ -111,7 +110,6 @@ final class Folders
         return $out;
     }
 
-
     /**
      * Share the folder with a client account through FolderSharing, as
      * the web does: the assignment row, the activity entry, the in-app
@@ -137,9 +135,10 @@ final class Folders
 
     /**
      * Files in the folder and every folder under it: what a client the
-     * folder is shared with now sees.
+     * folder is shared with now sees. Counted as far as this staff member
+     * may see, or the number told them about files they may not know of.
      */
-    public static function filesInSubtree(Folder $folder): int
+    public static function filesInSubtree(Folder $folder, Account $account): int
     {
         $prefix = (string) ($folder->getAttribute('path') ?? '/').(int) $folder->getAttribute('id').'/';
 
@@ -149,6 +148,6 @@ final class Folders
             ->push((int) $folder->getAttribute('id'))
             ->all();
 
-        return File::query()->whereIn('folder_id', $folderIds)->count();
+        return app(StaffLibraryScope::class)->files($account->user)->whereIn('files.folder_id', $folderIds)->count();
     }
 }

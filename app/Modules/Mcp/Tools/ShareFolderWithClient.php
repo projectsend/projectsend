@@ -114,7 +114,7 @@ class ShareFolderWithClient extends ToolBase
                 'client' => Presenter::client($client),
                 'already_shared' => ! $shared,
                 'notified' => $shared,
-                'files_count' => Folders::filesInSubtree($folder),
+                'files_count' => Folders::filesInSubtree($folder, $account),
             ],
             Web::staffFolder($folderId),
             $shared

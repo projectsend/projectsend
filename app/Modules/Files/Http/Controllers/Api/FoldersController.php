@@ -234,13 +234,9 @@ class FoldersController extends Controller
             __('This folder is not empty. Send content_action=cascade_delete to delete it with everything inside it.'),
         );
 
-        $blocked = $this->undeletable->count($user, $folder);
+        $refusal = $this->undeletable->refusal($user, $folder);
 
-        abort_if($blocked > 0, 403, trans_choice(
-            'This folder cannot be deleted: it holds :count file you may not delete.|This folder cannot be deleted: it holds :count files you may not delete.',
-            $blocked,
-            ['count' => (string) $blocked],
-        ));
+        abort_if($refusal !== null, 403, (string) $refusal);
 
         $name = $folder->name;
 

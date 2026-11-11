@@ -42,4 +42,15 @@ class UndeletableFiles
     {
         return $this->beyond->count($viewer, $folder, 'delete_files', 'delete_others_files');
     }
+
+    /**
+     * Why $viewer may not delete $folder, or null when they may. Counts
+     * the files only when none is hidden from them (FilesBeyondAuthority::message).
+     */
+    public function refusal(User $viewer, Folder $folder): ?string
+    {
+        return $this->beyond->message($viewer, $folder, $this->count($viewer, $folder),
+            'This folder cannot be deleted: it holds :count file you may not delete.|This folder cannot be deleted: it holds :count files you may not delete.',
+            'This folder cannot be deleted: it holds files you may not delete.');
+    }
 }

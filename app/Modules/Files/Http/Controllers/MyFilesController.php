@@ -32,6 +32,7 @@ use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use App\Modules\Platform\Theming\PublicThemeRegistry;
 use App\Support\ConcatenatedPagination;
+use App\Support\ListSize;
 use App\Support\Pagination;
 use App\Support\Rules;
 use Illuminate\Database\Eloquent\Builder;
@@ -533,6 +534,8 @@ class MyFilesController extends Controller
         abort_unless($client !== null && $client->isClient(), 404);
 
         Gate::authorize('update', $file);
+
+        ListSize::enforce($request, ['categories' => ListSize::CATEGORIES]);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],

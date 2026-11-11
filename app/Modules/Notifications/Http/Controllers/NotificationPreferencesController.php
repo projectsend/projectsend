@@ -9,6 +9,7 @@ use App\Modules\Notifications\NotificationPreference;
 use App\Modules\Notifications\NotificationPreferences;
 use App\Modules\Notifications\NotificationTypeDefinition;
 use App\Modules\Notifications\NotificationTypeRegistry;
+use App\Support\ListSize;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -47,6 +48,8 @@ class NotificationPreferencesController extends Controller
         assert($user !== null);
 
         $keys = $this->emailableKeys();
+
+        ListSize::enforce($request, ['preferences' => count($keys)]);
 
         $validated = $request->validate([
             // Bounded by the registry, and unique on the type. The

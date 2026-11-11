@@ -6,6 +6,7 @@ namespace App\Modules\Audit\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Audit\Models\DashboardWidgetPreference;
+use App\Support\ListSize;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -42,6 +43,8 @@ class DashboardWidgetPreferencesController extends Controller
     {
         $user = $request->user();
         assert($user !== null);
+
+        ListSize::enforce($request, ['widgets' => count(self::WIDGET_KEYS)]);
 
         $validated = $request->validate([
             'columns' => ['required', 'integer', 'between:1,4'],

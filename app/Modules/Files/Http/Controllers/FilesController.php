@@ -17,9 +17,9 @@ use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\DownloadLimitScope;
 use App\Modules\Files\Editing\ApplyFileEdits;
 use App\Modules\Files\Editing\FileExpiry;
+use App\Modules\Files\Folders\FolderReach;
 use App\Modules\Files\Models\Category;
 use App\Modules\Files\Models\File;
-use App\Modules\Files\Folders\FolderReach;
 use App\Modules\Files\Models\Folder;
 use App\Modules\Files\Models\ShareLink;
 use App\Modules\Files\Storage\ResolvingUploadDisk;
@@ -29,6 +29,7 @@ use App\Modules\Files\Versions\FileVersionLinks;
 use App\Modules\Files\Versions\FileVersions;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use App\Support\ListSize;
 use App\Support\PublicUrl;
 use App\Support\Rules;
 use Illuminate\Http\RedirectResponse;
@@ -293,6 +294,8 @@ class FilesController extends Controller
     {
         Gate::authorize('update', $file);
 
+        ListSize::enforce($request, ['categories' => ListSize::CATEGORIES]);
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
@@ -435,12 +438,18 @@ class FilesController extends Controller
         $user = $request->user();
         assert($user !== null);
 
+        // Bounded like a zip's selection (ZipDownloadsController::MAX_FILES):
+        // a selection now survives paging, so a long list is ordinary, and
+        // each id costs a policy check. Checked before anything else.
+        ListSize::enforce($request, [
+            'file_ids' => ZipDownloadsController::MAX_FILES,
+            'add_category_ids' => ListSize::CATEGORIES,
+            'remove_category_ids' => ListSize::CATEGORIES,
+        ]);
+
         $validated = $request->validate([
-            // Bounded like a zip's selection (ZipDownloadsController::MAX_FILES):
-            // a selection now survives paging, so a long list is ordinary,
-            // and each id costs a policy check.
             'file_ids' => ['required', 'array', 'min:1', 'max:'.ZipDownloadsController::MAX_FILES],
-            'file_ids.*' => ['integer', 'distinct'],
+            'file_ids.*' => ['integer'],
 
             'folder_action' => ['required', Rule::in(['no_change', 'move'])],
             'folder_id' => Rules::folderId(),
@@ -579,7 +588,8 @@ class FilesController extends Controller
             }
         });
 
-        $requested = count($validated['file_ids']);
+        // Repeats are harmless, and not counted twice.
+        $requested = count(array_unique(array_map(intval(...), $validated['file_ids'])));
 
         // Two different reasons a selected file can go unchanged, and they
         // are not the same sentence. Files dropped by the Gate::allows
@@ -635,12 +645,11 @@ class FilesController extends Controller
         $user = $request->user();
         assert($user !== null);
 
+        ListSize::enforce($request, ['file_ids' => ZipDownloadsController::MAX_FILES]);
+
         $validated = $request->validate([
-            // Bounded like a zip's selection (ZipDownloadsController::MAX_FILES):
-            // a selection now survives paging, so a long list is ordinary,
-            // and each id costs a policy check.
             'file_ids' => ['required', 'array', 'min:1', 'max:'.ZipDownloadsController::MAX_FILES],
-            'file_ids.*' => ['integer', 'distinct'],
+            'file_ids.*' => ['integer'],
         ]);
 
         $files = File::query()->whereIn('id', $validated['file_ids'])->get()

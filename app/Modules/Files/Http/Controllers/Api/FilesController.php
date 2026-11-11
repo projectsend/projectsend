@@ -16,16 +16,17 @@ use App\Modules\Files\Access\ViewableFileScope;
 use App\Modules\Files\DownloadLimitScope;
 use App\Modules\Files\Editing\ApplyFileEdits;
 use App\Modules\Files\Editing\FileExpiry;
+use App\Modules\Files\Folders\FolderReach;
 use App\Modules\Files\Http\Resources\Api\FileResource;
 use App\Modules\Files\Models\File;
-use App\Modules\Files\Scanning\ScanStatus;
-use App\Modules\Files\Folders\FolderReach;
 use App\Modules\Files\Models\Folder;
+use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Files\Storage\ResolvingUploadDisk;
 use App\Modules\Files\Uploads\StoreUploadedFile;
 use App\Modules\Files\Uploads\UploadExtensionPolicy;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
+use App\Support\ListSize;
 use App\Support\Rules;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
@@ -358,6 +359,8 @@ class FilesController extends Controller
 
         $user = $request->user();
         assert($user !== null);
+
+        ListSize::enforce($request, ['categories' => ListSize::CATEGORIES]);
 
         $validated = $request->validate([
             'name' => ['sometimes', 'string', 'max:255'],

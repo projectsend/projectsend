@@ -44,7 +44,7 @@ class AnnounceAvailableFile
 
         if ($recipients->isNotEmpty()) {
             $this->notifier->send('file_shared', $recipients, subject: $file, data: ['itemName' => $file->name]);
-            $this->digester->queue('file_shared', $recipients, $file->name, ['is_folder' => false]);
+            $this->digester->queue('file_shared', $recipients, $file->name, ['is_folder' => false, 'file_id' => $file->id]);
         }
 
         $previous = $file->previousVersion;
@@ -67,6 +67,7 @@ class AnnounceAvailableFile
 
             $this->digester->queue('file_new_version', $audience, $file->name, [
                 'previousName' => $previous->name,
+                'file_id' => $file->id,
             ]);
         }
     }

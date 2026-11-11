@@ -149,3 +149,27 @@ test('a send stands down while comments are still arriving', function () {
     runDigest($this->client->id);
     Notification::assertSentToTimes($this->client, CommentDigestNotification::class, 1);
 });
+
+test('a comment on a file deleted while the email waited is not sent', function () {
+    $this->comments->post($this->file, $this->admin, CommentVisibility::Clients, 'An update');
+
+    $this->file->delete();
+    runDigest($this->client->id);
+
+    Notification::assertNothingSentTo($this->client);
+});
+
+test('a scoped staff member taken off the client while the email waited is not told', function () {
+    $manager = User::factory()->role(App\Modules\Identity\Permissions\SystemRole::ClientManager)->create();
+    $manager->assignedClients()->sync([$this->client->id]);
+    app()->forgetScopedInstances();
+
+    $this->comments->post($this->file, $this->client, CommentVisibility::Clients, 'A question');
+    expect(PendingNotification::query()->where('user_id', $manager->id)->count())->toBe(1);
+
+    $manager->assignedClients()->sync([]);
+    app()->forgetScopedInstances();
+    runDigest($manager->id);
+
+    Notification::assertNothingSentTo($manager);
+});

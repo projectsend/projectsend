@@ -138,6 +138,7 @@ class FileVersions
 
             $this->digester->queue('file_new_version', $audience, $file->name, [
                 'previousName' => $previous->name,
+                'file_id' => $file->id,
             ]);
         }
     }

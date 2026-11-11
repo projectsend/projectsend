@@ -71,7 +71,7 @@ class FileSharing
 
         // The master switch and each recipient's own preference are the
         // digester's job now — every caller was repeating them.
-        $this->digester->queue('file_shared', $recipients, $file->name, ['is_folder' => false]);
+        $this->digester->queue('file_shared', $recipients, $file->name, ['is_folder' => false, 'file_id' => $file->id]);
     }
 
     /**

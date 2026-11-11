@@ -60,7 +60,7 @@ class FolderSharing
 
         // The master switch and each recipient's own preference are the
         // digester's job now — every caller was repeating them.
-        $this->digester->queue('file_shared', $recipients, $folder->name, ['is_folder' => true]);
+        $this->digester->queue('file_shared', $recipients, $folder->name, ['is_folder' => true, 'folder_id' => $folder->id]);
     }
 
     /**

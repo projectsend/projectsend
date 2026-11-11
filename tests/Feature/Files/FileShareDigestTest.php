@@ -10,6 +10,7 @@ use App\Modules\Files\Notifications\FileSharedNotification;
 use App\Modules\Groups\Models\Group;
 use App\Modules\Notifications\InAppNotification;
 use App\Modules\Notifications\Jobs\SendNotificationDigest;
+use App\Modules\Notifications\NotificationPreference;
 use App\Modules\Notifications\PendingBatch;
 use App\Modules\Notifications\PendingNotification;
 use App\Modules\Platform\Settings\Setting;
@@ -286,4 +287,62 @@ test('a digest job queued before the debounce change still runs', function () {
     app()->call([unserialize($old), 'handle']);
 
     Notification::assertSentTo($client, FileSharedNotification::class);
+});
+
+/*
+ * The wait can be a quarter of an hour, so what was true when a share was
+ * queued is asked again when the email goes out.
+ */
+
+test('a file unshared while the digest waited is left out of it', function () {
+    $client = User::factory()->client()->create();
+    $files = collect(['alpha', 'beta', 'gamma'])->map(fn (string $name) => digestTestFile($this->admin, $name));
+    Queue::fake();
+    foreach ($files as $file) {
+        $this->actingAs($this->admin)->post("/files/{$file->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+    }
+
+    $this->actingAs($this->admin)->delete("/files/{$files[0]->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+
+    Notification::fake();
+    runShareDigest($client->id);
+
+    Notification::assertSentTo($client, FileShareDigestNotification::class, function (FileShareDigestNotification $notification) {
+        $mail = $notification->toMail(new User);
+
+        return $mail->subject === '2 items have been shared with you'
+            && ! in_array('File: alpha', $mail->introLines, true);
+    });
+});
+
+test('nothing is sent when everything in the digest was unshared or deleted', function () {
+    $client = User::factory()->client()->create();
+    $kept = digestTestFile($this->admin, 'deleted-later');
+    $folder = Folder::query()->create(['name' => 'Reports']);
+    Queue::fake();
+    $this->actingAs($this->admin)->post("/files/{$kept->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+    $this->actingAs($this->admin)->post("/folders/{$folder->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+
+    $kept->delete();
+    $this->actingAs($this->admin)->delete("/folders/{$folder->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+
+    Notification::fake();
+    runShareDigest($client->id);
+
+    Notification::assertNothingSentTo($client);
+    expect(PendingNotification::query()->count())->toBe(0);
+});
+
+test('a recipient who switched the email off while it waited gets nothing', function () {
+    $client = User::factory()->client()->create();
+    $file = digestTestFile($this->admin, 'solo');
+    Queue::fake();
+    $this->actingAs($this->admin)->post("/files/{$file->id}/assignments", ['type' => 'client', 'id' => $client->id]);
+
+    NotificationPreference::query()->create(['user_id' => $client->id, 'type' => 'file_shared', 'email_enabled' => false]);
+
+    Notification::fake();
+    runShareDigest($client->id);
+
+    Notification::assertNothingSentTo($client);
 });

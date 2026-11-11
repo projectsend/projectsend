@@ -284,13 +284,19 @@ class PublicZipDownloadsController extends Controller
             __('Those files have reached their download limit.'),
         );
 
-        $taken = $this->allowance->takeAll($contained, null, function () use ($zipDownload, $contained): void {
+        $lostTheRace = false;
+
+        $taken = $this->allowance->takeAll($contained, null, function () use ($zipDownload, $contained, &$lostTheRace): void {
             $claimed = ZipDownload::query()
                 ->whereKey($zipDownload->id)
                 ->whereNull('delivered_at')
                 ->update(['delivered_at' => now()]);
 
+            // Another fetch of this archive got here first: this one is a
+            // re-fetch that started before that one finished.
             if ($claimed === 0) {
+                $lostTheRace = true;
+
                 return;
             }
 
@@ -300,6 +306,16 @@ class PublicZipDownloadsController extends Controller
         });
 
         abort_unless($taken, 403, __('Those files have reached their download limit.'));
+
+        // The same rule as a later re-fetch in download(): it is free,
+        // except for an archive holding a limited file. Without this, many
+        // fetches sent at once all loaded the archive as undelivered, and
+        // every one was handed a copy for a single counted download.
+        abort_if(
+            $lostTheRace && $contained->contains(fn (File $file): bool => $file->hasDownloadLimit()),
+            410,
+            __('This zip has already been downloaded. Select the files again to download them.'),
+        );
     }
 
     /**

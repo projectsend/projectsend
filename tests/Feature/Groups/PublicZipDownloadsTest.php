@@ -331,6 +331,36 @@ test('a zip holding a file with a download limit can be fetched once, not over a
     $this->get($response->json('download_url'))->assertStatus(410);
 });
 
+test('fetches sent at the same moment do not each get a copy of a zip holding a limited file', function () {
+    // A limit of 2 leaves room after the first download, so the limit check
+    // alone does not stop a second copy.
+    File::query()->whereKey($this->a->id)->update(['download_limit' => 2]);
+    $response = askForPublicZip('folder', $this->folder->slug, [$this->a->slug])->assertOk();
+
+    // Every fetch reads the archive before the first one marks it
+    // delivered, as concurrent requests do.
+    ZipDownload::retrieved(function (ZipDownload $zip): void {
+        $zip->delivered_at = null;
+    });
+
+    $this->get($response->json('download_url'))->assertOk();
+    $this->get($response->json('download_url'))->assertStatus(410);
+    $this->get($response->json('download_url'))->assertStatus(410);
+
+    expect(ActivityLog::query()->where('action', Action::PublicFileDownloaded)->where('subject_id', $this->a->id)->count())->toBe(1);
+});
+
+test('fetches sent at the same moment of a zip without limits all succeed', function () {
+    $response = askForPublicZip('folder', $this->folder->slug, [$this->a->slug])->assertOk();
+
+    ZipDownload::retrieved(function (ZipDownload $zip): void {
+        $zip->delivered_at = null;
+    });
+
+    $this->get($response->json('download_url'))->assertOk();
+    $this->get($response->json('download_url'))->assertOk();
+});
+
 test('a zip of files without limits can be fetched again, as an interrupted download needs', function () {
     $response = askForPublicZip('folder', $this->folder->slug, [$this->a->slug])->assertOk();
 

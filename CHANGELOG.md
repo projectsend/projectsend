@@ -10,7 +10,11 @@ Anything under **⚠️ Important — do these yourself** is something you have 
 we did. It sits at the top of a release for that reason. Older entries call the same section
 **Upgrade notes**.
 
-## Unreleased
+## 2.9.0 — 13 November 2026
+
+Easier work with large file collections: sorting, bigger pages, selections that last across pages,
+folder uploads that keep their subfolders, and zip downloads for visitors on public pages. Plus
+fewer, better-timed notification emails and a round of security fixes.
 
 ### Worth knowing before you upgrade
 
@@ -22,19 +26,70 @@ Nothing here needs doing. These are changes you may notice, or choices you may w
   every file, and at least one every fifteen minutes while an upload is still going. A single file
   still sends the email you know. The batched email has its own editable template, "Admin: client
   uploaded several files at once", under email templates.
-
-  **Who this affected.** Every installation that sends these emails. If your queue runs on the
-  `sync` driver, the emails still go out at once, one per file, because a sync queue cannot wait.
 - **Share and comment emails now wait until the burst is over.** These were already batched, but
   only for the first two minutes: sharing files with a client for ten minutes sent one email for the
   first two minutes and then one per file. Now the email goes out once nothing new has arrived for
-  two minutes, and at least once every fifteen minutes during a long burst. A `sync` queue still
-  sends each one at once. Anything the recipient lost access to during the wait is left out, and
-  nothing is sent if they switched that email off in the meantime.
-- **Visitors can now be allowed to download several public files as one zip.** This is off until you
-  turn it on, under public listing settings. Zips are built on the server, so anyone with a public
-  link can use server time and some disk space. The size limit from the zip download settings
-  applies, and visitors' zips share a fixed amount of disk between them.
+  two minutes, and at least once every fifteen minutes during a long burst.
+- **If your queue runs on the `sync` driver,** both kinds of email still go out at once, one per
+  item, because a sync queue cannot wait.
+- **A file can be given at most 500 categories in one save.**
+
+**New**
+
+- **Sort the file lists.** Click Name, Size or Uploaded in the staff library and in My files to sort,
+  and click again to reverse. Public folders, groups and the public index get a Sort by menu in every
+  theme.
+- **Show 25, 50, 100 or 200 files a page**, in the staff library, My files and on public pages.
+- **Selections last across pages.** Ticked files stay ticked when you change page, page size or
+  sort, so files from several pages can be zipped or edited together. Shift-click ticks a range, and
+  My files gains a select-all box.
+- **Upload a whole folder, subfolders included.** Until now, dropping a folder on the upload page
+  put every file inside it into one place, and its subfolders were lost. Now the same folders are
+  created here, with each file in the right one. For example, dropping `Project_A`, which holds
+  `Drawings/Mechanical` and `Reports`, gives you those three folders with their files in them.
+
+  The upload page also has a new "browse folders" button next to "browse files". Uploading the same
+  folder again puts the files into the folders already there, so you do not get duplicates.
+
+  This works for anyone allowed to create folders, staff or clients. Someone who is not allowed can
+  still upload a folder, but its files all land in one place, as before.
+- **Let visitors download several public files as one zip.** Until now, a visitor who wanted 40 of
+  the 100 files on a public page had to download them one at a time. Now they can tick the files
+  they want, or tick them all, and download them as a single zip. This works on public folders,
+  groups and the public index page, in every theme.
+
+  It is off until you turn it on: "Let visitors download several public files as one zip", under
+  public listing settings. Think about it before you do. The zip is built on your server, so anyone
+  who has a public link can use some of your server's time and disk space. These limits keep that in
+  check:
+
+  - The largest zip allowed is the size limit from your zip download settings.
+  - All visitors' zips together may use ten times that much disk, or 10 GB if there is no size limit.
+    A zip is deleted after a day.
+  - Only a few visitor zips are built at once, and each visitor can ask for only a few a minute.
+  - If a zip holds a file with a download limit, the zip can be downloaded only once, and each file
+    in it counts as one download.
+
+**Closed holes in who can see what**
+
+- A staff member limited to some clients no longer sees how many files, subfolders and shares a
+  folder holds beyond their own clients. That covers the library, the folder details panel, the share
+  count on files and the AI assistant's answers. Messages refusing to delete, share or move a folder
+  no longer count files the person cannot see.
+- Notification emails are checked again when they are sent. A file or folder the recipient lost
+  access to while the email waited is left out, and nothing is sent if they switched that email off.
+- A request with a very long list of files or categories is refused straight away. Before, the
+  server checked every item first, so one request could keep it busy for half a minute. Clients
+  could reach one of these too.
+
+Thanks to [@lumenzzz](https://github.com/lumenzzz) for asking for the large-collection improvements.
+
+### Issues closed since 2.8.1
+
+The summary above is what changed. This is the paper trail, for anyone who wants to read the
+original report.
+
+- [#1840](https://github.com/projectsend/projectsend/issues/1840) — Improve usability for large file collections: browsing, selection, sorting, folder uploads and bulk operations
 
 ## 2.8.1 — 9 November 2026
 

@@ -2437,5 +2437,12 @@
     "Too many zip downloads are being prepared right now. Try again in a few minutes.": "Hiện đang chuẩn bị quá nhiều bản tải xuống ZIP. Hãy thử lại sau vài phút.",
     "Uploaded": "Ngày tải lên",
     "View the files": "Xem các tệp",
-    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Khách truy cập có thể đánh dấu tệp trong một thư mục công khai, một nhóm hoặc trang danh mục rồi tải xuống cùng lúc. Mỗi tệp ZIP được tạo ở chế độ nền, nên sẽ dùng thời gian máy chủ và dung lượng đĩa cho bất kỳ ai có liên kết. Giới hạn kích thước trong cài đặt tải xuống ZIP vẫn được áp dụng."
+    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Khách truy cập có thể đánh dấu tệp trong một thư mục công khai, một nhóm hoặc trang danh mục rồi tải xuống cùng lúc. Mỗi tệp ZIP được tạo ở chế độ nền, nên sẽ dùng thời gian máy chủ và dung lượng đĩa cho bất kỳ ai có liên kết. Giới hạn kích thước trong cài đặt tải xuống ZIP vẫn được áp dụng.",
+    "This folder cannot be deleted: it holds files you may not delete.": "Không thể xoá thư mục này: nó chứa các tệp mà bạn không được phép xoá.",
+    "This folder cannot be made public: it holds files you may not share.": "Không thể công khai thư mục này: nó chứa các tệp mà bạn không được chia sẻ.",
+    "This folder cannot go there: that folder is shared or public, and this one holds files you may not share.": "Không thể đặt thư mục này vào đó: thư mục kia đang được chia sẻ hoặc công khai, và thư mục này chứa các tệp mà bạn không được chia sẻ.",
+    "This folder cannot be shared: it holds files you may not share.": "Không thể chia sẻ thư mục này: nó chứa các tệp mà bạn không được chia sẻ.",
+    "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "Không thể chuyển thư mục này ra khỏi đó: thư mục kia đang được chia sẻ, và thư mục này chứa các tệp mà bạn không được hủy chia sẻ.",
+    "This folder cannot be deleted: it holds files you did not upload.": "Không thể xóa thư mục này: trong đó có các tệp không phải do bạn tải lên.",
+    "This zip has already been downloaded. Select the files again to download them.": "Tệp zip này đã được tải xuống. Hãy chọn lại các tệp để tải chúng xuống."
 }

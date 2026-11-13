@@ -2437,5 +2437,12 @@
     "Too many zip downloads are being prepared right now. Try again in a few minutes.": "現在、準備中の ZIP ダウンロードが多すぎます。数分後にもう一度お試しください。",
     "Uploaded": "アップロード日",
     "View the files": "ファイルを表示",
-    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "訪問者は公開フォルダ、グループ、ディレクトリページでファイルにチェックを入れ、まとめてダウンロードできます。ZIP はバックグラウンドで作成されるため、リンクを知っている誰もがサーバーの処理時間とディスク容量を使うことになります。ZIP ダウンロード設定のサイズ上限が適用されます。"
+    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "訪問者は公開フォルダ、グループ、ディレクトリページでファイルにチェックを入れ、まとめてダウンロードできます。ZIP はバックグラウンドで作成されるため、リンクを知っている誰もがサーバーの処理時間とディスク容量を使うことになります。ZIP ダウンロード設定のサイズ上限が適用されます。",
+    "This folder cannot be deleted: it holds files you may not delete.": "このフォルダーは削除できません：削除権限のないファイルが含まれています。",
+    "This folder cannot be made public: it holds files you may not share.": "このフォルダは公開できません。共有が許可されていないファイルが含まれています。",
+    "This folder cannot go there: that folder is shared or public, and this one holds files you may not share.": "このフォルダはそこへ移動できません。移動先のフォルダは共有または公開されており、このフォルダには共有が許可されていないファイルが含まれています。",
+    "This folder cannot be shared: it holds files you may not share.": "このフォルダは共有できません。共有が許可されていないファイルが含まれています。",
+    "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "このフォルダはそこから移動できません。移動元のフォルダは共有されており、このフォルダには共有を解除できないファイルが含まれています。",
+    "This folder cannot be deleted: it holds files you did not upload.": "このフォルダは削除できません。自分がアップロードしていないファイルが含まれています。",
+    "This zip has already been downloaded. Select the files again to download them.": "この ZIP はすでにダウンロードされています。ダウンロードするには、ファイルをもう一度選択してください。"
 }

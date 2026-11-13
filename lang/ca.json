@@ -2437,5 +2437,12 @@
     "Too many zip downloads are being prepared right now. Try again in a few minutes.": "Ara mateix s’estan preparant massa descàrregues ZIP. Torna-ho a provar d’aquí a uns minuts.",
     "Uploaded": "Pujat",
     "View the files": "Mostra els fitxers",
-    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Els visitants poden marcar fitxers en una carpeta pública, un grup o la pàgina del directori i descarregar-los junts. Cada ZIP es crea en segon pla, així que consumeix temps de servidor i espai de disc per a qualsevol persona amb l’enllaç. S’aplica el límit de mida de la configuració de descàrregues ZIP."
+    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Els visitants poden marcar fitxers en una carpeta pública, un grup o la pàgina del directori i descarregar-los junts. Cada ZIP es crea en segon pla, així que consumeix temps de servidor i espai de disc per a qualsevol persona amb l’enllaç. S’aplica el límit de mida de la configuració de descàrregues ZIP.",
+    "This folder cannot be deleted: it holds files you may not delete.": "Aquesta carpeta no es pot eliminar: conté fitxers que no pots eliminar.",
+    "This folder cannot be made public: it holds files you may not share.": "Aquesta carpeta no es pot fer pública: conté fitxers que no pots compartir.",
+    "This folder cannot go there: that folder is shared or public, and this one holds files you may not share.": "Aquesta carpeta no pot anar aquí: aquella carpeta és compartida o pública, i aquesta conté fitxers que no pots compartir.",
+    "This folder cannot be shared: it holds files you may not share.": "Aquesta carpeta no es pot compartir: conté fitxers que no pots compartir.",
+    "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "Aquesta carpeta no es pot treure d'aquí: aquella carpeta està compartida, i aquesta conté fitxers que no pots deixar de compartir.",
+    "This folder cannot be deleted: it holds files you did not upload.": "Aquesta carpeta no es pot eliminar: conté fitxers que no has pujat tu.",
+    "This zip has already been downloaded. Select the files again to download them.": "Aquest zip ja s'ha descarregat. Torna a seleccionar els fitxers per descarregar-los."
 }

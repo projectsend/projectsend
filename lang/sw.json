@@ -2437,5 +2437,12 @@
     "Too many zip downloads are being prepared right now. Try again in a few minutes.": "ZIP nyingi mno zinatayarishwa kwa sasa. Jaribu tena baada ya dakika chache.",
     "Uploaded": "Imepakiwa",
     "View the files": "Angalia faili",
-    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Wageni wanaweza kuchagua faili kwenye folda ya umma, kikundi au ukurasa wa saraka na kuzipakua pamoja. Kila ZIP hutengenezwa chinichini, kwa hivyo hutumia muda wa seva na nafasi ya diski kwa yeyote mwenye kiungo. Kikomo cha ukubwa kutoka kwenye mipangilio ya upakuaji wa ZIP kinatumika."
+    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Wageni wanaweza kuchagua faili kwenye folda ya umma, kikundi au ukurasa wa saraka na kuzipakua pamoja. Kila ZIP hutengenezwa chinichini, kwa hivyo hutumia muda wa seva na nafasi ya diski kwa yeyote mwenye kiungo. Kikomo cha ukubwa kutoka kwenye mipangilio ya upakuaji wa ZIP kinatumika.",
+    "This folder cannot be deleted: it holds files you may not delete.": "Folda hii haiwezi kufutwa: ina faili ambazo huruhusiwi kuzifuta.",
+    "This folder cannot be made public: it holds files you may not share.": "Folda hii haiwezi kufanywa ya umma: ina faili ambazo huruhusiwi kushiriki.",
+    "This folder cannot go there: that folder is shared or public, and this one holds files you may not share.": "Folda hii haiwezi kwenda hapo: folda ile inashirikiwa au ni ya umma, na hii ina faili ambazo huruhusiwi kushiriki.",
+    "This folder cannot be shared: it holds files you may not share.": "Folda hii haiwezi kushirikiwa: ina faili ambazo huruhusiwi kushiriki.",
+    "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "Folda hii haiwezi kuhamishwa kutoka hapo: folda ile inashirikiwa, na hii ina faili ambazo huruhusiwi kuacha kuzishiriki.",
+    "This folder cannot be deleted: it holds files you did not upload.": "Folda hii haiwezi kufutwa: ina mafaili ambayo hukuyapakia wewe.",
+    "This zip has already been downloaded. Select the files again to download them.": "Zip hii tayari imepakuliwa. Chagua faili tena ili kuzipakua."
 }

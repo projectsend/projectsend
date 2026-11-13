@@ -2437,5 +2437,12 @@
     "Too many zip downloads are being prepared right now. Try again in a few minutes.": "W tej chwili przygotowywanych jest zbyt wiele archiwów ZIP. Spróbuj ponownie za kilka minut.",
     "Uploaded": "Przesłano",
     "View the files": "Pokaż pliki",
-    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Odwiedzający mogą zaznaczyć pliki w publicznym folderze, grupie lub na stronie katalogu i pobrać je razem. Każdy ZIP powstaje w tle, więc zużywa czas serwera i miejsce na dysku – dla każdego, kto ma link. Obowiązuje limit rozmiaru z ustawień pobierania ZIP."
+    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Odwiedzający mogą zaznaczyć pliki w publicznym folderze, grupie lub na stronie katalogu i pobrać je razem. Każdy ZIP powstaje w tle, więc zużywa czas serwera i miejsce na dysku – dla każdego, kto ma link. Obowiązuje limit rozmiaru z ustawień pobierania ZIP.",
+    "This folder cannot be deleted: it holds files you may not delete.": "Tego folderu nie można usunąć: zawiera pliki, których nie możesz usunąć.",
+    "This folder cannot be made public: it holds files you may not share.": "Tego folderu nie można upublicznić: zawiera pliki, których nie możesz udostępniać.",
+    "This folder cannot go there: that folder is shared or public, and this one holds files you may not share.": "Ten folder nie może tam trafić: tamten folder jest udostępniony lub publiczny, a ten zawiera pliki, których nie możesz udostępniać.",
+    "This folder cannot be shared: it holds files you may not share.": "Tego folderu nie można udostępnić: zawiera pliki, których nie możesz udostępniać.",
+    "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "Tego folderu nie można stamtąd przenieść: tamten folder jest udostępniony, a ten zawiera pliki, których udostępniania nie możesz cofnąć.",
+    "This folder cannot be deleted: it holds files you did not upload.": "Nie można usunąć tego folderu: zawiera pliki, których nie przesłałeś.",
+    "This zip has already been downloaded. Select the files again to download them.": "Ten plik zip został już pobrany. Zaznacz pliki ponownie, aby je pobrać."
 }

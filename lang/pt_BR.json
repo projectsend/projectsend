@@ -2437,5 +2437,12 @@
     "Too many zip downloads are being prepared right now. Try again in a few minutes.": "Há downloads ZIP demais sendo preparados agora. Tente novamente em alguns minutos.",
     "Uploaded": "Enviado",
     "View the files": "Ver os arquivos",
-    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Os visitantes podem marcar arquivos em uma pasta pública, em um grupo ou na página do diretório e baixá-los juntos. Cada ZIP é gerado em segundo plano, então isso consome tempo do servidor e espaço em disco para qualquer pessoa com o link. Vale o limite de tamanho das configurações de downloads ZIP."
+    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Os visitantes podem marcar arquivos em uma pasta pública, em um grupo ou na página do diretório e baixá-los juntos. Cada ZIP é gerado em segundo plano, então isso consome tempo do servidor e espaço em disco para qualquer pessoa com o link. Vale o limite de tamanho das configurações de downloads ZIP.",
+    "This folder cannot be deleted: it holds files you may not delete.": "Esta pasta não pode ser excluída: ela contém arquivos que você não pode excluir.",
+    "This folder cannot be made public: it holds files you may not share.": "Esta pasta não pode se tornar pública: ela contém arquivos que você não pode compartilhar.",
+    "This folder cannot go there: that folder is shared or public, and this one holds files you may not share.": "Esta pasta não pode ir para lá: aquela pasta é compartilhada ou pública, e esta contém arquivos que você não pode compartilhar.",
+    "This folder cannot be shared: it holds files you may not share.": "Esta pasta não pode ser compartilhada: ela contém arquivos que você não pode compartilhar.",
+    "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "Esta pasta não pode sair daí: aquela pasta é compartilhada, e esta contém arquivos que você não pode deixar de compartilhar.",
+    "This folder cannot be deleted: it holds files you did not upload.": "Esta pasta não pode ser excluída: ela contém arquivos que não foram enviados por você.",
+    "This zip has already been downloaded. Select the files again to download them.": "Este zip já foi baixado. Selecione os arquivos novamente para baixá-los."
 }

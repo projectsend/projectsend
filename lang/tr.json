@@ -2437,5 +2437,12 @@
     "Too many zip downloads are being prepared right now. Try again in a few minutes.": "Şu anda çok fazla ZIP indirmesi hazırlanıyor. Birkaç dakika sonra tekrar deneyin.",
     "Uploaded": "Yüklenme",
     "View the files": "Dosyaları görüntüle",
-    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Ziyaretçiler herkese açık bir klasörde, grupta veya dizin sayfasında dosyaları işaretleyip birlikte indirebilir. Her ZIP arka planda oluşturulur; bu nedenle bağlantıya sahip herkes için sunucu zamanı ve disk alanı kullanır. ZIP indirme ayarlarındaki boyut sınırı geçerlidir."
+    "Visitors can tick files on a public folder, group or the directory page and download them together. Each zip is built in the background, so this uses server time and disk space for anyone with the link. The size limit from the zip download settings applies.": "Ziyaretçiler herkese açık bir klasörde, grupta veya dizin sayfasında dosyaları işaretleyip birlikte indirebilir. Her ZIP arka planda oluşturulur; bu nedenle bağlantıya sahip herkes için sunucu zamanı ve disk alanı kullanır. ZIP indirme ayarlarındaki boyut sınırı geçerlidir.",
+    "This folder cannot be deleted: it holds files you may not delete.": "Bu klasör silinemez: silme yetkin olmayan dosyalar içeriyor.",
+    "This folder cannot be made public: it holds files you may not share.": "Bu klasör herkese açık yapılamaz: paylaşmanıza izin verilmeyen dosyalar içeriyor.",
+    "This folder cannot go there: that folder is shared or public, and this one holds files you may not share.": "Bu klasör oraya gidemez: o klasör paylaşılıyor veya herkese açık ve bu klasör paylaşmanıza izin verilmeyen dosyalar içeriyor.",
+    "This folder cannot be shared: it holds files you may not share.": "Bu klasör paylaşılamaz: paylaşmanıza izin verilmeyen dosyalar içeriyor.",
+    "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "Bu klasör oradan taşınamaz: o klasör paylaşılıyor ve bu klasör paylaşımını kaldırmanıza izin verilmeyen dosyalar içeriyor.",
+    "This folder cannot be deleted: it holds files you did not upload.": "Bu klasör silinemez: içinde sizin yüklemediğiniz dosyalar var.",
+    "This zip has already been downloaded. Select the files again to download them.": "Bu zip zaten indirildi. İndirmek için dosyaları yeniden seçin."
 }

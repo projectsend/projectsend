@@ -571,6 +571,48 @@ test('a second complete is refused while one is already finalising the session',
     expect(File::query()->count())->toBe(1);
 });
 
+// #1842. A completion that outlives a proxy's timeout keeps running here,
+// and the browser's upload library answers the failed request with a
+// DELETE. Deleting the parts under the assembly failed every large upload
+// behind such a proxy.
+test('cancelling leaves an upload alone while it is being finalised', function () {
+    $this->actingAs($this->admin);
+    $sessionId = createSession(11, 'finishing.txt');
+    putPart($sessionId, 1, 'hello-');
+    putPart($sessionId, 2, 'world');
+
+    $lock = Cache::lock('upload-complete:'.$sessionId, 120);
+    expect($lock->get())->toBeTrue();
+
+    $this->deleteJson("/uploads/{$sessionId}")->assertStatus(409);
+
+    expect(is_file(partsRoot().'/'.$sessionId.'/1.part'))->toBeTrue()
+        ->and(UploadSession::query()->find($sessionId))->not->toBeNull();
+
+    $lock->release();
+    $this->postJson("/uploads/{$sessionId}/complete")->assertOk();
+    expect(File::query()->count())->toBe(1);
+});
+
+test('the stale-upload sweep skips an upload that is being finalised', function () {
+    $this->actingAs($this->admin);
+    $sessionId = createSession(11, 'slow.txt');
+    putPart($sessionId, 1, 'hello-');
+    UploadSession::query()->whereKey($sessionId)->update(['created_at' => now()->subDays(2)]);
+
+    $lock = Cache::lock('upload-complete:'.$sessionId, 120);
+    expect($lock->get())->toBeTrue();
+
+    $this->artisan('projectsend:purge-stale-uploads')->assertSuccessful();
+
+    expect(is_file(partsRoot().'/'.$sessionId.'/1.part'))->toBeTrue()
+        ->and(UploadSession::query()->find($sessionId))->not->toBeNull();
+
+    $lock->release();
+    $this->artisan('projectsend:purge-stale-uploads')->assertSuccessful();
+    expect(UploadSession::query()->find($sessionId))->toBeNull();
+});
+
 /**
  * GHSA-6jh6-gvj5-pv8v. The per-part cap bounded one request and nothing
  * else: a session could declare one byte, then stage 10,000 parts of twice

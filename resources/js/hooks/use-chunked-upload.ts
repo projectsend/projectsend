@@ -6,7 +6,7 @@ import Spanish from '@uppy/locales/lib/es_ES';
 import { useEffect, useRef, useState } from 'react';
 
 import { useAppliedTheme } from '@/hooks/use-applied-theme';
-import { apiFetch } from '@/lib/uploads-api';
+import { apiFetch, outcomeUnknown } from '@/lib/uploads-api';
 
 interface UseChunkedUploadOptions {
     maxFileSizeMb: number;
@@ -76,6 +76,16 @@ export function useChunkedUploadUppy(options: UseChunkedUploadOptions): { uppy: 
                 : options.maxFileSizeMb * 1024 * 1024
             : (options.remainingBytes ?? null);
 
+    // Uploads whose completion request failed without a real answer from
+    // the server. Uppy cancels an upload whenever completion fails, but a
+    // completion that ran past a proxy's timeout is still assembling the
+    // file on the server, and will most likely finish (#1842). Cancelling
+    // it would only throw the finished work away, so for these the cancel
+    // is skipped; the server sweeps anything truly abandoned after a day.
+    // A ref, so the Uppy instance below, built once, and every render agree
+    // on the one set.
+    const unsettledCompletions = useRef(new Set<string>()).current;
+
     const [uppy] = useState(() =>
         new Uppy({
             autoProceed: false,
@@ -111,10 +121,15 @@ export function useChunkedUploadUppy(options: UseChunkedUploadOptions): { uppy: 
                 return apiFetch<{ PartNumber: number; Size: number; ETag: string }[]>(route('uploads.parts.index', { session: uploadId }), 'GET');
             },
             async completeMultipartUpload(_file, { uploadId }) {
-                const result = await apiFetch<{ location: string; file_id: number; version_error: string | null }>(
-                    route('uploads.complete', { session: uploadId }),
-                    'POST',
-                );
+                let result: { location: string; file_id: number; version_error: string | null };
+
+                try {
+                    result = await apiFetch(route('uploads.complete', { session: uploadId }), 'POST');
+                } catch (error) {
+                    if (outcomeUnknown(error)) unsettledCompletions.add(uploadId);
+                    throw error;
+                }
+
                 options.onFileUploaded?.(result.file_id);
 
                 // The bytes are stored and the row is real; only the version
@@ -125,6 +140,8 @@ export function useChunkedUploadUppy(options: UseChunkedUploadOptions): { uppy: 
                 return { location: result.location };
             },
             async abortMultipartUpload(_file, { uploadId }) {
+                if (uploadId !== undefined && unsettledCompletions.delete(uploadId)) return;
+
                 await apiFetch(route('uploads.destroy', { session: uploadId }), 'DELETE');
             },
         }),

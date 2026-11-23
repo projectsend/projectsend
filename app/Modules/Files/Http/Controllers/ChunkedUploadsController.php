@@ -427,7 +427,7 @@ class ChunkedUploadsController extends Controller
             set_time_limit(600);
         }
 
-        $lock = Cache::lock('upload-complete:'.$session->id, 900);
+        $lock = $session->completionLock(900);
 
         if (! $lock->get()) {
             throw ValidationException::withMessages([
@@ -660,14 +660,27 @@ class ChunkedUploadsController extends Controller
             ->all());
     }
 
-    public function destroy(Request $request, UploadSession $session): RedirectResponse|Response
+    public function destroy(Request $request, UploadSession $session): RedirectResponse|Response|JsonResponse
     {
         $this->authorizeSession($request, $session);
 
         $originalName = $session->original_name;
 
-        $this->parts->abort($session);
-        $session->delete();
+        // Not while the parts are being assembled: that completion may
+        // still succeed, and is the only thing that should decide what
+        // happens to them. A 409 tells the caller the upload is not gone.
+        $lock = $session->completionLock(30);
+
+        if (! $lock->get()) {
+            return response()->json(['message' => __('This upload is already being finalised.')], 409);
+        }
+
+        try {
+            $this->parts->abort($session);
+            $session->delete();
+        } finally {
+            $lock->release();
+        }
 
         $this->activity->log(Action::UploadAborted, context: ['name' => $originalName]);
 

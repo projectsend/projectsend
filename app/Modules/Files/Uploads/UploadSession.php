@@ -6,9 +6,11 @@ namespace App\Modules\Files\Uploads;
 
 use App\Models\User;
 use App\Modules\Files\Models\Folder;
+use Illuminate\Contracts\Cache\Lock;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -49,6 +51,21 @@ class UploadSession extends Model
     public function folder(): BelongsTo
     {
         return $this->belongsTo(Folder::class);
+    }
+
+    /**
+     * The lock held while this session's parts are assembled into a file.
+     *
+     * Anything that deletes the parts takes it too: cancelling, and the
+     * stale-upload sweep. A completion that runs past a proxy's timeout
+     * keeps going here, and the browser answers the failed request with a
+     * cancel. Without this lock that cancel deleted the parts out from
+     * under the assembly, so a large upload behind such a proxy could
+     * never finish (#1842).
+     */
+    public function completionLock(int $seconds): Lock
+    {
+        return Cache::lock('upload-complete:'.$this->id, $seconds);
     }
 
     public function isOwnedBy(User $user): bool

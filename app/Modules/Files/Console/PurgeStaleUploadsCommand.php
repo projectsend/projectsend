@@ -17,13 +17,27 @@ class PurgeStaleUploadsCommand extends Command
     public function handle(LocalPartStore $parts): int
     {
         $stale = UploadSession::query()->where('created_at', '<', now()->subDay())->get();
+        $purged = 0;
 
         foreach ($stale as $session) {
-            $parts->abort($session);
-            $session->delete();
+            // A session being assembled right now is not abandoned, however
+            // old it is. The next run looks at it again (#1842).
+            $lock = $session->completionLock(30);
+
+            if (! $lock->get()) {
+                continue;
+            }
+
+            try {
+                $parts->abort($session);
+                $session->delete();
+                $purged++;
+            } finally {
+                $lock->release();
+            }
         }
 
-        $this->info("Purged {$stale->count()} stale upload session(s).");
+        $this->info("Purged {$purged} stale upload session(s).");
 
         return self::SUCCESS;
     }

@@ -2444,5 +2444,14 @@
     "This folder cannot be shared: it holds files you may not share.": "このフォルダは共有できません。共有が許可されていないファイルが含まれています。",
     "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "このフォルダはそこから移動できません。移動元のフォルダは共有されており、このフォルダには共有を解除できないファイルが含まれています。",
     "This folder cannot be deleted: it holds files you did not upload.": "このフォルダは削除できません。自分がアップロードしていないファイルが含まれています。",
-    "This zip has already been downloaded. Select the files again to download them.": "この ZIP はすでにダウンロードされています。ダウンロードするには、ファイルをもう一度選択してください。"
+    "This zip has already been downloaded. Select the files again to download them.": "この ZIP はすでにダウンロードされています。ダウンロードするには、ファイルをもう一度選択してください。",
+    "Logo for dark mode": "ダークモード用のロゴ",
+    "New files expire after this many days": "新しいファイルはこの日数が経過すると期限切れになる",
+    "None — the logo above is used in both themes.": "なし — 上のロゴが両方のテーマで使われます。",
+    "Optional. Shown instead of the logo above to anyone using the dark theme, for a logo that would not show up on a dark background.": "任意。ダークテーマを使っている人には上のロゴの代わりに表示されます。暗い背景では見えにくいロゴ向けです。",
+    "Remove dark mode logo": "ダークモード用のロゴを削除",
+    "Sets an expiration date on every file staff upload. It can still be changed or removed on each file. Files clients upload are not affected. 0 means new files never expire.": "スタッフがアップロードするすべてのファイルに有効期限を設定します。有効期限は各ファイルで変更や削除ができます。クライアントがアップロードしたファイルには適用されません。0 にすると新しいファイルは期限切れになりません。",
+    "Upload dark mode logo": "ダークモード用のロゴをアップロード",
+    "Upload the main logo first.": "先にメインのロゴをアップロードしてください。",
+    "What happens to a file once its expiration date has passed": "有効期限を過ぎたファイルの扱い"
 }

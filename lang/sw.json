@@ -2444,5 +2444,14 @@
     "This folder cannot be shared: it holds files you may not share.": "Folda hii haiwezi kushirikiwa: ina faili ambazo huruhusiwi kushiriki.",
     "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "Folda hii haiwezi kuhamishwa kutoka hapo: folda ile inashirikiwa, na hii ina faili ambazo huruhusiwi kuacha kuzishiriki.",
     "This folder cannot be deleted: it holds files you did not upload.": "Folda hii haiwezi kufutwa: ina mafaili ambayo hukuyapakia wewe.",
-    "This zip has already been downloaded. Select the files again to download them.": "Zip hii tayari imepakuliwa. Chagua faili tena ili kuzipakua."
+    "This zip has already been downloaded. Select the files again to download them.": "Zip hii tayari imepakuliwa. Chagua faili tena ili kuzipakua.",
+    "Logo for dark mode": "Nembo ya hali ya giza",
+    "New files expire after this many days": "Mafaili mapya yanaisha muda baada ya siku hizi",
+    "None — the logo above is used in both themes.": "Hakuna — nembo iliyo juu inatumika katika mandhari zote mbili.",
+    "Optional. Shown instead of the logo above to anyone using the dark theme, for a logo that would not show up on a dark background.": "Si lazima. Inaonyeshwa badala ya nembo iliyo juu kwa yeyote anayetumia mandhari ya giza, kwa nembo ambayo isingeonekana kwenye mandharinyuma meusi.",
+    "Remove dark mode logo": "Ondoa nembo ya hali ya giza",
+    "Sets an expiration date on every file staff upload. It can still be changed or removed on each file. Files clients upload are not affected. 0 means new files never expire.": "Huweka tarehe ya kuisha muda kwa kila faili linalopakiwa na wafanyakazi. Bado inaweza kubadilishwa au kuondolewa kwenye kila faili. Mafaili yanayopakiwa na wateja hayaathiriwi. 0 inamaanisha mafaili mapya hayaishi muda kamwe.",
+    "Upload dark mode logo": "Pakia nembo ya hali ya giza",
+    "Upload the main logo first.": "Pakia nembo kuu kwanza.",
+    "What happens to a file once its expiration date has passed": "Kinachotokea kwa faili baada ya tarehe yake ya kuisha muda kupita"
 }

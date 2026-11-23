@@ -2444,5 +2444,14 @@
     "This folder cannot be shared: it holds files you may not share.": "Không thể chia sẻ thư mục này: nó chứa các tệp mà bạn không được chia sẻ.",
     "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "Không thể chuyển thư mục này ra khỏi đó: thư mục kia đang được chia sẻ, và thư mục này chứa các tệp mà bạn không được hủy chia sẻ.",
     "This folder cannot be deleted: it holds files you did not upload.": "Không thể xóa thư mục này: trong đó có các tệp không phải do bạn tải lên.",
-    "This zip has already been downloaded. Select the files again to download them.": "Tệp zip này đã được tải xuống. Hãy chọn lại các tệp để tải chúng xuống."
+    "This zip has already been downloaded. Select the files again to download them.": "Tệp zip này đã được tải xuống. Hãy chọn lại các tệp để tải chúng xuống.",
+    "Logo for dark mode": "Logo cho chế độ tối",
+    "New files expire after this many days": "Tệp mới hết hạn sau số ngày này",
+    "None — the logo above is used in both themes.": "Không có — logo ở trên được dùng cho cả hai giao diện.",
+    "Optional. Shown instead of the logo above to anyone using the dark theme, for a logo that would not show up on a dark background.": "Không bắt buộc. Hiển thị thay cho logo ở trên với bất kỳ ai dùng giao diện tối, dành cho logo không nhìn thấy được trên nền tối.",
+    "Remove dark mode logo": "Xóa logo chế độ tối",
+    "Sets an expiration date on every file staff upload. It can still be changed or removed on each file. Files clients upload are not affected. 0 means new files never expire.": "Đặt ngày hết hạn cho mọi tệp do nhân viên tải lên. Vẫn có thể đổi hoặc bỏ ngày này ở từng tệp. Tệp do khách hàng tải lên không bị ảnh hưởng. 0 nghĩa là tệp mới không bao giờ hết hạn.",
+    "Upload dark mode logo": "Tải logo chế độ tối lên",
+    "Upload the main logo first.": "Hãy tải logo chính lên trước.",
+    "What happens to a file once its expiration date has passed": "Điều gì xảy ra với tệp khi đã qua ngày hết hạn"
 }

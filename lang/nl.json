@@ -2444,5 +2444,14 @@
     "This folder cannot be shared: it holds files you may not share.": "Deze map kan niet worden gedeeld: hij bevat bestanden die je niet mag delen.",
     "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "Deze map kan daar niet uit worden verplaatst: die map is gedeeld, en deze bevat bestanden waarvan je het delen niet mag stoppen.",
     "This folder cannot be deleted: it holds files you did not upload.": "Deze map kan niet worden verwijderd: er staan bestanden in die je niet zelf hebt geüpload.",
-    "This zip has already been downloaded. Select the files again to download them.": "Deze zip is al gedownload. Selecteer de bestanden opnieuw om ze te downloaden."
+    "This zip has already been downloaded. Select the files again to download them.": "Deze zip is al gedownload. Selecteer de bestanden opnieuw om ze te downloaden.",
+    "Logo for dark mode": "Logo voor de donkere modus",
+    "New files expire after this many days": "Nieuwe bestanden verlopen na dit aantal dagen",
+    "None — the logo above is used in both themes.": "Geen — het logo hierboven wordt in beide thema's gebruikt.",
+    "Optional. Shown instead of the logo above to anyone using the dark theme, for a logo that would not show up on a dark background.": "Optioneel. Wordt in plaats van het logo hierboven getoond aan iedereen die het donkere thema gebruikt, voor een logo dat op een donkere achtergrond niet te zien zou zijn.",
+    "Remove dark mode logo": "Logo voor de donkere modus verwijderen",
+    "Sets an expiration date on every file staff upload. It can still be changed or removed on each file. Files clients upload are not affected. 0 means new files never expire.": "Geeft elk bestand dat medewerkers uploaden een vervaldatum. Die kun je per bestand nog wijzigen of weghalen. Bestanden die klanten uploaden vallen hier niet onder. 0 betekent dat nieuwe bestanden nooit verlopen.",
+    "Upload dark mode logo": "Logo voor de donkere modus uploaden",
+    "Upload the main logo first.": "Upload eerst het hoofdlogo.",
+    "What happens to a file once its expiration date has passed": "Wat er met een bestand gebeurt zodra de vervaldatum voorbij is"
 }

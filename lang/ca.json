@@ -2444,5 +2444,14 @@
     "This folder cannot be shared: it holds files you may not share.": "Aquesta carpeta no es pot compartir: conté fitxers que no pots compartir.",
     "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "Aquesta carpeta no es pot treure d'aquí: aquella carpeta està compartida, i aquesta conté fitxers que no pots deixar de compartir.",
     "This folder cannot be deleted: it holds files you did not upload.": "Aquesta carpeta no es pot eliminar: conté fitxers que no has pujat tu.",
-    "This zip has already been downloaded. Select the files again to download them.": "Aquest zip ja s'ha descarregat. Torna a seleccionar els fitxers per descarregar-los."
+    "This zip has already been downloaded. Select the files again to download them.": "Aquest zip ja s'ha descarregat. Torna a seleccionar els fitxers per descarregar-los.",
+    "Logo for dark mode": "Logo per al mode fosc",
+    "New files expire after this many days": "Els fitxers nous caduquen al cap d'aquests dies",
+    "None — the logo above is used in both themes.": "Cap — el logo de dalt s'utilitza en tots dos temes.",
+    "Optional. Shown instead of the logo above to anyone using the dark theme, for a logo that would not show up on a dark background.": "Opcional. Es mostra en lloc del logo de dalt a qui faci servir el tema fosc, per a un logo que no es veuria sobre un fons fosc.",
+    "Remove dark mode logo": "Treu el logo del mode fosc",
+    "Sets an expiration date on every file staff upload. It can still be changed or removed on each file. Files clients upload are not affected. 0 means new files never expire.": "Posa una data de caducitat a cada fitxer que pugi el personal. Encara es pot canviar o treure en cada fitxer. Els fitxers que pugen els clients no es veuen afectats. 0 vol dir que els fitxers nous no caduquen mai.",
+    "Upload dark mode logo": "Puja un logo per al mode fosc",
+    "Upload the main logo first.": "Primer puja el logo principal.",
+    "What happens to a file once its expiration date has passed": "Què passa amb un fitxer quan ha passat la seva data de caducitat"
 }

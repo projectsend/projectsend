@@ -2444,5 +2444,14 @@
     "This folder cannot be shared: it holds files you may not share.": "Folder ini tidak dapat dibagikan: berisi file yang tidak boleh Anda bagikan.",
     "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "Folder ini tidak dapat dipindahkan dari sana: folder itu dibagikan, dan folder ini berisi file yang tidak boleh Anda batalkan pembagiannya.",
     "This folder cannot be deleted: it holds files you did not upload.": "Folder ini tidak bisa dihapus: di dalamnya ada berkas yang bukan Anda unggah.",
-    "This zip has already been downloaded. Select the files again to download them.": "Zip ini sudah diunduh. Pilih file lagi untuk mengunduhnya."
+    "This zip has already been downloaded. Select the files again to download them.": "Zip ini sudah diunduh. Pilih file lagi untuk mengunduhnya.",
+    "Logo for dark mode": "Logo untuk mode gelap",
+    "New files expire after this many days": "Berkas baru kedaluwarsa setelah sekian hari",
+    "None — the logo above is used in both themes.": "Tidak ada — logo di atas dipakai di kedua tema.",
+    "Optional. Shown instead of the logo above to anyone using the dark theme, for a logo that would not show up on a dark background.": "Opsional. Ditampilkan menggantikan logo di atas bagi siapa pun yang memakai tema gelap, untuk logo yang tidak terlihat di latar gelap.",
+    "Remove dark mode logo": "Hapus logo mode gelap",
+    "Sets an expiration date on every file staff upload. It can still be changed or removed on each file. Files clients upload are not affected. 0 means new files never expire.": "Memberi tanggal kedaluwarsa pada setiap berkas yang diunggah staf. Tanggal itu tetap bisa diubah atau dihapus di setiap berkas. Berkas yang diunggah klien tidak terpengaruh. 0 berarti berkas baru tidak pernah kedaluwarsa.",
+    "Upload dark mode logo": "Unggah logo mode gelap",
+    "Upload the main logo first.": "Unggah logo utama terlebih dahulu.",
+    "What happens to a file once its expiration date has passed": "Apa yang terjadi pada berkas setelah tanggal kedaluwarsanya lewat"
 }

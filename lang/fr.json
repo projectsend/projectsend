@@ -2444,5 +2444,14 @@
     "This folder cannot be shared: it holds files you may not share.": "Ce dossier ne peut pas être partagé : il contient des fichiers que vous ne pouvez pas partager.",
     "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "Ce dossier ne peut pas être sorti de là : ce dossier-là est partagé, et celui-ci contient des fichiers dont vous ne pouvez pas retirer le partage.",
     "This folder cannot be deleted: it holds files you did not upload.": "Ce dossier ne peut pas être supprimé : il contient des fichiers que vous n'avez pas téléversés.",
-    "This zip has already been downloaded. Select the files again to download them.": "Ce zip a déjà été téléchargé. Sélectionnez à nouveau les fichiers pour les télécharger."
+    "This zip has already been downloaded. Select the files again to download them.": "Ce zip a déjà été téléchargé. Sélectionnez à nouveau les fichiers pour les télécharger.",
+    "Logo for dark mode": "Logo pour le mode sombre",
+    "New files expire after this many days": "Les nouveaux fichiers expirent après ce nombre de jours",
+    "None — the logo above is used in both themes.": "Aucun — le logo ci-dessus est utilisé dans les deux thèmes.",
+    "Optional. Shown instead of the logo above to anyone using the dark theme, for a logo that would not show up on a dark background.": "Facultatif. Affiché à la place du logo ci-dessus pour toute personne utilisant le thème sombre, pour un logo qui ne se verrait pas sur un fond sombre.",
+    "Remove dark mode logo": "Supprimer le logo du mode sombre",
+    "Sets an expiration date on every file staff upload. It can still be changed or removed on each file. Files clients upload are not affected. 0 means new files never expire.": "Donne une date d'expiration à chaque fichier envoyé par l'équipe. Elle reste modifiable ou supprimable sur chaque fichier. Les fichiers envoyés par les clients ne sont pas concernés. 0 signifie que les nouveaux fichiers n'expirent jamais.",
+    "Upload dark mode logo": "Téléverser un logo pour le mode sombre",
+    "Upload the main logo first.": "Téléversez d'abord le logo principal.",
+    "What happens to a file once its expiration date has passed": "Ce qui arrive à un fichier une fois sa date d'expiration passée"
 }

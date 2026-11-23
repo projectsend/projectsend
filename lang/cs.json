@@ -2444,5 +2444,14 @@
     "This folder cannot be shared: it holds files you may not share.": "Tuto složku nelze sdílet: obsahuje soubory, které nesmíte sdílet.",
     "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "Tuto složku odtud nelze přesunout: ta složka je sdílená a tato obsahuje soubory, jejichž sdílení nesmíte zrušit.",
     "This folder cannot be deleted: it holds files you did not upload.": "Tuto složku nelze smazat: obsahuje soubory, které jste nenahráli vy.",
-    "This zip has already been downloaded. Select the files again to download them.": "Tento zip už byl stažen. Chcete-li soubory stáhnout, vyberte je znovu."
+    "This zip has already been downloaded. Select the files again to download them.": "Tento zip už byl stažen. Chcete-li soubory stáhnout, vyberte je znovu.",
+    "Logo for dark mode": "Logo pro tmavý režim",
+    "New files expire after this many days": "Nové soubory vyprší po tolika dnech",
+    "None — the logo above is used in both themes.": "Žádné — logo výše se používá v obou motivech.",
+    "Optional. Shown instead of the logo above to anyone using the dark theme, for a logo that would not show up on a dark background.": "Volitelné. Zobrazí se místo loga výše každému, kdo používá tmavý motiv, pro logo, které by na tmavém pozadí nebylo vidět.",
+    "Remove dark mode logo": "Odstranit logo pro tmavý režim",
+    "Sets an expiration date on every file staff upload. It can still be changed or removed on each file. Files clients upload are not affected. 0 means new files never expire.": "Nastaví datum vypršení každému souboru, který nahrají zaměstnanci. U každého souboru ho lze dál změnit nebo odebrat. Soubory nahrané klienty se to netýká. 0 znamená, že nové soubory nikdy nevyprší.",
+    "Upload dark mode logo": "Nahrát logo pro tmavý režim",
+    "Upload the main logo first.": "Nejprve nahrajte hlavní logo.",
+    "What happens to a file once its expiration date has passed": "Co se stane se souborem po datu vypršení"
 }

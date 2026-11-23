@@ -2444,5 +2444,14 @@
     "This folder cannot be shared: it holds files you may not share.": "Этой папкой нельзя поделиться: в ней есть файлы, которыми вам нельзя делиться.",
     "This folder cannot be moved out of there: that folder is shared, and this one holds files you may not unshare.": "Эту папку нельзя переместить оттуда: та папка открыта для общего доступа, а в этой есть файлы, доступ к которым вам нельзя закрывать.",
     "This folder cannot be deleted: it holds files you did not upload.": "Эту папку нельзя удалить: в ней есть файлы, загруженные не вами.",
-    "This zip has already been downloaded. Select the files again to download them.": "Этот zip-архив уже скачан. Чтобы скачать файлы, выберите их снова."
+    "This zip has already been downloaded. Select the files again to download them.": "Этот zip-архив уже скачан. Чтобы скачать файлы, выберите их снова.",
+    "Logo for dark mode": "Логотип для тёмного режима",
+    "New files expire after this many days": "Новые файлы истекают через столько дней",
+    "None — the logo above is used in both themes.": "Нет — логотип выше используется в обеих темах.",
+    "Optional. Shown instead of the logo above to anyone using the dark theme, for a logo that would not show up on a dark background.": "Необязательно. Показывается вместо логотипа выше всем, кто пользуется тёмной темой, — для логотипа, который не виден на тёмном фоне.",
+    "Remove dark mode logo": "Удалить логотип для тёмного режима",
+    "Sets an expiration date on every file staff upload. It can still be changed or removed on each file. Files clients upload are not affected. 0 means new files never expire.": "Задаёт срок действия каждому файлу, который загружают сотрудники. Его по-прежнему можно изменить или убрать у каждого файла. Файлы, загруженные клиентами, это не затрагивает. 0 означает, что срок действия новых файлов не истекает.",
+    "Upload dark mode logo": "Загрузить логотип для тёмного режима",
+    "Upload the main logo first.": "Сначала загрузите основной логотип.",
+    "What happens to a file once its expiration date has passed": "Что происходит с файлом, когда его срок действия истёк"
 }

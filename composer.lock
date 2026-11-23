@@ -4663,16 +4663,16 @@
         },
         {
             "name": "projectsend/community-modules",
-            "version": "v1.0.0",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/projectsend/community-modules.git",
-                "reference": "311883a7bdca91671ab84891443400e8c397e1df"
+                "reference": "c46c5b02b259943943f45f4f7a8008e0ab85672e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/projectsend/community-modules/zipball/311883a7bdca91671ab84891443400e8c397e1df",
-                "reference": "311883a7bdca91671ab84891443400e8c397e1df",
+                "url": "https://api.github.com/repos/projectsend/community-modules/zipball/c46c5b02b259943943f45f4f7a8008e0ab85672e",
+                "reference": "c46c5b02b259943943f45f4f7a8008e0ab85672e",
                 "shasum": ""
             },
             "require": {
@@ -4705,9 +4705,9 @@
             "description": "Community-exclusive feature modules for ProjectSend — free software, never part of the hosted Cloud edition.",
             "support": {
                 "issues": "https://github.com/projectsend/community-modules/issues",
-                "source": "https://github.com/projectsend/community-modules/tree/v1.0.0"
+                "source": "https://github.com/projectsend/community-modules/tree/v1.0.2"
             },
-            "time": "2026-08-16T18:45:51+00:00"
+            "time": "2026-11-08T18:28:02+00:00"
         },
         {
             "name": "psr/cache",

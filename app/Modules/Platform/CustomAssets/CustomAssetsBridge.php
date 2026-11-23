@@ -33,9 +33,9 @@ use ProjectSend\CommunityModules\Modules\CustomAssets\Rendering\CustomAssetRende
  *
  * 3. No output where a password or a code is typed. The root view serves
  *    every page, the sign-in screens included, and nobody is signed in on
- *    those, so they count as the public surface. A public asset needs only
- *    create_assets, not the settings permission, and it would otherwise run
- *    on the administrator's own sign-in form and read the password and the
+ *    those, so they count as the public surface. Only an administrator can
+ *    write an asset (community-modules 1.0.2), but a public one would still
+ *    run on everyone's sign-in form and could read the password and the
  *    two-factor code as they are typed. Analytics or a banner has no
  *    business there.
  *

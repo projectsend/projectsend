@@ -14,10 +14,16 @@ beforeEach(function () {
     User::factory()->create();
 });
 
-/** A staff user whose role has exactly the given custom-asset permission keys. */
+/**
+ * A staff user whose role has exactly the given custom-asset permission keys.
+ *
+ * An administrator's role: since community-modules 1.0.2 only an
+ * administrator may write a custom asset, whatever else the role holds,
+ * because an asset is script that runs for everybody who loads the page.
+ */
 function staffWithCustomAssetPermissions(array $permissions): User
 {
-    $role = Role::query()->create(['name' => 'Role '.Str::random(6)]);
+    $role = Role::query()->create(['name' => 'Role '.Str::random(6), 'is_administrator' => true]);
     foreach ($permissions as $permission) {
         RolePermission::query()->create(['role_id' => $role->id, 'permission' => $permission]);
     }

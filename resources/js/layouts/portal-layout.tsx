@@ -1,5 +1,6 @@
 import AppLogoIcon from '@/components/app-logo-icon';
 import { AppearanceSwitcher } from '@/components/appearance-switcher';
+import BrandLogo from '@/components/brand-logo';
 import { IconLocaleSwitcher } from '@/components/locale-switcher';
 import { NotificationBell } from '@/components/notification-bell';
 import { PoweredBy } from '@/components/powered-by';
@@ -39,7 +40,7 @@ export default function PortalLayout({ children }: PortalLayoutProps) {
                 <div className="flex items-center gap-6">
                     <Link href={route('home')} className="flex items-center gap-2 font-medium">
                         {branding?.logo_url ? (
-                            <img src={branding.logo_url} alt={name} className="size-7 object-contain" />
+                            <BrandLogo src={branding.logo_url} darkSrc={branding.logo_dark_url} alt={name} className="size-7 object-contain" />
                         ) : (
                             <AppLogoIcon className="text-foreground size-7" />
                         )}

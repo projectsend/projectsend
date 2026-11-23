@@ -11,7 +11,8 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 /**
- * Cutting the logo down to part of itself, and putting the whole of it back.
+ * Cutting a logo down to part of itself, and putting the whole of it back.
+ * Either logo: the main one or the dark-mode one (LogoVariant).
  *
  * The uploaded file is never changed. A crop is a new file written from it,
  * so cropping again starts from everything that was uploaded rather than
@@ -35,26 +36,27 @@ class LogoCropper
     /**
      * @param  array{x: int, y: int, width: int, height: int}  $box
      */
-    public function crop(BrandingSetting $setting, array $box): void
+    public function crop(BrandingSetting $setting, array $box, LogoVariant $variant = LogoVariant::Light): void
     {
-        $source = $setting->logoSourcePath();
+        $source = $setting->logoSourcePath($variant);
         $disk = Storage::disk('public');
+        $field = $variant->field();
 
         if ($source === null || ! $disk->exists($source)) {
-            throw ValidationException::withMessages(['logo' => __('Upload a logo before cropping it.')]);
+            throw ValidationException::withMessages([$field => __('Upload a logo before cropping it.')]);
         }
 
         $absolute = $disk->path($source);
         $size = @getimagesize($absolute);
 
         if ($size === false) {
-            throw ValidationException::withMessages(['logo' => __('This logo cannot be cropped. Upload it again.')]);
+            throw ValidationException::withMessages([$field => __('This logo cannot be cropped. Upload it again.')]);
         }
 
         [$width, $height] = $size;
 
         if ($width * $height > self::MAX_PIXELS) {
-            throw ValidationException::withMessages(['logo' => __('This image is too large to crop. Upload a smaller one.')]);
+            throw ValidationException::withMessages([$field => __('This image is too large to crop. Upload a smaller one.')]);
         }
 
         if ($box['x'] + $box['width'] > $width || $box['y'] + $box['height'] > $height) {
@@ -63,7 +65,7 @@ class LogoCropper
 
         // The whole picture is the upload itself: no second copy of it.
         if ($box['x'] === 0 && $box['y'] === 0 && $box['width'] === $width && $box['height'] === $height) {
-            $this->restore($setting);
+            $this->restore($setting, $variant);
 
             return;
         }
@@ -76,12 +78,12 @@ class LogoCropper
             ->crop($box['x'], $box['y'], $box['x'] + $box['width'], $box['y'] + $box['height'])
             ->toFile($disk->path($cropped), $size['mime']);
 
-        $previous = $setting->logoIsCropped() ? $setting->logo_path : null;
+        $previous = $setting->logoIsCropped($variant) ? $setting->logoPath($variant) : null;
 
         $setting->update([
-            'logo_original_path' => $source,
-            'logo_path' => $cropped,
-            'logo_crop' => $box,
+            $variant->originalColumn() => $source,
+            $variant->pathColumn() => $cropped,
+            $variant->cropColumn() => $box,
         ]);
 
         if ($previous !== null) {
@@ -89,18 +91,18 @@ class LogoCropper
         }
     }
 
-    public function restore(BrandingSetting $setting): void
+    public function restore(BrandingSetting $setting, LogoVariant $variant = LogoVariant::Light): void
     {
-        if (! $setting->logoIsCropped()) {
+        if (! $setting->logoIsCropped($variant)) {
             return;
         }
 
-        $cropped = $setting->logo_path;
+        $cropped = $setting->logoPath($variant);
 
         $setting->update([
-            'logo_path' => $setting->logo_original_path,
-            'logo_original_path' => null,
-            'logo_crop' => null,
+            $variant->pathColumn() => $setting->logoSourcePath($variant),
+            $variant->originalColumn() => null,
+            $variant->cropColumn() => null,
         ]);
 
         if ($cropped !== null) {
@@ -113,8 +115,11 @@ class LogoCropper
      *
      * @return list<string>
      */
-    public function files(BrandingSetting $setting): array
+    public function files(BrandingSetting $setting, LogoVariant $variant = LogoVariant::Light): array
     {
-        return array_values(array_filter([$setting->logo_path, $setting->logo_original_path]));
+        return array_values(array_filter([
+            $setting->logoPath($variant),
+            $setting->getAttribute($variant->originalColumn()),
+        ], fn (mixed $path): bool => is_string($path) && $path !== ''));
     }
 }

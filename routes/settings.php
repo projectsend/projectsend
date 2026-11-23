@@ -344,6 +344,12 @@ Route::middleware('auth')->group(function () {
             Route::patch('system/settings/branding/site-name', [BrandingController::class, 'updateSiteName'])->name('branding.site-name.update');
             Route::patch('system/settings/branding/logo/crop', [BrandingController::class, 'cropLogo'])->name('branding.logo.crop');
             Route::delete('system/settings/branding/logo/crop', [BrandingController::class, 'restoreLogo'])->name('branding.logo.restore');
+            // The logo shown in the dark theme (#1845): the same four
+            // actions, told which logo by the `variant` default.
+            Route::post('system/settings/branding/logo-dark', [BrandingController::class, 'store'])->defaults('variant', 'dark')->name('branding.logo-dark.store');
+            Route::delete('system/settings/branding/logo-dark', [BrandingController::class, 'destroy'])->defaults('variant', 'dark')->name('branding.logo-dark.destroy');
+            Route::patch('system/settings/branding/logo-dark/crop', [BrandingController::class, 'cropLogo'])->defaults('variant', 'dark')->name('branding.logo-dark.crop');
+            Route::delete('system/settings/branding/logo-dark/crop', [BrandingController::class, 'restoreLogo'])->defaults('variant', 'dark')->name('branding.logo-dark.restore');
 
             // POST rather than PATCH: the form carries a file, so it is
             // multipart, and PHP only populates $_FILES for POST.

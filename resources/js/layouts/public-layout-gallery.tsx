@@ -1,4 +1,5 @@
 import AppLogoIcon from '@/components/app-logo-icon';
+import BrandLogo from '@/components/brand-logo';
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import { PoweredBy } from '@/components/powered-by';
 import { type SharedData } from '@/types';
@@ -21,10 +22,16 @@ export default function PublicLayoutGallery({ children, title, description }: Pu
 
     return (
         <div className="bg-background flex min-h-svh flex-col">
-            <div className="from-violet-700 to-violet-900 bg-gradient-to-br px-6 py-14 text-center text-white md:px-10">
+            <div className="bg-gradient-to-br from-violet-700 to-violet-900 px-6 py-14 text-center text-white md:px-10">
                 <Link href={route('home')} className="inline-flex flex-col items-center gap-3">
                     {branding?.logo_url ? (
-                        <img src={branding.logo_url} alt={name} className="h-14 w-auto object-contain brightness-0 invert" />
+                        <BrandLogo
+                            src={branding.logo_url}
+                            darkSrc={branding.logo_dark_url}
+                            alt={name}
+                            className="h-14 w-auto object-contain"
+                            darkSurface
+                        />
                     ) : (
                         <AppLogoIcon className="h-14 w-auto text-white" />
                     )}

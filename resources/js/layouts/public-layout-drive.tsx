@@ -1,4 +1,5 @@
 import AppLogoIcon from '@/components/app-logo-icon';
+import BrandLogo from '@/components/brand-logo';
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import { PoweredBy } from '@/components/powered-by';
 import { type SharedData } from '@/types';
@@ -25,7 +26,7 @@ export default function PublicLayoutDrive({ children, title, description }: Publ
             <header className="flex items-center justify-between border-b border-neutral-200 px-4 py-3 md:px-8 dark:border-neutral-800">
                 <Link href={route('home')} className="flex items-center gap-2 font-medium">
                     {branding?.logo_url ? (
-                        <img src={branding.logo_url} alt={name} className="size-7 object-contain" />
+                        <BrandLogo src={branding.logo_url} darkSrc={branding.logo_dark_url} alt={name} className="size-7 object-contain" />
                     ) : (
                         <AppLogoIcon className="size-7 text-blue-600" />
                     )}

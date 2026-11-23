@@ -71,6 +71,9 @@ class BrandingServiceProvider extends ServiceProvider
 
             return [
                 'logo_url' => BrandingSetting::shownLogoUrl(),
+                // Shown instead of the main logo in the dark theme; null
+                // when there is none, and the main logo serves both.
+                'logo_dark_url' => BrandingSetting::shownLogoUrl(LogoVariant::Dark),
                 'show_site_name' => $setting->show_site_name ?? false,
             ];
         });

@@ -22,6 +22,10 @@ interface LogoCropDialogProps {
     sourceUrl: string;
     /** The last crop, in the upload's pixels, or null to start from the whole image. */
     savedCrop: LogoCropBox | null;
+    /** Where the box is saved: the main logo's route, or the dark-mode logo's. */
+    cropRoute?: string;
+    /** The form field the server reports this logo's errors under. */
+    errorField?: string;
 }
 
 const WHOLE: PercentCrop = { unit: '%', x: 0, y: 0, width: 100, height: 100 };
@@ -39,7 +43,14 @@ const WHOLE: PercentCrop = { unit: '%', x: 0, y: 0, width: 100, height: 100 };
  * orientation tag, the server cannot, and the box would land on the wrong
  * part of the picture.
  */
-export default function LogoCropDialog({ open, onOpenChange, sourceUrl, savedCrop }: LogoCropDialogProps) {
+export default function LogoCropDialog({
+    open,
+    onOpenChange,
+    sourceUrl,
+    savedCrop,
+    cropRoute = 'branding.logo.crop',
+    errorField = 'logo',
+}: LogoCropDialogProps) {
     const { t } = useTranslation();
     const [crop, setCrop] = useState<PercentCrop>(WHOLE);
     const [natural, setNatural] = useState<{ width: number; height: number } | null>(null);
@@ -85,12 +96,12 @@ export default function LogoCropDialog({ open, onOpenChange, sourceUrl, savedCro
         setSaving(true);
 
         router.patch(
-            route('branding.logo.crop'),
+            route(cropRoute),
             { ...toPixels(crop, natural) },
             {
                 preserveScroll: true,
                 onSuccess: () => onOpenChange(false),
-                onError: (errors) => setError(errors.logo ?? errors.width ?? errors.x ?? Object.values(errors)[0]),
+                onError: (errors) => setError(errors[errorField] ?? errors.width ?? errors.x ?? Object.values(errors)[0]),
                 onFinish: () => setSaving(false),
             },
         );

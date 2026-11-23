@@ -21,11 +21,19 @@ interface Watermark {
     opacity: number;
 }
 
+interface LogoState {
+    url: string | null;
+    source_url: string | null;
+    crop: LogoCropBox | null;
+    cropped: boolean;
+}
+
 interface BrandingEditProps {
     logo_url: string | null;
     logo_source_url: string | null;
     logo_crop: LogoCropBox | null;
     logo_cropped: boolean;
+    logo_dark: LogoState;
     hide_attribution: boolean;
     show_site_name: boolean;
     watermark: Watermark;
@@ -34,10 +42,19 @@ interface BrandingEditProps {
 
 type Tab = 'logo' | 'watermark' | 'attribution';
 
-export default function BrandingEdit({ logo_url, logo_source_url, logo_crop, logo_cropped, hide_attribution, show_site_name, watermark, watermark_positions }: BrandingEditProps) {
+export default function BrandingEdit({
+    logo_url,
+    logo_source_url,
+    logo_crop,
+    logo_cropped,
+    logo_dark,
+    hide_attribution,
+    show_site_name,
+    watermark,
+    watermark_positions,
+}: BrandingEditProps) {
     const { t } = useTranslation();
     const { capabilities } = usePage<SharedData>().props;
-    const fileInputRef = useRef<HTMLInputElement>(null);
     const watermarkInputRef = useRef<HTMLInputElement>(null);
     const [tab, setTab] = useState<Tab>('logo');
 
@@ -52,9 +69,6 @@ export default function BrandingEdit({ logo_url, logo_source_url, logo_crop, log
     const tabs: Tab[] = canHideAttribution ? ['logo', 'watermark', 'attribution'] : ['logo', 'watermark'];
 
     const breadcrumbs: BreadcrumbItem[] = [{ title: t('Branding'), href: '/system/settings/branding' }];
-
-    const uploadForm = useForm<{ logo: File | null }>({ logo: null });
-    const removeForm = useForm({});
 
     const watermarkForm = useForm<{
         image: File | null;
@@ -122,31 +136,6 @@ export default function BrandingEdit({ logo_url, logo_source_url, logo_crop, log
         'bottom-right': t('Bottom right'),
     };
 
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
-        uploadForm.post(route('branding.store'), {
-            forceFormData: true,
-            preserveScroll: true,
-            preserveState: true,
-            onSuccess: () => {
-                uploadForm.reset();
-                if (fileInputRef.current) fileInputRef.current.value = '';
-            },
-        });
-    };
-
-    const remove = () => {
-        removeForm.delete(route('branding.destroy'), { preserveScroll: true, preserveState: true });
-    };
-
-    // Cropping is optional: an upload is used whole until somebody crops it.
-    const [cropping, setCropping] = useState(false);
-    const restoreForm = useForm({});
-
-    const restore = () => {
-        restoreForm.delete(route('branding.logo.restore'), { preserveScroll: true, preserveState: true });
-    };
-
     const submitWatermark: FormEventHandler = (e) => {
         e.preventDefault();
         watermarkForm.post(route('branding.watermark.update'), {
@@ -196,59 +185,34 @@ export default function BrandingEdit({ logo_url, logo_source_url, logo_crop, log
                     {/* No heading repeating the tab's own label — the tab is
                         the heading. Same shape as the theming screen. */}
                     <section className={`space-y-6 ${tab === 'logo' ? '' : 'hidden'}`}>
-                        <p className="text-muted-foreground text-sm">
-                            {t('Show your own logo in the sidebar instead of the default icon.')}
-                        </p>
+                        <p className="text-muted-foreground text-sm">{t('Show your own logo in the sidebar instead of the default icon.')}</p>
 
-                        <div className="space-y-2">
-                            {logo_url ? (
-                                <img src={logo_url} alt="" className="h-16 max-w-full rounded border object-contain p-2" />
-                            ) : (
-                                <p className="text-muted-foreground text-sm">{t('No custom logo set — the default icon is shown.')}</p>
-                            )}
-                        </div>
+                        <LogoSlot
+                            variant="light"
+                            logo={{ url: logo_url, source_url: logo_source_url, crop: logo_crop, cropped: logo_cropped }}
+                            emptyText={t('No custom logo set — the default icon is shown.')}
+                            uploadLabel={t('Upload logo')}
+                            removeLabel={t('Remove logo')}
+                        />
 
-                        <form onSubmit={submit} className="space-y-2">
-                            <Input
-                                ref={fileInputRef}
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => uploadForm.setData('logo', e.target.files?.[0] ?? null)}
-                            />
-                            <p className="text-muted-foreground text-sm">
-                                {t('Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.')}
-                            </p>
-                            <InputError message={uploadForm.errors.logo} />
-                            <Button type="submit" disabled={uploadForm.processing || uploadForm.data.logo === null}>
-                                {t('Upload logo')}
-                            </Button>
-                        </form>
-
-                        {logo_url && logo_source_url && (
-                            <div className="flex flex-wrap items-center gap-2">
-                                <Button variant="outline" onClick={() => setCropping(true)}>
-                                    {t('Crop')}
-                                </Button>
-                                {logo_cropped && (
-                                    <Button variant="outline" onClick={restore} disabled={restoreForm.processing}>
-                                        {t('Restore original')}
-                                    </Button>
-                                )}
-                                <Button variant="outline" onClick={remove} disabled={removeForm.processing}>
-                                    {t('Remove logo')}
-                                </Button>
+                        {logo_url && (
+                            <div className="space-y-4 border-t pt-6">
+                                <div className="grid gap-1">
+                                    <Label>{t('Logo for dark mode')}</Label>
+                                    <p className="text-muted-foreground text-sm">
+                                        {t(
+                                            'Optional. Shown instead of the logo above to anyone using the dark theme, for a logo that would not show up on a dark background.',
+                                        )}
+                                    </p>
+                                </div>
+                                <LogoSlot
+                                    variant="dark"
+                                    logo={logo_dark}
+                                    emptyText={t('None — the logo above is used in both themes.')}
+                                    uploadLabel={t('Upload dark mode logo')}
+                                    removeLabel={t('Remove dark mode logo')}
+                                />
                             </div>
-                        )}
-
-                        {logo_source_url && (
-                            // Keyed by the upload so a new logo opens on a fresh box.
-                            <LogoCropDialog
-                                key={logo_source_url}
-                                open={cropping}
-                                onOpenChange={setCropping}
-                                sourceUrl={logo_source_url}
-                                savedCrop={logo_crop}
-                            />
                         )}
 
                         <form onSubmit={submitSiteName} className="space-y-4 border-t pt-6">
@@ -328,9 +292,7 @@ export default function BrandingEdit({ logo_url, logo_source_url, logo_crop, log
                                         </p>
                                     </>
                                 ) : (
-                                    <p className="text-muted-foreground text-sm">
-                                        {t('Upload a watermark image below to see a preview here.')}
-                                    </p>
+                                    <p className="text-muted-foreground text-sm">{t('Upload a watermark image below to see a preview here.')}</p>
                                 )}
                             </div>
 
@@ -338,11 +300,7 @@ export default function BrandingEdit({ logo_url, logo_source_url, logo_crop, log
                                 <Label htmlFor="watermark_image">{t('Watermark image')}</Label>
 
                                 {watermark.image_url && (
-                                    <img
-                                        src={watermark.image_url}
-                                        alt=""
-                                        className="bg-muted h-16 max-w-full rounded border object-contain p-2"
-                                    />
+                                    <img src={watermark.image_url} alt="" className="bg-muted h-16 max-w-full rounded border object-contain p-2" />
                                 )}
 
                                 <Input
@@ -363,10 +321,7 @@ export default function BrandingEdit({ logo_url, logo_source_url, logo_crop, log
                             <div className="grid gap-2">
                                 <Label htmlFor="watermark_position">{t('Position')}</Label>
 
-                                <Select
-                                    value={watermarkForm.data.position}
-                                    onValueChange={(value) => watermarkForm.setData('position', value)}
-                                >
+                                <Select value={watermarkForm.data.position} onValueChange={(value) => watermarkForm.setData('position', value)}>
                                     <SelectTrigger id="watermark_position" className="w-full">
                                         <SelectValue />
                                     </SelectTrigger>
@@ -397,9 +352,7 @@ export default function BrandingEdit({ logo_url, logo_source_url, logo_crop, log
                                             aria-pressed={watermarkForm.data.position === position}
                                             onClick={() => watermarkForm.setData('position', position)}
                                             className={`rounded-sm transition-colors ${
-                                                watermarkForm.data.position === position
-                                                    ? 'bg-primary'
-                                                    : 'bg-background hover:bg-accent border'
+                                                watermarkForm.data.position === position ? 'bg-primary' : 'bg-background hover:bg-accent border'
                                             }`}
                                         />
                                     ))}
@@ -420,7 +373,9 @@ export default function BrandingEdit({ logo_url, logo_source_url, logo_crop, log
                                     onChange={(e) => watermarkForm.setData('size', Number(e.target.value))}
                                 />
                                 <p className="text-muted-foreground text-sm">
-                                    {t('The watermark is scaled to fit inside this share of whatever it is drawn on, keeping its proportions — so a thumbnail and a preview look like the same design.')}
+                                    {t(
+                                        'The watermark is scaled to fit inside this share of whatever it is drawn on, keeping its proportions — so a thumbnail and a preview look like the same design.',
+                                    )}
                                 </p>
                                 <InputError message={watermarkForm.errors.size} />
                             </div>
@@ -490,5 +445,108 @@ export default function BrandingEdit({ logo_url, logo_source_url, logo_crop, log
                 </div>
             </div>
         </AppLayout>
+    );
+}
+
+interface LogoSlotProps {
+    variant: 'light' | 'dark';
+    logo: LogoState;
+    emptyText: string;
+    uploadLabel: string;
+    removeLabel: string;
+}
+
+/**
+ * Upload, crop, restore and remove one logo. The main logo and the one
+ * shown in the dark theme work the same way, on their own routes.
+ */
+function LogoSlot({ variant, logo, emptyText, uploadLabel, removeLabel }: LogoSlotProps) {
+    const { t } = useTranslation();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const dark = variant === 'dark';
+    const field = dark ? 'logo_dark' : 'logo';
+    const routes = dark
+        ? {
+              store: 'branding.logo-dark.store',
+              destroy: 'branding.logo-dark.destroy',
+              crop: 'branding.logo-dark.crop',
+              restore: 'branding.logo-dark.restore',
+          }
+        : { store: 'branding.store', destroy: 'branding.destroy', crop: 'branding.logo.crop', restore: 'branding.logo.restore' };
+
+    const uploadForm = useForm<Record<string, File | null>>({ [field]: null });
+    const removeForm = useForm({});
+    const restoreForm = useForm({});
+
+    // Cropping is optional: an upload is used whole until somebody crops it.
+    const [cropping, setCropping] = useState(false);
+
+    const submit: FormEventHandler = (e) => {
+        e.preventDefault();
+        uploadForm.post(route(routes.store), {
+            forceFormData: true,
+            preserveScroll: true,
+            preserveState: true,
+            onSuccess: () => {
+                uploadForm.reset();
+                if (fileInputRef.current) fileInputRef.current.value = '';
+            },
+        });
+    };
+
+    const remove = () => removeForm.delete(route(routes.destroy), { preserveScroll: true, preserveState: true });
+    const restore = () => restoreForm.delete(route(routes.restore), { preserveScroll: true, preserveState: true });
+
+    return (
+        <>
+            <div className="space-y-2">
+                {logo.url ? (
+                    // The dark-mode logo is previewed on a dark background, as it will be seen.
+                    <img src={logo.url} alt="" className={`h-16 max-w-full rounded border object-contain p-2 ${dark ? 'bg-neutral-900' : ''}`} />
+                ) : (
+                    <p className="text-muted-foreground text-sm">{emptyText}</p>
+                )}
+            </div>
+
+            <form onSubmit={submit} className="space-y-2">
+                <Input ref={fileInputRef} type="file" accept="image/*" onChange={(e) => uploadForm.setData(field, e.target.files?.[0] ?? null)} />
+                <p className="text-muted-foreground text-sm">
+                    {t('Shown up to 320 × 128 pixels, so a wide logo and a square one both fit. PNG, JPG, GIF or WebP, up to 2 MB.')}
+                </p>
+                <InputError message={uploadForm.errors[field]} />
+                <Button type="submit" disabled={uploadForm.processing || uploadForm.data[field] === null}>
+                    {uploadLabel}
+                </Button>
+            </form>
+
+            {logo.url && logo.source_url && (
+                <div className="flex flex-wrap items-center gap-2">
+                    <Button variant="outline" onClick={() => setCropping(true)}>
+                        {t('Crop')}
+                    </Button>
+                    {logo.cropped && (
+                        <Button variant="outline" onClick={restore} disabled={restoreForm.processing}>
+                            {t('Restore original')}
+                        </Button>
+                    )}
+                    <Button variant="outline" onClick={remove} disabled={removeForm.processing}>
+                        {removeLabel}
+                    </Button>
+                </div>
+            )}
+
+            {logo.source_url && (
+                // Keyed by the upload so a new logo opens on a fresh box.
+                <LogoCropDialog
+                    key={logo.source_url}
+                    open={cropping}
+                    onOpenChange={setCropping}
+                    sourceUrl={logo.source_url}
+                    savedCrop={logo.crop}
+                    cropRoute={routes.crop}
+                    errorField={field}
+                />
+            )}
+        </>
     );
 }

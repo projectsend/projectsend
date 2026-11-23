@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Modules\Platform\Branding\LogoCropper;
+use App\Modules\Platform\Branding\LogoVariant;
 use App\Modules\Platform\Branding\Models\BrandingSetting;
 use App\Modules\Platform\Branding\Watermark\WatermarkPosition;
 use App\Modules\Platform\Branding\Watermark\WatermarkSample;
@@ -48,6 +50,13 @@ class BrandingController extends Controller
             'logo_source_url' => $setting->logoSourceUrl(),
             'logo_crop' => $setting->logo_crop,
             'logo_cropped' => $setting->logoIsCropped(),
+            // The same four answers for the logo shown in the dark theme.
+            'logo_dark' => [
+                'url' => $setting->logoUrl(LogoVariant::Dark),
+                'source_url' => $setting->logoUrl(LogoVariant::Dark) === null ? null : $setting->logoSourceUrl(LogoVariant::Dark),
+                'crop' => $setting->logo_dark_crop,
+                'cropped' => $setting->logoIsCropped(LogoVariant::Dark),
+            ],
             // Read, never written here. Hiding attribution is the
             // white-label half and stays a hosted feature: the switch is
             // rendered only where Capability::AttributionHide is held, and
@@ -67,24 +76,39 @@ class BrandingController extends Controller
         ]);
     }
 
-    public function store(Request $request, LogoCropper $cropper): RedirectResponse
+    /**
+     * Either logo, by the route's `variant` default: the main one, or the
+     * one shown in the dark theme.
+     */
+    public function store(Request $request, LogoCropper $cropper, string $variant = 'light'): RedirectResponse
     {
+        $variant = LogoVariant::from($variant);
+        $field = $variant->field();
+
         $validated = $request->validate([
-            'logo' => ['required', 'image', 'max:2048'],
+            $field => ['required', 'image', 'max:2048'],
         ]);
 
         /** @var UploadedFile $upload */
-        $upload = $validated['logo'];
+        $upload = $validated[$field];
 
         $setting = BrandingSetting::current();
-        $previous = $cropper->files($setting);
+
+        // The dark-mode logo stands in for the main one and is never shown
+        // without it (BrandingSetting::logoUrl()), so storing one first
+        // would leave a file nobody sees.
+        if ($variant === LogoVariant::Dark && $setting->logo_path === null) {
+            throw ValidationException::withMessages([$field => __('Upload the main logo first.')]);
+        }
+
+        $previous = $cropper->files($setting, $variant);
 
         // A new upload starts uncropped: the old crop's box describes a
         // different picture.
         $setting->update([
-            'logo_path' => $this->storeImage($upload),
-            'logo_original_path' => null,
-            'logo_crop' => null,
+            $variant->pathColumn() => $this->storeImage($upload),
+            $variant->originalColumn() => null,
+            $variant->cropColumn() => null,
         ]);
 
         Storage::disk('public')->delete($previous);
@@ -96,8 +120,10 @@ class BrandingController extends Controller
      * Cut the logo down to a box drawn on the uploaded image. Optional: an
      * uploaded logo is used whole until somebody crops it.
      */
-    public function cropLogo(Request $request, LogoCropper $cropper): RedirectResponse
+    public function cropLogo(Request $request, LogoCropper $cropper, string $variant = 'light'): RedirectResponse
     {
+        $variant = LogoVariant::from($variant);
+
         $validated = $request->validate([
             'x' => ['required', 'integer', 'min:0'],
             'y' => ['required', 'integer', 'min:0'],
@@ -108,7 +134,7 @@ class BrandingController extends Controller
         $setting = BrandingSetting::query()->first();
 
         if ($setting === null) {
-            return back()->withErrors(['logo' => __('Upload a logo before cropping it.')]);
+            return back()->withErrors([$variant->field() => __('Upload a logo before cropping it.')]);
         }
 
         $cropper->crop($setting, [
@@ -116,7 +142,7 @@ class BrandingController extends Controller
             'y' => (int) $validated['y'],
             'width' => (int) $validated['width'],
             'height' => (int) $validated['height'],
-        ]);
+        ], $variant);
 
         return back()->with('success', __('Logo cropped.'));
     }
@@ -124,12 +150,12 @@ class BrandingController extends Controller
     /**
      * Go back to the logo exactly as it was uploaded.
      */
-    public function restoreLogo(LogoCropper $cropper): RedirectResponse
+    public function restoreLogo(LogoCropper $cropper, string $variant = 'light'): RedirectResponse
     {
         $setting = BrandingSetting::query()->first();
 
         if ($setting !== null) {
-            $cropper->restore($setting);
+            $cropper->restore($setting, LogoVariant::from($variant));
         }
 
         return back()->with('success', __('Original logo restored.'));
@@ -152,13 +178,31 @@ class BrandingController extends Controller
         return back();
     }
 
-    public function destroy(LogoCropper $cropper): RedirectResponse
+    /**
+     * Removing the main logo removes the dark-mode one with it: that one
+     * only ever stands in for the main logo, and left behind it would be a
+     * file nobody sees, waiting to reappear beside the next upload.
+     */
+    public function destroy(LogoCropper $cropper, string $variant = 'light'): RedirectResponse
     {
+        $variant = LogoVariant::from($variant);
         $setting = BrandingSetting::query()->first();
 
-        if ($setting !== null && $setting->logo_path !== null) {
-            $files = $cropper->files($setting);
-            $setting->update(['logo_path' => null, 'logo_original_path' => null, 'logo_crop' => null]);
+        if ($setting === null) {
+            return back()->with('success', __('Logo removed.'));
+        }
+
+        $variants = $variant === LogoVariant::Light ? [LogoVariant::Light, LogoVariant::Dark] : [LogoVariant::Dark];
+        $files = [];
+        $attributes = [];
+
+        foreach ($variants as $each) {
+            $files = [...$files, ...$cropper->files($setting, $each)];
+            $attributes += [$each->pathColumn() => null, $each->originalColumn() => null, $each->cropColumn() => null];
+        }
+
+        if ($files !== []) {
+            $setting->update($attributes);
             Storage::disk('public')->delete($files);
         }
 

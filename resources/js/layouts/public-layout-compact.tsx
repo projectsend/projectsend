@@ -1,4 +1,5 @@
 import AppLogoIcon from '@/components/app-logo-icon';
+import BrandLogo from '@/components/brand-logo';
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import { PoweredBy } from '@/components/powered-by';
 import { type SharedData } from '@/types';
@@ -24,7 +25,7 @@ export default function PublicLayoutCompact({ children, title, description }: Pu
             <header className="flex items-center justify-between border-b px-4 py-2.5 md:px-8">
                 <Link href={route('home')} className="flex items-center gap-2 font-medium">
                     {branding?.logo_url ? (
-                        <img src={branding.logo_url} alt={name} className="size-6 object-contain" />
+                        <BrandLogo src={branding.logo_url} darkSrc={branding.logo_dark_url} alt={name} className="size-6 object-contain" />
                     ) : (
                         <AppLogoIcon className="text-foreground size-6" />
                     )}

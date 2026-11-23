@@ -1,5 +1,6 @@
 import AppLogoIcon from '@/components/app-logo-icon';
 import { AppearanceSwitcher } from '@/components/appearance-switcher';
+import BrandLogo from '@/components/brand-logo';
 import { IconLocaleSwitcher } from '@/components/locale-switcher';
 import { NotificationBell } from '@/components/notification-bell';
 import { PoweredBy } from '@/components/powered-by';
@@ -44,11 +45,17 @@ export default function PortalLayoutGallery({ children }: PortalLayoutGalleryPro
 
     return (
         <div className="bg-background flex min-h-svh flex-col">
-            <header className="from-violet-700 to-violet-900 flex items-center justify-between bg-gradient-to-r px-4 py-3 md:px-8">
+            <header className="flex items-center justify-between bg-gradient-to-r from-violet-700 to-violet-900 px-4 py-3 md:px-8">
                 <div className="flex items-center gap-6">
                     <Link href={route('home')} className="flex items-center gap-2 font-medium">
                         {branding?.logo_url ? (
-                            <img src={branding.logo_url} alt={name} className="h-7 w-auto object-contain brightness-0 invert" />
+                            <BrandLogo
+                                src={branding.logo_url}
+                                darkSrc={branding.logo_dark_url}
+                                alt={name}
+                                className="h-7 w-auto object-contain"
+                                darkSurface
+                            />
                         ) : (
                             <AppLogoIcon className="h-7 w-auto text-white" />
                         )}

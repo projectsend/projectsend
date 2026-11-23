@@ -7,6 +7,7 @@ namespace App\Modules\Platform\Branding\Models;
 use App\Modules\Platform\Capabilities\Capability;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use Illuminate\Database\Eloquent\Model;
+use App\Modules\Platform\Branding\LogoVariant;
 use App\Modules\Platform\Branding\Watermark\WatermarkPosition;
 
 /**
@@ -17,6 +18,9 @@ use App\Modules\Platform\Branding\Watermark\WatermarkPosition;
  * @property string|null $logo_path
  * @property string|null $logo_original_path
  * @property array{x: int, y: int, width: int, height: int}|null $logo_crop
+ * @property string|null $logo_dark_path
+ * @property string|null $logo_dark_original_path
+ * @property array{x: int, y: int, width: int, height: int}|null $logo_dark_crop
  * @property bool $watermark_enabled
  * @property string|null $watermark_path
  * @property WatermarkPosition $watermark_position
@@ -37,6 +41,7 @@ class BrandingSetting extends Model
         'watermark_enabled' => 'boolean',
         'show_site_name' => 'boolean',
         'logo_crop' => 'array',
+        'logo_dark_crop' => 'array',
         'watermark_position' => WatermarkPosition::class,
         'watermark_size' => 'integer',
         'watermark_opacity' => 'integer',
@@ -74,40 +79,67 @@ class BrandingSetting extends Model
      * Asked per call, so an upload or a plan change applies to the next
      * page and the next email.
      */
-    public static function shownLogoUrl(): ?string
+    public static function shownLogoUrl(LogoVariant $variant = LogoVariant::Light): ?string
     {
         if (! app(CapabilityRegistry::class)->has(Capability::Branding)) {
             return null;
         }
 
-        return static::query()->first()?->logoUrl();
+        return static::query()->first()?->logoUrl($variant);
     }
 
-    public function logoUrl(): ?string
+    /**
+     * The dark-mode logo only ever stands in for the main one, so it is
+     * not shown without it. Removing the main logo removes both, but a
+     * row restored from a backup may not have kept that promise.
+     */
+    public function logoUrl(LogoVariant $variant = LogoVariant::Light): ?string
     {
-        return $this->logo_path === null ? null : self::publicUrl($this->logo_path);
+        $path = $this->logoPath($variant);
+
+        if ($path === null || $this->logo_path === null) {
+            return null;
+        }
+
+        return self::publicUrl($path);
+    }
+
+    public function logoPath(LogoVariant $variant = LogoVariant::Light): ?string
+    {
+        /** @var string|null */
+        return $this->getAttribute($variant->pathColumn());
     }
 
     /**
      * The file the logo was cut from: the upload itself when it was never
-     * cropped, since then `logo_path` is that upload. A crop always starts
-     * from here, never from a previous crop.
+     * cropped, since then the shown path is that upload. A crop always
+     * starts from here, never from a previous crop.
      */
-    public function logoSourcePath(): ?string
+    public function logoSourcePath(LogoVariant $variant = LogoVariant::Light): ?string
     {
-        return $this->logo_original_path ?? $this->logo_path;
+        /** @var string|null */
+        return $this->getAttribute($variant->originalColumn()) ?? $this->logoPath($variant);
     }
 
-    public function logoSourceUrl(): ?string
+    public function logoSourceUrl(LogoVariant $variant = LogoVariant::Light): ?string
     {
-        $path = $this->logoSourcePath();
+        $path = $this->logoSourcePath($variant);
 
         return $path === null ? null : self::publicUrl($path);
     }
 
-    public function logoIsCropped(): bool
+    public function logoIsCropped(LogoVariant $variant = LogoVariant::Light): bool
     {
-        return $this->logo_original_path !== null;
+        return $this->getAttribute($variant->originalColumn()) !== null;
+    }
+
+    /**
+     * @return array{x: int, y: int, width: int, height: int}|null
+     */
+    public function logoCrop(LogoVariant $variant = LogoVariant::Light): ?array
+    {
+        /** @var array{x: int, y: int, width: int, height: int}|null */
+        return $this->getAttribute($variant->cropColumn());
     }
 
     public function watermarkUrl(): ?string

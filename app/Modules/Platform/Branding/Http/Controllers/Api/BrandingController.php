@@ -6,6 +6,7 @@ namespace App\Modules\Platform\Branding\Http\Controllers\Api;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use App\Modules\Platform\Branding\LogoVariant;
 use App\Modules\Platform\Branding\Models\BrandingSetting;
 
 /**
@@ -31,8 +32,10 @@ class BrandingController extends Controller
      * Get this installation's logo.
      *
      * Returns a null `logo_url` when no logo has been uploaded, which is
-     * the normal state rather than an error. `show_site_name` says whether
-     * the sign-in and download pages print the site name under the logo.
+     * the normal state rather than an error. `logo_dark_url` is the logo
+     * shown instead to people using the dark theme, or null when the main
+     * logo is used in both. `show_site_name` says whether the sign-in and
+     * download pages print the site name under the logo.
      */
     public function show(): JsonResponse
     {
@@ -41,6 +44,7 @@ class BrandingController extends Controller
         return response()->json([
             'data' => [
                 'logo_url' => $setting?->logoUrl(),
+                'logo_dark_url' => $setting?->logoUrl(LogoVariant::Dark),
                 'show_site_name' => $setting->show_site_name ?? false,
                 'updated_at' => $setting?->updated_at?->toIso8601String(),
             ],

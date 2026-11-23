@@ -1,4 +1,5 @@
 import { AppearanceSwitcher } from '@/components/appearance-switcher';
+import BrandLogo from '@/components/brand-logo';
 import { LocaleSwitcher } from '@/components/locale-switcher';
 import { PoweredBy } from '@/components/powered-by';
 import ProjectSendLogo from '@/components/projectsend-logo';
@@ -41,7 +42,12 @@ export default function AuthSimpleLayout({ children, title, description }: AuthL
                                 reported as too small) and a wide one still
                                 fits a phone. */}
                             {branding?.logo_url ? (
-                                <img src={branding.logo_url} alt={name} className="mb-1 h-32 w-auto max-w-80 object-contain" />
+                                <BrandLogo
+                                    src={branding.logo_url}
+                                    darkSrc={branding.logo_dark_url}
+                                    alt={name}
+                                    className="mb-1 h-32 w-auto max-w-80 object-contain"
+                                />
                             ) : (
                                 <ProjectSendLogo className="text-foreground mb-1 h-12 w-auto" />
                             )}

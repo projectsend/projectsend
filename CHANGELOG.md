@@ -10,6 +10,23 @@ Anything under **⚠️ Important — do these yourself** is something you have 
 we did. It sits at the top of a release for that reason. Older entries call the same section
 **Upgrade notes**.
 
+## Unreleased
+
+### Worth knowing before you upgrade
+
+- **Building your own Docker image now needs PHP 8.4.28 or later.** PHP 8.4.28 fixes two session
+  bugs that can let a request run code on the server. The build stops on anything older and tells you
+  to run `docker pull php:8.4-fpm-alpine` first. The images also turn off PHP's session upload
+  progress, which ProjectSend never used.
+- **A large upload behind a reverse proxy with a short timeout now finishes.** When the proxy gives
+  up while the file is still being put together, the browser may still say the upload failed, but
+  the file appears in the list once the server is done. Before, the upload was thrown away.
+- **A large orphan file's checksum arrives a few minutes after it is imported.** Files over 256 MB
+  are imported at once and hashed in the background, on the same worker that builds zip downloads.
+  If you run your own worker, it must listen on `--queue=default,zips`, as INSTALL.md already says.
+- **For API users:** `DELETE /uploads/{session}` now answers `409` while that upload is being
+  finished, and deletes nothing.
+
 ## 2.9.0 — 13 November 2026
 
 Easier work with large file collections: sorting, bigger pages, selections that last across pages,

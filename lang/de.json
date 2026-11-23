@@ -2452,6 +2452,6 @@
     "Remove dark mode logo": "Logo für den dunklen Modus entfernen",
     "Sets an expiration date on every file staff upload. It can still be changed or removed on each file. Files clients upload are not affected. 0 means new files never expire.": "Gibt jeder Datei, die Mitarbeitende hochladen, ein Ablaufdatum. Es lässt sich bei jeder Datei weiterhin ändern oder entfernen. Dateien, die Kunden hochladen, sind nicht betroffen. 0 bedeutet, dass neue Dateien nie ablaufen.",
     "Upload dark mode logo": "Logo für den dunklen Modus hochladen",
-    "Upload the main logo first.": "Lade zuerst das Hauptlogo hoch.",
+    "Upload the main logo first.": "Laden Sie zuerst das Hauptlogo hoch.",
     "What happens to a file once its expiration date has passed": "Was mit einer Datei passiert, wenn ihr Ablaufdatum vorbei ist"
 }

@@ -235,11 +235,13 @@ export default function FilesIndex({
             onSuccess: () => clearSelection(),
         });
 
-    // A search term or a category filter both switch to a flat, global view,
-    // dropping the current folder context.
+    // A search term or a category filter both switch to a flat, global view;
+    // the server ignores the folder while one is set.
     // `sort`, `direction` and `per_page` ride along so a new filter keeps
     // them. Reset leaves them alone too: they are how the list is shown,
     // not what is in it.
+    // The open folder goes along with every change, as in My files, or
+    // sorting inside a folder went back to the top of the library (#1844).
     const perPage = pagination.per_page !== undefined && pagination.per_page !== pagination.per_page_options?.[0] ? String(pagination.per_page) : '';
     const { values, set, setMany, reset } = useListQuery(
         'files.index',
@@ -269,6 +271,7 @@ export default function FilesIndex({
             version: ALL,
             expired: '',
         },
+        folder !== null ? { folder: folder.id } : undefined,
     );
     const sortBy = (column: string, nextDirection: SortDirection) => setMany({ sort: column, direction: nextDirection });
     // The Clear button is for what narrows the list, not how it is shown.

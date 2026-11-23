@@ -10,22 +10,80 @@ Anything under **⚠️ Important — do these yourself** is something you have 
 we did. It sits at the top of a release for that reason. Older entries call the same section
 **Upgrade notes**.
 
-## Unreleased
+## 2.10.0 — 23 November 2026
+
+A default expiry for new files and a second logo for dark mode, plus fixes for large uploads and
+imports, client home folders moved inside other folders, and a PHP security update in the Docker
+image.
+
+### ⚠️ Important — do these yourself
+
+Everything else happens on its own. This one does not, and it does not stop the upgrade.
+
+- **If you installed from the zip, update PHP on your server to 8.4.28 or later.** PHP 8.4.28 fixes
+  two session bugs that can let a request run code on the server. Docker users get it with this
+  release's image. Until you can update, setting `session.upload_progress.enabled = Off` in your
+  `php.ini` closes the path both bugs take; ProjectSend does not use that PHP feature.
 
 ### Worth knowing before you upgrade
 
-- **Building your own Docker image now needs PHP 8.4.28 or later.** PHP 8.4.28 fixes two session
-  bugs that can let a request run code on the server. The build stops on anything older and tells you
-  to run `docker pull php:8.4-fpm-alpine` first. The images also turn off PHP's session upload
-  progress, which ProjectSend never used.
+Nothing here needs doing. These are changes you may notice.
+
+- **Building your own Docker image now needs PHP 8.4.28.** The build stops on anything older and
+  tells you to run `docker pull php:8.4-fpm-alpine` first.
 - **A large upload behind a reverse proxy with a short timeout now finishes.** When the proxy gives
   up while the file is still being put together, the browser may still say the upload failed, but
   the file appears in the list once the server is done. Before, the upload was thrown away.
 - **A large orphan file's checksum arrives a few minutes after it is imported.** Files over 256 MB
-  are imported at once and hashed in the background, on the same worker that builds zip downloads.
-  If you run your own worker, it must listen on `--queue=default,zips`, as INSTALL.md already says.
+  are imported at once and hashed in the background, on the worker that builds zip downloads. If you
+  run your own worker, it must listen on `--queue=default,zips`, as INSTALL.md already says.
 - **For API users:** `DELETE /uploads/{session}` now answers `409` while that upload is being
-  finished, and deletes nothing.
+  finished, and deletes nothing. The branding logo endpoint gains `logo_dark_url`.
+
+**New**
+
+- **Files can expire without anybody remembering to set it.** Under Settings → File retention,
+  choose how many days new files stay available. Every file staff upload then gets that expiry,
+  still editable per file. Files clients upload, and orphan files you import, are left alone.
+- **A second logo for dark mode.** Upload one under Branding and anyone using the dark theme sees it
+  instead of the main logo, on the sign-in page, the sidebar, the client portal and the public pages.
+  The Gallery themes use it too, instead of turning your logo white.
+
+**Fixed**
+
+- A client's home folder that staff moved into another folder, such as "Clients", stopped being
+  theirs, and every upload into it was refused. It is theirs again wherever it sits, and moving it
+  shows them nothing else in the folder it was moved into.
+- Importing a very large orphan file, such as 60 GB, always timed out. It now imports at once.
+- A large upload behind a proxy with a short timeout was deleted while the server was still putting
+  it together.
+- Sorting inside a folder in the file library went back to the top of the library.
+- Pages are now compressed. A page in any language but English is about five times smaller, which
+  fixes pages that hung behind some reverse proxies.
+- A file whose checksum could not be read could be marked infected without being scanned.
+- An install from source with `composer install` got an older version of the custom assets module,
+  in which any staff role allowed to create assets could write one. Only an administrator can
+  now, as release zips and images already had. *(Self-hosted)*
+
+Thanks to [@steve-hbt](https://github.com/steve-hbt), [@DDR5-man](https://github.com/DDR5-man),
+[@geropan](https://github.com/geropan), [@loberon-operations](https://github.com/loberon-operations),
+[@BakerLabsBrad](https://github.com/BakerLabsBrad), [@lumenzzz](https://github.com/lumenzzz),
+[@riegnilam](https://github.com/riegnilam), [@pantsmanuk](https://github.com/pantsmanuk) and
+[@keesfransen](https://github.com/keesfransen) for the reports.
+
+### Issues closed since 2.9.0
+
+The summary above is what changed. This is the paper trail, for anyone who wants to read the
+original report.
+
+- [#1821](https://github.com/projectsend/projectsend/issues/1821) — LDAP users
+- [#1834](https://github.com/projectsend/projectsend/issues/1834) — The docker image PHP version
+- [#1836](https://github.com/projectsend/projectsend/issues/1836) — Timeout error when importing large orphan file
+- [#1838](https://github.com/projectsend/projectsend/issues/1838) — Add option to set a default expiration date for uploaded files
+- [#1844](https://github.com/projectsend/projectsend/issues/1844) — Sorting by name inside a subfolder returns to the root directory
+- [#1845](https://github.com/projectsend/projectsend/issues/1845) — Feature request: Option for different logos (branding) depending on light or dark theme
+- [#1846](https://github.com/projectsend/projectsend/issues/1846) — Client folders lost association/permissions
+- [#1847](https://github.com/projectsend/projectsend/issues/1847) — Relocating a ClientHomeFolder from the root prevents the client from uploading
 
 ## 2.9.0 — 13 November 2026
 

@@ -201,6 +201,13 @@ enum Setting: string
     case ExpiredFilesAutoDeleteEnabled = 'expired_files_auto_delete_enabled';
     case ExpiredFilesDeleteAfterDays = 'expired_files_delete_after_days';
 
+    // How many days a file staff upload stays available before it expires,
+    // set when the file is stored; 0 means it never does. Editable per file
+    // afterwards like any expiry. Not applied to client uploads or orphan
+    // imports — see StoreUploadedFile. Consumed by
+    // FileRetentionSettingsController and StoreUploadedFile.
+    case DefaultFileExpiryDays = 'default_file_expiry_days';
+
     // Whether PurgeOrphanFilesCommand's daily run actually deletes
     // anything (off by default) and how many days after an orphan is
     // first found it waits before doing so. Hardcoded off — regardless
@@ -491,6 +498,7 @@ enum Setting: string
             self::FailedJobRetentionDays,
             self::NotificationRetentionDays,
             self::ExpiredFilesDeleteAfterDays,
+            self::DefaultFileExpiryDays,
             self::CommentsEditWindowMinutes,
             self::OrphanFilesDeleteAfterDays,
             self::VirusScanMaxSizeMb,
@@ -574,6 +582,9 @@ enum Setting: string
             self::FailedJobRetentionDays => 30,
             self::NotificationRetentionDays => 90,
             self::ExpiredFilesDeleteAfterDays => 30,
+            // Never, so an upgrade changes nothing about files nobody
+            // decided should expire.
+            self::DefaultFileExpiryDays => 0,
             self::OrphanFilesDeleteAfterDays => 30,
             self::CommentsEditWindowMinutes => 15,
 

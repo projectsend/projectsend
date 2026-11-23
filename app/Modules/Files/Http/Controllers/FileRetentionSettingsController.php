@@ -18,7 +18,8 @@ use Inertia\Response;
 /**
  * Whether expired files and/or orphan files are automatically deleted,
  * and how long each waits before doing so — consumed by
- * PurgeExpiredFilesCommand and PurgeOrphanFilesCommand.
+ * PurgeExpiredFilesCommand and PurgeOrphanFilesCommand. Also the default
+ * expiry a new staff upload gets, consumed by StoreUploadedFile.
  */
 class FileRetentionSettingsController extends Controller
 {
@@ -31,6 +32,7 @@ class FileRetentionSettingsController extends Controller
     public function edit(): Response
     {
         return Inertia::render('system/settings/file-retention', [
+            'default_file_expiry_days' => $this->settings->get(Setting::DefaultFileExpiryDays),
             'expired_files_auto_delete_enabled' => $this->settings->get(Setting::ExpiredFilesAutoDeleteEnabled),
             'expired_files_delete_after_days' => $this->settings->get(Setting::ExpiredFilesDeleteAfterDays),
             'orphan_files_auto_delete_enabled' => $this->settings->get(Setting::OrphanFilesAutoDeleteEnabled),
@@ -46,12 +48,16 @@ class FileRetentionSettingsController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $validated = $request->validate([
+            // Capped at ten years: past that "never" is the honest answer,
+            // and the cap keeps the date arithmetic far from overflow.
+            'default_file_expiry_days' => ['required', 'integer', 'min:0', 'max:3650'],
             'expired_files_auto_delete_enabled' => ['required', 'boolean'],
             'expired_files_delete_after_days' => ['required', 'integer', 'min:0'],
             'orphan_files_auto_delete_enabled' => ['required', 'boolean'],
             'orphan_files_delete_after_days' => ['required', 'integer', 'min:0'],
         ]);
 
+        $this->settings->set(Setting::DefaultFileExpiryDays, (int) $validated['default_file_expiry_days']);
         $this->settings->set(Setting::ExpiredFilesAutoDeleteEnabled, $validated['expired_files_auto_delete_enabled']);
         $this->settings->set(Setting::ExpiredFilesDeleteAfterDays, (int) $validated['expired_files_delete_after_days']);
 

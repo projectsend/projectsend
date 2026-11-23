@@ -13,6 +13,11 @@ use App\Modules\Files\Models\File;
 use App\Modules\Files\Scanning\NotScannedReason;
 use App\Modules\Files\Scanning\ScanStatus;
 use App\Modules\Files\Scanning\ScanningConfig;
+use App\Modules\Platform\Localization\TimezoneRegistry;
+use App\Modules\Platform\Settings\Setting;
+use App\Modules\Platform\Settings\Settings;
+use Carbon\Carbon;
+use App\Modules\Files\Editing\FileExpiry;
 
 /**
  * The single place a stored payload becomes a File record — shared by
@@ -24,6 +29,9 @@ class StoreUploadedFile
     public function __construct(
         private readonly ActivityLogger $activity,
         private readonly ScanningConfig $scanning,
+        private readonly Settings $settings,
+        private readonly FileExpiry $expiry,
+        private readonly TimezoneRegistry $timezones,
     ) {}
 
     public function create(
@@ -56,6 +64,7 @@ class StoreUploadedFile
             'mime_type' => $mimeType,
             'size' => $size,
             'checksum' => $checksum,
+            'expires_at' => $this->defaultExpiry($uploader, $action),
             // Decided in the same insert as the row rather than a moment
             // later: a file is unavailable from the instant it exists, or
             // there is a window in which it is neither scanned nor
@@ -75,6 +84,31 @@ class StoreUploadedFile
         Event::dispatch(new FileWasStored($file, $uploader));
 
         return $file;
+    }
+
+    /**
+     * The installation's default expiry, for a file staff just uploaded.
+     *
+     * Not for a client's upload: they would lose access to their own file
+     * when it ran out, and the setting is about what staff share. Not for
+     * an orphan import either: those are often files being restored, and
+     * with auto-delete on an expiry is a date on which they are deleted.
+     *
+     * Counted as calendar days from the uploader's own today, and ending
+     * at the end of that day where they are, the same as picking the date
+     * in the editor would.
+     */
+    private function defaultExpiry(User $uploader, Action $action): ?Carbon
+    {
+        $days = (int) $this->settings->get(Setting::DefaultFileExpiryDays);
+
+        if ($days <= 0 || $action !== Action::FileUploaded || ! $uploader->isStaff()) {
+            return null;
+        }
+
+        $day = Carbon::now($this->timezones->resolve($uploader))->addDays($days)->toDateString();
+
+        return $this->expiry->instant($day, $uploader);
     }
 
     /**

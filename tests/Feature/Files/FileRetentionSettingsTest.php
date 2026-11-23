@@ -37,6 +37,7 @@ test('staff can view and update file retention settings', function () {
     );
 
     $this->actingAs($this->admin)->patch('/system/settings/file-retention', [
+        'default_file_expiry_days' => 0,
         'expired_files_auto_delete_enabled' => false,
         'expired_files_delete_after_days' => 7,
         'orphan_files_auto_delete_enabled' => false,
@@ -55,6 +56,7 @@ test('staff can view and update file retention settings', function () {
 
 test('a negative grace period is rejected', function () {
     $this->actingAs($this->admin)->patch('/system/settings/file-retention', [
+        'default_file_expiry_days' => 0,
         'expired_files_auto_delete_enabled' => true,
         'expired_files_delete_after_days' => -1,
         'orphan_files_auto_delete_enabled' => true,
@@ -97,6 +99,7 @@ test('once external storage is active, orphan auto-delete fields are reported in
     // An update attempting to enable it is silently ignored — the stored
     // value stays exactly what it was, same as the disabled UI implies.
     $this->actingAs($this->admin)->patch('/system/settings/file-retention', [
+        'default_file_expiry_days' => 0,
         'expired_files_auto_delete_enabled' => true,
         'expired_files_delete_after_days' => 30,
         'orphan_files_auto_delete_enabled' => true,

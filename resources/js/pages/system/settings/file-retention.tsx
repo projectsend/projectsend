@@ -15,6 +15,7 @@ import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
 
 interface FileRetentionSettingsProps {
+    default_file_expiry_days: number;
     expired_files_auto_delete_enabled: boolean;
     expired_files_delete_after_days: number;
     orphan_files_auto_delete_enabled: boolean;
@@ -23,6 +24,7 @@ interface FileRetentionSettingsProps {
 }
 
 export default function FileRetentionSettings({
+    default_file_expiry_days,
     expired_files_auto_delete_enabled,
     expired_files_delete_after_days,
     orphan_files_auto_delete_enabled,
@@ -37,6 +39,7 @@ export default function FileRetentionSettings({
     ];
 
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
+        default_file_expiry_days: default_file_expiry_days,
         expired_files_auto_delete_enabled: expired_files_auto_delete_enabled,
         expired_files_delete_after_days: expired_files_delete_after_days,
         orphan_files_auto_delete_enabled: orphan_files_auto_delete_enabled,
@@ -60,6 +63,29 @@ export default function FileRetentionSettings({
                 />
 
                 <form onSubmit={submit} className="max-w-xl space-y-6">
+                    <div className="grid gap-2">
+                        <Label htmlFor="default_file_expiry_days">{t('New files expire after this many days')}</Label>
+                        <Input
+                            id="default_file_expiry_days"
+                            type="number"
+                            min={0}
+                            max={3650}
+                            className="max-w-32"
+                            value={data.default_file_expiry_days}
+                            onChange={(e) => setData('default_file_expiry_days', Number(e.target.value))}
+                        />
+                        <p className="text-muted-foreground text-sm">
+                            {t(
+                                'Sets an expiration date on every file staff upload. It can still be changed or removed on each file. Files clients upload are not affected. 0 means new files never expire.',
+                            )}
+                        </p>
+                        <InputError className="mt-2" message={errors.default_file_expiry_days} />
+                    </div>
+
+                    <div className="border-t pt-6">
+                        <HeadingSmall title={t('Expired files')} description={t('What happens to a file once its expiration date has passed')} />
+                    </div>
+
                     <div className="grid gap-2">
                         <div className="flex items-center gap-2">
                             <Checkbox

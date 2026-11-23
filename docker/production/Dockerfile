@@ -22,9 +22,10 @@ FROM php:8.4-fpm-alpine
 # releases. It is also how a stale base image in a build host's cache gets
 # shipped without anyone noticing, because nothing here pulls. PHP below
 # 8.4.27 runs code for anyone who can send it a request (CVE-2026-109618,
-# CVE-2026-109619), so the build refuses it. Raise this when PHP ships the
-# next fix that matters.
-ARG PHP_MIN_VERSION=8.4.27
+# CVE-2026-109619), and PHP below 8.4.28 has two session bugs that can lead
+# to the same (CVE-2026-115560, CVE-2026-126714), so the build refuses it.
+# Raise this when PHP ships the next fix that matters.
+ARG PHP_MIN_VERSION=8.4.28
 RUN php -r 'exit(version_compare(PHP_VERSION, getenv("PHP_MIN_VERSION"), ">=") ? 0 : 1);' \
     || { echo "PHP $(php -r 'echo PHP_VERSION;') is below ${PHP_MIN_VERSION}: run docker pull php:8.4-fpm-alpine and build again" >&2; exit 1; }
 

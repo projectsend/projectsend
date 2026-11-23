@@ -28,7 +28,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *    attempting to reach the bytes another way.
  *  - `checksum` is included deliberately, since verifying an integration's
  *    own download is a real use case, and it reveals nothing about
- *    location.
+ *    location. It can be an empty string: a file imported from disk that
+ *    was too large to hash at once gets its checksum from a queued job a
+ *    few minutes later (ComputeFileChecksumJob).
  *
  * Two fields are narrowed to the caller: the uploader and the assignment
  * list both name clients, and a client-scoped account may hold a file whose

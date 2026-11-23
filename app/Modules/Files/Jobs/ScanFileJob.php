@@ -116,8 +116,11 @@ class ScanFileJob implements ShouldQueue
 
         // A file identical to one already quarantined needs no second
         // opinion, and asking for one would send the same malware past
-        // the scanner again. Checksums are already computed at upload.
-        $known = File::query()
+        // the scanner again. An empty checksum is not a fingerprint: it
+        // means not computed yet (a large import, see
+        // ComputeFileChecksumJob) or unreadable, and two of them say
+        // nothing about whether the bytes match.
+        $known = $file->checksum === '' ? null : File::query()
             ->where('checksum', $file->checksum)
             ->where('scan_status', ScanStatus::Infected)
             ->whereKeyNot($file->id)

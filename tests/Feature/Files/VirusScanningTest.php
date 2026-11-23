@@ -205,6 +205,21 @@ test('an upload identical to a quarantined file is quarantined without a scan', 
         ->and($scanner->scans)->toBe(0);
 });
 
+test('a file whose checksum is not known yet is scanned, not matched to a quarantined file without one', function () {
+    $scanner = fakeScanner(ScanVerdict::clean());
+
+    // An empty checksum means "not computed yet" (a large import) or
+    // "could not be read". It says nothing about the bytes, so two empty
+    // ones are not the same file.
+    scannableFile(['scan_status' => ScanStatus::Infected, 'scan_note' => 'Known.Threat', 'checksum' => '']);
+    $file = scannableFile(['checksum' => '']);
+
+    runScan($file);
+
+    expect($file->refresh()->scan_status)->toBe(ScanStatus::Clean)
+        ->and($scanner->scans)->toBe(1);
+});
+
 /*
 |--------------------------------------------------------------------------
 | Uploads

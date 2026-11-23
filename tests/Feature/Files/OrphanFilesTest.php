@@ -5,9 +5,12 @@ declare(strict_types=1);
 use App\Models\User;
 use App\Modules\Audit\Action;
 use App\Modules\Audit\ActivityLog;
+use App\Modules\Files\Jobs\ComputeFileChecksumJob;
 use App\Modules\Files\Jobs\ImportOrphanFilesJob;
 use App\Modules\Files\Models\File;
+use App\Modules\Files\OrphanFileImporter;
 use App\Modules\Files\OrphanImportProgress;
+use App\Modules\Files\Uploads\StoreUploadedFile;
 use App\Modules\Platform\Settings\Setting;
 use App\Modules\Platform\Settings\Settings;
 use Illuminate\Support\Facades\Queue;
@@ -215,6 +218,47 @@ test('importing an orphan from the external disk stores it with that disk and a 
     expect($file->disk)->toBe('files_external')
         ->and($file->path)->toBe('2026/07/bucket-orphan.pdf')
         ->and($file->checksum)->toBe(hash('sha256', 'bucket-content'));
+});
+
+test('a file too large to hash within a request is imported at once, and its checksum is computed by a queued job', function () {
+    Queue::fake();
+    app()->instance(OrphanFileImporter::class, new OrphanFileImporter(app(StoreUploadedFile::class), inlineChecksumMaxBytes: 5));
+    makeOrphanFile('2026/07/huge.iso', 'hello-world');
+
+    $this->actingAs($this->admin);
+    $response = orphanImport([['disk' => 'files', 'path' => '2026/07/huge.iso']]);
+
+    $file = File::query()->sole();
+    $response->assertRedirect(route('files.edit', $file));
+    expect($file->checksum)->toBe('')
+        ->and($file->size)->toBe(11);
+
+    Queue::assertPushedOn('zips', ComputeFileChecksumJob::class, fn (ComputeFileChecksumJob $job) => $job->fileId === $file->id);
+
+    (new ComputeFileChecksumJob($file->id))->handle();
+
+    expect($file->refresh()->checksum)->toBe(hash('sha256', 'hello-world'));
+});
+
+test('a file small enough to hash in the request queues no checksum job', function () {
+    Queue::fake();
+    makeOrphanFile('2026/07/small.txt', 'hello-world');
+
+    $this->actingAs($this->admin);
+    orphanImport([['disk' => 'files', 'path' => '2026/07/small.txt']])->assertRedirect();
+
+    Queue::assertNotPushed(ComputeFileChecksumJob::class);
+});
+
+test('the checksum job does nothing for a file that already has one, or no longer exists', function () {
+    makeOrphanFile('2026/07/known.txt', 'hello-world');
+    $file = makeAdoptedFile($this->admin, '2026/07/known.txt');
+    $file->forceFill(['checksum' => str_repeat('a', 64)])->save();
+
+    (new ComputeFileChecksumJob($file->id))->handle();
+    (new ComputeFileChecksumJob(999999))->handle();
+
+    expect($file->refresh()->checksum)->toBe(str_repeat('a', 64));
 });
 
 test('importing multiple orphans at once stays on the list rather than picking one file to redirect to', function () {

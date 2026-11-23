@@ -66,7 +66,8 @@ class GetFile extends ToolBase
         // The folder comes with Presenter::file, for staff only.
         $detail = Presenter::file($file, $account) + [
             'original_name' => $file->getAttribute('original_name'),
-            'checksum' => $file->getAttribute('checksum') === null ? null : 'sha256:'.$file->getAttribute('checksum'),
+            // Empty while a large import is still being hashed.
+            'checksum' => in_array($file->getAttribute('checksum'), [null, ''], true) ? null : 'sha256:'.$file->getAttribute('checksum'),
             'uploaded_by' => $uploaderName !== null ? ['name' => $uploaderName] : null,
             'is_revision' => $rootId !== null,
             // Named only when this account can see that file, as the REST

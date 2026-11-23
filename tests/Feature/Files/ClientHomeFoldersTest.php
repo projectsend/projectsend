@@ -236,6 +236,105 @@ test('a client upload with no folder chosen lands in their home', function () {
     expect(File::query()->where('uploaded_by', $client->id)->sole()->folder_id)->toBe($home->id);
 });
 
+/*
+ * #1846, #1847. Staff tidy the library by moving each client's home into a
+ * folder of their own, such as "Clients". The home is still the client's
+ * root: it says whose things these are, wherever it sits. 2.8.1 made a
+ * client's own folders visible only in a tree whose top-level folder they
+ * created, and a moved home stopped being one, so the client lost sight of
+ * it and every upload was refused.
+ */
+function moveHomeUnderStaffFolder(User $admin, Folder $home, string $name = 'Clients'): Folder
+{
+    test()->actingAs($admin);
+    $clients = app(FolderService::class)->create($name, null);
+    test()->patch(route('folders.move', $home), ['parent_id' => $clients->id])->assertRedirect()->assertSessionHasNoErrors();
+
+    expect($home->refresh()->parent_id)->toBe($clients->id);
+
+    return $clients;
+}
+
+test('a home staff moved into another folder is still the client\'s, and their uploads land in it', function () {
+    enableHomeFolders();
+    $client = clientWhoCanUpload();
+    $home = app(ClientHomeFolders::class)->for($client);
+    $clients = moveHomeUnderStaffFolder($this->admin, $home);
+
+    $this->actingAs($client);
+
+    $session = $this->postJson('/uploads', [
+        'filename' => 'note.txt',
+        'size' => 11,
+        'type' => 'text/plain',
+    ])->assertOk()->json('uploadId');
+
+    $url = $this->getJson("/uploads/{$session}/parts/1/sign")->assertOk()->json('url');
+    $this->call('PUT', $url, [], [], [], ['CONTENT_TYPE' => 'application/octet-stream'], 'hello-world');
+    $this->postJson("/uploads/{$session}/complete")->assertOk();
+
+    expect(File::query()->where('uploaded_by', $client->id)->sole()->folder_id)->toBe($home->id);
+
+    // The home and what the client makes inside it, but not the folder
+    // staff moved it into.
+    $this->postJson('/uploads', ['filename' => 'b.txt', 'size' => 1, 'type' => 'text/plain', 'folder_id' => $home->id])->assertOk();
+    $sub = Folder::query()->create(['name' => 'Inside', 'parent_id' => $home->id, 'path' => $home->subtreePathPrefix(), 'created_by' => $client->id]);
+
+    $visible = Folder::query()->visibleToClient($client)->pluck('id')->all();
+    expect($visible)->toContain($home->id)
+        ->toContain($sub->id)
+        ->not->toContain($clients->id);
+});
+
+test('moving a home does not show the client anything else in the folder it moved into', function () {
+    enableHomeFolders();
+    $client = clientWhoCanUpload();
+    $other = clientWhoCanUpload('Other Co');
+    $home = app(ClientHomeFolders::class)->for($client);
+    $otherHome = app(ClientHomeFolders::class)->for($other);
+    $clients = moveHomeUnderStaffFolder($this->admin, $home);
+    $this->patch(route('folders.move', $otherHome), ['parent_id' => $clients->id])->assertRedirect();
+    $staffFolder = Folder::query()->create(['name' => 'Staff only', 'parent_id' => $clients->id, 'path' => $clients->subtreePathPrefix(), 'created_by' => $this->admin->id]);
+
+    $visible = Folder::query()->visibleToClient($client)->pluck('id')->all();
+
+    expect($visible)->toBe([$home->id]);
+});
+
+test('a moved home inside a folder shared with others is not one the client may upload into alone', function () {
+    enableHomeFolders();
+    $client = clientWhoCanUpload();
+    $other = clientWhoCanUpload('Other Co');
+    $home = app(ClientHomeFolders::class)->for($client);
+    $clients = moveHomeUnderStaffFolder($this->admin, $home);
+
+    // Whatever the client put there would reach the other client too.
+    shareFolderWithClient($clients, $other);
+
+    expect(Folder::uploadableBy($client->refresh(), $home->refresh()))->toBeFalse();
+});
+
+test('a client-scoped staff member cannot file into a moved home of a client off their roster', function () {
+    enableHomeFolders();
+    $role = \App\Modules\Identity\Models\Role::query()->create(['name' => 'Scoped filer', 'client_scoped' => true]);
+    foreach (['upload', 'edit_files', 'edit_others_files'] as $permission) {
+        RolePermission::query()->create(['role_id' => $role->id, 'permission' => $permission]);
+    }
+    $rep = User::factory()->create(['role_id' => $role->id]);
+    $mine = clientWhoCanUpload('Mine Ltd');
+    $stranger = clientWhoCanUpload('Stranger Ltd');
+    $rep->assignedClients()->sync([$mine->id]);
+
+    // The stranger's home, moved into a folder shared with the rep's own
+    // client: the rep can reach it, and now that the stranger sees their
+    // moved home, a file filed there would reach the stranger.
+    $home = app(ClientHomeFolders::class)->for($stranger);
+    $clients = moveHomeUnderStaffFolder($this->admin, $home);
+    shareFolderWithClient($clients, $mine);
+
+    expect(Folder::uploadableBy($rep->refresh(), $home->refresh()))->toBeFalse();
+});
+
 test('turning the setting off leaves an existing home working', function () {
     enableHomeFolders();
     $client = clientWhoCanUpload();

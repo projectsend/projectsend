@@ -75,8 +75,9 @@ class FolderReach
 
     /**
      * The client who sees this folder because it is in a tree of their
-     * own, if any: they created it, and they created its top-level
-     * folder.
+     * own, if any: they created it, and they created its top-level folder,
+     * or it is in their home wherever the home sits. The same roots as
+     * Folder::ownRoots().
      */
     private function treeOwner(Folder $folder): ?User
     {
@@ -84,12 +85,19 @@ class FolderReach
             return null;
         }
 
-        $rootId = $folder->ancestorIds()[0] ?? $folder->id;
+        $ancestorIds = $folder->ancestorIds();
+        $rootId = $ancestorIds[0] ?? $folder->id;
         $rootCreator = $rootId === $folder->id
             ? $folder->created_by
             : Folder::query()->whereKey($rootId)->value('created_by');
 
-        if ((int) $rootCreator !== (int) $folder->created_by) {
+        $inOwnHome = Folder::query()
+            ->whereIn('id', [...$ancestorIds, $folder->id])
+            ->where('home_for_user_id', $folder->created_by)
+            ->where('created_by', $folder->created_by)
+            ->exists();
+
+        if ((int) $rootCreator !== (int) $folder->created_by && ! $inOwnHome) {
             return null;
         }
 

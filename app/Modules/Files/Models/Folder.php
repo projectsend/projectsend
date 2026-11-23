@@ -319,16 +319,19 @@ class Folder extends Model
     public function scopeVisibleToClient(Builder $query, User $client): void
     {
         $sharedIds = self::sharedFolderIds($client);
-        $ownRootIds = self::ownRootIds($client);
+        $ownRoots = self::ownRoots($client);
 
-        $query->where(function (Builder $inner) use ($sharedIds, $ownRootIds, $client): void {
-            if ($ownRootIds !== []) {
-                $inner->where(function (Builder $own) use ($ownRootIds, $client): void {
-                    $own->where('created_by', $client->id)->where(function (Builder $tree) use ($ownRootIds): void {
-                        $tree->whereIn('id', $ownRootIds);
+        $query->where(function (Builder $inner) use ($sharedIds, $ownRoots, $client): void {
+            if ($ownRoots->isNotEmpty()) {
+                $inner->where(function (Builder $own) use ($ownRoots, $client): void {
+                    $own->where('created_by', $client->id)->where(function (Builder $tree) use ($ownRoots): void {
+                        $tree->whereIn('id', $ownRoots->modelKeys());
 
-                        foreach ($ownRootIds as $rootId) {
-                            $tree->orWhere('path', 'like', '/'.$rootId.'/%');
+                        // By the root's own path, not by '/{id}/': a home
+                        // staff moved into another folder is not at the
+                        // top, and its subtree starts under that folder.
+                        foreach ($ownRoots as $root) {
+                            $tree->orWhere('path', 'like', $root->subtreePathPrefix().'%');
                         }
                     });
                 });
@@ -376,19 +379,24 @@ class Folder extends Model
     }
 
     /**
-     * Top-level folders the client created: the roots of the trees that
-     * are theirs by creation rather than by a share.
+     * The roots of the trees that are the client's by creation rather than
+     * by a share: top-level folders they created, and their home folder
+     * wherever it sits.
      *
-     * @return list<int>
+     * The home is named for them and exists to say whose things these are,
+     * so it stays their root when staff move it into a folder of their own
+     * to tidy the library (#1846, #1847). Being inside that folder shows
+     * the client nothing else in it. Any other folder a client made below
+     * the top is theirs only through the share it was made in.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, Folder>
      */
-    public static function ownRootIds(User $client): array
+    public static function ownRoots(User $client): \Illuminate\Database\Eloquent\Collection
     {
-        return array_values(self::query()
-            ->whereNull('parent_id')
+        return self::query()
             ->where('created_by', $client->id)
-            ->pluck('id')
-            ->map(fn ($id): int => (int) $id)
-            ->all());
+            ->where(fn (Builder $root) => $root->whereNull('parent_id')->orWhere('home_for_user_id', $client->id))
+            ->get(['id', 'path']);
     }
 
     /**

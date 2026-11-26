@@ -5,6 +5,7 @@ import { FormEventHandler } from 'react';
 import { AccountContentDeleteDialog, type ReassignCandidate } from '@/components/account-content-delete-dialog';
 import { ClientCustomFieldsSection, type CustomFieldDefinition } from '@/components/client-custom-fields-section';
 import { ClientExpiryField } from '@/components/client-expiry-field';
+import { ClientStorageLocations, type ClientStorageProps } from '@/components/client-storage-locations';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
@@ -35,11 +36,13 @@ interface ClientsEditProps {
     custom_fields: CustomFieldDefinition[];
     custom_field_values: Record<string, string>;
     content: { files: number; folders: number };
+    /** Null where this edition has no storage locations. */
+    storage: ClientStorageProps | null;
     reassign_candidates: ReassignCandidate[];
 }
 
 interface ClientFormData {
-    [key: string]: string | boolean | Record<string, string>;
+    [key: string]: string | boolean | Record<string, string> | number[] | undefined;
     name: string;
     email: string;
     active: boolean;
@@ -48,6 +51,9 @@ interface ClientFormData {
     storage_quota_mb: string;
     expires_at: string;
     custom_field_values: Record<string, string>;
+    // Sent only by an editor who may change them; left out, the server
+    // leaves the client's locations alone.
+    storage_location_ids?: number[];
 }
 
 export default function ClientsEdit({
@@ -57,6 +63,7 @@ export default function ClientsEdit({
     custom_fields,
     custom_field_values,
     content,
+    storage,
     reassign_candidates,
 }: ClientsEditProps) {
     const { t } = useTranslation();
@@ -83,6 +90,7 @@ export default function ClientsEdit({
         custom_field_values: Object.fromEntries(
             custom_fields.map((field) => [field.id, custom_field_values[field.id] ?? (field.type === 'checkbox' ? '0' : '')]),
         ),
+        ...(storage?.can_assign ? { storage_location_ids: storage.assigned_ids } : {}),
     });
 
     const quotaMb = Number(data.storage_quota_mb) || 0;
@@ -198,6 +206,15 @@ export default function ClientsEdit({
                         )}
                         <InputError message={errors.storage_quota_mb} />
                     </div>
+
+                    {storage !== null && (
+                        <ClientStorageLocations
+                            storage={storage}
+                            value={data.storage_location_ids ?? storage.assigned_ids}
+                            onChange={(ids) => setData('storage_location_ids', ids)}
+                            error={errors.storage_location_ids}
+                        />
+                    )}
 
                     <TwoFactorResetPanel
                         enabled={client.two_factor_enabled}

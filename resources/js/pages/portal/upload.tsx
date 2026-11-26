@@ -7,6 +7,7 @@ import { NewVersionPicker } from '@/components/files/new-version-picker';
 import Heading from '@/components/heading';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import ChunkedUploadDashboard from '@/components/uploads/chunked-upload-dashboard';
+import { StorageLocationPicker, type UploadStorageLocation } from '@/components/uploads/storage-location-picker';
 import { useTranslation } from '@/hooks/use-translation';
 import AppLayout from '@/layouts/app-layout';
 import PortalLayout from '@/layouts/portal-layout';
@@ -24,6 +25,8 @@ interface PortalUploadProps {
     theme: string;
     folder: { id: number; name: string } | null;
     version_candidates_url: string;
+    /** The client's own storage locations, preferred first. A choice is offered with two or more. */
+    storage_locations: UploadStorageLocation[];
 }
 
 export default function PortalUpload({
@@ -37,6 +40,7 @@ export default function PortalUpload({
     theme,
     folder,
     version_candidates_url,
+    storage_locations,
 }: PortalUploadProps) {
     const { t } = useTranslation();
     // Dropping a folder recreates its subfolders only for someone who may
@@ -45,6 +49,9 @@ export default function PortalUpload({
     const canMakeFolders = auth.permissions.includes('create_own_folders') && auth.permissions.includes('upload');
     const [previousFileId, setPreviousFileId] = useState<number | null>(null);
     const [versionError, setVersionError] = useState<string | null>(null);
+    const offersChoice = storage_locations.length > 1;
+    const [storageLocationId, setStorageLocationId] = useState<number | null>(storage_locations[0]?.id ?? null);
+    const [uploading, setUploading] = useState(false);
 
     const usagePercent = quota_bytes !== null && quota_bytes > 0 ? Math.min(100, Math.round((used_bytes / quota_bytes) * 100)) : 0;
 
@@ -103,6 +110,15 @@ export default function PortalUpload({
 
                 {versionError !== null && <p className="text-destructive mb-4 text-sm">{versionError}</p>}
 
+                {offersChoice && storageLocationId !== null && (
+                    <StorageLocationPicker
+                        locations={storage_locations}
+                        value={storageLocationId}
+                        onChange={setStorageLocationId}
+                        locked={uploading}
+                    />
+                )}
+
                 <ChunkedUploadDashboard
                     keepFolders={canMakeFolders && previousFileId === null}
                     maxFileSizeMb={max_file_size_mb}
@@ -111,6 +127,8 @@ export default function PortalUpload({
                     remainingBytes={remaining_bytes}
                     folderId={folder?.id}
                     previousFileId={previousFileId}
+                    storageLocationId={offersChoice ? storageLocationId : null}
+                    onBusyChange={setUploading}
                     onVersionError={setVersionError}
                     onComplete={() => {
                         // Stay put when the link failed, so the message is

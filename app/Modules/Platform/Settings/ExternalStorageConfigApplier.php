@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Modules\Platform\Settings;
 
 use App\Modules\Files\Storage\ResolvingUploadDisk;
+use App\Modules\Files\Storage\UploadLocations;
 use App\Modules\Platform\Capabilities\Capability;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use Illuminate\Support\Facades\Cache;
@@ -12,19 +13,19 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Overrides the inert 'files_external' disk stub (config/filesystems.php)
- * with the admin-configured ExternalStorageSettings row, when one exists
- * and is fully filled in — otherwise config/filesystems.php's blank
- * defaults stand untouched (fresh installs, or any install that hasn't
- * visited the Storage settings page yet, behave exactly as before this
- * feature existed).
+ * Registers a Laravel disk for every configured bucket in
+ * storage_locations, so a file stamped with that disk can be read. A
+ * bucket that stopped accepting uploads is still registered: the files
+ * already in it have to keep downloading. Until the storage_locations
+ * migration has run — boot happens before `artisan migrate` — the single
+ * ExternalStorageSettings row is read as before, on 'files_external'.
  *
  * Community-only (Capability::StorageConfigure) — cloud operates its own
  * S3 and must never honor a stored bucket/credentials, even a stray one
  * left over from a downgrade. That check is deliberately made fresh on
  * every call, outside the cached resolve() below (same shape as
  * MailConfigApplier) — resolve()'s cache only ever holds the
- * edition-independent fact of what's stored in the DB row. Baking the
+ * edition-independent fact of what's stored in the database. Baking the
  * capability check into the cached value instead would let a value
  * cached while running as Community keep applying after a switch to
  * Cloud, since rememberForever() never expires and the only thing that
@@ -43,7 +44,7 @@ class ExternalStorageConfigApplier
 {
     // Bumped on any shape change to the resolved array below — a stale
     // rememberForever value under an old key would otherwise crash every
-    // boot with "Undefined array key" (apply() calls resolve() unconditionally).
+    // boot with "Undefined array key" (every permitted boot reads resolve()).
     // v3: the S3 secret and the GCS key file left the shape. The cache
     // store encrypts nothing and rememberForever never expires, so on the
     // documented CACHE_STORE=database they sat in clear — the service
@@ -52,7 +53,20 @@ class ExternalStorageConfigApplier
     // from the row, by the provider branch that uses them.
     // v4: use_instance_role joined the shape. Not a credential — it is
     // the fact that there isn't one — so it caches like the rest.
-    private const CACHE_KEY = 'platform.external_storage_settings.v4';
+    // v5: a list, one entry per storage location.
+    private const CACHE_KEY = 'platform.storage_locations.v5';
+
+    /** The inert stub config/filesystems.php gives 'files_external'. */
+    private const DISK_TEMPLATE = [
+        'driver' => 's3',
+        'key' => '',
+        'secret' => '',
+        'region' => '',
+        'bucket' => '',
+        'endpoint' => null,
+        'use_path_style_endpoint' => false,
+        'throw' => false,
+    ];
 
     public function __construct(
         private readonly CapabilityRegistry $capabilities,
@@ -60,24 +74,32 @@ class ExternalStorageConfigApplier
 
     public function apply(): void
     {
-        if (! $this->isActive()) {
-            return;
+        foreach ($this->externalLocations() as $resolved) {
+            $this->applyLocation($resolved);
         }
+    }
 
-        $resolved = $this->resolve();
+    /**
+     * @param  array<string, mixed>  $resolved  one entry of resolve()
+     */
+    private function applyLocation(array $resolved): void
+    {
+        $disk = 'filesystems.disks.'.$resolved['disk'];
         $provider = StorageProvider::from($resolved['provider']);
 
         // The driver is part of what gets overwritten, not a constant:
         // config/filesystems.php ships the disk as an inert 's3' stub, and
-        // this is the only thing that ever makes it anything else.
-        Config::set('filesystems.disks.files_external.driver', $provider->driver());
-        Config::set('filesystems.disks.files_external.bucket', $resolved['bucket']);
+        // this is the only thing that ever makes it anything else. A
+        // bucket's own disk starts from the same stub.
+        Config::set($disk, self::DISK_TEMPLATE);
+        Config::set($disk.'.driver', $provider->driver());
+        Config::set($disk.'.bucket', $resolved['bucket']);
 
         match ($provider) {
-            StorageProvider::S3 => $this->applyS3($resolved),
-            // No $resolved: everything GCS needs from the row is the key
+            StorageProvider::S3 => $this->applyS3($disk, $resolved),
+            // Only the id: everything GCS needs from the row is the key
             // file, and that is a credential the cache no longer holds.
-            StorageProvider::Gcs => $this->applyGcs(),
+            StorageProvider::Gcs => $this->applyGcs($disk, $resolved['id']),
         };
 
         // One "folder inside the bucket" on the screen, two names in the
@@ -93,9 +115,9 @@ class ExternalStorageConfigApplier
         // Written on every apply, not only when there is a folder, so a
         // process that switched provider or cleared the folder cannot keep
         // a stale one: config lives for the length of the process.
-        Config::set('filesystems.disks.files_external.root', $resolved['root']);
+        Config::set($disk.'.root', $resolved['root']);
         Config::set(
-            'filesystems.disks.files_external.prefix',
+            $disk.'.prefix',
             $provider === StorageProvider::Gcs ? $resolved['root'] : null,
         );
     }
@@ -103,7 +125,7 @@ class ExternalStorageConfigApplier
     /**
      * @param  array<string, mixed>  $resolved
      */
-    private function applyS3(array $resolved): void
+    private function applyS3(string $disk, array $resolved): void
     {
         // Left null on purpose when the machine's own role is doing the
         // authenticating. Laravel's FilesystemManager::formatS3Config()
@@ -113,14 +135,14 @@ class ExternalStorageConfigApplier
         // profile, EKS/IRSA, environment — whenever none is supplied.
         // Passing an empty string instead of nothing would be a
         // credential, and would fail rather than fall through.
-        Config::set('filesystems.disks.files_external.key', $resolved['use_instance_role'] ? null : $resolved['key']);
-        Config::set('filesystems.disks.files_external.secret', $resolved['use_instance_role'] ? null : $this->credential('secret'));
-        Config::set('filesystems.disks.files_external.region', $resolved['region']);
-        Config::set('filesystems.disks.files_external.endpoint', $resolved['endpoint']);
-        Config::set('filesystems.disks.files_external.use_path_style_endpoint', $resolved['use_path_style']);
+        Config::set($disk.'.key', $resolved['use_instance_role'] ? null : $resolved['key']);
+        Config::set($disk.'.secret', $resolved['use_instance_role'] ? null : $this->credential($resolved['id'], 'secret'));
+        Config::set($disk.'.region', $resolved['region']);
+        Config::set($disk.'.endpoint', $resolved['endpoint']);
+        Config::set($disk.'.use_path_style_endpoint', $resolved['use_path_style']);
     }
 
-    private function applyGcs(): void
+    private function applyGcs(string $disk, ?int $locationId): void
     {
         // Decoded here rather than stored decoded: the column holds the
         // key file verbatim, exactly as Google issued it, so that what an
@@ -129,16 +151,16 @@ class ExternalStorageConfigApplier
         //
         // Read from the row rather than from $resolved: it is a private
         // key, and the cached array no longer carries one.
-        $keyFile = json_decode((string) $this->credential('key_file'), true);
+        $keyFile = json_decode((string) $this->credential($locationId, 'key_file'), true);
 
-        Config::set('filesystems.disks.files_external.key_file', is_array($keyFile) ? $keyFile : null);
+        Config::set($disk.'.key_file', is_array($keyFile) ? $keyFile : null);
 
         // Left over from the S3 stub in config/filesystems.php, and
         // meaningless to the GCS adapter — cleared rather than left
         // sitting there looking like configuration.
-        Config::set('filesystems.disks.files_external.key', null);
-        Config::set('filesystems.disks.files_external.secret', null);
-        Config::set('filesystems.disks.files_external.endpoint', null);
+        Config::set($disk.'.key', null);
+        Config::set($disk.'.secret', null);
+        Config::set($disk.'.endpoint', null);
     }
 
     public function flush(): void
@@ -159,70 +181,120 @@ class ExternalStorageConfigApplier
      *
      * Guarded like the cached read beside it: resolve() can hand back a
      * warm "configured" from a database that has since stopped answering,
-     * and booting must survive that.
+     * and booting must survive that. A null id is the previous release's
+     * row, read before the storage locations migration has run.
      */
-    private function credential(string $column): ?string
+    private function credential(?int $locationId, string $column): ?string
     {
         return BootSettingsCache::read(
-            fn (): ?string => ExternalStorageSettings::current()->{$column},
+            fn (): ?string => $locationId === null
+                ? ExternalStorageSettings::current()->{$column}
+                : StorageLocation::query()->find($locationId)?->{$column},
         );
     }
 
     public function resolveDisk(ResolvingUploadDisk $event): void
     {
-        if ($this->isActive()) {
-            $event->disk = 'files_external';
-        }
+        $event->disk = app(UploadLocations::class)->diskFor($event->uploader, $event->requestedLocationId);
+    }
+
+    /** Whether this edition honors stored storage settings at all. */
+    public function permitted(): bool
+    {
+        return $this->capabilities->has(Capability::StorageConfigure);
     }
 
     /**
-     * Whether 'files_external' is both fully configured (the DB row) and
-     * permitted (the edition's capability) — the single live check every
-     * caller in this class needs, kept in one place. Deliberately
+     * Whether any bucket is both configured and permitted: an upload, or
+     * an orphan, can be somewhere other than the local disk. Deliberately
      * uncached (see class docblock) so an edition change or a capability
      * flip is never one process-boot stale.
      */
     public function isActive(): bool
     {
-        return $this->resolve()['configured'] && $this->capabilities->has(Capability::StorageConfigure);
+        return $this->externalLocations() !== [];
     }
 
     /**
-     * Deliberately edition-independent: whether the DB row itself is fully
-     * filled in and active, nothing more. Callers AND the capability check
-     * live and uncached — see class docblock.
+     * The disk uploads that follow the default (staff, clients with no
+     * locations of their own) go to: the local disk unless the default is
+     * a bucket that is configured, permitted and taking uploads.
+     */
+    public function defaultDisk(): string
+    {
+        foreach ($this->externalLocations() as $location) {
+            if ($location['is_default'] && $location['accepts_uploads']) {
+                return $location['disk'];
+            }
+        }
+
+        return StorageLocation::LOCAL_DISK;
+    }
+
+    /**
+     * Configured buckets, when this edition permits them.
      *
-     * @return array{configured: bool, provider: string, use_instance_role: bool, key: string|null, region: string|null, bucket: string|null, endpoint: string|null, use_path_style: bool, root: string|null}
+     * @return list<array{id: int|null, name: string, disk: string, provider: string, is_default: bool, accepts_uploads: bool, use_instance_role: bool, key: string|null, region: string|null, bucket: string|null, endpoint: string|null, use_path_style: bool, root: string|null}>
+     */
+    public function externalLocations(): array
+    {
+        return $this->permitted() ? $this->resolve() : [];
+    }
+
+    /**
+     * Deliberately edition-independent: the configured buckets the
+     * database holds, nothing more. The local disk needs no registering
+     * and is always there. Callers add the capability check, live and
+     * uncached — see class docblock.
+     *
+     * @return list<array{id: int|null, name: string, disk: string, provider: string, is_default: bool, accepts_uploads: bool, use_instance_role: bool, key: string|null, region: string|null, bucket: string|null, endpoint: string|null, use_path_style: bool, root: string|null}>
      */
     private function resolve(): array
     {
-        $blank = [
-            'configured' => false,
-            'provider' => StorageProvider::S3->value,
-            'use_instance_role' => false,
-            'key' => null,
-            'region' => null, 'bucket' => null,
-            'endpoint' => null, 'use_path_style' => false, 'root' => null,
-        ];
-
         // Through BootSettingsCache, not Cache directly: this runs on every
         // process boot, including the artisan commands that install the
         // application, and must survive a database that has no tables yet
         // (or none at all). See that class for the full story.
-        return BootSettingsCache::rememberForever(self::CACHE_KEY, function () use ($blank): array {
+        return BootSettingsCache::rememberForever(self::CACHE_KEY, function (): array {
+            if (Schema::hasTable('storage_locations')) {
+                return array_values(StorageLocation::query()->orderBy('id')->get()
+                    ->filter(fn (StorageLocation $location): bool => ! $location->isLocal() && $location->isConfigured())
+                    ->map(fn (StorageLocation $location): array => [
+                        'id' => $location->id,
+                        'name' => $location->name,
+                        'disk' => $location->disk,
+                        'provider' => $location->provider,
+                        'is_default' => $location->is_default,
+                        'accepts_uploads' => $location->accepts_uploads,
+                        'use_instance_role' => $location->use_instance_role,
+                        'key' => $location->key,
+                        'region' => $location->region,
+                        'bucket' => $location->bucket,
+                        'endpoint' => $location->endpoint,
+                        'use_path_style' => $location->use_path_style,
+                        'root' => $location->root,
+                    ])->all());
+            }
+
             if (! Schema::hasTable('external_storage_settings')) {
-                return $blank;
+                return [];
             }
 
             $settings = ExternalStorageSettings::current();
 
             if (! $settings->isConfigured()) {
-                return $blank;
+                return [];
             }
 
-            return [
-                'configured' => true,
+            // The previous release's single row, as the one bucket it was:
+            // on 'files_external', where every new upload went.
+            return [[
+                'id' => null,
+                'name' => 'External storage',
+                'disk' => 'files_external',
                 'provider' => $settings->provider->value,
+                'is_default' => true,
+                'accepts_uploads' => true,
                 'use_instance_role' => $settings->use_instance_role,
                 'key' => $settings->key,
                 'region' => $settings->region,
@@ -230,7 +302,7 @@ class ExternalStorageConfigApplier
                 'endpoint' => $settings->endpoint,
                 'use_path_style' => $settings->use_path_style,
                 'root' => $settings->root,
-            ];
-        }, $blank);
+            ]];
+        }, []);
     }
 }

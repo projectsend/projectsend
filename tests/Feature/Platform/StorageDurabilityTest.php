@@ -7,7 +7,6 @@ use App\Modules\Platform\Capabilities\Capability;
 use App\Modules\Platform\Capabilities\CapabilityRegistry;
 use App\Modules\Platform\Installation\Installation;
 use App\Modules\Platform\Settings\ExternalStorageConfigApplier;
-use App\Modules\Platform\Settings\ExternalStorageSettings;
 use App\Modules\Platform\Storage\StorageDurability;
 use App\Modules\Platform\Storage\StorageDurabilityLevel;
 use Illuminate\Support\Facades\File;
@@ -122,10 +121,7 @@ test('nothing is reported when not running in a container', function () {
 });
 
 test('nothing is reported when uploads go to external storage instead', function () {
-    ExternalStorageSettings::current()->fill([
-        'key' => 'k', 'secret' => 's', 'region' => 'us-east-1', 'bucket' => 'b', 'active' => true,
-    ])->save();
-    app(ExternalStorageConfigApplier::class)->flush();
+    activateExternalStorage();
 
     expect(durability(MOUNTS_EPHEMERAL)->inspect())->toBeNull();
 })->skip(

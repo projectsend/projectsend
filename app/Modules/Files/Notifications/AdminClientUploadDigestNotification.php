@@ -30,11 +30,13 @@ class AdminClientUploadDigestNotification extends Notification implements Should
 
     /**
      * @param  list<PendingNotification>  $items
+     * @param  array<int, string>  $locationNames  Where each file went, by file id. Filled only when Setting::UploadNotificationNamesLocation is on.
      */
     public function __construct(
         private readonly string $clientName,
         private readonly int $clientId,
         private readonly array $items,
+        private readonly array $locationNames = [],
     ) {}
 
     /**
@@ -59,6 +61,13 @@ class AdminClientUploadDigestNotification extends Notification implements Should
 
         foreach ($this->items as $item) {
             $message->line(__('File: :name', ['name' => $item->subject_name]));
+
+            // Under the file rather than once for the whole list: a burst
+            // can span two batches sent to different locations.
+            $location = $this->locationNames[(int) ($item->context['file_id'] ?? 0)] ?? null;
+            if ($location !== null) {
+                $message->line(__('Stored in: :location', ['location' => $location]));
+            }
         }
 
         // The library filtered to this client's uploads: every file in the

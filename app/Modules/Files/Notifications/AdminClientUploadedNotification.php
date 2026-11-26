@@ -24,6 +24,8 @@ class AdminClientUploadedNotification extends Notification implements ShouldQueu
         private readonly string $clientName,
         private readonly string $fileName,
         private readonly int $fileId,
+        // Set only when Setting::UploadNotificationNamesLocation is on.
+        private readonly ?string $locationName = null,
     ) {}
 
     /**
@@ -37,13 +39,25 @@ class AdminClientUploadedNotification extends Notification implements ShouldQueu
     public function toMail(object $notifiable): MailMessage
     {
         if (($override = $this->overrideOrNull(EmailTemplateSlot::AdminClientUploaded)) !== null) {
-            return $this->mailFromOverride($override, [':file' => $this->fileName, ':client' => $this->clientName])
+            return $this->withLocation($this->mailFromOverride($override, [':file' => $this->fileName, ':client' => $this->clientName]))
                 ->action(__('View file'), route('files.edit', $this->fileId));
         }
 
-        return (new MailMessage)
+        return $this->withLocation((new MailMessage)
             ->subject(__('A client uploaded a file'))
-            ->line(__('The file ":file" was uploaded by :client.', ['file' => $this->fileName, 'client' => $this->clientName]))
+            ->line(__('The file ":file" was uploaded by :client.', ['file' => $this->fileName, 'client' => $this->clientName])))
             ->action(__('View file'), route('files.edit', $this->fileId));
+    }
+
+    /**
+     * Added after the body, an edited template's included: a template is
+     * written once, and whether the location is named is a setting that
+     * can change after it.
+     */
+    private function withLocation(MailMessage $message): MailMessage
+    {
+        return $this->locationName === null
+            ? $message
+            : $message->line(__('Stored in: :location', ['location' => $this->locationName]));
     }
 }

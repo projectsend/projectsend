@@ -45,7 +45,7 @@ class PurgeOrphanFilesCommand extends Command
 
         foreach ($scanner->scan() as $orphan) {
             // Belt and suspenders: scannedDisks() only ever includes
-            // 'files_external' when external storage is active, and we
+            // a bucket when external storage is active, and we
             // already returned above when it is — but filter explicitly
             // rather than relying on that alone.
             if ($orphan['disk'] !== 'files' || $orphan['last_modified'] > $cutoff->timestamp) {

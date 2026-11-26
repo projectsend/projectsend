@@ -329,6 +329,12 @@ Route::middleware('auth')->group(function () {
                 ->middleware('password.confirm')->name('system-settings.storage.update');
             Route::post('system/settings/storage/test', [ExternalStorageSettingsController::class, 'testConnection'])
                 ->middleware('password.confirm')->name('system-settings.storage.test');
+            Route::post('system/settings/storage/locations', [ExternalStorageSettingsController::class, 'store'])
+                ->middleware('password.confirm')->name('system-settings.storage.locations.store');
+            Route::patch('system/settings/storage/locations/{location}', [ExternalStorageSettingsController::class, 'updateLocation'])
+                ->middleware('password.confirm')->name('system-settings.storage.locations.update');
+            Route::delete('system/settings/storage/locations/{location}', [ExternalStorageSettingsController::class, 'destroy'])
+                ->middleware('password.confirm')->name('system-settings.storage.locations.destroy');
         });
 
         // Both editions since 2026-08-28, and gated all-or-nothing like

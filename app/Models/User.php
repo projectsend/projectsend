@@ -8,6 +8,7 @@ use App\Modules\Identity\AuthSource;
 use App\Modules\Identity\Models\Role;
 use App\Modules\Identity\Notifications\ResetPasswordNotification;
 use App\Modules\Identity\UserType;
+use App\Modules\Platform\Settings\StorageLocation;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -90,6 +91,19 @@ class User extends Authenticatable implements HasLocalePreference
     public function assignedClients(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'staff_client_assignments', 'staff_id', 'client_id')->withTimestamps();
+    }
+
+    /**
+     * Where this client's uploads may go, the preferred location first
+     * (UploadLocations). Empty means they follow the default.
+     *
+     * @return BelongsToMany<StorageLocation, $this>
+     */
+    public function storageLocations(): BelongsToMany
+    {
+        return $this->belongsToMany(StorageLocation::class, 'client_storage_location')
+            ->withPivot('priority')
+            ->orderBy('client_storage_location.priority');
     }
 
     /**

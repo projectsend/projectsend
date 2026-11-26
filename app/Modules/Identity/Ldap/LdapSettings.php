@@ -28,6 +28,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $username_attribute
  * @property bool $auto_provision
  * @property bool $auto_approve
+ * @property bool $sync_daily
+ * @property bool $sync_deactivates_missing
+ * @property bool $sync_restores_deleted
  */
 class LdapSettings extends Model
 {
@@ -47,6 +50,9 @@ class LdapSettings extends Model
         'name_attribute' => 'cn',
         'auto_provision' => false,
         'auto_approve' => false,
+        'sync_daily' => false,
+        'sync_deactivates_missing' => false,
+        'sync_restores_deleted' => false,
     ];
 
     protected function casts(): array
@@ -58,6 +64,9 @@ class LdapSettings extends Model
             'bind_password' => 'encrypted',
             'auto_provision' => 'boolean',
             'auto_approve' => 'boolean',
+            'sync_daily' => 'boolean',
+            'sync_deactivates_missing' => 'boolean',
+            'sync_restores_deleted' => 'boolean',
         ];
     }
 
